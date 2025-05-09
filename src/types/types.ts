@@ -121,7 +121,7 @@ export interface FinderCore<FItem> {
 /**
  * Context provided to all Finder consuming elements.
  */
-export interface FinderContextProps<FItem, FMeta> extends FinderCore<FItem> {
+export interface FinderContextProps<FItem> extends FinderCore<FItem> {
     items: FItem[];
     disabled: boolean;
     isLoading: boolean;
@@ -135,46 +135,31 @@ export interface FinderResultGroup<FItems, FGroupId extends string = string> {
 /**
  * A stateless filter object that will receive filterValues
  */
-export interface FinderFilterDefinition<FItem, FValue = any, FMeta = any> {
+export interface FinderFilterDefinition<FItem, FValue = any> {
     id: string;
-    label: string;
-    filterFn: (item: FItem, value: FValue, meta?: FMeta) => boolean;
-    options?: FinderControlOption[] | ((meta?: FMeta) => FinderControlOption[]);
+    filterFn: (item: FItem, value: FValue, meta?: Map<any, any>) => boolean;
+    options?: FinderControlOption[] | ((meta?: Map<any, any>) => FinderControlOption[]);
     multiple?: boolean;
     required?: boolean;
     is_boolean?: boolean;
-    hidden?: boolean;
-    // Component?: ElementType;
-    // element?: (props: FinderFilterComponentProps<FItem, any, FMeta>) => ReactNode;
     side_effects?: (
         value: FValue,
-        meta: FMeta,
+        meta: Map<any, any>,
     ) => {
         reset?: string[];
         set?: Record<string, unknown>;
     };
 }
 
-export interface FinderFilterComponentProps<I, V, M> {
-    filter: FinderFilterDefinition<I>;
-    value: V;
-    items: I[];
-    onChange: (value?: V) => void;
-    meta?: M;
-}
-
 export interface FinderGroupByDefinition<FItem> {
     id: string;
-    label: string;
     groupFn: FinderPropertySelector<FItem>;
     sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem[]>>;
     direction?: FinderSortDirection;
-    hidden?: boolean;
     sticky?: {
         header?: string | string[];
         footer?: string | string[];
     };
-    meta?: Map<any, any>;
 }
 
 /*
@@ -182,10 +167,8 @@ export interface FinderGroupByDefinition<FItem> {
  */
 export interface FinderSortByDefinition<FItem> {
     id: string;
-    label: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultDirection?: "asc" | "desc" | ("asc" | "desc")[];
-    meta?: Map<any, any>;
 }
 
 export type FinderSortDirection = null | undefined | "asc" | "desc" | ("asc" | "desc")[];
@@ -193,7 +176,7 @@ export type FinderSortDirection = null | undefined | "asc" | "desc" | ("asc" | "
 export interface FinderPagination {
     page: number;
     lastPage: number;
-    numItems: number;
+    numTotalItems: number;
     numItemsPerPage: number;
     disabled: boolean;
 }

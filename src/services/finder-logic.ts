@@ -1,6 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { groupBy as lodashGroupBy, orderBy } from "lodash";
-import { FinderConfig, FinderControlOption, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
+import * as _ from "lodash";
+import { FinderConfig, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
+
+export function findResults<FItem>(
+    items: FItem[],
+    config: FinderConfig<FItem> | undefined,
+    snapshot: FinderStateSnapshot,
+    meta: Map<any, any>,
+    page: number,
+    numItemsPerPage: number,
+) {
+    if (!items) {
+        return {
+            numTotalItems: undefined,
+        };
+    }
+
+    let itemMatches = findItems(items, config, snapshot, meta);
+    const numTotalMatchedItems = itemMatches.length;
+
+    if (page !== undefined && numItemsPerPage) {
+        const lastPage = Math.ceil(itemMatches.length / numItemsPerPage);
+        const clampedPage = page > lastPage ? lastPage : page;
+        const offset = (clampedPage - 1) * numItemsPerPage;
+
+        itemMatches = itemMatches.slice(offset, offset + numItemsPerPage);
+    }
+
+    if (snapshot.groupBy !== undefined) {
+        const groupByDefinition = config.groupBy.find(({ id }) => id === snapshot.groupBy);
+
+        if (groupByDefinition) {
+            return {
+                groups: groupItems(items, groupByDefinition),
+                numTotalItems: numTotalMatchedItems,
+            };
+        }
+    }
+
+    return {
+        items: itemMatches,
+        numTotalItems: numTotalMatchedItems,
+    };
+}
 
 export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot, meta: Map<any, any>) {
     if (items === undefined || Array.isArray(items) === false) {
@@ -34,42 +76,14 @@ export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfi
 
     const sortByDefinition = config.sortBy?.find((option) => option.id === snapshot?.sortBy) ?? config.sortBy?.[0];
     if (sortByDefinition) {
-        return orderBy(matches, sortByDefinition.sortFn, snapshot?.sortDirection ?? sortByDefinition.defaultDirection);
+        return _.orderBy(matches, sortByDefinition.sortFn, snapshot?.sortDirection ?? sortByDefinition.defaultDirection);
     }
 
     return matches;
 }
 
-export function findGroups<FItem>(
-    items: FItem[] | undefined,
-    config: FinderConfig<FItem> | undefined,
-    snapshot: FinderStateSnapshot,
-    meta?: Map<any, any>,
-    page?: number,
-    numItemsPerPage?: number,
-) {
-    let groupByDefinition: undefined | FinderGroupByDefinition<FItem>;
-
-    if (snapshot?.groupBy) {
-        groupByDefinition = config?.groupBy?.find((option) => option.id === snapshot.groupBy);
-    }
-    if (groupByDefinition === undefined && config?.groupBy && config.requireGroup) {
-        groupByDefinition = config.groupBy.at(0);
-    }
-    if (groupByDefinition === undefined) {
-        throw new TypeError("No valid group by option was found.");
-    }
-
-    let itemMatches = findItems(items, config, snapshot, meta);
-
-    // paginate the item results before grouping them
-    if (page && numItemsPerPage) {
-        const offset = (page - 1) * numItemsPerPage;
-        itemMatches = itemMatches.slice(offset, offset + numItemsPerPage);
-    }
-
-    // lodash will constuct an object keyed by the return value of groupByRule.sortFn.
-    const groupObject = lodashGroupBy(itemMatches, groupByDefinition.groupFn);
+export function groupItems<FItem>(items: FItem[] | undefined, groupByDefinition: FinderGroupByDefinition<FItem>) {
+    const groupObject = _.groupBy(items, groupByDefinition.groupFn);
 
     // transform the object into a sortable array
     const groups = Object.keys(groupObject).map((id) => {
@@ -92,7 +106,7 @@ export function findGroups<FItem>(
     }
 
     // TODO: Figure out group sorting
-    return orderBy(groups, orderByCallbacks, orderDirection);
+    return _.orderBy(groups, orderByCallbacks, orderDirection);
 }
 
 /**

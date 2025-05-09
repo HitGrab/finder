@@ -1,4 +1,4 @@
-import { FinderContentComponentProps } from "src/types/component-types";
+import { FinderContentComponentProps } from "../types/component-types";
 import { FinderEmpty } from "./finder-empty";
 import { FinderGroups } from "./finder-groups";
 import { FinderItems } from "./finder-items";

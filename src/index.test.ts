@@ -1,98 +1,235 @@
-import test from "ava";
-test("hello", (t) => {
-    t.deepEqual(true, true);
+import { test } from "vitest";
+import { useFinderFactory } from "./hooks/use-finder-factory";
+import { finderConfig } from "./services/finder-logic";
+import { renderHook } from "@testing-library/react";
+import { FinderStateSnapshot } from "./types/types";
+
+type MockObjectItem = {
+    type: string;
+    name: string;
+    price: number;
+    daysUntilExpiryDate: string;
+};
+
+const apple: MockObjectItem = { type: "apple", name: "Apple", price: 1, daysUntilExpiryDate: "three" };
+const orange: MockObjectItem = { type: "orange", name: "Orange", price: 2, daysUntilExpiryDate: "five" };
+const banana: MockObjectItem = { type: "banana", name: "Banana", price: 10, daysUntilExpiryDate: "five" };
+
+const objectItems: MockObjectItem[] = [apple, orange, banana];
+
+describe("Search", () => {
+    test("Search", () => {
+        const config = finderConfig({
+            searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+        });
+        const initialValues: FinderStateSnapshot = {
+            searchTerm: "apple",
+        };
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
+
+        expect(result.current.results.items).toStrictEqual([apple]);
+    });
 });
 
-// test("String needle", (t) => {
-//     t.deepEqual(
-//         stringReplaceCallback("My vanilla string", "vanilla", () => "magic"),
-//         ["My ", "magic", " string"],
-//     );
-// });
+describe("Filters", () => {
+    test("Single filter", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "price_is_below",
+                    filterFn: (item: MockObjectItem, value: number) => {
+                        return item.price <= value;
+                    },
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            filters: {
+                price_is_below: 5,
+            },
+        };
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
 
-// test("Regexp needle", (t) => {
-//     t.deepEqual(
-//         stringReplaceCallback("My vanilla string", new RegExp(/(vanilla)/gm), () => "magic"),
-//         ["My ", "magic", " string"],
-//     );
-// });
+        expect(result.current.results.items).toStrictEqual([apple, orange]);
+    });
 
-// test("Both string and Regexp needles in a map", (t) => {
-//     const map = new Map();
-//     map.set("vanilla", () => "magic");
-//     map.set(/(string)/gim, (match) => ({
-//         MagicalComponent: ["react", "jsx", "svelte", "htmx", "etc", match],
-//     }));
+    test("Multiple filter", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "tastiest_fruit_name",
+                    filterFn: (item: MockObjectItem, value: string) => {
+                        return item.name === value;
+                    },
+                },
+                {
+                    id: "price_is_below",
+                    filterFn: (item: MockObjectItem, value: number) => {
+                        return item.price <= value;
+                    },
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            filters: {
+                tastiest_fruit_name: "Apple",
+                price_is_below: 2,
+            },
+        };
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
+        expect(result.current.results.items).toStrictEqual([apple]);
+    });
 
-//     const result = stringReplaceCallback("My vanilla string", map);
-//     const expectedResult = [
-//         "My ",
-//         "magic",
-//         " ",
-//         {
-//             MagicalComponent: ["react", "jsx", "svelte", "htmx", "etc", "string"],
-//         },
-//     ];
+    test("Inactive filters have no effect", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "tastiest_fruit_name",
+                    filterFn: (item: MockObjectItem, value: string) => item.name === value,
+                },
+                {
+                    id: "price_is_below",
+                    filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+                },
+            ],
+        });
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+    });
 
-//     t.deepEqual(result, expectedResult);
-// });
+    test("Return empty array for unmatched filters", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "tastiest_fruit_name",
+                    filterFn: (item: MockObjectItem, value: string) => item.name === value,
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            filters: {
+                tastiest_fruit_name: "guava",
+            },
+        };
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
+        expect(result.current.results.items).toStrictEqual([]);
+    });
+});
 
-// test("Handles multiple capture groups in same needle", (t) => {
-//     const haystack = `apple orange shark`;
-//     const needle = /(apple)|(orange)/;
-//     const result = stringReplaceCallback(haystack, needle, (match) => {
-//         return `<b>${match}</b>`;
-//     });
+describe("SortBy", () => {
+    test("Asc", () => {
+        const config = finderConfig({
+            sortBy: [
+                {
+                    id: "sort_by_price",
+                    sortFn: (item: MockObjectItem) => item.price,
+                },
+            ],
+        });
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+    });
 
-//     const expectedResult = ["<b>apple</b>", " ", "<b>orange</b>", " shark"];
-//     t.deepEqual(result, expectedResult);
-// });
+    test("Desc", () => {
+        const config = finderConfig({
+            sortBy: [
+                {
+                    id: "sort_by_price",
+                    sortFn: (item: MockObjectItem) => item.price,
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            sortDirection: "desc",
+        };
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
+        expect(result.current.results.items).toStrictEqual([banana, orange, apple]);
+    });
+});
 
-// test("Can be run multiple times on same haystack", (t) => {
-//     const haystack = `crab sturgeon shark`;
-//     const needle = /(crab)|(shark)/;
-//     const firstPassResult = stringReplaceCallback(haystack, needle, (match) => {
-//         return `<b>${match}</b>`;
-//     });
-//     const expectedFirstResult = ["<b>crab</b>", " sturgeon ", "<b>shark</b>"];
-//     t.deepEqual(firstPassResult, expectedFirstResult);
+describe("GroupBy", () => {
+    test("Groups items", () => {
+        const config = finderConfig({
+            groupBy: [
+                {
+                    id: "expiry_date",
+                    groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+                },
+            ],
+            requireGroup: true,
+        });
 
-//     const secondNeedle = "sturgeon";
-//     const secondResult = stringReplaceCallback(firstPassResult, secondNeedle, (match, meta) => ({
-//         type: "fish",
-//         id: "sturgeon",
-//         match: match,
-//         key: meta.key,
-//     }));
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+        expect(result.current.results.groups).toStrictEqual([
+            { id: "three", items: [apple] },
+            { id: "five", items: [orange, banana] },
+        ]);
+    });
 
-//     const expectedSecondResult = [
-//         "<b>crab</b>",
-//         " ",
-//         {
-//             type: "fish",
-//             id: "sturgeon",
-//             match: "sturgeon",
-//             key: "0-0",
-//         },
-//         " ",
-//         "<b>shark</b>",
-//     ];
-//     t.deepEqual(secondResult, expectedSecondResult);
-// });
+    test("Sticky headers", () => {
+        const config = finderConfig({
+            groupBy: [
+                {
+                    id: "expiry_date",
+                    groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+                    sticky: { header: ["five"] },
+                },
+            ],
+            requireGroup: true,
+        });
 
-// test("Empty input returns empty output", (t) => {
-//     t.deepEqual(
-//         stringReplaceCallback("", "setup_to_fail", () => "magic"),
-//         [],
-//     );
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+        expect(result.current.results.groups).toStrictEqual([
+            { id: "five", items: [orange, banana] },
+            { id: "three", items: [apple] },
+        ]);
+    });
 
-//     t.deepEqual(
-//         stringReplaceCallback([], "setup_to_fail", () => "magic"),
-//         [],
-//     );
-// });
+    test("Sticky footers preserve order", () => {
+        const config = finderConfig({
+            groupBy: [
+                {
+                    id: "expiry_date",
+                    groupFn: (item: MockObjectItem) => item.type,
+                    sticky: { footer: ["orange", "apple"] },
+                },
+            ],
+            requireGroup: true,
+        });
 
-// test("Unprocessable haystack elements are returned unchanged", (t) => {
-//     const result = stringReplaceCallback(["abc", NaN, 123, ["nested array"], { object: "uhoh" }], "setup_to_fail", () => "magic");
-//     t.deepEqual(result, ["abc", NaN, 123, "nested array", { object: "uhoh" }]);
-// });
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+        expect(result.current.results.groups).toStrictEqual([
+            { id: "banana", items: [banana] },
+            { id: "orange", items: [orange] },
+            { id: "apple", items: [apple] },
+        ]);
+    });
+});
+
+describe("Pagination", () => {
+    test("Paginates results", () => {
+        const config = finderConfig({
+            sortBy: [
+                {
+                    id: "sort_by_price",
+                    sortFn: (item: MockObjectItem) => item.price,
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            sortDirection: "desc",
+        };
+        let page = 1;
+        const numItemsPerPage = 1;
+        const { result, rerender } = renderHook(() => useFinderFactory(objectItems, { config, initialValues, page, numItemsPerPage }));
+        expect(result.current.results.items).toStrictEqual([banana]);
+
+        page = 2;
+        rerender([objectItems, { config, page, numItemsPerPage }]);
+        expect(result.current.results.items).toStrictEqual([orange]);
+
+        page = 3;
+        rerender([objectItems, { config, page, numItemsPerPage }]);
+        expect(result.current.results.items).toStrictEqual([apple]);
+    });
+});

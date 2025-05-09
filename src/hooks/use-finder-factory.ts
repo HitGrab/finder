@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
-import { composeFilterValuesWithSideEffects, findGroups, findItems } from "../services/finder-logic";
-import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryOptions } from "../types/types";
+import { composeFilterValuesWithSideEffects, findResults } from "../services/finder-logic.js";
+import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryOptions } from "../types/types.js";
 
 /**
  * TODO:
@@ -38,32 +38,14 @@ function useFinderFactory<FItem>(
             sortDirection,
         };
 
-        let results = {};
-        let numResults = 0;
-        if (items) {
-            if (snapshot.groupBy === undefined) {
-                const matches = findItems(items, config, snapshot, meta);
-                results = {
-                    items: matches,
-                };
-                numResults = matches.length;
-            }
-            if (snapshot.groupBy !== undefined) {
-                const matches = findGroups(items, config, snapshot, meta, page, numItemsPerPage);
-                results = {
-                    groups: matches,
-                };
-                numResults = matches.length;
-            }
-        }
-
+        const results = findResults(items, config, snapshot, meta, page, numItemsPerPage);
         const pagination =
             numItemsPerPage && Array.isArray(items) && page !== undefined
                 ? {
                       page,
-                      lastPage: Math.ceil(numResults / numItemsPerPage),
-                      numItems: numResults,
+                      lastPage: Math.ceil(results.numTotalItems / numItemsPerPage),
                       numItemsPerPage,
+                      numTotalItems: results.numTotalItems,
                       disabled: false,
                   }
                 : undefined;

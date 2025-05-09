@@ -1,7 +1,7 @@
 import { PropsWithChildren, useImperativeHandle } from "react";
-import { useFinderFactory } from "src/hooks/use-finder-factory";
-import { FinderCoreContext } from "src/store/finder-core-context";
-import { FinderRootProps } from "src/types/types";
+import { useFinderFactory } from "../hooks/use-finder-factory.js";
+import { FinderCoreContext } from "../store/finder-core-context.js";
+import { FinderRootProps } from "../types/types.js";
 
 interface FinderContainerProps<FItem> extends FinderRootProps<FItem>, PropsWithChildren {}
 function FinderContainer<FItem>({
