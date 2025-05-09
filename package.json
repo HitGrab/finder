@@ -1,7 +1,7 @@
 {
     "name": "finder",
     "version": "0.0.1",
-    "description": "Datatables for things that aren't tables.",
+    "description": "Headless datatables for things that aren't tables.",
     "main": "dist/index.js",
     "type": "module",
     "types": "dist/index.d.ts",

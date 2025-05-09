@@ -3,8 +3,8 @@ import { useFinderFactory } from "src/hooks/use-finder-factory";
 import { FinderCoreContext } from "src/store/finder-core-context";
 import { FinderRootProps } from "src/types/types";
 
-interface FinderContainerProps<FItem, FMeta> extends FinderRootProps<FItem, FMeta>, PropsWithChildren {}
-function FinderContainer<FItem, FMeta>({
+interface FinderContainerProps<FItem> extends FinderRootProps<FItem>, PropsWithChildren {}
+function FinderContainer<FItem>({
     items,
     config,
     disabled,
@@ -16,8 +16,8 @@ function FinderContainer<FItem, FMeta>({
     onChange,
     children,
     controllerRef,
-}: FinderContainerProps<FItem, FMeta>) {
-    const finderInstance = useFinderFactory<FItem, FMeta>(items, { config, disabled, isLoading, initialMeta, initialValues, page, onChange, numItemsPerPage });
+}: FinderContainerProps<FItem>) {
+    const finderInstance = useFinderFactory<FItem>(items, { config, disabled, isLoading, initialMeta, initialValues, page, onChange, numItemsPerPage });
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
 

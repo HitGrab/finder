@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from 'react';
-import { composeFilterValuesWithSideEffects, findGroups, findItems } from '../services/finder-logic';
-import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryOptions } from '../types/types';
+import { useMemo, useState } from "react";
+import { composeFilterValuesWithSideEffects, findGroups, findItems } from "../services/finder-logic";
+import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryOptions } from "../types/types";
 
 /**
  * TODO:
@@ -14,17 +14,17 @@ import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryO
 /**
  * Utility hook to store search, filter and sorting state.
  */
-function useFinderFactory<FItem, FMeta>(
+function useFinderFactory<FItem>(
     items: FItem[] | null | undefined,
-    { config, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => {} }: useFinderFactoryOptions<FItem, FMeta>
-): FinderCore<FItem, FMeta> {
-    const [searchTerm, setSearchTerm] = useState<FinderStateSnapshot['searchTerm']>(initialValues?.searchTerm);
-    const [filters, setFilters] = useState<FinderStateSnapshot['filters']>(initialValues?.filters);
-    const [sortBy, setSortBy] = useState<FinderStateSnapshot['sortBy']>(initialValues?.sortBy);
-    const [sortDirection, setSortDirection] = useState<FinderStateSnapshot['sortDirection']>(initialValues?.sortDirection);
-    const [groupBy, setGroupBy] = useState<FinderStateSnapshot['groupBy']>(initialValues?.groupBy);
+    { config, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => {} }: useFinderFactoryOptions<FItem>,
+): FinderCore<FItem> {
+    const [searchTerm, setSearchTerm] = useState<FinderStateSnapshot["searchTerm"]>(initialValues?.searchTerm);
+    const [filters, setFilters] = useState<FinderStateSnapshot["filters"]>(initialValues?.filters);
+    const [sortBy, setSortBy] = useState<FinderStateSnapshot["sortBy"]>(initialValues?.sortBy);
+    const [sortDirection, setSortDirection] = useState<FinderStateSnapshot["sortDirection"]>(initialValues?.sortDirection);
+    const [groupBy, setGroupBy] = useState<FinderStateSnapshot["groupBy"]>(initialValues?.groupBy);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
-    const [meta, setMeta] = useState<FMeta | undefined>(initialMeta);
+    const [meta, setMeta] = useState(initialMeta);
 
     return useMemo(() => {
         const defaultSortByDefinition = Array.isArray(config?.sortBy) ? config.sortBy.at(0) : undefined;
@@ -132,7 +132,7 @@ function useFinderFactory<FItem, FMeta>(
                     const filterDefinition = config?.filters?.find(({ id }) => id === filterIdentifier);
                     if (filterDefinition) {
                         if (!filterDefinition.is_boolean) {
-                            throw new Error('Finder Error: trying to toggle non-boolean filter.');
+                            throw new Error("Finder Error: trying to toggle non-boolean filter.");
                         }
 
                         const filterState = snapshot.filters?.[filterIdentifier];
@@ -161,12 +161,12 @@ function useFinderFactory<FItem, FMeta>(
                     let incomingSortDirection: FinderSortDirection;
 
                     if (sortDirection === null) {
-                        incomingSortDirection = 'desc';
+                        incomingSortDirection = "desc";
                     }
-                    if (sortDirection === 'desc') {
-                        incomingSortDirection = 'asc';
+                    if (sortDirection === "desc") {
+                        incomingSortDirection = "asc";
                     }
-                    if (sortDirection === 'asc') {
+                    if (sortDirection === "asc") {
                         incomingSortDirection = null;
                     }
 
@@ -188,19 +188,18 @@ function useFinderFactory<FItem, FMeta>(
             },
             meta: {
                 state: meta,
-                set: (metaIdentifier: string, value: any) => {
+                set: (metaIdentifier: any, value: any) => {
                     setMeta((prevMetaState) => {
-                        if (prevMetaState === undefined) {
-                            return { [metaIdentifier]: value };
-                        }
-                        return { ...prevMetaState, [metaIdentifier]: value };
+                        const clonedMetaMap = new Map(prevMetaState);
+                        clonedMetaMap.set(metaIdentifier, value);
+                        return clonedMetaMap;
                     });
                 },
                 reset: (metaIdentifier: string) => {
                     setMeta((prevMetaState) => {
-                        const incomingMetaState = { ...prevMetaState };
-                        delete incomingMetaState?.[metaIdentifier as keyof typeof prevMetaState];
-                        return incomingMetaState;
+                        const clonedMetaMap = new Map(prevMetaState);
+                        clonedMetaMap.delete(metaIdentifier);
+                        return clonedMetaMap;
                     });
                 },
             },

@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RefObject } from 'react';
+import { RefObject } from "react";
 
-export interface useFinderFactoryOptions<FItem, FMeta> {
+export interface useFinderFactoryOptions<FItem> {
     // static config
-    config: FinderConfig<FItem, FMeta> | undefined;
+    config: FinderConfig<FItem> | undefined;
 
     // Initial stateful variables
     initialValues?: FinderStateSnapshot;
 
     // Initial meta
-    initialMeta?: FMeta;
+    initialMeta?: Map<any, any>;
 
     // If data is still being requested async
     isLoading?: boolean;
@@ -25,15 +25,15 @@ export interface useFinderFactoryOptions<FItem, FMeta> {
     onChange?: (snapshot: FinderStateSnapshot) => void;
 }
 
-export interface FinderRootProps<FItem, FMeta> extends useFinderFactoryOptions<FItem, FMeta> {
+export interface FinderRootProps<FItem> extends useFinderFactoryOptions<FItem> {
     items: FItem[] | undefined | null;
 
     // Exposed ref for external control
-    controllerRef?: RefObject<FinderCore<FItem, FMeta> | null>;
+    controllerRef?: RefObject<FinderCore<FItem> | null>;
 }
 
 // A configuration is stable static data that ( ideally ) shouldn't change after construction.
-export interface FinderConfig<FItem, FMeta> {
+export interface FinderConfig<FItem> {
     // Optional string search predicate.
     searchFn?: (item: FItem, searchTerm: string) => boolean;
 
@@ -41,10 +41,10 @@ export interface FinderConfig<FItem, FMeta> {
     filters?: FinderFilterDefinition<FItem>[];
 
     // All valid sortBy definitions
-    sortBy?: FinderSortByDefinition<FItem, FMeta>[];
+    sortBy?: FinderSortByDefinition<FItem>[];
 
     // All valid groupBy definitions
-    groupBy?: FinderGroupByDefinition<FItem, FMeta>[];
+    groupBy?: FinderGroupByDefinition<FItem>[];
 
     // If this view requires a group, set it true here.
     requireGroup?: boolean;
@@ -60,11 +60,10 @@ export type FinderPropertySelector<FItem> = (item: FItem) => string | number;
 /**
  * Describes the display of a filter or sort option.
  */
-export interface FinderControlOption<FMeta> {
+export interface FinderControlOption {
     label: string;
     value: string | number;
     disabled?: boolean;
-    meta?: FMeta;
 }
 
 // Values are the initial stateful variables
@@ -76,8 +75,8 @@ export interface FinderStateSnapshot {
     groupBy?: string;
 }
 
-export interface FinderCore<FItem, FMeta> {
-    config?: FinderConfig<FItem, FMeta>;
+export interface FinderCore<FItem> {
+    config?: FinderConfig<FItem>;
     snapshot: FinderStateSnapshot;
     pagination?: FinderPagination;
     results: {
@@ -93,27 +92,27 @@ export interface FinderCore<FItem, FMeta> {
     };
     filters: {
         state?: FinderStateSnapshot;
-        definitions?: FinderFilterDefinition<FItem, FMeta>[];
+        definitions?: FinderFilterDefinition<FItem>[];
         set: (filterId: string, value?: any) => void;
         reset: (filterId: string) => void;
         toggle: (filterId: string) => void;
     };
     sortBy: {
         state?: string;
-        definitions: FinderSortByDefinition<FItem, FMeta>[];
+        definitions: FinderSortByDefinition<FItem>[];
         direction?: FinderSortDirection;
         set: (sortByDefinitionId?: string, sortDirection?: FinderSortDirection) => void;
         cycleDirection: () => void;
     };
     groupBy: {
         state?: string;
-        definitions: FinderGroupByDefinition<FItem, FMeta>[];
+        definitions: FinderGroupByDefinition<FItem>[];
         required: boolean;
         set: (groupById: string, value?: string) => void;
         toggle: (groupById: string) => void;
     };
     meta: {
-        state?: FMeta;
+        state?: Map<any, any>;
         set: (metaIdentifier: string, metaValue: any) => void;
         reset: (metaIdentifier: string) => void;
     };
@@ -122,7 +121,7 @@ export interface FinderCore<FItem, FMeta> {
 /**
  * Context provided to all Finder consuming elements.
  */
-export interface FinderContextProps<FItem, FMeta> extends FinderCore<FItem, FMeta> {
+export interface FinderContextProps<FItem, FMeta> extends FinderCore<FItem> {
     items: FItem[];
     disabled: boolean;
     isLoading: boolean;
@@ -140,7 +139,7 @@ export interface FinderFilterDefinition<FItem, FValue = any, FMeta = any> {
     id: string;
     label: string;
     filterFn: (item: FItem, value: FValue, meta?: FMeta) => boolean;
-    options?: FinderControlOption<FMeta>[] | ((meta?: FMeta) => FinderControlOption<FMeta>[]);
+    options?: FinderControlOption[] | ((meta?: FMeta) => FinderControlOption[]);
     multiple?: boolean;
     required?: boolean;
     is_boolean?: boolean;
@@ -149,7 +148,7 @@ export interface FinderFilterDefinition<FItem, FValue = any, FMeta = any> {
     // element?: (props: FinderFilterComponentProps<FItem, any, FMeta>) => ReactNode;
     side_effects?: (
         value: FValue,
-        meta: FMeta
+        meta: FMeta,
     ) => {
         reset?: string[];
         set?: Record<string, unknown>;
@@ -164,7 +163,7 @@ export interface FinderFilterComponentProps<I, V, M> {
     meta?: M;
 }
 
-export interface FinderGroupByDefinition<FItem, FMeta = any> {
+export interface FinderGroupByDefinition<FItem> {
     id: string;
     label: string;
     groupFn: FinderPropertySelector<FItem>;
@@ -175,21 +174,21 @@ export interface FinderGroupByDefinition<FItem, FMeta = any> {
         header?: string | string[];
         footer?: string | string[];
     };
-    meta?: FMeta;
+    meta?: Map<any, any>;
 }
 
 /*
  * Sort options require a selector method to sort by
  */
-export interface FinderSortByDefinition<FItem, FMeta> {
+export interface FinderSortByDefinition<FItem> {
     id: string;
     label: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
-    defaultDirection?: 'asc' | 'desc' | ('asc' | 'desc')[];
-    meta?: FMeta;
+    defaultDirection?: "asc" | "desc" | ("asc" | "desc")[];
+    meta?: Map<any, any>;
 }
 
-export type FinderSortDirection = null | undefined | 'asc' | 'desc' | ('asc' | 'desc')[];
+export type FinderSortDirection = null | undefined | "asc" | "desc" | ("asc" | "desc")[];
 
 export interface FinderPagination {
     page: number;
