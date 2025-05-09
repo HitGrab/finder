@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { RefObject } from "react";
+import { PropsWithChildren, RefObject } from "react";
 
 export interface useFinderFactoryOptions<FItem> {
     // static config
@@ -25,7 +25,7 @@ export interface useFinderFactoryOptions<FItem> {
     onChange?: (snapshot: FinderStateSnapshot) => void;
 }
 
-export interface FinderRootProps<FItem> extends useFinderFactoryOptions<FItem> {
+export interface FinderProps<FItem> extends useFinderFactoryOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;
 
     // Exposed ref for external control

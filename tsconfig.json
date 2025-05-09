@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "jsx": "react-jsx",
-        "module": "ESNext",
-        "lib": ["dom", "ES2023"],
-        "moduleResolution": "Node",
+        "module": "ES2022",
+        "lib": ["dom", "ES2022"],
+        "moduleResolution": "bundler",
         "baseUrl": ".",
         "target": "ES2022",
         "declaration": true,
