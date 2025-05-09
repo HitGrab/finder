@@ -1,15 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { groupBy as lodashGroupBy, orderBy } from 'lodash';
-import { FinderConfig, FinderControlOption, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from '../types/types';
+import { groupBy as lodashGroupBy, orderBy } from "lodash";
+import { FinderConfig, FinderControlOption, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
 
-export function findItems<FItem, FMeta>(
-    items: FItem[] | undefined,
-    config: FinderConfig<FItem, FMeta> | undefined,
-    snapshot: FinderStateSnapshot,
-    meta: FMeta | undefined
-) {
+export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot, meta: Map<any, any>) {
     if (items === undefined || Array.isArray(items) === false) {
-        throw new TypeError('Finder.findItems() received an invalid collection.');
+        throw new TypeError("Finder.findItems() received an invalid collection.");
     }
 
     if (items.length === 0 || config === undefined) {
@@ -45,15 +40,15 @@ export function findItems<FItem, FMeta>(
     return matches;
 }
 
-export function findGroups<FItem, FMeta>(
+export function findGroups<FItem>(
     items: FItem[] | undefined,
-    config: FinderConfig<FItem, FMeta> | undefined,
+    config: FinderConfig<FItem> | undefined,
     snapshot: FinderStateSnapshot,
-    meta: FMeta,
+    meta?: Map<any, any>,
     page?: number,
-    numItemsPerPage?: number
+    numItemsPerPage?: number,
 ) {
-    let groupByDefinition: undefined | FinderGroupByDefinition<FItem, FMeta>;
+    let groupByDefinition: undefined | FinderGroupByDefinition<FItem>;
 
     if (snapshot?.groupBy) {
         groupByDefinition = config?.groupBy?.find((option) => option.id === snapshot.groupBy);
@@ -62,7 +57,7 @@ export function findGroups<FItem, FMeta>(
         groupByDefinition = config.groupBy.at(0);
     }
     if (groupByDefinition === undefined) {
-        throw new TypeError('No valid group by option was found.');
+        throw new TypeError("No valid group by option was found.");
     }
 
     let itemMatches = findItems(items, config, snapshot, meta);
@@ -89,11 +84,11 @@ export function findGroups<FItem, FMeta>(
     const orderDirection = [];
     if (hasStickyGroups) {
         orderByCallbacks.push(composeStickyGroupOrderCallback(groupByDefinition));
-        orderDirection.push('asc');
+        orderDirection.push("asc");
     }
     if (groupByDefinition?.sortGroupIdFn) {
         orderByCallbacks.push(groupByDefinition.sortGroupIdFn);
-        orderDirection.push(groupByDefinition.direction ?? 'asc');
+        orderDirection.push(groupByDefinition.direction ?? "asc");
     }
 
     // TODO: Figure out group sorting
@@ -109,7 +104,7 @@ function composeStickyGroupOrderCallback<FItem>(groupByDefinition: FinderGroupBy
         if (Array.isArray(groupByDefinition.sticky.header)) {
             stickyHeaderGroupIds = groupByDefinition.sticky.header;
         }
-        if (typeof groupByDefinition.sticky.header === 'string') {
+        if (typeof groupByDefinition.sticky.header === "string") {
             stickyHeaderGroupIds = [groupByDefinition?.sticky?.header];
         }
     }
@@ -119,7 +114,7 @@ function composeStickyGroupOrderCallback<FItem>(groupByDefinition: FinderGroupBy
         if (Array.isArray(groupByDefinition.sticky.footer)) {
             stickyFooterGroupIds = groupByDefinition.sticky.footer;
         }
-        if (typeof groupByDefinition.sticky.footer === 'string') {
+        if (typeof groupByDefinition.sticky.footer === "string") {
             stickyFooterGroupIds = [groupByDefinition?.sticky?.footer];
         }
     }
@@ -138,12 +133,12 @@ function composeStickyGroupOrderCallback<FItem>(groupByDefinition: FinderGroupBy
     };
 }
 
-export function composeFilterValuesWithSideEffects<FItem, FMeta>(
+export function composeFilterValuesWithSideEffects<FItem>(
     filterIdentifier: string,
     filterState: any,
     filters: FinderFilterDefinition<FItem>[],
-    initialFilterValues: FinderStateSnapshot['filters'] = {},
-    meta: FMeta | undefined = undefined
+    initialFilterValues: FinderStateSnapshot["filters"] = {},
+    meta?: Map<any, any>,
 ) {
     const filter = filters.find((row) => row.id === filterIdentifier);
     if (!filter) {
@@ -166,12 +161,12 @@ export function composeFilterValuesWithSideEffects<FItem, FMeta>(
     return currentFilterValues;
 }
 
-function recursivelyApplySideEffects<FItem, FMeta>(
+function recursivelyApplySideEffects<FItem>(
     filterIdentifier: string,
     filterState: any,
     filters: FinderFilterDefinition<FItem>[],
-    initialFilterValues: FinderStateSnapshot['filters'] = {},
-    meta: FMeta | undefined = undefined
+    initialFilterValues: FinderStateSnapshot["filters"] = {},
+    meta?: Map<any, any>,
 ) {
     const filter = filters.find((row) => row.id === filterIdentifier);
     if (!filter || filter.side_effects === undefined) {
@@ -218,7 +213,7 @@ function recursivelyApplySideEffects<FItem, FMeta>(
  */
 export function composeActiveFilterDefinitions<Item>(
     filterDefinitions: FinderFilterDefinition<Item>[] = [],
-    filterValues: FinderStateSnapshot['filters'] = {}
+    filterValues: FinderStateSnapshot["filters"] = {},
 ) {
     return filterDefinitions.filter((definition) => {
         const filterState = filterValues?.[definition.id];
@@ -242,7 +237,7 @@ export function composeActiveFilterDefinitions<Item>(
         }
 
         // Empty strings are considered inactive.
-        if (typeof filterState === 'string' && filterState.trim() === '') {
+        if (typeof filterState === "string" && filterState.trim() === "") {
             return false;
         }
         return true;
@@ -250,29 +245,8 @@ export function composeActiveFilterDefinitions<Item>(
 }
 
 /**
- * Count the number of matches for each option in a filter.
- * This result should be memoized, as it may be expensive for large arrays or complex predicates.
- */
-export function calculateNumFilterOptionMatches<FItem, M extends object = object>(
-    filter: FinderFilterDefinition<FItem>,
-    options: FinderControlOption<FItem>[],
-    items: FItem[] = [],
-    meta?: M
-) {
-    if (!options) {
-        return [];
-    }
-    return options.reduce((acc, option) => {
-        const numMatches = items.filter((item) => {
-            return filter.filterFn(item, option.value, meta);
-        });
-        return { ...acc, [option.value]: numMatches.length };
-    }, {});
-}
-
-/**
  * Enforce constructor shape for a Finder config.
  */
-export function finderConfig<FItem, FMeta>(config: FinderConfig<FItem, FMeta>) {
+export function finderConfig<FItem>(config: FinderConfig<FItem>) {
     return config;
 }

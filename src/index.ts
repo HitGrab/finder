@@ -1,3 +1,3 @@
 export function helloWorld() {
-    console.log("su");
+    // do nothing
 }
