@@ -4,8 +4,8 @@
     "description": "Headless datatables for things that aren't tables.",
     "type": "module",
     "files": [
-        "dist",
-        "src/**/*.d.ts"
+        "dist/**/*.*",
+        "src/types.d.ts"
     ],
     "main": "./dist/index.umd.cjs",
     "types": "./dist/types.d.ts",
