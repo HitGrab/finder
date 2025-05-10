@@ -7,5 +7,4 @@ export { FinderGroups } from "./components/finder-groups";
 export { FinderLoading } from "./components/finder-loading";
 export { FinderContent } from "./components/finder-content";
 export { finderConfig } from "./utils/finderConfig";
-
-export type { FinderFilterDefinition, FinderGroupByDefinition, FinderSortByDefinition, FinderFilterOption } from "./types";
+export { finderOptions } from "./utils/finderOptions";
