@@ -4,8 +4,7 @@
     "description": "Headless datatables for things that aren't tables.",
     "type": "module",
     "files": [
-        "dist/**/*.*",
-        "src/types.d.ts"
+        "dist/**/*"
     ],
     "main": "./dist/index.umd.cjs",
     "types": "./dist/types.d.ts",
@@ -18,7 +17,7 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build": "vite build && tsc --project tsconfig.production.json && cp ./src/types.d.ts ./dist/types.d.ts",
         "test": "vitest"
     },
     "repository": {
