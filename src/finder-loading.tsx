@@ -1,6 +1,5 @@
-import * as React from "react";
 import { ElementType, ReactNode, isValidElement } from "react";
-import { useFinder } from "../hooks/use-finder";
+import { useFinder } from "./use-finder";
 
 interface FinderLoadingProps {
     children: ElementType | ReactNode;

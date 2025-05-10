@@ -1,7 +1,7 @@
 import { useImperativeHandle } from "react";
-import { useFinderFactory } from "../hooks/use-finder-factory.js";
-import { FinderCoreContext } from "../store/finder-core-context.js";
-import { FinderProps } from "src/types/types.js";
+import { useFinderFactory } from "./use-finder-factory";
+import { FinderProps } from "./types";
+import { FinderContext } from "./finder-context";
 
 function Finder<FItem>({
     items,
@@ -20,6 +20,6 @@ function Finder<FItem>({
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
 
-    return <FinderCoreContext.Provider value={finderInstance}>{children}</FinderCoreContext.Provider>;
+    return <FinderContext.Provider value={finderInstance}>{children}</FinderContext.Provider>;
 }
 export { Finder };

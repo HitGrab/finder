@@ -1,6 +1,6 @@
 import { ElementType, isValidElement, cloneElement } from "react";
-import { useFinder } from "../hooks/use-finder";
-import { FinderItemsComponentProps } from "../types/component-types";
+import { FinderItemsComponentProps } from "./types";
+import { useFinder } from "./use-finder";
 
 interface FinderItemsProps<FItem> {
     children: ElementType<FinderItemsComponentProps<FItem>>;

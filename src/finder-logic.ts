@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as _ from "lodash";
-import { FinderConfig, FinderCore, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
+import { orderBy, groupBy, Many } from "lodash";
+import { FinderConfig, FinderStateSnapshot, FinderCore, FinderGroupByDefinition, FinderResultGroup, FinderFilterDefinition } from "./types";
 
 export function findResults<FItem>(
     items: FItem[] | null | undefined,
@@ -76,14 +76,14 @@ export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfi
 
     const sortByDefinition = config.sortBy?.find((option) => option.id === snapshot?.sortBy) ?? config.sortBy?.[0];
     if (sortByDefinition) {
-        return _.orderBy(matches, sortByDefinition.sortFn, snapshot?.sortDirection ?? sortByDefinition.defaultDirection);
+        return orderBy(matches, sortByDefinition.sortFn, snapshot?.sortDirection ?? sortByDefinition.defaultDirection);
     }
 
     return matches;
 }
 
 export function groupItems<FItem>(items: FItem[] | undefined, groupByDefinition: FinderGroupByDefinition<FItem>) {
-    const groupObject = _.groupBy(items, groupByDefinition.groupFn);
+    const groupObject = groupBy(items, groupByDefinition.groupFn);
 
     // transform the object into a sortable array
     const groups = Object.keys(groupObject).map((id) => {
@@ -107,7 +107,7 @@ export function groupItems<FItem>(items: FItem[] | undefined, groupByDefinition:
 
     // TODO: Figure out group sorting
     // HACK: Lodash type import is bad
-    return _.orderBy(groups, orderByCallbacks, orderDirection as _.Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
+    return orderBy(groups, orderByCallbacks, orderDirection as Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
 }
 
 /**

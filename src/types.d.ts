@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PropsWithChildren, RefObject } from "react";
+import { ElementType, PropsWithChildren, ReactNode, RefObject } from "react";
 
 export interface useFinderFactoryOptions<FItem> {
     // static config
@@ -180,4 +180,32 @@ export interface FinderPagination {
     numTotalItems: number;
     numItemsPerPage: number;
     disabled: boolean;
+}
+
+export interface FinderContentComponentProps<FItem = any> {
+    children: {
+        loading?: ElementType | ReactNode;
+        empty?: ElementType | ReactNode;
+        items?: ElementType<FinderItemsComponentProps<FItem>>;
+        groups?: ElementType<FinderGroupsComponentProps<FItem>>;
+    };
+}
+
+export interface FinderItemsComponentProps<FItem> {
+    items: FItem[];
+    pagination?: FinderPagination;
+    meta?: Map<any, any>;
+}
+export interface FinderGroupsComponentProps<FItem> {
+    groups: FinderResultGroup<FItem>[];
+    pagination?: FinderPagination;
+    meta?: Map<any, any>;
+}
+
+export interface FinderFilterComponentProps<FItem, FValue> {
+    filter: FinderFilterDefinition<FItem>;
+    value: FValue;
+    items: FItem[];
+    onChange: (value?: FValue) => void;
+    meta?: Map<any, any>;
 }
