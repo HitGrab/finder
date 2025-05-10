@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as _ from "lodash";
-import { FinderConfig, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
+import { FinderConfig, FinderCore, FinderFilterDefinition, FinderGroupByDefinition, FinderResultGroup, FinderStateSnapshot } from "../types/types";
 
 export function findResults<FItem>(
-    items: FItem[],
-    config: FinderConfig<FItem> | undefined,
+    items: FItem[] | null | undefined,
+    config: FinderConfig<FItem> | undefined = {},
     snapshot: FinderStateSnapshot,
-    meta: Map<any, any>,
-    page: number,
-    numItemsPerPage: number,
-) {
+    meta?: Map<any, any>,
+    page?: number,
+    numItemsPerPage?: number,
+): FinderCore<FItem>["results"] {
     if (!items) {
         return {
             numTotalItems: undefined,
@@ -28,7 +28,7 @@ export function findResults<FItem>(
     }
 
     if (snapshot.groupBy !== undefined) {
-        const groupByDefinition = config.groupBy.find(({ id }) => id === snapshot.groupBy);
+        const groupByDefinition = config.groupBy?.find(({ id }) => id === snapshot.groupBy);
 
         if (groupByDefinition) {
             return {
@@ -44,7 +44,7 @@ export function findResults<FItem>(
     };
 }
 
-export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot, meta: Map<any, any>) {
+export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot, meta?: Map<any, any>) {
     if (items === undefined || Array.isArray(items) === false) {
         throw new TypeError("Finder.findItems() received an invalid collection.");
     }
@@ -88,7 +88,7 @@ export function groupItems<FItem>(items: FItem[] | undefined, groupByDefinition:
     // transform the object into a sortable array
     const groups = Object.keys(groupObject).map((id) => {
         return {
-            id,
+            id: String(id),
             items: groupObject[id],
         };
     });
@@ -106,7 +106,8 @@ export function groupItems<FItem>(items: FItem[] | undefined, groupByDefinition:
     }
 
     // TODO: Figure out group sorting
-    return _.orderBy(groups, orderByCallbacks, orderDirection);
+    // HACK: Lodash type import is bad
+    return _.orderBy(groups, orderByCallbacks, orderDirection as _.Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
 }
 
 /**

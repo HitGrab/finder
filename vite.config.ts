@@ -1,26 +1,18 @@
 import checker from "vite-plugin-checker";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { dirname, resolve } from "node:path";
+import { resolve } from "node:path";
 
 export default defineConfig({
-    base: "./",
     build: {
-        manifest: true,
         lib: {
-            entry: resolve(__dirname, "lib/index.js"),
-            name: "Finder",
+            entry: resolve(__dirname, "src/index.ts"),
+            name: "finder",
+            fileName: "finder",
         },
+        emptyOutDir: true,
         rollupOptions: {
-            external: ["happy-dom", "react", "vite", "vitest"],
-
-            // output: {
-            //     // Provide global variables to use in the UMD build
-            //     // for externalized deps
-            //     globals: {
-            //         vue: "Vue",
-            //     },
-            // },
+            external: ["happy-dom", "react", "react-dom", "vite", "vitest"],
         },
     },
     plugins: [
@@ -29,9 +21,4 @@ export default defineConfig({
             typescript: true,
         }),
     ],
-    resolve: {
-        alias: {
-            "@": "/src",
-        },
-    },
 });

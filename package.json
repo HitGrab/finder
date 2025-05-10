@@ -11,8 +11,8 @@
     "module": "./dist/index.js",
     "exports": {
         ".": {
-            "import": "./dist/finder.js",
-            "require": "./dist/finder.umd.cjs"
+            "import": "./dist/index.js",
+            "require": "./dist/index.umd.cjs"
         }
     },
     "compile": true,
@@ -33,6 +33,7 @@
     ],
     "author": "Hitgrab Labs Inc",
     "license": "ISC",
+    "sideEffects": false,
     "bugs": {
         "url": "https://github.com/HitGrab/finder/issues"
     },
@@ -40,8 +41,7 @@
     "dependencies": {
         "lodash": "^4.17.21",
         "react": "^19.1.0",
-        "react-dom": "^19.1.0",
-        "vite-tsconfig-paths": "^5.1.4"
+        "react-dom": "^19.1.0"
     },
     "devDependencies": {
         "@testing-library/dom": "^10.4.0",
@@ -52,7 +52,6 @@
         "@types/node": "^22.15.17",
         "@vitejs/plugin-react": "^4.3.2",
         "eslint": "^8.57.1",
-        "eslint_d": "^12.2.1",
         "eslint-config-airbnb": "^19.0.4",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-airbnb-typescript": "^17.0.0",
@@ -66,6 +65,7 @@
         "vite-plugin-checker": "^0.9.0",
         "vitest": "^3.1.3",
         "@vitest/ui": "^3.1.3",
+        "vite-tsconfig-paths": "^5.1.4",
         "happy-dom": "^17.4.6"
     }
 }

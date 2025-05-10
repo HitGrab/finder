@@ -16,7 +16,7 @@ import { FinderCore, FinderSortDirection, FinderStateSnapshot, useFinderFactoryO
  */
 function useFinderFactory<FItem>(
     items: FItem[] | null | undefined,
-    { config, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => {} }: useFinderFactoryOptions<FItem>,
+    { config = {}, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => {} }: useFinderFactoryOptions<FItem>,
 ): FinderCore<FItem> {
     const [searchTerm, setSearchTerm] = useState<FinderStateSnapshot["searchTerm"]>(initialValues?.searchTerm);
     const [filters, setFilters] = useState<FinderStateSnapshot["filters"]>(initialValues?.filters);
@@ -40,7 +40,7 @@ function useFinderFactory<FItem>(
 
         const results = findResults(items, config, snapshot, meta, page, numItemsPerPage);
         const pagination =
-            numItemsPerPage && Array.isArray(items) && page !== undefined
+            numItemsPerPage && Array.isArray(items) && page !== undefined && results.numTotalItems
                 ? {
                       page,
                       lastPage: Math.ceil(results.numTotalItems / numItemsPerPage),

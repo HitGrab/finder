@@ -82,6 +82,7 @@ export interface FinderCore<FItem> {
     results: {
         items?: FItem[];
         groups?: FinderResultGroup<FItem>[];
+        numTotalItems?: number;
     };
     isEmpty: boolean;
     isLoading: boolean;
@@ -127,8 +128,8 @@ export interface FinderContextProps<FItem> extends FinderCore<FItem> {
     isLoading: boolean;
 }
 
-export interface FinderResultGroup<FItems, FGroupId extends string = string> {
-    id: FGroupId;
+export interface FinderResultGroup<FItems> {
+    id: string;
     items: FItems[];
 }
 
@@ -144,7 +145,7 @@ export interface FinderFilterDefinition<FItem, FValue = any> {
     is_boolean?: boolean;
     side_effects?: (
         value: FValue,
-        meta: Map<any, any>,
+        meta?: Map<any, any>,
     ) => {
         reset?: string[];
         set?: Record<string, unknown>;
