@@ -26,5 +26,6 @@
         "jsx": "react-jsx"
     },
     "copyPublicDir": false,
-    "include": ["src"]
+    "include": ["src/"],
+    "exclude": ["dist/"]
 }
