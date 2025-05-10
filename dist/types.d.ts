@@ -60,7 +60,7 @@ export type FinderPropertySelector<FItem> = (item: FItem) => string | number;
 /**
  * Describes the display of a filter or sort option.
  */
-export interface FinderControlOption {
+export interface FinderFilterOption {
     label: string;
     value: string | number;
     disabled?: boolean;
@@ -119,15 +119,6 @@ export interface FinderCore<FItem> {
     };
 }
 
-/**
- * Context provided to all Finder consuming elements.
- */
-export interface FinderContextProps<FItem> extends FinderCore<FItem> {
-    items: FItem[];
-    disabled: boolean;
-    isLoading: boolean;
-}
-
 export interface FinderResultGroup<FItems> {
     id: string;
     items: FItems[];
@@ -139,7 +130,7 @@ export interface FinderResultGroup<FItems> {
 export interface FinderFilterDefinition<FItem, FValue = any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: Map<any, any>) => boolean;
-    options?: FinderControlOption[] | ((meta?: Map<any, any>) => FinderControlOption[]);
+    options?: FinderFilterOption[] | ((meta?: Map<any, any>) => FinderFilterOption[]);
     multiple?: boolean;
     required?: boolean;
     is_boolean?: boolean;
