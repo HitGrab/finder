@@ -1,8 +1,9 @@
 import { test } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { FinderStateSnapshot } from "./types";
+import { FinderFilterDefinition, FinderMeta, FinderStateSnapshot } from "./types";
 import { useFinderFactory } from "./hooks/use-finder-factory";
 import { finderConfig } from "./utils/finderConfig";
+import { act } from "react";
 
 type MockObjectItem = {
     type: string;
@@ -114,6 +115,92 @@ describe("Filters", () => {
         const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues }));
         expect(result.current.results.items).toStrictEqual([]);
     });
+
+    test("Filters receive meta context", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "price_is_below",
+                    filterFn: (item: MockObjectItem, value: number, meta) => {
+                        if (meta?.get("user_dislikes") === item) {
+                            return false;
+                        }
+                        return item.price <= value;
+                    },
+                },
+            ],
+        });
+        const initialValues: FinderStateSnapshot = {
+            filters: {
+                price_is_below: 5,
+            },
+        };
+        const initialMeta: FinderMeta = new Map();
+        initialMeta.set("user_dislikes", apple);
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialValues, initialMeta }));
+        expect(result.current.results.items).toStrictEqual([orange]);
+    });
+
+    test("Filter values can be tested without changing state", () => {
+        const filterDefinition = {
+            id: "price_is_below",
+            filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+        };
+        const config = finderConfig({
+            filters: [filterDefinition],
+        });
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+
+        // test a filter without setting the state
+        const testResult = result.current.filters.test(filterDefinition, 5);
+        expect(testResult).toStrictEqual([apple, orange]);
+
+        // result state is unchanged
+        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+    });
+
+    test("Filter options can evaluate their number of potential matches.", () => {
+        const optionOne = {
+            value: 1,
+            label: "One",
+        };
+        const optionTwo = {
+            value: 3,
+            label: "Three",
+        };
+        const optionThree = {
+            value: 10,
+            label: "Ten",
+        };
+
+        const filterDefinition: FinderFilterDefinition<MockObjectItem> = {
+            id: "price_is_below",
+            filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+            options: [optionOne, optionTwo, optionThree],
+        };
+        const booleanFilterDefinition: FinderFilterDefinition<MockObjectItem> = {
+            id: "expires_in_five_days",
+            filterFn: (item: MockObjectItem) => item.daysUntilExpiryDate === "five",
+            is_boolean: true,
+        };
+        const config = finderConfig({
+            filters: [filterDefinition],
+        });
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config }));
+
+        // test a filter without setting the state
+        const testResult = result.current.filters.testOptions(filterDefinition);
+
+        expect(testResult.get(optionOne)).toBe(1);
+        expect(testResult.get(optionTwo)).toBe(2);
+        expect(testResult.get(optionThree)).toBe(3);
+
+        const booleanTestResult = result.current.filters.testOptions(booleanFilterDefinition);
+        console.log(booleanTestResult);
+
+        // result state is unchanged
+        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+    });
 });
 
 describe("SortBy", () => {
@@ -185,7 +272,7 @@ describe("GroupBy", () => {
         ]);
     });
 
-    test("Sticky footers preserve order", () => {
+    test("Sticky groups preserve order", () => {
         const config = finderConfig({
             groupBy: [
                 {
@@ -207,7 +294,7 @@ describe("GroupBy", () => {
 });
 
 describe("Pagination", () => {
-    test("Paginates results", () => {
+    test("Items are paginated", () => {
         const config = finderConfig({
             sortBy: [
                 {
@@ -219,17 +306,84 @@ describe("Pagination", () => {
         const initialValues: FinderStateSnapshot = {
             sortDirection: "desc",
         };
+
+        // first page
         let page = 1;
         const numItemsPerPage = 1;
         const { result, rerender } = renderHook(() => useFinderFactory(objectItems, { config, initialValues, page, numItemsPerPage }));
         expect(result.current.results.items).toStrictEqual([banana]);
 
+        // next page
         page = 2;
         rerender([objectItems, { config, page, numItemsPerPage }]);
         expect(result.current.results.items).toStrictEqual([orange]);
 
+        // last page
         page = 3;
         rerender([objectItems, { config, page, numItemsPerPage }]);
         expect(result.current.results.items).toStrictEqual([apple]);
+    });
+});
+
+describe("Selection", () => {
+    test("Selects items", () => {
+        const config = finderConfig({});
+
+        const { result, rerender } = renderHook(() => useFinderFactory(objectItems, { config }));
+
+        act(() => {
+            result.current.selectedItems.select(apple);
+        });
+
+        expect(result.current.selectedItems.state).toStrictEqual([apple]);
+    });
+
+    test("Deletes selected item", () => {
+        const config = finderConfig({});
+        const initialSelectedItems = [apple];
+
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialSelectedItems }));
+
+        act(() => {
+            result.current.selectedItems.delete(apple);
+        });
+
+        expect(result.current.selectedItems.state).toStrictEqual([]);
+    });
+
+    test("Throws error when exceeding limit", () => {
+        const config = finderConfig({ maxSelectedItems: 1 });
+        const initialSelectedItems = [apple];
+        const { result } = renderHook(() => useFinderFactory(objectItems, { config, initialSelectedItems }));
+
+        expect(() => {
+            result.current.selectedItems.select(orange);
+        }).toThrowError();
+    });
+});
+
+describe("onChange", () => {
+    test("onChange triggers", () => {
+        const config = finderConfig({
+            filters: [
+                {
+                    id: "price_is_below",
+                    filterFn: (item: MockObjectItem, value: number) => {
+                        return item.price <= value;
+                    },
+                },
+            ],
+            sortBy: [
+                {
+                    id: "sort_by_price",
+                    sortFn: (item: MockObjectItem) => item.price,
+                },
+            ],
+        });
+        const onChange = (diff: FinderStateSnapshot) => {
+            expect(diff.filters).toStrictEqual({ price_is_below: 5 });
+        };
+
+        renderHook(() => useFinderFactory(objectItems, { config, onChange }));
     });
 });

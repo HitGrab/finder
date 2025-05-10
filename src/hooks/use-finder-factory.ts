@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
-import { findResults, composeFilterValuesWithSideEffects } from "./finder-logic";
-import { useFinderFactoryOptions, FinderCore, FinderStateSnapshot, FinderSortDirection } from "../types";
+import { findResults, composeFilterValuesWithSideEffects, findItems } from "./finder-logic";
+import { useFinderFactoryOptions, FinderCore, FinderStateSnapshot, FinderSortDirection, FinderFilterDefinition, FinderFilterOption } from "../types";
+import { finderConfig } from "../utils/finderConfig";
 
 /**
  * TODO:
  * Validate filter options
- * Filter onChange recursive callback
+ * Filters need onChange recursive callback
  * 'prequisite' filter function?
- * Selected layer
+ * debounce onChange?
+ * Actually implement 'disabled'
  */
 
 /**
@@ -16,7 +18,17 @@ import { useFinderFactoryOptions, FinderCore, FinderStateSnapshot, FinderSortDir
  */
 function useFinderFactory<FItem>(
     items: FItem[] | null | undefined,
-    { config = {}, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => {} }: useFinderFactoryOptions<FItem>,
+    {
+        config = {},
+        initialValues,
+        initialSelectedItems = [],
+        initialMeta,
+        page,
+        numItemsPerPage,
+        isLoading,
+        disabled,
+        onChange = () => {},
+    }: useFinderFactoryOptions<FItem>,
 ): FinderCore<FItem> {
     const [searchTerm, setSearchTerm] = useState<FinderStateSnapshot["searchTerm"]>(initialValues?.searchTerm);
     const [filters, setFilters] = useState<FinderStateSnapshot["filters"]>(initialValues?.filters);
@@ -25,6 +37,7 @@ function useFinderFactory<FItem>(
     const [groupBy, setGroupBy] = useState<FinderStateSnapshot["groupBy"]>(initialValues?.groupBy);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [meta, setMeta] = useState(initialMeta);
+    const [selectedItems, setSelectedItems] = useState<FItem[]>(initialSelectedItems);
 
     return useMemo(() => {
         const defaultSortByDefinition = Array.isArray(config?.sortBy) ? config.sortBy.at(0) : undefined;
@@ -36,9 +49,11 @@ function useFinderFactory<FItem>(
             groupBy: groupBy ?? defaultGroupByDefinition?.id,
             searchTerm,
             sortDirection,
+            selectedItems,
+            meta,
         };
 
-        const results = findResults(items, config, snapshot, meta, page, numItemsPerPage);
+        const results = findResults(items, config, snapshot, page, numItemsPerPage);
         const pagination =
             numItemsPerPage && Array.isArray(items) && page !== undefined && results.numTotalItems
                 ? {
@@ -72,7 +87,8 @@ function useFinderFactory<FItem>(
             if (config?.filters) {
                 const currentFilters = composeFilterValuesWithSideEffects(filterIdentifier, incomingFilterState, config.filters, filters);
                 setFilters(currentFilters);
-                onChange({ ...snapshot, filters: currentFilters });
+                const diff = { filters: currentFilters };
+                onChange(diff, { ...snapshot, ...diff });
             }
         }
 
@@ -84,8 +100,14 @@ function useFinderFactory<FItem>(
                 throw new Error(`Finder could not locate the groupBy definition for ${groupByIdentifier}.`);
             }
 
+            // early exit if nothing changed
+            if (snapshot.groupBy === groupByIdentifier) {
+                return;
+            }
+
             setGroupBy(groupByIdentifier);
-            onChange({ ...snapshot, groupBy: groupByIdentifier });
+            const diff = { groupBy: groupByIdentifier };
+            onChange(diff, { ...snapshot, ...diff });
         }
 
         return {
@@ -102,14 +124,16 @@ function useFinderFactory<FItem>(
                 set: (incomingSearchTerm?: string) => {
                     onInit();
                     setSearchTerm(incomingSearchTerm);
-                    onChange({ ...snapshot, searchTerm: incomingSearchTerm });
+                    const diff = { searchTerm: incomingSearchTerm };
+                    onChange(diff, { ...snapshot, ...diff });
                 },
             },
             filters: {
                 state: snapshot.filters,
                 definitions: config?.filters,
                 set: wrappedSetFilter,
-                reset: (filterIdentifier: string) => wrappedSetFilter(filterIdentifier, undefined),
+                get: (filterIdentifier: string) => snapshot.filters?.[filterIdentifier],
+                delete: (filterIdentifier: string) => wrappedSetFilter(filterIdentifier, undefined),
                 toggle: (filterIdentifier: string) => {
                     const filterDefinition = config?.filters?.find(({ id }) => id === filterIdentifier);
                     if (filterDefinition) {
@@ -120,6 +144,52 @@ function useFinderFactory<FItem>(
                         const filterState = snapshot.filters?.[filterIdentifier];
                         wrappedSetFilter(filterIdentifier, !filterState);
                     }
+                },
+                test: (filterDefinition, filterState, incomingMeta = snapshot.meta) => {
+                    const testConfig = finderConfig({ filters: [filterDefinition] });
+                    const testSnapshot = { filters: { [filterDefinition.id]: filterState }, meta: incomingMeta };
+                    if (!items) {
+                        return [];
+                    }
+                    return findItems(items, testConfig, testSnapshot);
+                },
+                testOptions: (filterDefinition, incomingMeta = snapshot.meta) => {
+                    const resultMap = new Map<FinderFilterOption | boolean, any>();
+                    const testConfig = finderConfig({ filters: [filterDefinition] });
+
+                    if (filterDefinition.is_boolean === true) {
+                        // enforce result shape
+                        resultMap.set(true, undefined);
+                        resultMap.set(false, undefined);
+
+                        if (items) {
+                            const options = [true, false];
+                            options.forEach((option) => {
+                                const testSnapshot = { filters: { [filterDefinition.id]: option }, meta: incomingMeta };
+                                resultMap.set(option, findItems(items, testConfig, testSnapshot).length);
+                            });
+                        }
+                        return resultMap;
+                    }
+
+                    if (Array.isArray(filterDefinition.options)) {
+                        // enforce result shape
+                        filterDefinition.options.forEach((option) => {
+                            resultMap.set(option, 0);
+                        });
+
+                        if (items) {
+                            filterDefinition.options.forEach((option) => {
+                                const testSnapshot = { filters: { [filterDefinition.id]: option.value }, meta: incomingMeta };
+                                resultMap.set(option, findItems(items, testConfig, testSnapshot).length);
+                            });
+                        }
+
+                        return resultMap;
+                    }
+
+                    // if the filter is not a boolean and doesn't have defined options, there's nothing to test.
+                    throw new Error("Finder was unable to test the options for this filter definition. It must be a boolean or have defined options.");
                 },
             },
             sortBy: {
@@ -136,7 +206,8 @@ function useFinderFactory<FItem>(
 
                     setSortBy(incomingSortByIdentifier);
                     setSortDirection(incomingSortDirection);
-                    onChange({ ...snapshot, sortBy: incomingSortByIdentifier, sortDirection: incomingSortDirection });
+                    const diff = { sortBy: incomingSortByIdentifier, sortDirection: incomingSortDirection };
+                    onChange(diff, { ...snapshot, ...diff });
                 },
                 cycleDirection: () => {
                     onInit();
@@ -152,7 +223,12 @@ function useFinderFactory<FItem>(
                         incomingSortDirection = null;
                     }
 
-                    onChange({ ...snapshot, sortDirection: incomingSortDirection });
+                    const diff = { sortDirection: incomingSortDirection };
+                    onChange(diff, { ...snapshot, ...diff });
+                },
+                reset: () => {
+                    setSortBy(undefined);
+                    setSortDirection(undefined);
                 },
             },
             groupBy: {
@@ -167,6 +243,38 @@ function useFinderFactory<FItem>(
                     }
                     wrappedSetGroupBy(incomingGroupByIdentifier);
                 },
+                reset: () => {
+                    wrappedSetGroupBy(undefined);
+                },
+            },
+            selectedItems: {
+                state: selectedItems,
+                select: (item: FItem) => {
+                    if (snapshot.selectedItems && config.maxSelectedItems && snapshot.selectedItems?.length >= config.maxSelectedItems) {
+                        throw new Error("Finder cannot select this item without exceeding maxSelectedItems.");
+                    }
+                    setSelectedItems((prevSelectedItems) => {
+                        return [...prevSelectedItems, item];
+                    });
+                    const diff = { selectedItems: [...(snapshot.selectedItems ?? []), item] };
+                    onChange(diff, { ...snapshot, ...diff });
+                },
+                delete: (item: FItem) => {
+                    const revisedSelectedItems = snapshot.selectedItems?.filter((row) => row !== item);
+                    setSelectedItems(revisedSelectedItems ?? []);
+
+                    const diff = { selectedItems: revisedSelectedItems };
+                    onChange(diff, { ...snapshot, ...diff });
+                },
+                isSelected: (item: FItem) => {
+                    return !!snapshot.selectedItems?.includes(item);
+                },
+                reset: () => {
+                    setSelectedItems([]);
+                    const diff = { selectedItems: [] };
+                    onChange(diff, { ...snapshot, ...diff });
+                },
+                maxSelectedItems: config.maxSelectedItems,
             },
             meta: {
                 state: meta,
@@ -174,15 +282,29 @@ function useFinderFactory<FItem>(
                     setMeta((prevMetaState) => {
                         const clonedMetaMap = new Map(prevMetaState);
                         clonedMetaMap.set(metaIdentifier, value);
+
+                        const diff = { meta: clonedMetaMap };
+                        onChange(diff, { ...snapshot, ...diff });
+
                         return clonedMetaMap;
                     });
                 },
-                reset: (metaIdentifier: string) => {
+                get: (metaIdentifier: any) => {
+                    return snapshot.meta?.get(metaIdentifier);
+                },
+                delete: (metaIdentifier: any) => {
                     setMeta((prevMetaState) => {
                         const clonedMetaMap = new Map(prevMetaState);
                         clonedMetaMap.delete(metaIdentifier);
+
+                        const diff = { meta: clonedMetaMap };
+                        onChange(diff, { ...snapshot, ...diff });
+
                         return clonedMetaMap;
                     });
+                },
+                reset: () => {
+                    setMeta(new Map());
                 },
             },
         };

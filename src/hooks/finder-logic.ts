@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { orderBy, groupBy, Many } from "lodash";
-import { FinderConfig, FinderStateSnapshot, FinderCore, FinderGroupByDefinition, FinderResultGroup, FinderFilterDefinition } from "../types";
+import { FinderConfig, FinderStateSnapshot, FinderCore, FinderGroupByDefinition, FinderResultGroup, FinderFilterDefinition, FinderMeta } from "../types";
 
 export function findResults<FItem>(
     items: FItem[] | null | undefined,
     config: FinderConfig<FItem> | undefined = {},
     snapshot: FinderStateSnapshot,
-    meta?: Map<any, any>,
     page?: number,
     numItemsPerPage?: number,
 ): FinderCore<FItem>["results"] {
@@ -16,7 +15,7 @@ export function findResults<FItem>(
         };
     }
 
-    let itemMatches = findItems(items, config, snapshot, meta);
+    let itemMatches = findItems(items, config, snapshot);
     const numTotalMatchedItems = itemMatches.length;
 
     if (page !== undefined && numItemsPerPage) {
@@ -44,7 +43,7 @@ export function findResults<FItem>(
     };
 }
 
-export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot, meta?: Map<any, any>) {
+export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfig<FItem> | undefined, snapshot: FinderStateSnapshot) {
     if (items === undefined || Array.isArray(items) === false) {
         throw new TypeError("Finder.findItems() received an invalid collection.");
     }
@@ -66,11 +65,11 @@ export function findItems<FItem>(items: FItem[] | undefined, config: FinderConfi
             if (filterDefinition.required && filterState === undefined) {
                 const firstOption = Array.isArray(filterDefinition.options) && filterDefinition.options.at(0);
                 if (firstOption) {
-                    return filterDefinition.filterFn(item, firstOption.value, meta);
+                    return filterDefinition.filterFn(item, firstOption.value, snapshot.meta);
                 }
             }
 
-            return filterDefinition.filterFn(item, filterState, meta);
+            return filterDefinition.filterFn(item, filterState, snapshot.meta);
         });
     });
 
@@ -153,7 +152,7 @@ export function composeFilterValuesWithSideEffects<FItem>(
     filterState: any,
     filters: FinderFilterDefinition<FItem>[],
     initialFilterValues: FinderStateSnapshot["filters"] = {},
-    meta?: Map<any, any>,
+    meta?: FinderMeta,
 ) {
     const filter = filters.find((row) => row.id === filterIdentifier);
     if (!filter) {
@@ -181,7 +180,7 @@ function recursivelyApplySideEffects<FItem>(
     filterState: any,
     filters: FinderFilterDefinition<FItem>[],
     initialFilterValues: FinderStateSnapshot["filters"] = {},
-    meta?: Map<any, any>,
+    meta?: FinderMeta,
 ) {
     const filter = filters.find((row) => row.id === filterIdentifier);
     if (!filter || filter.side_effects === undefined) {

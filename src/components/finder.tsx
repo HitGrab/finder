@@ -11,12 +11,23 @@ function Finder<FItem>({
     page,
     numItemsPerPage,
     initialMeta,
+    initialSelectedItems,
     initialValues,
     onChange,
     children,
     controllerRef,
 }: FinderProps<FItem>) {
-    const finderInstance = useFinderFactory<FItem>(items, { config, disabled, isLoading, initialMeta, initialValues, page, onChange, numItemsPerPage });
+    const finderInstance = useFinderFactory<FItem>(items, {
+        config,
+        disabled,
+        isLoading,
+        initialMeta,
+        initialSelectedItems,
+        initialValues,
+        page,
+        onChange,
+        numItemsPerPage,
+    });
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
 
