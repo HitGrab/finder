@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react";
 import { findResults, composeFilterValuesWithSideEffects } from "./finder-logic";
-import { useFinderFactoryOptions, FinderCore, FinderStateSnapshot, FinderSortDirection } from "./types";
+import { useFinderFactoryOptions, FinderCore, FinderStateSnapshot, FinderSortDirection } from "../types";
 
 /**
  * TODO:

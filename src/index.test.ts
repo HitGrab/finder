@@ -1,8 +1,8 @@
 import { test } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { finderConfig } from "./finder-logic";
 import { FinderStateSnapshot } from "./types";
-import { useFinderFactory } from "./use-finder-factory";
+import { useFinderFactory } from "./hooks/use-finder-factory";
+import { finderConfig } from "./utils/finderConfig";
 
 type MockObjectItem = {
     type: string;

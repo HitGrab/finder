@@ -1,8 +1,8 @@
+import { FinderContentComponentProps } from "../types";
 import { FinderEmpty } from "./finder-empty";
 import { FinderGroups } from "./finder-groups";
 import { FinderItems } from "./finder-items";
 import { FinderLoading } from "./finder-loading";
-import { FinderContentComponentProps } from "./types";
 
 function FinderContent({ children: renderProps }: FinderContentComponentProps) {
     if (!renderProps || Object.values(renderProps).length === 0) {

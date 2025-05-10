@@ -1,5 +1,5 @@
 import { use } from "react";
-import { FinderContext } from "./finder-context";
+import { FinderContext } from "../context/finder-context";
 
 function useFinder() {
     const value = use(FinderContext);
