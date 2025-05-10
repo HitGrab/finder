@@ -1,0 +1,168 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo, useState } from "react";
+import { findResults, composeFilterValuesWithSideEffects } from "./finder-logic";
+/**
+ * TODO:
+ * Validate filter options
+ * Filter onChange recursive callback
+ * 'prequisite' filter function?
+ * Selected layer
+ */
+/**
+ * Utility hook to store search, filter and sorting state.
+ */
+function useFinderFactory(items, { config = {}, initialValues, initialMeta, page, numItemsPerPage, isLoading, disabled, onChange = () => { } }) {
+    const [searchTerm, setSearchTerm] = useState(initialValues?.searchTerm);
+    const [filters, setFilters] = useState(initialValues?.filters);
+    const [sortBy, setSortBy] = useState(initialValues?.sortBy);
+    const [sortDirection, setSortDirection] = useState(initialValues?.sortDirection);
+    const [groupBy, setGroupBy] = useState(initialValues?.groupBy);
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [meta, setMeta] = useState(initialMeta);
+    return useMemo(() => {
+        const defaultSortByDefinition = Array.isArray(config?.sortBy) ? config.sortBy.at(0) : undefined;
+        const defaultGroupByDefinition = config?.requireGroup && Array.isArray(config.groupBy) ? config.groupBy?.at(0) : undefined;
+        const snapshot = {
+            filters,
+            sortBy: sortBy ?? defaultSortByDefinition?.id,
+            groupBy: groupBy ?? defaultGroupByDefinition?.id,
+            searchTerm,
+            sortDirection,
+        };
+        const results = findResults(items, config, snapshot, meta, page, numItemsPerPage);
+        const pagination = numItemsPerPage && Array.isArray(items) && page !== undefined && results.numTotalItems
+            ? {
+                page,
+                lastPage: Math.ceil(results.numTotalItems / numItemsPerPage),
+                numItemsPerPage,
+                numTotalItems: results.numTotalItems,
+                disabled: false,
+            }
+            : undefined;
+        function onInit() {
+            if (config?.onInit && !isInitialized) {
+                config.onInit();
+                setIsInitialized(true);
+            }
+        }
+        function wrappedSetFilter(filterIdentifier, incomingFilterState) {
+            onInit();
+            const filterDefinition = config?.filters?.find(({ id }) => filterIdentifier === id);
+            if (filterDefinition === undefined) {
+                throw new Error(`Finder could not locate the filter definition for ${filterIdentifier}.`);
+            }
+            // early exit if nothing changed
+            if (snapshot.filters?.[filterIdentifier] !== undefined && snapshot.filters[filterIdentifier] === incomingFilterState) {
+                return;
+            }
+            if (config?.filters) {
+                const currentFilters = composeFilterValuesWithSideEffects(filterIdentifier, incomingFilterState, config.filters, filters);
+                setFilters(currentFilters);
+                onChange({ ...snapshot, filters: currentFilters });
+            }
+        }
+        function wrappedSetGroupBy(groupByIdentifier) {
+            onInit();
+            const groupByDefinition = config?.groupBy?.find(({ id }) => groupByIdentifier === id);
+            if (groupByDefinition === undefined) {
+                throw new Error(`Finder could not locate the groupBy definition for ${groupByIdentifier}.`);
+            }
+            setGroupBy(groupByIdentifier);
+            onChange({ ...snapshot, groupBy: groupByIdentifier });
+        }
+        return {
+            results,
+            isEmpty: Array.isArray(items) && items.length === 0,
+            isLoading: !!isLoading,
+            disabled: !!disabled,
+            config,
+            snapshot,
+            pagination,
+            search: {
+                state: snapshot.searchTerm,
+                disabled: config?.searchFn === undefined,
+                set: (incomingSearchTerm) => {
+                    onInit();
+                    setSearchTerm(incomingSearchTerm);
+                    onChange({ ...snapshot, searchTerm: incomingSearchTerm });
+                },
+            },
+            filters: {
+                state: snapshot.filters,
+                definitions: config?.filters,
+                set: wrappedSetFilter,
+                reset: (filterIdentifier) => wrappedSetFilter(filterIdentifier, undefined),
+                toggle: (filterIdentifier) => {
+                    const filterDefinition = config?.filters?.find(({ id }) => id === filterIdentifier);
+                    if (filterDefinition) {
+                        if (!filterDefinition.is_boolean) {
+                            throw new Error("Finder Error: trying to toggle non-boolean filter.");
+                        }
+                        const filterState = snapshot.filters?.[filterIdentifier];
+                        wrappedSetFilter(filterIdentifier, !filterState);
+                    }
+                },
+            },
+            sortBy: {
+                state: snapshot.sortBy,
+                direction: snapshot.sortDirection,
+                definitions: config?.sortBy ?? [],
+                set: (incomingSortByIdentifier, incomingSortDirection) => {
+                    onInit();
+                    const sortByDefinition = config?.sortBy?.find(({ id }) => incomingSortByIdentifier === id);
+                    if (sortByDefinition === undefined) {
+                        throw new Error(`Finder could not locate the sortBy definition for ${sortByDefinition}.`);
+                    }
+                    setSortBy(incomingSortByIdentifier);
+                    setSortDirection(incomingSortDirection);
+                    onChange({ ...snapshot, sortBy: incomingSortByIdentifier, sortDirection: incomingSortDirection });
+                },
+                cycleDirection: () => {
+                    onInit();
+                    let incomingSortDirection;
+                    if (sortDirection === null) {
+                        incomingSortDirection = "desc";
+                    }
+                    if (sortDirection === "desc") {
+                        incomingSortDirection = "asc";
+                    }
+                    if (sortDirection === "asc") {
+                        incomingSortDirection = null;
+                    }
+                    onChange({ ...snapshot, sortDirection: incomingSortDirection });
+                },
+            },
+            groupBy: {
+                state: snapshot.groupBy,
+                definitions: config?.groupBy ?? [],
+                required: config?.requireGroup ?? false,
+                set: wrappedSetGroupBy,
+                toggle: (incomingGroupByIdentifier) => {
+                    if (snapshot.groupBy === incomingGroupByIdentifier) {
+                        wrappedSetGroupBy(undefined);
+                        return;
+                    }
+                    wrappedSetGroupBy(incomingGroupByIdentifier);
+                },
+            },
+            meta: {
+                state: meta,
+                set: (metaIdentifier, value) => {
+                    setMeta((prevMetaState) => {
+                        const clonedMetaMap = new Map(prevMetaState);
+                        clonedMetaMap.set(metaIdentifier, value);
+                        return clonedMetaMap;
+                    });
+                },
+                reset: (metaIdentifier) => {
+                    setMeta((prevMetaState) => {
+                        const clonedMetaMap = new Map(prevMetaState);
+                        clonedMetaMap.delete(metaIdentifier);
+                        return clonedMetaMap;
+                    });
+                },
+            },
+        };
+    }, [config, disabled, filters, groupBy, isInitialized, isLoading, items, meta, numItemsPerPage, onChange, page, searchTerm, sortBy, sortDirection]);
+}
+export { useFinderFactory };
