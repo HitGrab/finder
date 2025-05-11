@@ -28,5 +28,5 @@
     },
     "copyPublicDir": false,
     "include": ["src/"],
-    "exclude": ["dist/"]
+    "exclude": ["dist/", "examples/"]
 }

@@ -2,7 +2,7 @@ import { test } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { FinderFilterDefinition, FinderMeta, FinderStateSnapshot } from "./types";
 import { useFinderFactory } from "./hooks/use-finder-factory";
-import { finderConfig } from "./utils/finderConfig";
+import { finderConfig } from "./utils/finder-config";
 import { act } from "react";
 
 type MockObjectItem = {
@@ -315,12 +315,12 @@ describe("Pagination", () => {
 
         // next page
         page = 2;
-        rerender([objectItems, { config, page, numItemsPerPage }]);
+        rerender([objectItems, { config, initialValues, page, numItemsPerPage }]);
         expect(result.current.results.items).toStrictEqual([orange]);
 
         // last page
         page = 3;
-        rerender([objectItems, { config, page, numItemsPerPage }]);
+        rerender([objectItems, { config, initialValues, page, numItemsPerPage }]);
         expect(result.current.results.items).toStrictEqual([apple]);
     });
 });

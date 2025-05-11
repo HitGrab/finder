@@ -1,7 +1,12 @@
-import { useImperativeHandle } from "react";
+import { PropsWithChildren, RefObject, useImperativeHandle } from "react";
 import { FinderContext } from "../context/finder-context";
 import { useFinderFactory } from "..//hooks/use-finder-factory";
-import { FinderProps } from "../types";
+import { useFinderFactoryOptions, FinderCore } from "../types";
+
+export interface FinderProps<FItem> extends useFinderFactoryOptions<FItem>, PropsWithChildren {
+    items: FItem[] | undefined | null;
+    controllerRef?: RefObject<FinderCore<FItem> | null>;
+}
 
 function Finder<FItem>({
     items,

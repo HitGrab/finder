@@ -9,7 +9,10 @@ export interface useFinderFactoryOptions<FItem> {
     initialValues?: FinderStateSnapshot;
 
     // Initial meta
-    initialMeta?: Map<any, any>;
+    initialMeta?: FinderMeta;
+
+    // Initial selected items
+    initialSelectedItems?: FItem[];
 
     // If data is still being requested async
     isLoading?: boolean;
@@ -22,20 +25,13 @@ export interface useFinderFactoryOptions<FItem> {
     numItemsPerPage?: number;
 
     // When values are changed, a snapshot is emitted to listeners
-    onChange?: (snapshot: FinderStateSnapshot) => void;
+    onChange?: (diff: FinderStateSnapshot, snapshot: FinderStateSnapshot) => void;
 }
 
-export interface FinderProps<FItem> extends useFinderFactoryOptions<FItem>, PropsWithChildren {
-    items: FItem[] | undefined | null;
-
-    // Exposed ref for external control
-    controllerRef?: RefObject<FinderCore<FItem> | null>;
-}
-
-// A configuration is stable static data that ( ideally ) shouldn't change after construction.
+// A configuration is a stable object that ( ideally ) shouldn't change after construction.
 export interface FinderConfig<FItem> {
     // Optional string search predicate.
-    searchFn?: (item: FItem, searchTerm: string) => boolean;
+    searchFn?: FinderSearchFunction<FItem>;
 
     // A list of all valid filter definitions
     filters?: FinderFilterDefinition<FItem>[];
@@ -49,35 +45,24 @@ export interface FinderConfig<FItem> {
     // If this view requires a group, set it true here.
     requireGroup?: boolean;
 
+    // determine how many items can be selected
+    maxSelectedItems?: number;
+
     onInit?: () => void;
 }
 
-/**
- * Select a property from the item to sort by.
- */
-export type FinderPropertySelector<FItem> = (item: FItem) => string | number;
-
-/**
- * Describes the display of a filter or sort option.
- */
-export interface FinderFilterOption {
-    label: string;
-    value: string | number;
-    disabled?: boolean;
-}
-
 // Values are the initial stateful variables
-export interface FinderStateSnapshot {
+export interface FinderStateSnapshot<FItem = any> {
     filters?: Record<string, any>;
     searchTerm?: string;
     sortBy?: string;
     sortDirection?: FinderSortDirection;
     groupBy?: string;
+    selectedItems?: FItem[];
+    meta?: FinderMeta;
 }
 
 export interface FinderCore<FItem> {
-    config?: FinderConfig<FItem>;
-    snapshot: FinderStateSnapshot;
     pagination?: FinderPagination;
     results: {
         items?: FItem[];
@@ -86,6 +71,7 @@ export interface FinderCore<FItem> {
     };
     isEmpty: boolean;
     isLoading: boolean;
+    disabled: boolean;
     search: {
         state?: string;
         disabled: boolean;
@@ -95,8 +81,11 @@ export interface FinderCore<FItem> {
         state?: FinderStateSnapshot;
         definitions?: FinderFilterDefinition<FItem>[];
         set: (filterId: string, value?: any) => void;
-        reset: (filterId: string) => void;
+        get: (filterId: string) => any;
+        delete: (filterId: string) => void;
         toggle: (filterId: string) => void;
+        test: (filterDefinition: FinderFilterDefinition<FItem>, filterState: any, meta?: FinderMeta) => FItem[];
+        testOptions: (filterDefinition: FinderFilterDefinition<FItem>, meta?: FinderMeta) => Map<FinderFilterOption | boolean, number>;
     };
     sortBy: {
         state?: string;
@@ -111,11 +100,21 @@ export interface FinderCore<FItem> {
         required: boolean;
         set: (groupById: string, value?: string) => void;
         toggle: (groupById: string) => void;
+        reset: () => void;
+    };
+    selectedItems: {
+        state?: FItem[];
+        select: (item: FItem) => void;
+        delete: (item: FItem) => void;
+        isSelected: (item: FItem) => boolean;
+        reset: () => void;
     };
     meta: {
-        state?: Map<any, any>;
-        set: (metaIdentifier: string, metaValue: any) => void;
-        reset: (metaIdentifier: string) => void;
+        state?: FinderMeta;
+        set: (metaIdentifier: any, metaValue: any) => void;
+        get: (metaIdentifier: any) => any;
+        delete: (metaIdentifier: any) => void;
+        reset: () => void;
     };
 }
 
@@ -123,24 +122,27 @@ export interface FinderResultGroup<FItems> {
     id: string;
     items: FItems[];
 }
+export type FinderMeta = Map<any, any>;
 
-/**
- * A stateless filter object that will receive filterValues
- */
-export interface FinderFilterDefinition<FItem, FValue = any> {
+export type FinderSearchFunction<FItem> = (item: FItem, searchTerm: string) => boolean;
+
+export interface FinderFilterDefinition<FItem, FValue = any> extends FinderFilterControlDisplay<FItem, FValue> {
     id: string;
-    filterFn: (item: FItem, value: FValue, meta?: Map<any, any>) => boolean;
-    options?: FinderFilterOption[] | ((meta?: Map<any, any>) => FinderFilterOption[]);
+    filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
+    options?: FinderFilterOption[] | ((meta?: FinderMeta) => FinderFilterOption[]);
     multiple?: boolean;
     required?: boolean;
     is_boolean?: boolean;
     side_effects?: (
         value: FValue,
-        meta?: Map<any, any>,
+        meta?: FinderMeta,
     ) => {
         reset?: string[];
         set?: Record<string, unknown>;
     };
+    label?: string;
+    Component?: ElementType;
+    element?: (props: FinderFilterComponentProps<Fitem, FValue, FinderFilterDefinition>) => ReactNode;
 }
 
 export interface FinderGroupByDefinition<FItem> {
@@ -153,10 +155,6 @@ export interface FinderGroupByDefinition<FItem> {
         footer?: string | string[];
     };
 }
-
-/*
- * Sort options require a selector method to sort by
- */
 export interface FinderSortByDefinition<FItem> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
@@ -185,18 +183,46 @@ export interface FinderContentComponentProps<FItem = any> {
 export interface FinderItemsComponentProps<FItem> {
     items: FItem[];
     pagination?: FinderPagination;
-    meta?: Map<any, any>;
+    meta?: FinderMeta;
 }
 export interface FinderGroupsComponentProps<FItem> {
     groups: FinderResultGroup<FItem>[];
     pagination?: FinderPagination;
-    meta?: Map<any, any>;
+    meta?: FinderMeta;
 }
 
-export interface FinderFilterComponentProps<FItem, FValue> {
-    filter: FinderFilterDefinition<FItem>;
+export interface FinderFilterComponentProps<FItem, FValue, FDefinition> {
+    definition: FDefinition<FItem>;
     value: FValue;
-    items: FItem[];
+    meta?: FinderMeta;
     onChange: (value?: FValue) => void;
-    meta?: Map<any, any>;
+}
+
+export interface FinderFilterControlDisplay<Fitem, FValue> extends FinderControlDisplay {
+    element?: (props: FinderFilterComponentProps<Fitem, FValue, FinderFilterDefinition>) => ReactNode;
+}
+export interface FinderGroupByControlDisplay<Fitem, FValue> extends FinderControlDisplay {
+    element?: (props: FinderFilterComponentProps<Fitem, FValue, FinderGroupByDefinition>) => ReactNode;
+}
+export interface FinderSortByControlDisplay<Fitem, FValue> extends FinderControlDisplay {
+    element?: (props: FinderFilterComponentProps<Fitem, FValue, FinderSortByDefinition>) => ReactNode;
+}
+
+export interface FinderControlDisplay {
+    label?: string;
+    Component?: ElementType;
+}
+
+/**
+ * Select a property from the item to sort by.
+ */
+export type FinderPropertySelector<FItem> = (item: FItem) => string | number;
+
+/**
+ * Describes the display of a filter or sort option.
+ */
+export interface FinderFilterOption {
+    label: string;
+    value: any;
+    disabled?: boolean;
 }

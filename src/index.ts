@@ -6,5 +6,5 @@ export { FinderEmpty } from "./components/finder-empty";
 export { FinderGroups } from "./components/finder-groups";
 export { FinderLoading } from "./components/finder-loading";
 export { FinderContent } from "./components/finder-content";
-export { finderConfig } from "./utils/finderConfig";
-export { finderOptions } from "./utils/finderOptions";
+export { finderConfig } from "./utils/finder-config";
+export { finderOptions } from "./utils/finder-options";
