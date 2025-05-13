@@ -9,15 +9,6 @@ import { FinderSearch } from "./finder-search";
 import { FinderSelectedItems } from "./finder-selected-items";
 import { FinderSortBy } from "./finder-sort-by";
 
-interface FinderSyncOptions<FItem> {
-    items: FItem[] | null | undefined;
-    page?: number;
-    isLoading?: boolean;
-    numItemsPerPage?: number;
-    disabled?: boolean;
-    maxSelectedItems?: number;
-}
-
 class Finder<FItem> {
     #listeners: CallableFunction[] = [];
 
@@ -46,6 +37,7 @@ class Finder<FItem> {
     // If true, the next call to getSnapshot() will force a render.
     #isTouched = false;
 
+    // Subclasses that extend functionality
     #hooks: {
         search: FinderSearch<FItem>;
         filters: FinderFilters<FItem>;
@@ -81,7 +73,7 @@ class Finder<FItem> {
         // to maintain a single source of truth, the parent class jealously guards this state
         const handlers: FinderInjectedHandlers<FItem> = {
             isDisabled: () => this.#disabled,
-            getRules: () => this.#getRules(),
+            getRules: () => this.#rules,
             onChange: (diff: FinderSnapshot) => this.onChangeEvent(diff),
             onInit: () => this.initializeOnce(),
             getItems: () => {
@@ -108,42 +100,11 @@ class Finder<FItem> {
         this.#items = items;
         this.#page = page;
         this.#numItemsPerPage = numItemsPerPage;
-        this.#onChange = onChange;
         this.#disabled = !!disabled;
+        this.#isLoading = !!isLoading;
         this.#maxSelectedItems = maxSelectedItems;
         this.#onInit = onInit;
-        this.#isLoading = !!isLoading;
-    }
-
-    sync({ items, page, numItemsPerPage, isLoading, disabled, maxSelectedItems }: FinderSyncOptions<FItem>) {
-        if (items !== undefined && isEqual(items, this.#items) === false) {
-            this.#items = items;
-            this.#isTouched = true;
-        }
-        if (page !== undefined && page !== this.#page) {
-            this.#page = page;
-            this.#isTouched = true;
-        }
-        if (numItemsPerPage !== undefined && numItemsPerPage !== this.#numItemsPerPage) {
-            this.#numItemsPerPage = numItemsPerPage;
-            this.#isTouched = true;
-        }
-        if (disabled !== undefined && disabled !== this.#disabled) {
-            this.#disabled = !!disabled;
-            this.#isTouched = true;
-        }
-        if (isLoading !== undefined && isLoading !== this.isLoading) {
-            this.#isLoading = !!isLoading;
-            this.#isTouched = true;
-        }
-        if (maxSelectedItems && maxSelectedItems !== this.#maxSelectedItems) {
-            this.#maxSelectedItems = maxSelectedItems;
-            this.#isTouched = true;
-        }
-    }
-
-    #getRules() {
-        return this.#rules;
+        this.#onChange = onChange;
     }
 
     subscribe(listener: CallableFunction) {
@@ -162,8 +123,38 @@ class Finder<FItem> {
         }
     }
 
-    setItems(items: FItem[]) {
-        this.#items = items;
+    setItems(items: FItem[] | null | undefined) {
+        if (isEqual(items, this.#items) === false) {
+            this.#items = items;
+            this.#isTouched = true;
+        }
+    }
+
+    setNumItemsPerPage(value?: number) {
+        if (value !== this.#numItemsPerPage) {
+            this.#numItemsPerPage = value;
+            this.#isTouched = true;
+        }
+    }
+
+    setIsLoading(value?: boolean) {
+        if (!!value !== this.#isLoading) {
+            this.#isLoading = !!value;
+            this.#isTouched = true;
+        }
+    }
+    setDisabled(value?: boolean) {
+        if (!!value !== this.#disabled) {
+            this.#disabled = !!value;
+            this.#isTouched = true;
+        }
+    }
+
+    setMaxSelectedItems(value?: number) {
+        if (value !== this.#maxSelectedItems) {
+            this.#maxSelectedItems = value;
+            this.#isTouched = true;
+        }
     }
 
     #takeSnapshot(): FinderCore<FItem> {
@@ -246,13 +237,11 @@ class Finder<FItem> {
     get page() {
         return this.#page;
     }
-    setPage(value: number) {
-        this.#page = value;
-        this.#isTouched = true;
-    }
-
-    get pagination() {
-        return this.getSnapshot().pagination;
+    setPage(value?: number) {
+        if (value !== this.#page) {
+            this.#page = value;
+            this.#isTouched = true;
+        }
     }
 
     getSnapshot() {
@@ -285,10 +274,6 @@ class Finder<FItem> {
             this.#onChange(diff, readonlySnapshot);
         }
 
-        this.#emitChange();
-    }
-
-    #emitChange() {
         for (let listener of this.#listeners) {
             listener();
         }

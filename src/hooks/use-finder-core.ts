@@ -57,7 +57,15 @@ function useFinderCore<FItem>(
         (l) => finder.subscribe(l),
         () => finder.getSnapshot(),
     );
-    finder.sync({ items, page, numItemsPerPage, isLoading, disabled, maxSelectedItems });
+
+    // sync finder internal state
+    // Finder will check equality, and only render a new snapshot if the values have changed.
+    finder.setItems(items);
+    finder.setPage(page);
+    finder.setNumItemsPerPage(page);
+    finder.setIsLoading(isLoading);
+    finder.setDisabled(disabled);
+    finder.setMaxSelectedItems(maxSelectedItems);
 
     return snapshot;
 }
