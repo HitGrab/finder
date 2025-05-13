@@ -1,12 +1,73 @@
-import { use } from "react";
-import { FinderContext } from "../context/finder-context";
+import { useState, useSyncExternalStore } from "react";
+import { useFinderFactoryOptions, FinderCore } from "../types";
+import { FinderSyncExternalStore } from "../classes/finder-store";
 
-function useFinder() {
-    const value = use(FinderContext);
-    if (value === null) {
-        throw new Error("useFinder requires a FinderCoreContext.");
-    }
-    return value;
+/**
+ * TODO:
+ * 'prequisite' filter function?
+ * debounce onChange?
+ */
+
+/**
+ * Create a finder instance with contained state and controllers.
+ */
+function useFinder<FItem>(
+    items: FItem[] | null | undefined,
+    {
+        rules,
+        initialSearchTerm,
+        initialSortby,
+        initialSortDirection,
+        initialGroupBy,
+        initialFilters,
+        initialSelectedItems,
+        initialMeta,
+        page,
+        numItemsPerPage,
+        isLoading,
+        disabled,
+        requireGroup,
+        maxSelectedItems,
+        onInit,
+        onChange = () => {},
+    }: useFinderFactoryOptions<FItem>,
+): FinderCore<FItem> {
+    const [finderStore] = useState(
+        () =>
+            new FinderSyncExternalStore(items, {
+                rules,
+                initialSearchTerm,
+                initialSortby,
+                initialSortDirection,
+                initialGroupBy,
+                initialFilters,
+                initialMeta,
+                initialSelectedItems,
+                maxSelectedItems,
+                isLoading,
+                disabled,
+                page,
+                numItemsPerPage,
+                requireGroup,
+                onInit,
+                onChange,
+            }),
+    );
+
+    useSyncExternalStore(
+        (l) => finderStore.subscribe(l),
+        () => finderStore.getSnapshot(),
+    );
+
+    // Finder will only render a new snapshot if these values have changed.
+    finderStore.instance.setItems(items);
+    finderStore.instance.setPage(page);
+    finderStore.instance.setNumItemsPerPage(numItemsPerPage);
+    finderStore.instance.setIsLoading(isLoading);
+    finderStore.instance.setDisabled(disabled);
+    finderStore.instance.setMaxSelectedItems(maxSelectedItems);
+
+    return finderStore.instance.toObject();
 }
 
 export { useFinder };

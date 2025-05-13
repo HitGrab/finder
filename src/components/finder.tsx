@@ -2,7 +2,7 @@ import { PropsWithChildren, RefObject, useImperativeHandle, useState, useSyncExt
 import { FinderContext } from "../context/finder-context";
 
 import { useFinderFactoryOptions, FinderCore } from "../types";
-import { useFinderCore } from "../hooks/use-finder-core";
+import { useFinder } from "../hooks/use-finder";
 export interface FinderProps<FItem> extends useFinderFactoryOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderCore<FItem> | null>;
@@ -29,7 +29,7 @@ function Finder<FItem>({
     children,
     controllerRef,
 }: FinderProps<FItem>) {
-    const finderInstance = useFinderCore<FItem>(items, {
+    const finderInstance = useFinder<FItem>(items, {
         rules,
         initialSearchTerm,
         initialSortby,

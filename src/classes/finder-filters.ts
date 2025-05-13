@@ -1,7 +1,7 @@
 import { FinderFilterRule, FinderOption, FinderMeta, isFilterRule, isFinderOption, FinderInjectedHandlers } from "../types";
 import { DebounceCallbackRegistry } from "../utils/debounce-callback-registry";
 import { getRuleFromIdentifier } from "../utils/finder-utils";
-import { findItems } from "../utils/matcher";
+import { findItemMatches } from "../utils/matcher";
 
 type OptionOrOptionValue = FinderOption | any;
 
@@ -118,7 +118,7 @@ class FinderFilters<FItem> {
         if (!items) {
             return [];
         }
-        return findItems(items, [rule], testSnapshot);
+        return findItemMatches(items, [rule], testSnapshot);
     }
 
     testOptions(identifier: FinderFilterRule | string, incomingMeta = this.#handlers.getMeta()) {
@@ -139,7 +139,7 @@ class FinderFilters<FItem> {
                 const options = [true, false];
                 options.forEach((option) => {
                     const testSnapshot = { filters: { [rule.id]: option }, meta: incomingMeta };
-                    resultMap.set(option, findItems(items, [rule], testSnapshot));
+                    resultMap.set(option, findItemMatches(items, [rule], testSnapshot));
                 });
             }
             return resultMap;
@@ -154,7 +154,7 @@ class FinderFilters<FItem> {
             if (items) {
                 rule.options.forEach((option) => {
                     const testSnapshot = { filters: { [rule.id]: option.value }, meta: incomingMeta };
-                    resultMap.set(option, findItems(items, [rule], testSnapshot));
+                    resultMap.set(option, findItemMatches(items, [rule], testSnapshot));
                 });
             }
 

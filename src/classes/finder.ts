@@ -1,7 +1,16 @@
 import { isEqual } from "lodash";
-import { FinderCore, FinderInjectedHandlers, FinderOnChangeCallback, FinderPagination, FinderRule, FinderSnapshot, useFinderFactoryOptions } from "../types";
+import {
+    FinderCore,
+    FinderInjectedHandlers,
+    FinderOnChangeCallback,
+    FinderPagination,
+    FinderRule,
+    FinderSnapshot,
+    MatchesSnapshot,
+    useFinderFactoryOptions,
+} from "../types";
 import { only } from "../utils/finder-utils";
-import { findResults } from "../utils/matcher";
+import { findMatches } from "../utils/matcher";
 import { FinderFilters } from "./finder-filters";
 import { FinderGroupBy } from "./finder-group-by";
 import { FinderMeta } from "./finder-meta";
@@ -10,13 +19,11 @@ import { FinderSelectedItems } from "./finder-selected-items";
 import { FinderSortBy } from "./finder-sort-by";
 
 class Finder<FItem> {
-    #listeners: CallableFunction[] = [];
-
     #items: FItem[] | null | undefined;
 
     #rules: FinderRule<FItem>[];
 
-    #snapshot?: FinderCore<FItem>;
+    #snapshot?: MatchesSnapshot<FItem> = undefined;
 
     #page?: number;
 
@@ -34,7 +41,7 @@ class Finder<FItem> {
 
     #isInitialized: boolean = false;
 
-    // If true, the next call to getSnapshot() will force a render.
+    // If true, the next call to findMatches() will force a render.
     #isTouched = false;
 
     // Subclasses that extend functionality
@@ -70,17 +77,14 @@ class Finder<FItem> {
     ) {
         this.#rules = rules || [];
 
-        // to maintain a single source of truth, the parent class jealously guards this state
+        // to maintain a single source of truth, the parent class jealously guards this state and dole it out to the hooks.
         const handlers: FinderInjectedHandlers<FItem> = {
             isDisabled: () => this.#disabled,
             getRules: () => this.#rules,
             onChange: (diff: FinderSnapshot) => this.onChangeEvent(diff),
             onInit: () => this.initializeOnce(),
             getItems: () => {
-                if (this.#items) {
-                    return this.#items;
-                }
-                return [];
+                return Array.isArray(this.#items) ? this.#items : [];
             },
             getMeta: () => {
                 return this.meta.value;
@@ -107,13 +111,6 @@ class Finder<FItem> {
         this.#onChange = onChange;
     }
 
-    subscribe(listener: CallableFunction) {
-        this.#listeners = [...this.#listeners, listener];
-        return () => {
-            this.#listeners = this.#listeners.filter((l) => l !== listener);
-        };
-    }
-
     initializeOnce() {
         if (this.#isInitialized === false) {
             if (this.#onInit) {
@@ -123,41 +120,15 @@ class Finder<FItem> {
         }
     }
 
-    setItems(items: FItem[] | null | undefined) {
-        if (isEqual(items, this.#items) === false) {
-            this.#items = items;
-            this.#isTouched = true;
+    findMatches() {
+        if (this.#snapshot === undefined || this.#isTouched) {
+            this.#snapshot = this.takeSnapshot();
+            this.#isTouched = false;
         }
+        return this.#snapshot;
     }
 
-    setNumItemsPerPage(value?: number) {
-        if (value !== this.#numItemsPerPage) {
-            this.#numItemsPerPage = value;
-            this.#isTouched = true;
-        }
-    }
-
-    setIsLoading(value?: boolean) {
-        if (!!value !== this.#isLoading) {
-            this.#isLoading = !!value;
-            this.#isTouched = true;
-        }
-    }
-    setDisabled(value?: boolean) {
-        if (!!value !== this.#disabled) {
-            this.#disabled = !!value;
-            this.#isTouched = true;
-        }
-    }
-
-    setMaxSelectedItems(value?: number) {
-        if (value !== this.#maxSelectedItems) {
-            this.#maxSelectedItems = value;
-            this.#isTouched = true;
-        }
-    }
-
-    #takeSnapshot(): FinderCore<FItem> {
+    takeSnapshot() {
         const hookValues: FinderSnapshot = {
             filters: this.#hooks.filters.value,
             sortBy: this.#hooks.sortBy.value,
@@ -166,25 +137,41 @@ class Finder<FItem> {
             searchTerm: this.#hooks.search.value,
             meta: this.#hooks.meta.value,
         };
-        const results = findResults(this.#items, this.#rules, hookValues, this.#page, this.#numItemsPerPage);
+        const matches = findMatches(this.#items, this.#rules, hookValues, this.#page, this.#numItemsPerPage);
 
         let pagination: FinderPagination | undefined;
-        if (this.#page && this.#numItemsPerPage && results.numTotalItems && Array.isArray(this.#items)) {
+        if (this.#page && this.#numItemsPerPage && matches.numTotalItems && Array.isArray(this.#items)) {
             pagination = {
                 page: this.#page,
-                lastPage: Math.ceil(results.numTotalItems / this.#numItemsPerPage),
+                lastPage: Math.ceil(matches.numTotalItems / this.#numItemsPerPage),
                 numItemsPerPage: this.#numItemsPerPage,
-                numTotalItems: results.numTotalItems,
+                numTotalItems: matches.numTotalItems,
                 disabled: false,
             };
         }
+        return {
+            ...matches,
+            pagination,
+        };
+    }
+
+    onChangeEvent(diff: FinderSnapshot) {
+        this.#isTouched = true;
+
+        if (this.#onChange) {
+            this.#onChange(diff, this.toReadOnlyObject());
+        }
+    }
+
+    toObject(): FinderCore<FItem> {
+        const { pagination, ...results } = this.findMatches();
 
         return {
+            results: { ...results },
+            pagination,
             isEmpty: this.isEmpty,
             isLoading: this.isLoading,
             disabled: this.disabled,
-            results,
-            pagination,
             filters: this.#hooks.filters,
             search: this.#hooks.search,
             groupBy: this.#hooks.groupBy,
@@ -194,8 +181,22 @@ class Finder<FItem> {
         };
     }
 
-    findMatches() {
-        return this.getSnapshot().results;
+    toReadOnlyObject(): FinderCore<FItem> {
+        const { pagination, ...results } = this.findMatches();
+
+        return {
+            results: { ...results },
+            pagination,
+            isEmpty: this.isEmpty,
+            isLoading: this.isLoading,
+            disabled: this.disabled,
+            search: only(this.#hooks.search, ["value", "hasSearchRule"]),
+            filters: only(this.#hooks.filters, ["value", "get", "rules"]),
+            sortBy: only(this.#hooks.sortBy, ["value", "sortDirection", "rules"]),
+            groupBy: only(this.#hooks.groupBy, ["value", "rules", "requireGroup"]),
+            selectedItems: only(this.#hooks.selectedItems, ["value", "isSelected", "maxSelectedItems"]),
+            meta: only(this.#hooks.meta, ["value"]),
+        };
     }
 
     get isLoading() {
@@ -237,6 +238,7 @@ class Finder<FItem> {
     get page() {
         return this.#page;
     }
+
     setPage(value?: number) {
         if (value !== this.#page) {
             this.#page = value;
@@ -244,38 +246,37 @@ class Finder<FItem> {
         }
     }
 
-    getSnapshot() {
-        if (this.#isTouched || this.#snapshot === undefined) {
-            this.#snapshot = this.#takeSnapshot();
-            this.#isTouched = false;
+    setItems(items: FItem[] | null | undefined) {
+        if (isEqual(items, this.#items) === false) {
+            this.#items = items;
+            this.#isTouched = true;
         }
-        return this.#snapshot;
     }
 
-    onChangeEvent(diff: FinderSnapshot) {
-        this.#isTouched = true;
-
-        if (this.#onChange) {
-            const snapshot = this.getSnapshot();
-
-            const readonlySnapshot = {
-                results: snapshot.results,
-                isEmpty: this.isEmpty,
-                isLoading: this.isLoading,
-                disabled: this.disabled,
-                pagination: snapshot.pagination,
-                search: only(this.#hooks.search, ["value", "hasSearchRule"]),
-                filters: only(this.#hooks.filters, ["value", "get", "rules"]),
-                sortBy: only(this.#hooks.sortBy, ["value", "sortDirection", "rules"]),
-                groupBy: only(this.#hooks.groupBy, ["value", "rules", "requireGroup"]),
-                selectedItems: only(this.#hooks.selectedItems, ["value", "isSelected", "maxSelectedItems"]),
-                meta: only(this.#hooks.meta, ["value"]),
-            };
-            this.#onChange(diff, readonlySnapshot);
+    setNumItemsPerPage(value?: number) {
+        if (value !== this.#numItemsPerPage) {
+            this.#numItemsPerPage = value;
+            this.#isTouched = true;
         }
+    }
 
-        for (let listener of this.#listeners) {
-            listener();
+    setIsLoading(value?: boolean) {
+        if (!!value !== this.#isLoading) {
+            this.#isLoading = !!value;
+            this.#isTouched = true;
+        }
+    }
+    setDisabled(value?: boolean) {
+        if (!!value !== this.#disabled) {
+            this.#disabled = !!value;
+            this.#isTouched = true;
+        }
+    }
+
+    setMaxSelectedItems(value?: number) {
+        if (value !== this.#maxSelectedItems) {
+            this.#maxSelectedItems = value;
+            this.#isTouched = true;
         }
     }
 }

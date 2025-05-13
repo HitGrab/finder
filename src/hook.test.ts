@@ -1,11 +1,11 @@
 import { test } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { FinderMeta, FinderOnChangeCallback } from "./types";
+import { FinderMeta, FinderOnChangeCallback, useFinderFactoryOptions } from "./types";
 import { act } from "react";
 
 import { range } from "lodash";
 import { makeSearchRule, makeFilterRule, makeRules, makeSortByRule, makeGroupByRule } from "./utils/type-enforcers";
-import { useFinderCore } from "./hooks/use-finder-core";
+import { useFinder } from "./hooks/use-finder";
 
 type MockObjectItem = {
     type: string;
@@ -29,7 +29,7 @@ describe("Search", () => {
         ];
         const initialSearchTerm = "apple";
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialSearchTerm }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialSearchTerm }));
         expect(result.current.results.items).toStrictEqual([apple]);
     });
 
@@ -41,7 +41,7 @@ describe("Search", () => {
         const rules = [searchRule];
 
         const onChange = vitest.fn();
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, onChange }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, onChange }));
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
@@ -72,7 +72,7 @@ describe("Filter - Basic", () => {
         const initialFilters = {
             price_is_below: 5,
         };
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialFilters }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
 
         expect(result.current.results.items).toStrictEqual([apple, orange]);
     });
@@ -96,7 +96,7 @@ describe("Filter - Basic", () => {
             tastiest_fruit_name: "Apple",
             price_is_below: 2,
         };
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialFilters }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
         expect(result.current.results.items).toStrictEqual([apple]);
     });
 
@@ -122,7 +122,7 @@ describe("Filter - Basic", () => {
         });
         const rules = [filterRule];
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules }));
         act(() => {
             result.current.filters.toggleOption(filterRule, "Apple");
         });
@@ -143,7 +143,7 @@ describe("Filter - Basic", () => {
                 filterFn: (item: MockObjectItem, value: number) => item.price <= value,
             },
         ]);
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules }));
         expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
     });
 
@@ -157,7 +157,7 @@ describe("Filter - Basic", () => {
         const initialFilters = {
             tastiest_fruit_name: "guava",
         };
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialFilters }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
         expect(result.current.results.items).toStrictEqual([]);
     });
 });
@@ -180,7 +180,7 @@ describe("Filter - Advanced", () => {
         };
         const initialMeta: FinderMeta = new Map();
         initialMeta.set("user_dislikes", apple);
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialFilters, initialMeta }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters, initialMeta }));
         expect(result.current.results.items).toStrictEqual([orange]);
     });
 
@@ -193,7 +193,7 @@ describe("Filter - Advanced", () => {
         const rules = [filterRule];
 
         const onChange = vitest.fn();
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, onChange }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, onChange }));
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
@@ -216,7 +216,7 @@ describe("Filter - Advanced", () => {
             filterFn: (item: MockObjectItem, value: number) => item.price <= value,
         });
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules: [filterRule] }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules: [filterRule] }));
 
         // test a filter without setting the state
         const testResult = result.current.filters.test(filterRule, 5);
@@ -251,7 +251,7 @@ describe("Filter - Advanced", () => {
             is_boolean: true,
         });
         const rules = makeRules([filter, booleanFilter]);
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules }));
 
         // test a filter without setting the state
         const testResult = result.current.filters.testOptions(filter);
@@ -277,7 +277,7 @@ describe("SortBy", () => {
                 sortFn: (item: MockObjectItem) => item.price,
             }),
         ];
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules }));
         expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
     });
 
@@ -289,7 +289,7 @@ describe("SortBy", () => {
             }),
         ];
         const initialSortDirection = "desc";
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, initialSortDirection }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, initialSortDirection }));
         expect(result.current.results.items).toStrictEqual([banana, orange, apple]);
     });
 });
@@ -303,7 +303,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, requireGroup: true }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
         expect(result.current.results.groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },
@@ -319,7 +319,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, requireGroup: true }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
         expect(result.current.results.groups).toStrictEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
@@ -335,7 +335,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, requireGroup: true }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
         expect(result.current.results.groups).toStrictEqual([
             { id: "banana", items: [banana] },
             { id: "orange", items: [orange] },
@@ -357,8 +357,14 @@ describe("Pagination", () => {
         // first page
         let page = 1;
         const numItemsPerPage = 1;
-        const { result, rerender } = renderHook(() => useFinderCore(objectItems, { rules, initialSortDirection, page, numItemsPerPage }));
+
+        const initialProps = [objectItems, { rules, initialSortDirection, page, numItemsPerPage }] as const;
+        const { result, rerender } = renderHook((props = initialProps) => useFinder(...props), {
+            initialProps,
+        });
+
         expect(result.current.results.items).toStrictEqual([banana]);
+        rerender();
 
         // next page
         page = 2;
@@ -374,7 +380,7 @@ describe("Pagination", () => {
 
 describe("Selection", () => {
     test("Selects items", () => {
-        const { result, rerender } = renderHook(() => useFinderCore(objectItems, {}));
+        const { result, rerender } = renderHook(() => useFinder(objectItems, {}));
 
         act(() => {
             result.current.selectedItems.select(apple);
@@ -386,7 +392,7 @@ describe("Selection", () => {
     test("Deletes selected item", () => {
         const initialSelectedItems = [apple];
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { initialSelectedItems }));
+        const { result } = renderHook(() => useFinder(objectItems, { initialSelectedItems }));
 
         act(() => {
             result.current.selectedItems.delete(apple);
@@ -397,7 +403,7 @@ describe("Selection", () => {
 
     test("Throws error when exceeding limit", () => {
         const initialSelectedItems = [apple];
-        const { result } = renderHook(() => useFinderCore(objectItems, { initialSelectedItems, maxSelectedItems: 1 }));
+        const { result } = renderHook(() => useFinder(objectItems, { initialSelectedItems, maxSelectedItems: 1 }));
 
         expect(() => {
             result.current.selectedItems.select(orange);
@@ -419,7 +425,7 @@ describe("onChange", () => {
             expect(diff.filters).toStrictEqual({ price_is_below: 5 });
         };
 
-        const { result } = renderHook(() => useFinderCore(objectItems, { rules, onChange }));
+        const { result } = renderHook(() => useFinder(objectItems, { rules, onChange }));
         act(() => {
             result.current.filters.set("price_is_below", 5);
         });

@@ -175,8 +175,7 @@ describe("Filter - Advanced", () => {
         initialMeta.set("user_dislikes", apple);
 
         const finder = new Finder(objectItems, { rules, initialFilters, initialMeta });
-        const snapshot = finder.getSnapshot();
-        expect(snapshot.results.items).toStrictEqual([orange]);
+        expect(finder.findMatches().items).toStrictEqual([orange]);
     });
 
     test("Debounced filter changes trigger once", async () => {
@@ -270,9 +269,7 @@ describe("SortBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules });
-        const snapshot = finder.getSnapshot();
-
-        expect(snapshot.results.items).toStrictEqual([apple, orange, banana]);
+        expect(finder.findMatches().items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Desc", () => {
@@ -285,9 +282,7 @@ describe("SortBy", () => {
         const initialSortDirection = "desc";
 
         const finder = new Finder(objectItems, { rules, initialSortDirection });
-        const snapshot = finder.getSnapshot();
-
-        expect(snapshot.results.items).toStrictEqual([banana, orange, apple]);
+        expect(finder.findMatches().items).toStrictEqual([banana, orange, apple]);
     });
 });
 
@@ -301,9 +296,7 @@ describe("GroupBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules, requireGroup: true });
-        const snapshot = finder.getSnapshot();
-
-        expect(snapshot.results.groups).toStrictEqual([
+        expect(finder.findMatches().groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },
         ]);
@@ -372,10 +365,9 @@ describe("Pagination", () => {
 describe("Selection", () => {
     test("Selects items", () => {
         const finder = new Finder(objectItems, {});
-        const snapshot = finder.getSnapshot();
 
-        snapshot.selectedItems.select(apple);
-        expect(snapshot.selectedItems.value).toStrictEqual([apple]);
+        finder.selectedItems.select(apple);
+        expect(finder.selectedItems.value).toStrictEqual([apple]);
     });
 
     test("Deletes selected item", () => {

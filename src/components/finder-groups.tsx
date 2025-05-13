@@ -10,12 +10,12 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
 
     if (Array.isArray(finder.results.groups) && finder.results.groups.length > 0 && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return cloneElement(renderProp, { groups: finder.results.groups, pagination: finder.pagination, meta: finder.meta.state });
+            return cloneElement(renderProp, { groups: finder.results.groups, pagination: finder.pagination, meta: finder.meta.value });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component groups={finder.results.groups} pagination={finder.pagination} meta={finder.meta.state} />;
+            return <Component groups={finder.results.groups} pagination={finder.pagination} meta={finder.meta.value} />;
         }
     }
 

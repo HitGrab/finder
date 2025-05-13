@@ -2,7 +2,7 @@
 import { ElementType, ReactNode } from "react";
 
 export interface useFinderFactoryOptions<FItem> {
-    // Stable and stateless rules
+    // Stateless rules
     rules?: FinderRule<FItem>[];
 
     initialSearchTerm?: string;
@@ -16,17 +16,15 @@ export interface useFinderFactoryOptions<FItem> {
     // determine how many items can be selected
     maxSelectedItems?: number;
 
-    // If data is still being requested async
     isLoading?: boolean;
-
-    // Whether to accept any commands
     disabled?: boolean;
 
-    // Paginator properties
+    // Pagination properties
     page?: number;
     numItemsPerPage?: number;
 
-    // If this view requires a group, set it true here.
+    // Force items to use a group rule.
+    // If no groupBy is set, the first valid group rule will be used.
     requireGroup?: boolean;
 
     // Triggered a single time after Finder first processes a rule.
@@ -256,3 +254,10 @@ export type FinderInjectedHandlers<FItem> = {
     getItems: () => FItem[];
     getMaxSelectedItems: () => number | undefined;
 };
+
+export interface MatchesSnapshot<FItem> {
+    items?: FItem[];
+    groups?: FinderResultGroup<FItem>[];
+    numTotalItems?: number;
+    pagination?: FinderPagination;
+}

@@ -13,7 +13,7 @@ import {
     isSortByRule,
 } from "../types";
 
-export function findResults<FItem>(
+export function findMatches<FItem>(
     items: FItem[] | null | undefined,
     rules: FinderRule<FItem>[] | undefined,
     snapshot: FinderSnapshot,
@@ -26,7 +26,7 @@ export function findResults<FItem>(
         };
     }
 
-    let itemMatches = findItems(items, rules, snapshot);
+    let itemMatches = findItemMatches(items, rules, snapshot);
     const numTotalMatchedItems = itemMatches.length;
 
     if (page !== undefined && numItemsPerPage) {
@@ -42,7 +42,7 @@ export function findResults<FItem>(
 
         if (groupByRule) {
             return {
-                groups: groupItems(items, groupByRule),
+                groups: groupMatches(items, groupByRule),
                 numTotalItems: numTotalMatchedItems,
             };
         }
@@ -54,7 +54,7 @@ export function findResults<FItem>(
     };
 }
 
-export function findItems<FItem>(items: FItem[] | undefined, rules: FinderRule<FItem>[] | undefined, snapshot: FinderSnapshot) {
+export function findItemMatches<FItem>(items: FItem[] | undefined, rules: FinderRule<FItem>[] | undefined, snapshot: FinderSnapshot) {
     if (items === undefined || Array.isArray(items) === false) {
         throw new TypeError("Finder.findItems() received an invalid collection.");
     }
@@ -96,7 +96,7 @@ export function findItems<FItem>(items: FItem[] | undefined, rules: FinderRule<F
     return matches;
 }
 
-export function groupItems<FItem>(items: FItem[] | undefined, groupByRule: FinderGroupByRule<FItem>) {
+export function groupMatches<FItem>(items: FItem[] | undefined, groupByRule: FinderGroupByRule<FItem>) {
     const groupObject = groupBy(items, groupByRule.groupFn);
 
     // transform the object into a sortable array
