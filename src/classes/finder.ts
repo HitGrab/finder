@@ -1,5 +1,6 @@
 import { isEqual } from "lodash";
 import {
+    FinderConstructorOptions,
     FinderCore,
     FinderInjectedHandlers,
     FinderOnChangeCallback,
@@ -7,7 +8,6 @@ import {
     FinderRule,
     FinderSnapshot,
     MatchesSnapshot,
-    useFinderFactoryOptions,
 } from "../types";
 import { only } from "../utils/finder-utils";
 import { findMatches } from "../utils/matcher";
@@ -73,7 +73,7 @@ class Finder<FItem> {
             maxSelectedItems,
             onInit,
             onChange = () => {},
-        }: useFinderFactoryOptions<FItem>,
+        }: FinderConstructorOptions<FItem>,
     ) {
         this.#rules = rules || [];
 

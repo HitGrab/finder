@@ -1,4 +1,4 @@
-import { FinderInjectedHandlers, FinderMeta as FinderMetaType, FinderSnapshot } from "../types";
+import { FinderInjectedHandlers, FinderMeta as FinderMetaType } from "../types";
 
 class FinderMeta<FItem> {
     #meta?: FinderMetaType;

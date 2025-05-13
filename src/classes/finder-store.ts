@@ -1,5 +1,5 @@
-import { FinderCore, FinderOnChangeCallback, FinderSnapshot, MatchesSnapshot, useFinderFactoryOptions } from "../types";
-import { Finder } from "./Finder";
+import { FinderOnChangeCallback, MatchesSnapshot, FinderConstructorOptions } from "../types";
+import { Finder } from "./finder";
 
 /**
  * Entrypoint for React.useSyncExternalStore
@@ -11,7 +11,7 @@ class FinderSyncExternalStore<FItem> {
 
     #snapshot?: MatchesSnapshot<FItem>;
 
-    constructor(items: FItem[] | null | undefined, { onChange, ...props }: useFinderFactoryOptions<FItem>) {
+    constructor(items: FItem[] | null | undefined, { onChange, ...props }: FinderConstructorOptions<FItem>) {
         const wrappedOnChange: FinderOnChangeCallback = (diff, ref) => {
             this.#snapshot = this.instance.findMatches();
             onChange && onChange(diff, ref);

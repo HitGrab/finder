@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ElementType, ReactNode } from "react";
 
-export interface useFinderFactoryOptions<FItem> {
+export type FinderOnChangeCallback<FItem = any> = (diff: FinderSnapshot, data: FinderCoreSnapshot<FItem>) => void;
+
+export interface FinderConstructorOptions<FItem> {
     // Stateless rules
     rules?: FinderRule<FItem>[];
 
@@ -33,8 +35,6 @@ export interface useFinderFactoryOptions<FItem> {
     // When values are changed, a snapshot is emitted to listeners
     onChange?: FinderOnChangeCallback<FItem>;
 }
-
-export type FinderOnChangeCallback<FItem = any> = (diff: FinderSnapshot, data: FinderCoreSnapshot<FItem>) => void;
 
 // Values are the initial stateful variables
 export interface FinderSnapshot<FItem = any> {

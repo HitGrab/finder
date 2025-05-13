@@ -1,12 +1,6 @@
 import { useState, useSyncExternalStore } from "react";
-import { useFinderFactoryOptions, FinderCore } from "../types";
+import { FinderCore, FinderConstructorOptions } from "../types";
 import { FinderSyncExternalStore } from "../classes/finder-store";
-
-/**
- * TODO:
- * 'prequisite' filter function?
- * debounce onChange?
- */
 
 /**
  * Create a finder instance with contained state and controllers.
@@ -30,7 +24,7 @@ function useFinder<FItem>(
         maxSelectedItems,
         onInit,
         onChange = () => {},
-    }: useFinderFactoryOptions<FItem>,
+    }: FinderConstructorOptions<FItem>,
 ): FinderCore<FItem> {
     const [finderStore] = useState(
         () =>

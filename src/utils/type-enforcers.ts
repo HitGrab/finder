@@ -1,9 +1,9 @@
-import { FinderFilterRule, FinderGroupByRule, FinderSearchRule, FinderSortByRule, useFinderFactoryOptions } from "../types";
+import { FinderConstructorOptions, FinderFilterRule, FinderGroupByRule, FinderSearchRule, FinderSortByRule } from "../types";
 
 /**
  * Enforce constructor shape for a Finder Options param.
  */
-export function finderOptions<FItem>(options: useFinderFactoryOptions<FItem>) {
+export function finderOptions<FItem>(options: FinderConstructorOptions<FItem>) {
     return options;
 }
 
@@ -23,6 +23,9 @@ export function makeGroupByRule<FItem>(rule: FinderGroupByRule<FItem>) {
     return rule;
 }
 
+/**
+ * Enforce structure for an array of rule of mixed types.
+ */
 export function makeRules<FItem>(rules: (FinderSearchRule<FItem> | FinderFilterRule<FItem> | FinderSortByRule<FItem> | FinderGroupByRule<FItem>)[]) {
     return rules;
 }

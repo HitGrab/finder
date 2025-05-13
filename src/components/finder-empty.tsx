@@ -1,11 +1,11 @@
 import { ElementType, isValidElement, ReactNode } from "react";
-import { useFinder } from "../hooks/use-finder";
+import { useFinderContext } from "../hooks/use-finder-context";
 
 interface FinderEmptyProps {
     children: ElementType | ReactNode;
 }
 function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
-    const finder = useFinder();
+    const finder = useFinderContext();
     if (finder.isEmpty && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;

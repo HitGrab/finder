@@ -1,6 +1,6 @@
 import { test } from "vitest";
 import { renderHook } from "@testing-library/react";
-import { FinderMeta, FinderOnChangeCallback, useFinderFactoryOptions } from "./types";
+import { FinderMeta, FinderOnChangeCallback } from "./types";
 import { act } from "react";
 
 import { range } from "lodash";

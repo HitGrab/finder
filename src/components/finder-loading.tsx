@@ -1,11 +1,11 @@
 import { ElementType, ReactNode, isValidElement } from "react";
-import { useFinder } from "../hooks/use-finder";
+import { useFinderContext } from "../hooks/use-finder-context";
 
 interface FinderLoadingProps {
     children: ElementType | ReactNode;
 }
 function FinderLoading({ children: renderProp }: FinderLoadingProps) {
-    const finder = useFinder();
+    const finder = useFinderContext();
     if (finder.isLoading && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;

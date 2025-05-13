@@ -1,9 +1,8 @@
 import { PropsWithChildren, RefObject, useImperativeHandle, useState, useSyncExternalStore } from "react";
 import { FinderContext } from "../context/finder-context";
-
-import { useFinderFactoryOptions, FinderCore } from "../types";
+import { FinderConstructorOptions, FinderCore } from "../types";
 import { useFinder } from "../hooks/use-finder";
-export interface FinderProps<FItem> extends useFinderFactoryOptions<FItem>, PropsWithChildren {
+export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderCore<FItem> | null>;
 }

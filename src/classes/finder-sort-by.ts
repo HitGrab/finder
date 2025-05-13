@@ -1,4 +1,4 @@
-import { FinderSortByRule, FinderSortDirection, FinderSnapshot, isSortByRule, FinderRule, FinderRuleFilterFunction, FinderInjectedHandlers } from "../types";
+import { FinderSortByRule, FinderSortDirection, isSortByRule, FinderInjectedHandlers } from "../types";
 import { getRuleFromIdentifier } from "../utils/finder-utils";
 
 class FinderSortBy<FItem> {
