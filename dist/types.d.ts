@@ -160,15 +160,6 @@ export interface FinderPagination {
     isPaginated: boolean;
 }
 
-export interface FinderContentComponentProps<FItem = any> {
-    children: {
-        loading?: ElementType | ReactNode;
-        empty?: ElementType | ReactNode;
-        items?: ElementType<FinderItemsComponentProps<FItem>>;
-        groups?: ElementType<FinderGroupsComponentProps<FItem>>;
-    };
-}
-
 export interface FinderItemsComponentProps<FItem> {
     items: FItem[];
     pagination?: FinderPagination;

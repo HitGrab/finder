@@ -6,4 +6,5 @@ export { FinderEmpty } from "./components/finder-empty";
 export { FinderGroups } from "./components/finder-groups";
 export { FinderLoading } from "./components/finder-loading";
 export { FinderContent } from "./components/finder-content";
+export { useFinderRef } from "./utils/ref-utils";
 export * from "./utils/type-enforcers";
