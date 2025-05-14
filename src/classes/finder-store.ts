@@ -1,4 +1,4 @@
-import { FinderOnChangeCallback, MatchesSnapshot, FinderConstructorOptions } from "../types";
+import { FinderOnChangeCallback, FinderConstructorOptions } from "../types";
 import { Finder } from "./finder";
 
 /**
@@ -9,11 +9,8 @@ class FinderSyncExternalStore<FItem> {
 
     instance: Finder<FItem>;
 
-    #snapshot?: MatchesSnapshot<FItem>;
-
     constructor(items: FItem[] | null | undefined, { onChange, ...props }: FinderConstructorOptions<FItem>) {
         const wrappedOnChange: FinderOnChangeCallback = (diff, ref) => {
-            this.#snapshot = this.instance.findMatches();
             onChange && onChange(diff, ref);
         };
         this.instance = new Finder(items, { onChange: wrappedOnChange, ...props });
@@ -33,7 +30,7 @@ class FinderSyncExternalStore<FItem> {
     }
 
     getSnapshot() {
-        return this.instance.findMatches();
+        return this.instance;
     }
 }
 

@@ -1,7 +1,8 @@
-import { FinderInjectedHandlers, isSearchRule } from "../types";
-import { DebounceCallbackRegistry } from "../utils/debounce-callback-registry";
+import { FinderInjectedHandlers, FinderMeta } from "../../types";
+import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
+import { isSearchRule } from "../../utils/type-enforcers";
 
-class FinderSearch<FItem> {
+class SearchMixin<FItem> {
     #searchTerm: string;
 
     #handlers: FinderInjectedHandlers<FItem>;
@@ -13,15 +14,19 @@ class FinderSearch<FItem> {
         this.#handlers = handlers;
     }
 
-    get value() {
+    get searchTerm() {
         return this.#searchTerm;
+    }
+
+    get rule() {
+        return this.#handlers.getRules().find(isSearchRule);
     }
 
     get hasSearchRule() {
         return this.#handlers.getRules().some(isSearchRule);
     }
 
-    set(incomingSearchTerm: string) {
+    setSearchTerm(incomingSearchTerm: string) {
         const rule = this.#handlers.getRules().find(isSearchRule);
         if (!rule) {
             throw new Error("Finder could not locate a searchRule.");
@@ -39,6 +44,15 @@ class FinderSearch<FItem> {
             this.#handlers.onChange({ searchTerm: incomingSearchTerm });
         });
     }
+
+    process(items: FItem[], meta?: FinderMeta) {
+        const searchRule = this.#handlers.getRules().find(isSearchRule);
+        if (this.#searchTerm === "" || searchRule === undefined) {
+            return items;
+        }
+
+        return items.filter((item) => searchRule.searchFn(item, this.#searchTerm, meta));
+    }
 }
 
-export { FinderSearch };
+export { SearchMixin };

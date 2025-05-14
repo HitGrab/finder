@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createContext } from "react";
-import { FinderCore } from "../types";
+import { FinderInstance } from "../types";
 
-const FinderContext = createContext<FinderCore<any> | null>(null);
+const FinderContext = createContext<FinderInstance<any> | null>(null);
 
 export { FinderContext };

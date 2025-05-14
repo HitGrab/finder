@@ -8,14 +8,14 @@ interface FinderGroupsProps<FItem> {
 function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>) {
     const finder = useFinderContext();
 
-    if (Array.isArray(finder.results.groups) && finder.results.groups.length > 0 && renderProp) {
+    if (Array.isArray(finder.matches.groups) && finder.matches.groups.length > 0 && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return cloneElement(renderProp, { groups: finder.results.groups, pagination: finder.pagination, meta: finder.meta.value });
+            return cloneElement(renderProp, { groups: finder.matches.groups, pagination: finder.pagination, meta: finder.meta.value });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component groups={finder.results.groups} pagination={finder.pagination} meta={finder.meta.value} />;
+            return <Component groups={finder.matches.groups} pagination={finder.pagination} meta={finder.meta.value} />;
         }
     }
 

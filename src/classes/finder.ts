@@ -1,22 +1,19 @@
 import { isEqual } from "lodash";
-import {
-    FinderConstructorOptions,
-    FinderCore,
-    FinderInjectedHandlers,
-    FinderOnChangeCallback,
-    FinderPagination,
-    FinderRule,
-    FinderSnapshot,
-    MatchesSnapshot,
-} from "../types";
-import { only } from "../utils/finder-utils";
-import { findMatches } from "../utils/matcher";
-import { FinderFilters } from "./finder-filters";
-import { FinderGroupBy } from "./finder-group-by";
-import { FinderMeta } from "./finder-meta";
-import { FinderSearch } from "./finder-search";
-import { FinderSelectedItems } from "./finder-selected-items";
-import { FinderSortBy } from "./finder-sort-by";
+import { FinderConstructorOptions, FinderInjectedHandlers, FinderOnChangeCallback, FinderResultGroup, FinderRule, FinderDiff, MatchesSnapshot } from "../types";
+import { FiltersMixin } from "./mixins/filters";
+import { SortByMixin } from "./mixins/sort-by";
+import { GroupByMixin } from "./mixins/group-by";
+import { MetaMixin } from "./mixins/meta";
+import { SelectedItemsMixin } from "./mixins/selected-items";
+import { PaginationMixin } from "./mixins/pagination";
+import { SearchMixin } from "./mixins/search";
+import { filtersAPI } from "./mixins/filters-api";
+import { groupByAPI } from "./mixins/group-by-api";
+import { metaAPI } from "./mixins/meta-api";
+import { paginationAPI } from "./mixins/pagination-api";
+import { selectedItemsAPI } from "./mixins/selected-items-api";
+import { sortByAPI } from "./mixins/sort-by-api";
+import { searchAPI } from "./mixins/search-api";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -25,15 +22,9 @@ class Finder<FItem> {
 
     #snapshot?: MatchesSnapshot<FItem> = undefined;
 
-    #page?: number;
+    isLoading: boolean;
 
-    #numItemsPerPage?: number;
-
-    #maxSelectedItems?: number;
-
-    #isLoading: boolean;
-
-    #disabled: boolean;
+    disabled: boolean;
 
     #onChange?: FinderOnChangeCallback;
 
@@ -45,13 +36,14 @@ class Finder<FItem> {
     #isTouched = false;
 
     // Subclasses that extend functionality
-    #hooks: {
-        search: FinderSearch<FItem>;
-        filters: FinderFilters<FItem>;
-        sortBy: FinderSortBy<FItem>;
-        groupBy: FinderGroupBy<FItem>;
-        meta: FinderMeta<FItem>;
-        selectedItems: FinderSelectedItems<FItem>;
+    #mixins: {
+        search: SearchMixin<FItem>;
+        filters: FiltersMixin<FItem>;
+        sortBy: SortByMixin<FItem>;
+        groupBy: GroupByMixin<FItem>;
+        meta: MetaMixin<FItem>;
+        selectedItems: SelectedItemsMixin<FItem>;
+        pagination: PaginationMixin<FItem>;
     };
 
     constructor(
@@ -76,39 +68,36 @@ class Finder<FItem> {
         }: FinderConstructorOptions<FItem>,
     ) {
         this.#rules = rules || [];
+        this.#items = items;
+        this.disabled = !!disabled;
+        this.isLoading = !!isLoading;
+        this.#onInit = onInit;
+        this.#onChange = onChange;
 
         // to maintain a single source of truth, the parent class jealously guards this state and dole it out to the hooks.
         const handlers: FinderInjectedHandlers<FItem> = {
-            isDisabled: () => this.#disabled,
             getRules: () => this.#rules,
-            onChange: (diff: FinderSnapshot) => this.onChangeEvent(diff),
+            isDisabled: () => this.disabled,
+            onChange: (diff: FinderDiff) => this.#onChangeEvent(diff),
             onInit: () => this.initializeOnce(),
             getItems: () => {
                 return Array.isArray(this.#items) ? this.#items : [];
             },
             getMeta: () => {
-                return this.meta.value;
+                return this.#mixins.meta.meta;
             },
-            getMaxSelectedItems: () => this.#maxSelectedItems,
         };
 
-        this.#hooks = {
-            search: new FinderSearch(initialSearchTerm, handlers),
-            filters: new FinderFilters(initialFilters, handlers),
-            sortBy: new FinderSortBy(initialSortby, initialSortDirection, handlers),
-            groupBy: new FinderGroupBy(initialGroupBy, !!requireGroup, handlers),
-            meta: new FinderMeta(initialMeta, handlers),
-            selectedItems: new FinderSelectedItems(initialSelectedItems, handlers),
+        // initialize all mixins with their default values.
+        this.#mixins = {
+            search: new SearchMixin(initialSearchTerm, handlers),
+            filters: new FiltersMixin(initialFilters, handlers),
+            sortBy: new SortByMixin(initialSortby, initialSortDirection, handlers),
+            groupBy: new GroupByMixin(initialGroupBy, !!requireGroup, handlers),
+            meta: new MetaMixin(initialMeta, handlers),
+            selectedItems: new SelectedItemsMixin(initialSelectedItems, maxSelectedItems, handlers),
+            pagination: new PaginationMixin(page, numItemsPerPage, handlers),
         };
-
-        this.#items = items;
-        this.#page = page;
-        this.#numItemsPerPage = numItemsPerPage;
-        this.#disabled = !!disabled;
-        this.#isLoading = !!isLoading;
-        this.#maxSelectedItems = maxSelectedItems;
-        this.#onInit = onInit;
-        this.#onChange = onChange;
     }
 
     initializeOnce() {
@@ -120,130 +109,79 @@ class Finder<FItem> {
         }
     }
 
-    findMatches() {
-        if (this.#snapshot === undefined || this.#isTouched) {
-            this.#snapshot = this.takeSnapshot();
-            this.#isTouched = false;
-        }
-        return this.#snapshot;
-    }
+    #takeMatchesSnapshot() {
+        let items: FItem[] = [];
+        let groups: FinderResultGroup<FItem>[] = [];
 
-    takeSnapshot() {
-        const hookValues: FinderSnapshot = {
-            filters: this.#hooks.filters.value,
-            sortBy: this.#hooks.sortBy.value,
-            sortDirection: this.#hooks.sortBy.sortDirection,
-            groupBy: this.#hooks.groupBy.value,
-            searchTerm: this.#hooks.search.value,
-            meta: this.#hooks.meta.value,
-        };
-        const matches = findMatches(this.#items, this.#rules, hookValues, this.#page, this.#numItemsPerPage);
+        const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
 
-        let pagination: FinderPagination | undefined;
-        if (this.#page && this.#numItemsPerPage && matches.numTotalItems && Array.isArray(this.#items)) {
-            pagination = {
-                page: this.#page,
-                lastPage: Math.ceil(matches.numTotalItems / this.#numItemsPerPage),
-                numItemsPerPage: this.#numItemsPerPage,
-                numTotalItems: matches.numTotalItems,
-                disabled: false,
-            };
+        if (Array.isArray(this.#items)) {
+            const meta = this.#mixins.meta.meta;
+
+            items = [...this.#items];
+            items = this.#mixins.search.process(items, meta);
+            items = this.#mixins.filters.process(items, meta);
+            items = this.#mixins.sortBy.process(items, meta);
+            items = this.#mixins.pagination.process(items);
+
+            if (hasGroupByRule) {
+                groups = this.#mixins.groupBy.process(items);
+            }
         }
+
         return {
-            ...matches,
-            pagination,
+            items: !hasGroupByRule ? items : undefined,
+            groups: hasGroupByRule ? groups : undefined,
+            numTotalItems: items.length,
         };
     }
 
-    onChangeEvent(diff: FinderSnapshot) {
+    #onChangeEvent(diff: FinderDiff) {
         this.#isTouched = true;
 
         if (this.#onChange) {
-            this.#onChange(diff, this.toReadOnlyObject());
+            this.#onChange(diff, this);
         }
     }
 
-    toObject(): FinderCore<FItem> {
-        const { pagination, ...results } = this.findMatches();
-
-        return {
-            results: { ...results },
-            pagination,
-            isEmpty: this.isEmpty,
-            isLoading: this.isLoading,
-            disabled: this.disabled,
-            filters: this.#hooks.filters,
-            search: this.#hooks.search,
-            groupBy: this.#hooks.groupBy,
-            sortBy: this.#hooks.sortBy,
-            meta: this.#hooks.meta,
-            selectedItems: this.#hooks.selectedItems,
-        };
-    }
-
-    toReadOnlyObject(): FinderCore<FItem> {
-        const { pagination, ...results } = this.findMatches();
-
-        return {
-            results: { ...results },
-            pagination,
-            isEmpty: this.isEmpty,
-            isLoading: this.isLoading,
-            disabled: this.disabled,
-            search: only(this.#hooks.search, ["value", "hasSearchRule"]),
-            filters: only(this.#hooks.filters, ["value", "get", "rules"]),
-            sortBy: only(this.#hooks.sortBy, ["value", "sortDirection", "rules"]),
-            groupBy: only(this.#hooks.groupBy, ["value", "rules", "requireGroup"]),
-            selectedItems: only(this.#hooks.selectedItems, ["value", "isSelected", "maxSelectedItems"]),
-            meta: only(this.#hooks.meta, ["value"]),
-        };
-    }
-
-    get isLoading() {
-        return this.#isLoading;
+    get matches() {
+        if (this.#snapshot === undefined || this.#isTouched) {
+            this.#snapshot = this.#takeMatchesSnapshot();
+            this.#isTouched = false;
+        }
+        return this.#snapshot;
     }
 
     get isEmpty() {
         return Array.isArray(this.#items) && this.#items.length === 0;
     }
 
-    get disabled() {
-        return this.#disabled;
-    }
-
     get search() {
-        return this.#hooks.search;
+        return searchAPI(this.#mixins.search);
     }
 
     get filters() {
-        return this.#hooks.filters;
+        return filtersAPI(this.#mixins.filters);
     }
 
     get sortBy() {
-        return this.#hooks.sortBy;
+        return sortByAPI(this.#mixins.sortBy);
     }
 
     get groupBy() {
-        return this.#hooks.groupBy;
+        return groupByAPI(this.#mixins.groupBy);
     }
 
     get meta() {
-        return this.#hooks.meta;
+        return metaAPI(this.#mixins.meta);
+    }
+
+    get pagination() {
+        return paginationAPI(this.#mixins.pagination);
     }
 
     get selectedItems() {
-        return this.#hooks.selectedItems;
-    }
-
-    get page() {
-        return this.#page;
-    }
-
-    setPage(value?: number) {
-        if (value !== this.#page) {
-            this.#page = value;
-            this.#isTouched = true;
-        }
+        return selectedItemsAPI(this.#mixins.selectedItems);
     }
 
     setItems(items: FItem[] | null | undefined) {
@@ -253,29 +191,15 @@ class Finder<FItem> {
         }
     }
 
-    setNumItemsPerPage(value?: number) {
-        if (value !== this.#numItemsPerPage) {
-            this.#numItemsPerPage = value;
-            this.#isTouched = true;
-        }
-    }
-
     setIsLoading(value?: boolean) {
-        if (!!value !== this.#isLoading) {
-            this.#isLoading = !!value;
+        if (!!value !== this.isLoading) {
+            this.isLoading = !!value;
             this.#isTouched = true;
         }
     }
     setDisabled(value?: boolean) {
-        if (!!value !== this.#disabled) {
-            this.#disabled = !!value;
-            this.#isTouched = true;
-        }
-    }
-
-    setMaxSelectedItems(value?: number) {
-        if (value !== this.#maxSelectedItems) {
-            this.#maxSelectedItems = value;
+        if (!!value !== this.disabled) {
+            this.disabled = !!value;
             this.#isTouched = true;
         }
     }

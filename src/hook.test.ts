@@ -30,7 +30,7 @@ describe("Search", () => {
         const initialSearchTerm = "apple";
 
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialSearchTerm }));
-        expect(result.current.results.items).toStrictEqual([apple]);
+        expect(result.current.matches.items).toStrictEqual([apple]);
     });
 
     test("Debounced search triggers once", async () => {
@@ -46,7 +46,7 @@ describe("Search", () => {
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
             act(() => {
-                result.current.search.set(String(value));
+                result.current.search.setSearchTerm(String(value));
             });
         });
 
@@ -74,7 +74,7 @@ describe("Filter - Basic", () => {
         };
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
 
-        expect(result.current.results.items).toStrictEqual([apple, orange]);
+        expect(result.current.matches.items).toStrictEqual([apple, orange]);
     });
 
     test("Multiple filters tested on same dataset", () => {
@@ -97,7 +97,7 @@ describe("Filter - Basic", () => {
             price_is_below: 2,
         };
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
-        expect(result.current.results.items).toStrictEqual([apple]);
+        expect(result.current.matches.items).toStrictEqual([apple]);
     });
 
     test("A single filter allows multiple options", () => {
@@ -144,7 +144,7 @@ describe("Filter - Basic", () => {
             },
         ]);
         const { result } = renderHook(() => useFinder(objectItems, { rules }));
-        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+        expect(result.current.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Return empty array for unmatched filters", () => {
@@ -158,7 +158,7 @@ describe("Filter - Basic", () => {
             tastiest_fruit_name: "guava",
         };
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters }));
-        expect(result.current.results.items).toStrictEqual([]);
+        expect(result.current.matches.items).toStrictEqual([]);
     });
 });
 
@@ -181,7 +181,7 @@ describe("Filter - Advanced", () => {
         const initialMeta: FinderMeta = new Map();
         initialMeta.set("user_dislikes", apple);
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialFilters, initialMeta }));
-        expect(result.current.results.items).toStrictEqual([orange]);
+        expect(result.current.matches.items).toStrictEqual([orange]);
     });
 
     test("Debounced filter changes trigger once", async () => {
@@ -223,7 +223,7 @@ describe("Filter - Advanced", () => {
         expect(testResult).toStrictEqual([apple, orange]);
 
         // result state is unchanged
-        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+        expect(result.current.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Filter options can evaluate their number of potential matches.", () => {
@@ -265,7 +265,7 @@ describe("Filter - Advanced", () => {
         expect(booleanTestResult.get(false)?.length).toBe(3);
 
         // result state is unchanged
-        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+        expect(result.current.matches.items).toStrictEqual([apple, orange, banana]);
     });
 });
 
@@ -278,7 +278,7 @@ describe("SortBy", () => {
             }),
         ];
         const { result } = renderHook(() => useFinder(objectItems, { rules }));
-        expect(result.current.results.items).toStrictEqual([apple, orange, banana]);
+        expect(result.current.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Desc", () => {
@@ -290,7 +290,7 @@ describe("SortBy", () => {
         ];
         const initialSortDirection = "desc";
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialSortDirection }));
-        expect(result.current.results.items).toStrictEqual([banana, orange, apple]);
+        expect(result.current.matches.items).toStrictEqual([banana, orange, apple]);
     });
 });
 
@@ -304,7 +304,7 @@ describe("GroupBy", () => {
         ];
 
         const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
-        expect(result.current.results.groups).toStrictEqual([
+        expect(result.current.matches.groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },
         ]);
@@ -320,7 +320,7 @@ describe("GroupBy", () => {
         ];
 
         const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
-        expect(result.current.results.groups).toStrictEqual([
+        expect(result.current.matches.groups).toStrictEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
         ]);
@@ -336,7 +336,7 @@ describe("GroupBy", () => {
         ];
 
         const { result } = renderHook(() => useFinder(objectItems, { rules, requireGroup: true }));
-        expect(result.current.results.groups).toStrictEqual([
+        expect(result.current.matches.groups).toStrictEqual([
             { id: "banana", items: [banana] },
             { id: "orange", items: [orange] },
             { id: "apple", items: [apple] },
@@ -363,30 +363,26 @@ describe("Pagination", () => {
             initialProps,
         });
 
-        expect(result.current.results.items).toStrictEqual([banana]);
+        expect(result.current.matches.items).toStrictEqual([banana]);
         rerender();
 
         // next page
         page = 2;
         rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
-        expect(result.current.results.items).toStrictEqual([orange]);
+        expect(result.current.matches.items).toStrictEqual([orange]);
 
         // last page
         page = 3;
         rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
-        expect(result.current.results.items).toStrictEqual([apple]);
+        expect(result.current.matches.items).toStrictEqual([apple]);
     });
 });
 
 describe("Selection", () => {
     test("Selects items", () => {
         const { result, rerender } = renderHook(() => useFinder(objectItems, {}));
-
-        act(() => {
-            result.current.selectedItems.select(apple);
-        });
-
-        expect(result.current.selectedItems.value).toStrictEqual([apple]);
+        result.current.selectedItems.select(apple);
+        expect(result.current.selectedItems.items).toStrictEqual([apple]);
     });
 
     test("Deletes selected item", () => {
@@ -398,7 +394,7 @@ describe("Selection", () => {
             result.current.selectedItems.delete(apple);
         });
 
-        expect(result.current.selectedItems.value).toStrictEqual([]);
+        expect(result.current.selectedItems.items).toStrictEqual([]);
     });
 
     test("Throws error when exceeding limit", () => {

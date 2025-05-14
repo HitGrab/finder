@@ -1,4 +1,5 @@
-import { FinderRule } from "../types";
+import { FinderMeta, FinderOption, FinderRule } from "../types";
+import { isFinderOption } from "./type-enforcers";
 
 /**
  * Strip unwanted properties from an object.
@@ -33,4 +34,34 @@ export function getRuleFromIdentifier<NarrowRule = FinderRule>(identifier: Finde
     }
 
     throw new Error("Finder received an invalid rule request format.");
+}
+
+export function getOptionFromIdentifier(
+    optionOrOptionValue: FinderOption | any,
+    options: FinderOption[] | ((meta?: FinderMeta) => FinderOption[]) | undefined,
+    meta?: FinderMeta,
+) {
+    let option: FinderOption | any;
+
+    let composedOptions: FinderOption[] = [];
+    if (typeof options === "function") {
+        composedOptions = options(meta);
+    }
+    if (Array.isArray(options)) {
+        composedOptions = options;
+    }
+
+    if (isFinderOption(optionOrOptionValue)) {
+        option = composedOptions?.find((row) => row === optionOrOptionValue);
+        if (option === undefined) {
+            throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
+        }
+        return option;
+    }
+
+    option = composedOptions?.find(({ value }) => value === optionOrOptionValue);
+    if (option === undefined) {
+        throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
+    }
+    return option;
 }

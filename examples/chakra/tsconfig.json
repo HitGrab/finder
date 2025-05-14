@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
+        "skipLibCheck": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "jsx": "react-jsx"
+    },
+    "files": ["src/main.tsx"],
+    "include": ["src"]
+}

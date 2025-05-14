@@ -4,6 +4,7 @@ import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./classes/finder";
 import { makeSearchRule, makeFilterRule, makeRules, makeSortByRule, makeGroupByRule } from "./utils/type-enforcers";
+import { SearchMixin } from "./classes/mixins/search";
 
 type MockObjectItem = {
     type: string;
@@ -27,8 +28,9 @@ describe("Search", () => {
         ];
 
         const finder = new Finder(objectItems, { rules });
-        finder.search.set("apple");
-        expect(finder.findMatches().items).toStrictEqual([apple]);
+
+        finder.search.setSearchTerm("apple");
+        expect(finder.matches.items).toStrictEqual([apple]);
     });
 
     test("Debounced search triggers once", async () => {
@@ -43,7 +45,7 @@ describe("Search", () => {
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
-            finder.search.set(String(value));
+            finder.search.setSearchTerm(String(value));
         });
 
         await act(async () => {
@@ -69,7 +71,7 @@ describe("Filter - Basic", () => {
             price_is_below: 5,
         };
         const finder = new Finder(objectItems, { rules, initialFilters });
-        expect(finder.findMatches().items).toStrictEqual([apple, orange]);
+        expect(finder.matches.items).toStrictEqual([apple, orange]);
     });
 
     test("Multiple filters tested on same dataset", () => {
@@ -92,7 +94,7 @@ describe("Filter - Basic", () => {
             price_is_below: 2,
         };
         const finder = new Finder(objectItems, { rules, initialFilters });
-        expect(finder.findMatches().items).toStrictEqual([apple]);
+        expect(finder.matches.items).toStrictEqual([apple]);
     });
 
     test("A single filter allows multiple options", () => {
@@ -136,7 +138,7 @@ describe("Filter - Basic", () => {
             },
         ]);
         const finder = new Finder(objectItems, { rules });
-        expect(finder.findMatches().items).toStrictEqual([apple, orange, banana]);
+        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Return empty array for unmatched filters", () => {
@@ -150,7 +152,7 @@ describe("Filter - Basic", () => {
             tastiest_fruit_name: "guava",
         };
         const finder = new Finder(objectItems, { rules, initialFilters });
-        expect(finder.findMatches().items).toStrictEqual([]);
+        expect(finder.matches.items).toStrictEqual([]);
     });
 });
 
@@ -175,7 +177,7 @@ describe("Filter - Advanced", () => {
         initialMeta.set("user_dislikes", apple);
 
         const finder = new Finder(objectItems, { rules, initialFilters, initialMeta });
-        expect(finder.findMatches().items).toStrictEqual([orange]);
+        expect(finder.matches.items).toStrictEqual([orange]);
     });
 
     test("Debounced filter changes trigger once", async () => {
@@ -213,7 +215,7 @@ describe("Filter - Advanced", () => {
         expect(testResult).toStrictEqual([apple, orange]);
 
         // result state is unchanged
-        expect(finder.findMatches().items).toStrictEqual([apple, orange, banana]);
+        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Filter options can evaluate their number of potential matches.", () => {
@@ -240,12 +242,11 @@ describe("Filter - Advanced", () => {
             filterFn: (item) => item.daysUntilExpiryDate === "five",
             is_boolean: true,
         });
-        const rules = makeRules([filter, booleanFilter]);
+        const rules = [filter, booleanFilter];
         const finder = new Finder(objectItems, { rules });
 
         // test a filter without setting the state
         const testResult = finder.filters.testOptions(filter);
-
         expect(testResult.get(optionOne)?.length).toBe(1);
         expect(testResult.get(optionTwo)?.length).toBe(2);
         expect(testResult.get(optionThree)?.length).toBe(3);
@@ -255,7 +256,7 @@ describe("Filter - Advanced", () => {
         expect(booleanTestResult.get(false)?.length).toBe(3);
 
         // result state is unchanged
-        expect(finder.findMatches().items).toStrictEqual([apple, orange, banana]);
+        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
     });
 });
 
@@ -269,7 +270,7 @@ describe("SortBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules });
-        expect(finder.findMatches().items).toStrictEqual([apple, orange, banana]);
+        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
     test("Desc", () => {
@@ -282,7 +283,7 @@ describe("SortBy", () => {
         const initialSortDirection = "desc";
 
         const finder = new Finder(objectItems, { rules, initialSortDirection });
-        expect(finder.findMatches().items).toStrictEqual([banana, orange, apple]);
+        expect(finder.matches.items).toStrictEqual([banana, orange, apple]);
     });
 });
 
@@ -296,7 +297,7 @@ describe("GroupBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules, requireGroup: true });
-        expect(finder.findMatches().groups).toStrictEqual([
+        expect(finder.matches.groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },
         ]);
@@ -312,7 +313,7 @@ describe("GroupBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules, requireGroup: true });
-        expect(finder.findMatches().groups).toStrictEqual([
+        expect(finder.matches.groups).toStrictEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
         ]);
@@ -328,7 +329,7 @@ describe("GroupBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules, requireGroup: true });
-        expect(finder.findMatches().groups).toStrictEqual([
+        expect(finder.matches.groups).toStrictEqual([
             { id: "banana", items: [banana] },
             { id: "orange", items: [orange] },
             { id: "apple", items: [apple] },
@@ -350,15 +351,16 @@ describe("Pagination", () => {
         let page = 1;
         const numItemsPerPage = 1;
         const finder = new Finder(objectItems, { rules, initialSortDirection, page, numItemsPerPage });
-        expect(finder.findMatches().items).toStrictEqual([banana]);
+
+        expect(finder.matches.items).toStrictEqual([banana]);
 
         // next page
-        finder.setPage(2);
-        expect(finder.findMatches().items).toStrictEqual([orange]);
+        finder.pagination.setPage(2);
+        expect(finder.matches.items).toStrictEqual([orange]);
 
         // last page
-        finder.setPage(3);
-        expect(finder.findMatches().items).toStrictEqual([apple]);
+        finder.pagination.setPage(3);
+        expect(finder.matches.items).toStrictEqual([apple]);
     });
 });
 
@@ -367,7 +369,7 @@ describe("Selection", () => {
         const finder = new Finder(objectItems, {});
 
         finder.selectedItems.select(apple);
-        expect(finder.selectedItems.value).toStrictEqual([apple]);
+        expect(finder.selectedItems.items).toStrictEqual([apple]);
     });
 
     test("Deletes selected item", () => {
@@ -376,7 +378,7 @@ describe("Selection", () => {
         const finder = new Finder(objectItems, { initialSelectedItems });
         finder.selectedItems.delete(apple);
 
-        expect(finder.selectedItems.value).toStrictEqual([]);
+        expect(finder.selectedItems.items).toStrictEqual([]);
     });
 
     test("Throws error when exceeding limit", () => {

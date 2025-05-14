@@ -1,5 +1,5 @@
 import { useState, useSyncExternalStore } from "react";
-import { FinderCore, FinderConstructorOptions } from "../types";
+import { FinderInstance, FinderConstructorOptions } from "../types";
 import { FinderSyncExternalStore } from "../classes/finder-store";
 
 /**
@@ -23,9 +23,9 @@ function useFinder<FItem>(
         requireGroup,
         maxSelectedItems,
         onInit,
-        onChange = () => {},
+        onChange,
     }: FinderConstructorOptions<FItem>,
-): FinderCore<FItem> {
+): FinderInstance<FItem> {
     const [finderStore] = useState(
         () =>
             new FinderSyncExternalStore(items, {
@@ -55,13 +55,13 @@ function useFinder<FItem>(
 
     // Finder will only render a new snapshot if these values have changed.
     finderStore.instance.setItems(items);
-    finderStore.instance.setPage(page);
-    finderStore.instance.setNumItemsPerPage(numItemsPerPage);
     finderStore.instance.setIsLoading(isLoading);
     finderStore.instance.setDisabled(disabled);
-    finderStore.instance.setMaxSelectedItems(maxSelectedItems);
-
-    return finderStore.instance.toObject();
+    finderStore.instance.pagination.setPage(page);
+    finderStore.instance.pagination.setNumItemsPerPage(numItemsPerPage);
+    finderStore.instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
+    console.log(finderStore.instance);
+    return finderStore.instance;
 }
 
 export { useFinder };
