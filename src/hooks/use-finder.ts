@@ -48,7 +48,7 @@ function useFinder<FItem>(
             }),
     );
 
-    useSyncExternalStore(
+    const snapshot = useSyncExternalStore(
         (l) => finderStore.subscribe(l),
         () => finderStore.getSnapshot(),
     );
@@ -60,7 +60,6 @@ function useFinder<FItem>(
     finderStore.instance.pagination.setPage(page);
     finderStore.instance.pagination.setNumItemsPerPage(numItemsPerPage);
     finderStore.instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
-    console.log(finderStore.instance);
     return finderStore.instance;
 }
 

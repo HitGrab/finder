@@ -3,8 +3,7 @@ import { FinderMeta, FinderOnChangeCallback } from "./types";
 import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./classes/finder";
-import { makeSearchRule, makeFilterRule, makeRules, makeSortByRule, makeGroupByRule } from "./utils/type-enforcers";
-import { SearchMixin } from "./classes/mixins/search";
+import { searchRule, filterRule, sortByRule, groupByRule, finderRules } from "./utils/type-enforcers";
 
 type MockObjectItem = {
     type: string;
@@ -22,7 +21,7 @@ const objectItems: MockObjectItem[] = [apple, orange, banana];
 describe("Search", () => {
     test("Finds item", () => {
         const rules = [
-            makeSearchRule({
+            searchRule({
                 searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
             }),
         ];
@@ -34,14 +33,13 @@ describe("Search", () => {
     });
 
     test("Debounced search triggers once", async () => {
-        const searchRule = makeSearchRule({
+        const rule = searchRule({
             searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
             debounceDelay: 100,
         });
-        const rules = [searchRule];
 
         const onChange = vitest.fn();
-        const finder = new Finder(objectItems, { rules, onChange });
+        const finder = new Finder(objectItems, { rules: [rule], onChange });
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
@@ -49,7 +47,7 @@ describe("Search", () => {
         });
 
         await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, Number(searchRule.debounceDelay) + 10));
+            await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceDelay) + 10));
         });
 
         // The onchange event should only have triggered once
@@ -60,7 +58,7 @@ describe("Search", () => {
 describe("Filter - Basic", () => {
     test("Single filter", () => {
         const rules = [
-            makeFilterRule({
+            filterRule({
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number) => {
                     return item.price <= value;
@@ -76,13 +74,13 @@ describe("Filter - Basic", () => {
 
     test("Multiple filters tested on same dataset", () => {
         const rules = [
-            makeFilterRule({
+            filterRule({
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => {
                     return item.name === value;
                 },
             }),
-            makeFilterRule({
+            filterRule({
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number) => {
                     return item.price <= value;
@@ -98,7 +96,7 @@ describe("Filter - Basic", () => {
     });
 
     test("A single filter allows multiple options", () => {
-        const filterRule = makeFilterRule<MockObjectItem, string>({
+        const rule = filterRule<MockObjectItem, string>({
             id: "employee_favourite_fruits",
             filterFn: (item, value) => item.name === value,
             multiple: true,
@@ -117,17 +115,16 @@ describe("Filter - Basic", () => {
                 },
             ],
         });
-        const rules = [filterRule];
 
-        const finder = new Finder(objectItems, { rules });
-        finder.filters.toggleOption(filterRule, "Apple");
-        finder.filters.toggleOption(filterRule, "Orange");
+        const finder = new Finder(objectItems, { rules: [rule] });
+        finder.filters.toggleOption(rule, "Apple");
+        finder.filters.toggleOption(rule, "Orange");
 
-        expect(finder.filters.get(filterRule)).toStrictEqual(["Apple", "Orange"]);
+        expect(finder.filters.get(rule)).toStrictEqual(["Apple", "Orange"]);
     });
 
     test("Inactive filters have no effect", () => {
-        const rules = makeRules([
+        const rules = finderRules([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -142,7 +139,7 @@ describe("Filter - Basic", () => {
     });
 
     test("Return empty array for unmatched filters", () => {
-        const rules = makeRules([
+        const rules = finderRules([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -158,7 +155,7 @@ describe("Filter - Basic", () => {
 
 describe("Filter - Advanced", () => {
     test("Filters receive meta context", () => {
-        const rules = makeRules([
+        const rules = finderRules([
             {
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number, meta) => {
@@ -181,37 +178,36 @@ describe("Filter - Advanced", () => {
     });
 
     test("Debounced filter changes trigger once", async () => {
-        const filterRule = makeFilterRule({
+        const rule = filterRule({
             id: "price_is_below",
             filterFn: (item: MockObjectItem, value: number) => item.price <= value,
             debounceDelay: 100,
         });
-        const rules = [filterRule];
 
         const onChange = vitest.fn();
-        const finder = new Finder(objectItems, { rules, onChange });
+        const finder = new Finder(objectItems, { rules: [rule], onChange });
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
-            finder.filters.set(filterRule, value);
+            finder.filters.set(rule, value);
         });
 
-        await new Promise((resolve) => setTimeout(resolve, Number(filterRule.debounceDelay) + 10));
+        await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceDelay) + 10));
 
         // The onchange event should only have triggered once
         expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     test("Filter values can be tested without changing state", () => {
-        const filterRule = makeFilterRule({
+        const rule = filterRule({
             id: "price_is_below",
             filterFn: (item: MockObjectItem, value: number) => item.price <= value,
         });
 
-        const finder = new Finder(objectItems, { rules: [filterRule] });
+        const finder = new Finder(objectItems, { rules: [rule] });
 
         // test a filter without setting the state
-        const testResult = finder.filters.test(filterRule, 5);
+        const testResult = finder.filters.test(rule, 5);
         expect(testResult).toStrictEqual([apple, orange]);
 
         // result state is unchanged
@@ -232,12 +228,12 @@ describe("Filter - Advanced", () => {
             label: "Ten",
         };
 
-        const filter = makeFilterRule<MockObjectItem, number>({
+        const filter = filterRule<MockObjectItem, number>({
             id: "price_is_below",
             filterFn: (item, value) => item.price <= value,
             options: [optionOne, optionTwo, optionThree],
         });
-        const booleanFilter = makeFilterRule<MockObjectItem>({
+        const booleanFilter = filterRule<MockObjectItem>({
             id: "expires_in_five_days",
             filterFn: (item) => item.daysUntilExpiryDate === "five",
             is_boolean: true,
@@ -263,7 +259,7 @@ describe("Filter - Advanced", () => {
 describe("SortBy", () => {
     test("Asc", () => {
         const rules = [
-            makeSortByRule({
+            sortByRule({
                 id: "sort_by_price",
                 sortFn: (item: MockObjectItem) => item.price,
             }),
@@ -275,7 +271,7 @@ describe("SortBy", () => {
 
     test("Desc", () => {
         const rules = [
-            makeSortByRule({
+            sortByRule({
                 id: "sort_by_price",
                 sortFn: (item: MockObjectItem) => item.price,
             }),
@@ -290,7 +286,7 @@ describe("SortBy", () => {
 describe("GroupBy", () => {
     test("Groups items", () => {
         const rules = [
-            makeGroupByRule({
+            groupByRule({
                 id: "expiry_date",
                 groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
             }),
@@ -305,7 +301,7 @@ describe("GroupBy", () => {
 
     test("Sticky headers", () => {
         const rules = [
-            makeGroupByRule({
+            groupByRule({
                 id: "expiry_date",
                 groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
                 sticky: { header: ["five"] },
@@ -321,7 +317,7 @@ describe("GroupBy", () => {
 
     test("Sticky groups preserve order", () => {
         const rules = [
-            makeGroupByRule({
+            groupByRule({
                 id: "item_type",
                 groupFn: (item: MockObjectItem) => item.type,
                 sticky: { footer: ["orange", "apple"] },
@@ -340,7 +336,7 @@ describe("GroupBy", () => {
 describe("Pagination", () => {
     test("Items are paginated", () => {
         const rules = [
-            makeSortByRule({
+            sortByRule({
                 id: "sort_by_price",
                 sortFn: (item: MockObjectItem) => item.price,
             }),
@@ -394,7 +390,7 @@ describe("Selection", () => {
 describe("onChange", () => {
     test("onChange triggers", () => {
         const rules = [
-            makeFilterRule({
+            filterRule({
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number) => {
                     return item.price <= value;

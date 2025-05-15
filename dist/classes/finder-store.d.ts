@@ -9,6 +9,6 @@ declare class FinderSyncExternalStore<FItem> {
     constructor(items: FItem[] | null | undefined, { onChange, ...props }: FinderConstructorOptions<FItem>);
     subscribe(listener: CallableFunction): () => void;
     emitChanges(): void;
-    getSnapshot(): Finder<FItem>;
+    getSnapshot(): number | undefined;
 }
 export { FinderSyncExternalStore };

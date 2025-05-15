@@ -6,7 +6,8 @@ function useFinderContext() {
     if (value === null) {
         throw new Error("useFinderContext requires a FinderCoreContext.");
     }
-    return value;
+    const [instance] = value;
+    return instance;
 }
 
 export { useFinderContext };

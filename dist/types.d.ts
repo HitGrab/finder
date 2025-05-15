@@ -58,10 +58,13 @@ export interface FinderInstance<FItem> {
     isEmpty: boolean;
     isLoading: boolean;
     disabled: boolean;
+    updatedAt?: number;
+    processedAt?: number;
     search: {
         searchTerm: string;
         hasSearchRule: boolean;
         setSearchTerm: (value: string) => void;
+        reset: () => void;
     };
     filters: {
         value?: Record<string, any>;
@@ -116,13 +119,13 @@ export type FinderMeta = Map<any, any>;
 
 export type FinderRule<FItem = any> = FinderSearchRule<FItem> | FinderFilterRule<FItem> | FinderSortByRule<FItem> | FinderGroupByRule<FItem>;
 
-export interface FinderSearchRule<FItem = any> {
+export interface FinderSearchRule<FItem = any> extends Record<string, any> {
     id?: string;
     searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
     debounceDelay?: number;
 }
 
-export interface FinderFilterRule<FItem = any, FValue = any> {
+export interface FinderFilterRule<FItem = any, FValue = any> extends Record<string, any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
     options?: FinderOption<FValue>[] | ((meta?: FinderMeta) => FinderOption<FValue>[]);
@@ -132,7 +135,7 @@ export interface FinderFilterRule<FItem = any, FValue = any> {
     debounceDelay?: number;
 }
 
-export interface FinderGroupByRule<FItem = any> {
+export interface FinderGroupByRule<FItem = any> extends Record<string, any> {
     id: string;
     groupFn: FinderPropertySelector<FItem>;
     sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem[]>>;
@@ -143,7 +146,7 @@ export interface FinderGroupByRule<FItem = any> {
     };
 }
 
-export interface FinderSortByRule<FItem = any> {
+export interface FinderSortByRule<FItem = any> extends Record<string, any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultDirection?: "asc" | "desc" | ("asc" | "desc")[];
@@ -158,15 +161,6 @@ export interface FinderPagination {
     numTotalItems: number;
     numItemsPerPage?: number;
     isPaginated: boolean;
-}
-
-export interface FinderContentComponentProps<FItem = any> {
-    children: {
-        loading?: ElementType | ReactNode;
-        empty?: ElementType | ReactNode;
-        items?: ElementType<FinderItemsComponentProps<FItem>>;
-        groups?: ElementType<FinderGroupsComponentProps<FItem>>;
-    };
 }
 
 export interface FinderItemsComponentProps<FItem> {

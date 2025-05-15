@@ -2,6 +2,7 @@ import { PropsWithChildren, RefObject, useImperativeHandle, useState, useSyncExt
 import { FinderContext } from "../context/finder-context";
 import { FinderConstructorOptions, FinderInstance } from "../types";
 import { useFinder } from "../hooks/use-finder";
+
 export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderInstance<FItem> | null>;
@@ -49,6 +50,6 @@ function Finder<FItem>({
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
 
-    return <FinderContext.Provider value={finderInstance}>{children}</FinderContext.Provider>;
+    return <FinderContext.Provider value={[finderInstance, finderInstance.processedAt]}>{children}</FinderContext.Provider>;
 }
 export { Finder };
