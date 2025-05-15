@@ -1,10 +1,10 @@
 import { groupBy, orderBy, Many } from "lodash";
-import { FinderGroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
+import { GroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
 import { isGroupByRule } from "../../utils/type-enforcers";
 
 class GroupByMixin<FItem> {
-    #groupBy?: FinderGroupByRule;
+    #groupBy?: GroupByRule;
 
     requireGroup: boolean;
 
@@ -25,7 +25,7 @@ class GroupByMixin<FItem> {
         return this.#groupBy ?? defaultRule;
     }
 
-    set(rule?: FinderGroupByRule) {
+    set(rule?: GroupByRule) {
         if (this.#handlers.isDisabled()) {
             return;
         }
@@ -33,7 +33,7 @@ class GroupByMixin<FItem> {
         this.#handlers.onInit();
 
         // early exit if nothing changed
-        if (this.#groupBy === rule?.id) {
+        if (this.#groupBy === rule) {
             return;
         }
 
@@ -77,7 +77,7 @@ class GroupByMixin<FItem> {
 /**
  * Creates a sorting method for groupBy rule with 'sticky' header/footer groups.
  */
-function composeStickyGroupOrderCallback<FItem>(groupByRule: FinderGroupByRule<FItem>) {
+function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRule<FItem>) {
     let stickyHeaderGroupIds: string[] = [];
     if (groupByRule?.sticky?.header !== undefined) {
         if (Array.isArray(groupByRule.sticky.header)) {

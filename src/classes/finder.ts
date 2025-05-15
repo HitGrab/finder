@@ -14,6 +14,7 @@ import { paginationAPI } from "./mixins/pagination-api";
 import { selectedItemsAPI } from "./mixins/selected-items-api";
 import { sortByAPI } from "./mixins/sort-by-api";
 import { searchAPI } from "./mixins/search-api";
+import { isFilterRule, isGroupByRule, isSearchRule, isSortByRule } from "../utils/type-enforcers";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -25,6 +26,8 @@ class Finder<FItem> {
     isLoading: boolean;
 
     disabled: boolean;
+
+    updatedAt?: number;
 
     #onChange?: FinderOnChangeCallback;
 
@@ -80,12 +83,8 @@ class Finder<FItem> {
             isDisabled: () => this.disabled,
             onChange: (diff: FinderDiff) => this.#onChangeEvent(diff),
             onInit: () => this.initializeOnce(),
-            getItems: () => {
-                return Array.isArray(this.#items) ? this.#items : [];
-            },
-            getMeta: () => {
-                return this.#mixins.meta.meta;
-            },
+            getItems: () => this.items,
+            getMeta: () => this.#mixins.meta.meta,
         };
 
         // initialize all mixins with their default values.
@@ -138,10 +137,15 @@ class Finder<FItem> {
 
     #onChangeEvent(diff: FinderDiff) {
         this.#isTouched = true;
+        this.updatedAt = Date.now();
 
         if (this.#onChange) {
             this.#onChange(diff, this);
         }
+    }
+
+    get items() {
+        return Array.isArray(this.#items) ? this.#items : [];
     }
 
     get matches() {
@@ -153,7 +157,7 @@ class Finder<FItem> {
     }
 
     get isEmpty() {
-        return Array.isArray(this.#items) && this.#items.length === 0;
+        return this.items.length === 0;
     }
 
     get search() {
@@ -182,6 +186,22 @@ class Finder<FItem> {
 
     get selectedItems() {
         return selectedItemsAPI(this.#mixins.selectedItems);
+    }
+
+    get searchRule() {
+        return this.#rules.find(isSearchRule);
+    }
+
+    get sortRules() {
+        return this.#rules.filter(isSortByRule);
+    }
+
+    get filterRules() {
+        return this.#rules.filter(isFilterRule);
+    }
+
+    get groupByRules() {
+        return this.#rules.filter(isGroupByRule);
     }
 
     setItems(items: FItem[] | null | undefined) {

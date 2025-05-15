@@ -1,6 +1,6 @@
-import { FinderInjectedHandlers, FinderFilterRule, FinderOption, FinderMeta } from "../../types";
+import { FinderInjectedHandlers, FilterRule, FinderOption, FinderMeta } from "../../types";
 import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
-import { getRuleFromIdentifier, getOptionFromIdentifier } from "../../utils/finder-utils";
+import { getOptionFromIdentifier, getRuleFromIdentifier } from "../../utils/finder-utils";
 import { isFilterRule } from "../../utils/type-enforcers";
 
 class FiltersMixin<FItem> {
@@ -15,8 +15,8 @@ class FiltersMixin<FItem> {
         this.#handlers = handlers;
     }
 
-    set(identifier: FinderFilterRule | string, incomingFilterValue: any) {
-        const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, this.rules);
+    set(identifier: FilterRule | string, incomingFilterValue: any) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -45,16 +45,57 @@ class FiltersMixin<FItem> {
         return this.#handlers.getRules().filter(isFilterRule);
     }
 
-    get(identifier: FinderFilterRule | string) {
-        const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, this.rules);
+    get activeRules() {
+        return this.rules.filter((rule) => this.isActive(rule));
+    }
+    get activeRuleIds() {
+        return this.activeRules.map((rule) => rule.id);
+    }
+
+    get(identifier: FilterRule | string) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
         return this.filters?.[rule.id];
     }
 
-    test(identifier: FinderFilterRule | string, filterValue: any, incomingMeta = this.#handlers.getMeta()) {
-        const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, this.rules);
+    isActive(identifier: FilterRule | string) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        if (!rule) {
+            return false;
+        }
+        return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
+    }
+
+    toggleOption(identifier: FilterRule | string, optionValue: FinderOption | any) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        if (rule === undefined) {
+            throw new Error("Finder could not locate a rule for this filter.");
+        }
+        if (rule.options === undefined) {
+            throw new Error("Finder could not toggle this filter rule option, as the filter does not have any options.");
+        }
+        if (!!rule?.multiple === false) {
+            throw new Error(
+                "Finder could not toggle this filter rule option, as the rule does not allow multiple values. Consider using filters.set() or filters.toggle() instead.",
+            );
+        }
+
+        const option = getOptionFromIdentifier(optionValue, rule.options, this.#handlers.getItems());
+
+        const previousFilterValue: any[] = this.filters?.[rule.id] ?? [];
+
+        if (previousFilterValue.includes(option.value)) {
+            this.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
+            return;
+        }
+
+        this.set(rule, [...previousFilterValue, option.value]);
+    }
+
+    test(identifier: FilterRule | string, filterValue: any, incomingMeta = this.#handlers.getMeta()) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -63,8 +104,8 @@ class FiltersMixin<FItem> {
         return FiltersMixin.process(items, [rule], { [rule.id]: filterValue }, incomingMeta);
     }
 
-    testOptions(identifier: FinderFilterRule | string, incomingMeta = this.#handlers.getMeta()) {
-        const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, this.rules);
+    testOptions(identifier: FilterRule | string, incomingMeta = this.#handlers.getMeta()) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -94,8 +135,10 @@ class FiltersMixin<FItem> {
         return FiltersMixin.process(items, this.rules, this.filters, meta);
     }
 
-    static process<FItem>(items: FItem[], rules: FinderFilterRule[], values: Record<string, any>, meta?: FinderMeta) {
-        const activeFilters = composeActiveFilterRules(rules, values);
+    static process<FItem>(items: FItem[], rules: FilterRule[], values: Record<string, any>, meta?: FinderMeta) {
+        const activeFilters = rules.filter((rule) => {
+            return FiltersMixin.isActive(rule, values?.[rule.id]);
+        });
         return items.filter((item) => {
             // An item must pass ALL filters to match.
             return activeFilters.every((rule) => {
@@ -112,40 +155,32 @@ class FiltersMixin<FItem> {
             });
         });
     }
-}
 
-/**
- * Filters are static arrays, and may not all be active.
- * This method identifies which filters have matching filterValues that make them relevant.
- */
-export function composeActiveFilterRules<Item>(rules: FinderFilterRule<Item>[] = [], filterValues: Record<string, any> = {}) {
-    return rules.filter((rule) => {
-        const filterState = filterValues?.[rule.id];
-
+    static isActive(rule: FilterRule, value: any) {
         if (rule.required) {
             return true;
         }
 
         // The filter is inactive if no value is set.
-        if (filterState === undefined) {
+        if (value === undefined) {
             return false;
         }
 
         // If the value array is empty, the filter is inactive.
-        if (rule.multiple && Array.isArray(filterState) && filterState.length === 0) {
+        if (rule.multiple && Array.isArray(value) && value.length === 0) {
             return false;
         }
 
-        if (rule.is_boolean && filterState === false) {
+        if (rule.is_boolean && value === false) {
             return false;
         }
 
         // Empty strings are considered inactive.
-        if (typeof filterState === "string" && filterState.trim() === "") {
+        if (typeof value === "string" && value.trim() === "") {
             return false;
         }
         return true;
-    });
+    }
 }
 
 export { FiltersMixin };

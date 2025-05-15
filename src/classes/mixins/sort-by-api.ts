@@ -13,15 +13,17 @@ function sortByAPI<FItem>(mixin: SortByMixin<FItem>) {
         set: mixin.set.bind(mixin),
         setSortDirection: mixin.setSortDirection.bind(mixin),
         cycleSortDirection: () => {
-            if (mixin.sortDirection === undefined) {
+            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultDirection;
+            if (initialDirection === undefined) {
                 mixin.setSortDirection("desc");
+                return;
             }
-            if (mixin.sortDirection === "desc") {
+            if (initialDirection === "desc") {
                 mixin.setSortDirection("asc");
+                return;
             }
-            if (mixin.sortDirection === "asc") {
-                mixin.setSortDirection(undefined);
-            }
+            mixin.setSortDirection(undefined);
+            return;
         },
         reset() {
             mixin.set(undefined, undefined);

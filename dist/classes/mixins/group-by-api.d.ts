@@ -1,15 +1,15 @@
-import { FinderGroupByRule } from "../../types";
+import { GroupByRule } from "../../types";
 import { GroupByMixin } from "./group-by";
 /**
  * Public surface for the Group By mixin
  */
 declare function groupByAPI<FItem>(mixin: GroupByMixin<FItem>): {
-    activeRule: FinderGroupByRule<unknown> | undefined;
+    activeRule: GroupByRule<unknown> | undefined;
     activeRuleId: string | undefined;
     requireGroup: boolean;
-    rules: FinderGroupByRule<unknown>[];
-    set(identifier?: FinderGroupByRule | string): void;
-    toggle: (identifier: FinderGroupByRule | string) => void;
+    rules: GroupByRule<unknown>[];
+    set(identifier?: GroupByRule | string): void;
+    toggle: (identifier: GroupByRule | string) => void;
     reset: () => void;
 };
 export { groupByAPI };

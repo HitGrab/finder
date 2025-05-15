@@ -1,4 +1,4 @@
-import { FinderGroupByRule } from "../../types";
+import { GroupByRule } from "../../types";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
 import { GroupByMixin } from "./group-by";
 
@@ -11,15 +11,20 @@ function groupByAPI<FItem>(mixin: GroupByMixin<FItem>) {
         activeRuleId: mixin.activeRule?.id,
         requireGroup: mixin.requireGroup,
         rules: mixin.rules,
-        set(identifier?: FinderGroupByRule | string) {
+        set(identifier?: GroupByRule | string) {
+            if (typeof identifier === "string" && identifier.trim() === "") {
+                mixin.set(undefined);
+                return;
+            }
             if (identifier) {
-                const rule = getRuleFromIdentifier<FinderGroupByRule>(identifier, mixin.rules);
+                const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
                 mixin.set(rule);
+                return;
             }
             mixin.set(undefined);
         },
-        toggle: (identifier: FinderGroupByRule | string) => {
-            const rule = getRuleFromIdentifier<FinderGroupByRule>(identifier, mixin.rules);
+        toggle: (identifier: GroupByRule | string) => {
+            const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
             if (mixin.activeRule === rule?.id) {
                 mixin.set(undefined);
                 return;

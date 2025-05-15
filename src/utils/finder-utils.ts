@@ -1,17 +1,4 @@
 import { FinderMeta, FinderOption, FinderRule } from "../types";
-import { isFinderOption } from "./type-enforcers";
-
-/**
- * Strip unwanted properties from an object.
- */
-export function only<T = object>(origin: T, keys: (keyof T)[]) {
-    return keys.reduce<T>((acc, key) => {
-        if (Object.keys(origin as object).includes(String(key)) !== false) {
-            acc[key] = origin[key];
-        }
-        return acc;
-    }, {} as T);
-}
 
 export function getRuleFromIdentifier<NarrowRule = FinderRule>(identifier: FinderRule | string | undefined, rules: FinderRule[]): NarrowRule | undefined {
     if (identifier === undefined) {
@@ -36,16 +23,17 @@ export function getRuleFromIdentifier<NarrowRule = FinderRule>(identifier: Finde
     throw new Error("Finder received an invalid rule request format.");
 }
 
-export function getOptionFromIdentifier(
+export function getOptionFromIdentifier<FItem>(
     optionOrOptionValue: FinderOption | any,
-    options: FinderOption[] | ((meta?: FinderMeta) => FinderOption[]) | undefined,
+    options: FinderOption[] | ((items: FItem[], meta?: FinderMeta) => FinderOption[]) | undefined,
+    items: FItem[],
     meta?: FinderMeta,
 ) {
     let option: FinderOption | any;
 
     let composedOptions: FinderOption[] = [];
     if (typeof options === "function") {
-        composedOptions = options(meta);
+        composedOptions = options(items, meta);
     }
     if (Array.isArray(options)) {
         composedOptions = options;
@@ -64,4 +52,8 @@ export function getOptionFromIdentifier(
         throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
     }
     return option;
+}
+
+export function isFinderOption(data: unknown): data is FinderOption {
+    return typeof data === "object" && data !== null && "label" in data && "value" in data;
 }

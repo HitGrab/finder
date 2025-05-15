@@ -1,16 +1,16 @@
 import { orderBy } from "lodash";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
-import { FinderSortByRule, FinderSortDirection, FinderInjectedHandlers, FinderMeta } from "../../types";
+import { SortByRule, FinderSortDirection, FinderInjectedHandlers, FinderMeta } from "../../types";
 import { isSortByRule } from "../../utils/type-enforcers";
 
 class SortByMixin<FItem> {
-    #sortBy?: FinderSortByRule;
+    #sortBy?: SortByRule;
     sortDirection?: FinderSortDirection;
     #handlers: FinderInjectedHandlers<FItem>;
 
     constructor(initialSortby: string | undefined, initialSortDirection: FinderSortDirection | undefined, handlers: FinderInjectedHandlers<FItem>) {
         this.#handlers = handlers;
-        this.#sortBy = getRuleFromIdentifier<FinderSortByRule>(initialSortby, this.rules);
+        this.#sortBy = getRuleFromIdentifier<SortByRule>(initialSortby, this.rules);
         this.sortDirection = initialSortDirection;
     }
 
@@ -23,24 +23,24 @@ class SortByMixin<FItem> {
         return this.#sortBy ?? defaultSortByRule;
     }
 
-    setSortDirection(incomingSortDirection: FinderSortDirection) {
+    setSortDirection(incomingSortDirection: string | string[] | undefined) {
         if (this.#handlers.isDisabled()) {
             return;
         }
-
         this.#handlers.onInit();
-        this.sortDirection = incomingSortDirection;
-        this.#handlers.onChange({ sortDirection: incomingSortDirection });
+        // TODO: Should use a type guard here.
+        this.sortDirection = incomingSortDirection as FinderSortDirection;
+        this.#handlers.onChange({ sortDirection: incomingSortDirection as FinderSortDirection });
     }
 
-    set(identifier: FinderSortByRule | string | undefined, incomingSortDirection?: FinderSortDirection) {
+    set(identifier: SortByRule | string | undefined, incomingSortDirection?: FinderSortDirection) {
         if (this.#handlers.isDisabled()) {
             return;
         }
 
         this.#handlers.onInit();
 
-        const rule = getRuleFromIdentifier<FinderSortByRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
         this.#sortBy = rule;
         this.sortDirection = incomingSortDirection;
         this.#handlers.onChange({ sortBy: rule?.id, sortDirection: incomingSortDirection });

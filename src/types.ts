@@ -53,49 +53,57 @@ export interface FinderDiff<FItem = any> {
 }
 
 export interface FinderInstance<FItem> {
+    items: FItem[];
     matches: MatchesSnapshot<FItem>;
     pagination: FinderPagination;
     isEmpty: boolean;
     isLoading: boolean;
     disabled: boolean;
+    updatedAt?: number;
     search: {
         searchTerm: string;
-        hasSearchRule: boolean;
+        activeRule?: SearchRule<FItem>;
+        hasSearchTerm: boolean;
         setSearchTerm: (value: string) => void;
+        reset: () => void;
     };
     filters: {
         value?: Record<string, any>;
-        rules: FinderFilterRule<FItem>[];
-        set: (identifier: FinderFilterRule | string, value?: any) => void;
-        get: (identifier: FinderFilterRule | string) => any;
-        delete: (identifier: FinderFilterRule | string) => void;
-        toggle: (identifier: FinderFilterRule | string) => void;
-        toggleOption: (identifier: FinderFilterRule | string, optionValue: FinderOption | any) => void;
-        test: (identifier: FinderFilterRule | string, filterValue: any, meta?: FinderMeta) => FItem[];
-        testOptions: (identifier: FinderFilterRule | string, meta?: FinderMeta) => Map<FinderOption | boolean, FItem[] | undefined>;
+        rules: FilterRule<FItem>[];
+        activeRules: FilterRule<FItem>[];
+        activeRuleIds: string[];
+        isActive: (identifier: FilterRule | string, value?: any) => boolean;
+        set: (identifier: FilterRule | string, value?: any) => void;
+        get: (identifier: FilterRule | string) => any;
+        delete: (identifier: FilterRule | string) => void;
+        toggle: (identifier: FilterRule | string) => void;
+        toggleOption: (identifier: FilterRule | string, optionValue: FinderOption | any) => void;
+        test: (identifier: FilterRule | string, filterValue: any, meta?: FinderMeta) => FItem[];
+        testOptions: (identifier: FilterRule | string, meta?: FinderMeta) => Map<FinderOption | boolean, FItem[] | undefined>;
     };
     sortBy: {
-        activeRule?: FinderSortByRule<FItem>;
+        activeRule?: SortByRule<FItem>;
         activeRuleId?: string;
-        rules: FinderSortByRule<FItem>[];
+        rules: SortByRule<FItem>[];
         sortDirection?: FinderSortDirection;
-        set: (identifier: FinderSortByRule | string, sortDirection?: FinderSortDirection) => void;
-        setSortDirection: (sortDirection: FinderSortDirection) => void;
+        set: (identifier: SortByRule | string, sortDirection?: FinderSortDirection) => void;
+        setSortDirection: (sortDirection: string | string[] | undefined) => void;
         cycleSortDirection: () => void;
     };
     groupBy: {
-        activeRule?: FinderGroupByRule<FItem>;
+        activeRule?: GroupByRule<FItem>;
         activeRuleId?: string;
-        rules: FinderGroupByRule<FItem>[];
+        rules: GroupByRule<FItem>[];
         requireGroup: boolean;
-        set: (identifier?: FinderGroupByRule | string, value?: string) => void;
-        toggle: (identifier: FinderGroupByRule | string) => void;
+        set: (identifier?: GroupByRule | string, value?: string) => void;
+        toggle: (identifier: GroupByRule | string) => void;
         reset: () => void;
     };
     selectedItems: {
         items?: FItem[];
         select: (item: FItem) => void;
         delete: (item: FItem) => void;
+        toggle: (item: FItem) => void;
         isSelected: (item: FItem) => boolean;
         reset: () => void;
     };
@@ -114,25 +122,25 @@ export interface FinderResultGroup<FItems> {
 }
 export type FinderMeta = Map<any, any>;
 
-export type FinderRule<FItem = any> = FinderSearchRule<FItem> | FinderFilterRule<FItem> | FinderSortByRule<FItem> | FinderGroupByRule<FItem>;
+export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
-export interface FinderSearchRule<FItem = any> {
+export interface SearchRule<FItem = any> extends Record<string, any> {
     id?: string;
     searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
     debounceDelay?: number;
 }
 
-export interface FinderFilterRule<FItem = any, FValue = any> {
+export interface FilterRule<FItem = any, FValue = any> extends Record<string, any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
-    options?: FinderOption<FValue>[] | ((meta?: FinderMeta) => FinderOption<FValue>[]);
+    options?: FinderOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FinderOption<FValue>[]);
     multiple?: boolean;
     required?: boolean;
     is_boolean?: boolean;
     debounceDelay?: number;
 }
 
-export interface FinderGroupByRule<FItem = any> {
+export interface GroupByRule<FItem = any> extends Record<string, any> {
     id: string;
     groupFn: FinderPropertySelector<FItem>;
     sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem[]>>;
@@ -143,7 +151,7 @@ export interface FinderGroupByRule<FItem = any> {
     };
 }
 
-export interface FinderSortByRule<FItem = any> {
+export interface SortByRule<FItem = any> extends Record<string, any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultDirection?: "asc" | "desc" | ("asc" | "desc")[];
@@ -169,6 +177,7 @@ export interface FinderGroupsComponentProps<FItem> {
     groups: FinderResultGroup<FItem>[];
     pagination?: FinderPagination;
     meta?: FinderMeta;
+    rule?: GroupByRule;
 }
 
 /**

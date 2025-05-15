@@ -50,6 +50,6 @@ function Finder<FItem>({
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
 
-    return <FinderContext.Provider value={finderInstance}>{children}</FinderContext.Provider>;
+    return <FinderContext.Provider value={[finderInstance, finderInstance.updatedAt]}>{children}</FinderContext.Provider>;
 }
 export { Finder };
