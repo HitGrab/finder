@@ -8,6 +8,7 @@ function searchAPI<FItem>(mixin: SearchMixin<FItem>) {
         searchTerm: mixin.searchTerm,
         hasSearchRule: mixin.hasSearchRule,
         setSearchTerm: mixin.setSearchTerm.bind(mixin),
+        reset: () => mixin.setSearchTerm(""),
     };
 }
 

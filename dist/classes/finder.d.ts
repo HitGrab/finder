@@ -3,6 +3,7 @@ declare class Finder<FItem> {
     #private;
     isLoading: boolean;
     disabled: boolean;
+    updatedAt?: number;
     constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortby, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, onInit, onChange, }: FinderConstructorOptions<FItem>);
     initializeOnce(): void;
     get matches(): MatchesSnapshot<FItem>;
@@ -11,6 +12,7 @@ declare class Finder<FItem> {
         searchTerm: string;
         hasSearchRule: boolean;
         setSearchTerm: (incomingSearchTerm: string) => void;
+        reset: () => void;
     };
     get filters(): {
         value: Record<string, any>;

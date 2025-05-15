@@ -2,6 +2,6 @@
 import { createContext } from "react";
 import { FinderInstance } from "../types";
 
-const FinderContext = createContext<FinderInstance<any> | null>(null);
+const FinderContext = createContext<[FinderInstance<any>, number | undefined] | null>(null);
 
 export { FinderContext };

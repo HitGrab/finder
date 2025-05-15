@@ -26,6 +26,8 @@ class Finder<FItem> {
 
     disabled: boolean;
 
+    updatedAt?: number;
+
     #onChange?: FinderOnChangeCallback;
 
     #onInit?: () => void;
@@ -138,6 +140,7 @@ class Finder<FItem> {
 
     #onChangeEvent(diff: FinderDiff) {
         this.#isTouched = true;
+        this.updatedAt = Date.now();
 
         if (this.#onChange) {
             this.#onChange(diff, this);

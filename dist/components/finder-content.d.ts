@@ -4,6 +4,7 @@ interface FinderContentProps<FItem = any> {
     children: {
         loading?: ElementType | ReactNode;
         empty?: ElementType | ReactNode;
+        noMatches?: ElementType | ReactNode;
         items?: ElementType<FinderItemsComponentProps<FItem>>;
         groups?: ElementType<FinderGroupsComponentProps<FItem>>;
     };

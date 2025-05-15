@@ -7,26 +7,26 @@ export function finderOptions<FItem>(options: FinderConstructorOptions<FItem>) {
     return options;
 }
 
-export function makeSearchRule<FItem>(rule: FinderSearchRule<FItem>) {
+export function searchRule<FItem>(rule: FinderSearchRule<FItem>) {
     return rule;
 }
 
-export function makeFilterRule<FItem, FValue = any>(rule: FinderFilterRule<FItem, FValue>) {
+export function filterRule<FItem, FValue = any>(rule: FinderFilterRule<FItem, FValue>) {
     return rule;
 }
 
-export function makeSortByRule<FItem>(rule: FinderSortByRule<FItem>) {
+export function sortByRule<FItem>(rule: FinderSortByRule<FItem>) {
     return rule;
 }
 
-export function makeGroupByRule<FItem>(rule: FinderGroupByRule<FItem>) {
+export function groupByRule<FItem>(rule: FinderGroupByRule<FItem>) {
     return rule;
 }
 
 /**
  * Enforce structure for an array of rule of mixed types.
  */
-export function makeRules<FItem>(rules: (FinderSearchRule<FItem> | FinderFilterRule<FItem> | FinderSortByRule<FItem> | FinderGroupByRule<FItem>)[]) {
+export function finderRules<FItem>(rules: (FinderSearchRule<FItem> | FinderFilterRule<FItem> | FinderSortByRule<FItem> | FinderGroupByRule<FItem>)[]) {
     return rules;
 }
 
@@ -44,8 +44,4 @@ export function isFilterRule<FItem>(rule: unknown): rule is FinderFilterRule<FIt
 
 export function isGroupByRule<FItem>(rule: unknown): rule is FinderGroupByRule<FItem> {
     return typeof rule === "object" && rule !== null && "groupFn" in rule;
-}
-
-export function isFinderOption(data: unknown): data is FinderOption {
-    return typeof data === "object" && data !== null && "label" in data && "value" in data;
 }
