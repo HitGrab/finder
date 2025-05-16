@@ -289,6 +289,19 @@ describe("SortBy", () => {
         const { result } = renderHook(() => useFinder(objectItems, { rules, initialSortDirection }));
         expect(result.current.matches.items).toStrictEqual([banana, orange, apple]);
     });
+
+    test("Cycles", () => {
+        const rules = [
+            sortByRule({
+                id: "sort_by_price",
+                sortFn: (item: MockObjectItem) => item.price,
+            }),
+        ];
+
+        const { result } = renderHook(() => useFinder(objectItems, { rules }));
+        result.current.sortBy.cycleSortDirection();
+        expect(result.current.sortBy.sortDirection).toStrictEqual("desc");
+    });
 });
 
 describe("GroupBy", () => {

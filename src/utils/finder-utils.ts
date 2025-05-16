@@ -23,16 +23,17 @@ export function getRuleFromIdentifier<NarrowRule = FinderRule>(identifier: Finde
     throw new Error("Finder received an invalid rule request format.");
 }
 
-export function getOptionFromIdentifier(
+export function getOptionFromIdentifier<FItem>(
     optionOrOptionValue: FinderOption | any,
-    options: FinderOption[] | ((meta?: FinderMeta) => FinderOption[]) | undefined,
+    options: FinderOption[] | ((items: FItem[], meta?: FinderMeta) => FinderOption[]) | undefined,
+    items: FItem[],
     meta?: FinderMeta,
 ) {
     let option: FinderOption | any;
 
     let composedOptions: FinderOption[] = [];
     if (typeof options === "function") {
-        composedOptions = options(meta);
+        composedOptions = options(items, meta);
     }
     if (Array.isArray(options)) {
         composedOptions = options;

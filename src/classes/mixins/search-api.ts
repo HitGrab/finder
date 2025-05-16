@@ -6,7 +6,8 @@ import { SearchMixin } from "./search";
 function searchAPI<FItem>(mixin: SearchMixin<FItem>) {
     return {
         searchTerm: mixin.searchTerm,
-        hasSearchRule: mixin.hasSearchRule,
+        activeRule: mixin.rule,
+        hasSearchTerm: mixin.searchTerm !== "",
         setSearchTerm: mixin.setSearchTerm.bind(mixin),
         reset: () => mixin.setSearchTerm(""),
     };

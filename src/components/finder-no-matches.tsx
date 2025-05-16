@@ -1,12 +1,12 @@
 import { ElementType, isValidElement, ReactNode } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
 
-interface FinderEmptyProps {
+interface FinderNoMatchesProps<FItem> {
     children: ElementType | ReactNode;
 }
-function FinderNoMatches({ children: renderProp }: FinderEmptyProps) {
+function FinderNoMatches<FItem>({ children: renderProp }: FinderNoMatchesProps<FItem>) {
     const finder = useFinderContext();
-    if (finder.matches.items?.length === 0 && renderProp) {
+    if (Array.isArray(finder.matches.items) && finder.matches.items.length === 0 && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;
         }

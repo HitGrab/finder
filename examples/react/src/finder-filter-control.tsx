@@ -1,9 +1,8 @@
-import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderFilterRule, FinderOption } from "../types";
+import { HydratedFilterRule, useFinderContext } from "finder";
 
 interface FinderFilterControlProps {
     label: string;
-    rule: FinderFilterRule;
+    rule: HydratedFilterRule;
 }
 
 /**
@@ -23,21 +22,10 @@ function FinderFilterControl({ label, rule }: FinderFilterControlProps) {
     }
 
     if (rule.options !== undefined) {
-        let options: FinderOption[] = [];
-
-        if (Array.isArray(rule.options)) {
-            options = rule.options;
-        }
-
-        // Some rule options may need to be constructed based on meta values not present at init.
-        if (typeof rule.options === "function") {
-            options = rule.options(finder.meta.value);
-        }
-
         if (rule.multiple) {
             return (
                 <ul>
-                    {options.map((option) => {
+                    {rule.options.map((option) => {
                         return (
                             <li key={option.label}>
                                 <label>
@@ -56,24 +44,31 @@ function FinderFilterControl({ label, rule }: FinderFilterControlProps) {
             );
         }
 
+        let matches = new Map();
+        if (rule.options) {
+            matches = finder.filters.testOptions(rule);
+        }
+
         return (
-            <ul>
-                {options.map((option) => {
-                    return (
-                        <li key={option.label}>
-                            <label>
-                                <input
-                                    name={`${rule.id}`}
-                                    type="radio"
-                                    checked={ruleValue === option.value}
-                                    onChange={() => finder.filters.set(rule.id, option.value)}
-                                />
+            <label>
+                {label}
+                <select value={ruleValue} onChange={(e) => finder.filters.set(rule, e.currentTarget.value)}>
+                    {!!rule.required === false && (
+                        <option value="" key="none">
+                            -- None --
+                        </option>
+                    )}
+                    {rule.options.map((option) => {
+                        return (
+                            <option value={option.value} key={option.value}>
                                 {option.label}
-                            </label>
-                        </li>
-                    );
-                })}
-            </ul>
+                                {matches.has(option) && `  ${matches.get(option).length} match(s) `}
+                            </option>
+                        );
+                    })}
+                </select>
+                {ruleValue !== undefined && <button onClick={() => finder.filters.delete(rule)}>Clear</button>}
+            </label>
         );
     }
 

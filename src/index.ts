@@ -5,8 +5,19 @@ export { Finder } from "./components/finder";
 export { FinderEmpty } from "./components/finder-empty";
 export { FinderGroups } from "./components/finder-groups";
 export { FinderLoading } from "./components/finder-loading";
-export { FinderNoMatches } from "./components/finder-no-matches";
 export { FinderContent } from "./components/finder-content";
 export { useFinderRef } from "./utils/ref-utils";
-export { finderStringCompare } from "./utils/string-utils";
-export { finderOptions, finderRules, searchRule, filterRule, groupByRule, sortByRule } from "./utils/type-enforcers";
+export { finderStringCompare } from "./utils/compare-utils";
+export type {
+    FinderRule,
+    SearchRule,
+    FilterRule,
+    HydratedFilterRule,
+    SortByRule,
+    HydratedSortByRule,
+    GroupByRule,
+    FinderResultGroup,
+    FinderOption,
+} from "./types";
+
+export * from "./utils/type-enforcers";

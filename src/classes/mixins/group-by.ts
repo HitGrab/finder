@@ -1,12 +1,13 @@
 import { groupBy, orderBy, Many } from "lodash";
-import { FinderGroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
+import { GroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
 import { isGroupByRule } from "../../utils/type-enforcers";
 
 class GroupByMixin<FItem> {
-    #groupBy?: FinderGroupByRule;
+    #groupBy?: GroupByRule;
 
     requireGroup: boolean;
+    groupIdSortDirection?: string;
 
     #handlers: FinderInjectedHandlers<FItem>;
 
@@ -17,7 +18,7 @@ class GroupByMixin<FItem> {
     }
 
     get rules() {
-        return this.#handlers.getRules().filter(isGroupByRule);
+        return this.#handlers.getHydratedRules().filter(isGroupByRule);
     }
 
     get activeRule() {
@@ -25,20 +26,35 @@ class GroupByMixin<FItem> {
         return this.#groupBy ?? defaultRule;
     }
 
-    set(rule?: FinderGroupByRule) {
+    set(identifier?: GroupByRule | string) {
         if (this.#handlers.isDisabled()) {
             return;
+        }
+
+        let rule: GroupByRule | undefined;
+        const isBlankString = typeof identifier === "string" && identifier.trim() === "";
+        if (isBlankString) {
+            rule = undefined;
+        }
+        if (isBlankString === false && identifier !== undefined) {
+            rule = getRuleFromIdentifier<GroupByRule>(identifier, this.rules);
         }
 
         this.#handlers.onInit();
 
         // early exit if nothing changed
-        if (this.#groupBy === rule?.id) {
+        if (this.#groupBy === rule) {
             return;
         }
 
         this.#groupBy = rule;
-        this.#handlers.onChange({ groupBy: rule?.id });
+        this.groupIdSortDirection = undefined;
+        this.#handlers.onChange({ groupBy: rule?.id, groupIdSortDirection: undefined });
+    }
+
+    setGroupIdSortDirection(direction?: string) {
+        this.groupIdSortDirection = direction;
+        this.#handlers.onChange({ groupIdSortDirection: direction });
     }
 
     process(items: FItem[], meta?: FinderMeta) {
@@ -52,32 +68,36 @@ class GroupByMixin<FItem> {
         const groups = Object.keys(groupObject).map((id) => {
             return {
                 id: String(id),
-                items: groupObject[id],
+                items: groupObject[id] ?? [],
             };
         });
 
         const hasStickyGroups = this.activeRule.sticky !== undefined;
         const orderByCallbacks = [];
-        const orderDirection = [];
+        const orderSortDirection = [];
         if (hasStickyGroups) {
             orderByCallbacks.push(composeStickyGroupOrderCallback(this.activeRule));
-            orderDirection.push("asc");
-        }
-        if (this.#groupBy?.sortGroupIdFn) {
-            orderByCallbacks.push(this.#groupBy.sortGroupIdFn);
-            orderDirection.push(this.#groupBy.direction ?? "asc");
+            orderSortDirection.push("asc");
         }
 
-        // TODO: Figure out group sorting
-        // HACK: Lodash type import is bad
-        return orderBy(groups, orderByCallbacks, orderDirection as Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
+        if (this.activeRule?.sortGroupIdFn) {
+            orderByCallbacks.push(this.activeRule.sortGroupIdFn);
+            orderSortDirection.push(this.groupIdSortDirection ?? "asc");
+        }
+
+        if (orderByCallbacks.length > 0) {
+            // HACK: Lodash type import isn't great
+            return orderBy(groups, orderByCallbacks, orderSortDirection as Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
+        }
+
+        return groups as FinderResultGroup<FItem>[];
     }
 }
 
 /**
  * Creates a sorting method for groupBy rule with 'sticky' header/footer groups.
  */
-function composeStickyGroupOrderCallback<FItem>(groupByRule: FinderGroupByRule<FItem>) {
+function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRule<FItem>) {
     let stickyHeaderGroupIds: string[] = [];
     if (groupByRule?.sticky?.header !== undefined) {
         if (Array.isArray(groupByRule.sticky.header)) {

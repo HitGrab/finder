@@ -1,5 +1,5 @@
-import { FinderFilterRule, FinderOption } from "../../types";
-import { getOptionFromIdentifier, getRuleFromIdentifier } from "../../utils/finder-utils";
+import { FilterRule, FinderOption, HydratedFilterRule } from "../../types";
+import { getRuleFromIdentifier } from "../../utils/finder-utils";
 import { FiltersMixin } from "./filters";
 
 /**
@@ -8,9 +8,12 @@ import { FiltersMixin } from "./filters";
 function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
     return {
         value: mixin.filters,
+        activeRules: mixin.activeRules,
+        activeRuleIds: mixin.activeRuleIds,
         rules: mixin.rules,
-        toggle(identifier: FinderFilterRule | string) {
-            const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, mixin.rules);
+        isActive: mixin.isActive.bind(mixin),
+        toggle(identifier: string | FilterRule | HydratedFilterRule) {
+            const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
                 throw new Error("Finder could not locate a rule for this filter.");
             }
@@ -21,35 +24,11 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
             const filterValue = mixin.filters?.[rule.id];
             mixin.set(rule, !filterValue);
         },
-        toggleOption(identifier: FinderFilterRule | string, optionValue: FinderOption | any) {
-            const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, mixin.rules);
-            if (rule === undefined) {
-                throw new Error("Finder could not locate a rule for this filter.");
-            }
-            if (rule.options === undefined) {
-                throw new Error("Finder could not toggle this filter rule option, as the filter does not have any options.");
-            }
-            if (!!rule?.multiple === false) {
-                throw new Error(
-                    "Finder could not toggle this filter rule option, as the rule does not allow multiple values. Consider using filters.set() or filters.toggle() instead.",
-                );
-            }
-
-            const option = getOptionFromIdentifier(optionValue, rule.options);
-
-            const previousFilterValue: any[] = mixin.filters?.[rule.id] ?? [];
-
-            if (previousFilterValue.includes(option.value)) {
-                mixin.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
-                return;
-            }
-
-            mixin.set(rule, [...previousFilterValue, option.value]);
-        },
+        toggleOption: mixin.toggleOption.bind(mixin),
         get: mixin.get.bind(mixin),
         set: mixin.set.bind(mixin),
-        delete: (identifier: FinderFilterRule | string) => {
-            const rule = getRuleFromIdentifier<FinderFilterRule>(identifier, mixin.rules);
+        delete: (identifier: string | FilterRule | HydratedFilterRule) => {
+            const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
                 throw new Error("Finder could not locate a rule for this filter.");
             }

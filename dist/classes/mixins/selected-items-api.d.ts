@@ -8,6 +8,7 @@ declare function selectedItemsAPI<FItem>(mixin: SelectedItemsMixin<FItem>): {
     setMaxSelectedItems: (value?: number) => void;
     select: (item: FItem) => void;
     delete: (item: FItem) => void;
+    toggle: (item: FItem) => void;
     isSelected: (item: FItem) => boolean;
     reset: () => void;
 };

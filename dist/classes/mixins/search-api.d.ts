@@ -1,7 +1,8 @@
 import { SearchMixin } from "./search";
 declare function searchAPI<FItem>(mixin: SearchMixin<FItem>): {
     searchTerm: string;
-    hasSearchRule: boolean;
+    activeRule: import("../..").SearchRule<unknown> | undefined;
+    hasSearchTerm: boolean;
     setSearchTerm: (incomingSearchTerm: string) => void;
     reset: () => void;
 };

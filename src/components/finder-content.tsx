@@ -22,19 +22,10 @@ function FinderContent({ children: renderProps }: FinderContentProps) {
     }
 
     return [
-        // some async data is still being requested
         renderProps.loading && <FinderLoading key="loading">{renderProps.loading}</FinderLoading>,
-
-        // individual item results
         renderProps.items && <FinderItems key="items">{renderProps.items}</FinderItems>,
-
-        // grouped results
-        renderProps.groups && <FinderGroups key="groups">{renderProps.groups}</FinderGroups>,
-
-        // this query returned no results.
         renderProps.noMatches && <FinderNoMatches key="noMatches">{renderProps.noMatches}</FinderNoMatches>,
-
-        // this instance has no items to sort through.
+        renderProps.groups && <FinderGroups key="groups">{renderProps.groups}</FinderGroups>,
         renderProps.empty && <FinderEmpty key="empty">{renderProps.empty}</FinderEmpty>,
     ];
 }

@@ -1,4 +1,3 @@
-import { FinderSortDirection } from "../../types";
 import { SortByMixin } from "./sort-by";
 
 /**
@@ -12,16 +11,28 @@ function sortByAPI<FItem>(mixin: SortByMixin<FItem>) {
         rules: mixin.rules,
         set: mixin.set.bind(mixin),
         setSortDirection: mixin.setSortDirection.bind(mixin),
+        // rotate between the rule default, desc, and asc.
         cycleSortDirection: () => {
-            if (mixin.sortDirection === undefined) {
+            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultDirection;
+            if (initialDirection === undefined) {
                 mixin.setSortDirection("desc");
+                return;
             }
-            if (mixin.sortDirection === "desc") {
+            if (initialDirection === "desc") {
                 mixin.setSortDirection("asc");
+                return;
             }
-            if (mixin.sortDirection === "asc") {
-                mixin.setSortDirection(undefined);
+            mixin.setSortDirection(undefined);
+            return;
+        },
+        // flip between desc and asc.
+        toggleSortDirection: () => {
+            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultDirection;
+            if (initialDirection === "desc") {
+                mixin.setSortDirection("asc");
+                return;
             }
+            mixin.setSortDirection("desc");
         },
         reset() {
             mixin.set(undefined, undefined);
