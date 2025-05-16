@@ -5,6 +5,7 @@ declare class MetaMixin<FItem> {
     constructor(initialMeta: FinderMeta | undefined, handlers: FinderInjectedHandlers<FItem>);
     set(metaIdentifier: any, value: any): void;
     get(metaIdentifier: any): any;
+    has(metaIdentifier: any): boolean;
     delete(metaIdentifier: any): void;
     reset(): void;
 }

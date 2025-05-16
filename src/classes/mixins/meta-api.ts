@@ -8,6 +8,7 @@ function metaAPI<FItem>(mixin: MetaMixin<FItem>) {
         value: mixin.meta,
         set: mixin.set.bind(mixin),
         get: mixin.get.bind(mixin),
+        has: mixin.has.bind(mixin),
         delete: mixin.delete.bind(mixin),
         reset: mixin.reset.bind(mixin),
     };

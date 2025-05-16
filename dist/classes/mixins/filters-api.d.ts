@@ -13,6 +13,7 @@ declare function filtersAPI<FItem>(mixin: FiltersMixin<FItem>): {
     toggleOption: (identifier: string | FilterRule | HydratedFilterRule, optionValue: FinderOption | any) => void;
     get: (identifier: string | FilterRule | HydratedFilterRule) => any;
     set: (identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any) => void;
+    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any) => any;
     delete: (identifier: string | FilterRule | HydratedFilterRule) => void;
     test: (identifier: string | FilterRule | HydratedFilterRule, filterValue: any, incomingMeta?: import("../../types").FinderMeta | undefined) => FItem[];
     testOptions: (identifier: FilterRule | HydratedFilterRule | string, meta?: import("../../types").FinderMeta | undefined) => Map<boolean | FinderOption<any>, FItem[]>;

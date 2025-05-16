@@ -1,21 +1,20 @@
 import { Many, orderBy } from "lodash";
-import { getRuleFromIdentifier } from "../../utils/finder-utils";
-import { SortByRule, FinderInjectedHandlers, FinderMeta, HydratedSortByRule } from "../../types";
-import { isHydratedSortByRule } from "../../utils/type-enforcers";
+import { getRuleFromIdentifier, isSortByRule } from "../../utils/finder-utils";
+import { SortByRule, FinderInjectedHandlers } from "../../types";
 
 class SortByMixin<FItem> {
-    #sortBy?: HydratedSortByRule;
+    #sortBy?: SortByRule;
     sortDirection?: string;
     #handlers: FinderInjectedHandlers<FItem>;
 
     constructor(initialSortby: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>) {
         this.#handlers = handlers;
-        this.#sortBy = getRuleFromIdentifier<HydratedSortByRule>(initialSortby, this.rules);
+        this.#sortBy = getRuleFromIdentifier<SortByRule>(initialSortby, this.rules);
         this.sortDirection = initialSortDirection;
     }
 
     get rules() {
-        return this.#handlers.getHydratedRules().filter(isHydratedSortByRule);
+        return this.#handlers.getHydratedRules().filter(isSortByRule);
     }
 
     get activeRule() {
@@ -33,14 +32,14 @@ class SortByMixin<FItem> {
         this.#handlers.onChange({ sortDirection: incomingSortDirection });
     }
 
-    set(identifier?: string | SortByRule | HydratedSortByRule, incomingSortDirection?: string) {
+    set(identifier?: string | SortByRule, incomingSortDirection?: string) {
         if (this.#handlers.isDisabled()) {
             return;
         }
 
         this.#handlers.onInit();
 
-        const rule = getRuleFromIdentifier<HydratedSortByRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
         this.#sortBy = rule;
         this.sortDirection = incomingSortDirection;
         this.#handlers.onChange({ sortBy: rule?.id, sortDirection: incomingSortDirection });

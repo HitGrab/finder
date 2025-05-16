@@ -1,4 +1,4 @@
-import { FinderConstructorOptions, FilterRule, GroupByRule, SearchRule, SortByRule, HydratedFilterRule, HydratedSortByRule } from "../types";
+import { FinderConstructorOptions, FilterRule, GroupByRule, SearchRule, SortByRule } from "../types";
 /**
  * Enforce constructor shape for a Finder Options param.
  */
@@ -11,9 +11,3 @@ export declare function searchRule<FItem>(rule: SearchRule<FItem>): SearchRule<F
 export declare function filterRule<FItem, FValue = any>(rule: FilterRule<FItem, FValue>): FilterRule<FItem, FValue>;
 export declare function sortByRule<FItem>(rule: SortByRule<FItem>): SortByRule<FItem>;
 export declare function groupByRule<FItem>(rule: GroupByRule<FItem>): GroupByRule<FItem>;
-export declare function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem>;
-export declare function isHydratedSortByRule<FItem>(rule: unknown): rule is HydratedSortByRule<FItem>;
-export declare function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem>;
-export declare function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem>;
-export declare function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem>;
-export declare function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem>;

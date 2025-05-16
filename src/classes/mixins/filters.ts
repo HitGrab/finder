@@ -1,7 +1,6 @@
 import { FinderInjectedHandlers, FilterRule, FinderOption, FinderMeta, HydratedFilterRule } from "../../types";
 import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
-import { getOptionFromIdentifier, getRuleFromIdentifier } from "../../utils/finder-utils";
-import { isHydratedFilterRule } from "../../utils/type-enforcers";
+import { getOptionFromIdentifier, getRuleFromIdentifier, isHydratedFilterRule } from "../../utils/finder-utils";
 
 class FiltersMixin<FItem> {
     filters: Record<string, any>;
@@ -72,6 +71,27 @@ class FiltersMixin<FItem> {
             }
         }
         return value;
+    }
+
+    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        if (rule === undefined) {
+            throw new Error("Finder could not locate a rule for this filter.");
+        }
+
+        const value = this.get(rule);
+
+        if (optionValue === undefined) {
+            return value !== undefined;
+        }
+
+        const option = getOptionFromIdentifier(optionValue, rule.options, this.#handlers.getItems(), this.#handlers.getMeta());
+
+        if (rule.multiple) {
+            return value.includes(option);
+        }
+
+        return value === option;
     }
 
     isActive(identifier: string | FilterRule | HydratedFilterRule) {
