@@ -1,4 +1,4 @@
-import { FinderMeta, FinderOption, FinderRule } from "../types";
+import { FilterRule, FinderMeta, FinderOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types";
 
 export function getRuleFromIdentifier<NarrowRule = FinderRule>(identifier: FinderRule | string | undefined, rules: FinderRule[]): NarrowRule | undefined {
     if (identifier === undefined) {
@@ -56,4 +56,23 @@ export function getOptionFromIdentifier<FItem>(
 
 export function isFinderOption(data: unknown): data is FinderOption {
     return typeof data === "object" && data !== null && "label" in data && "value" in data;
+}
+
+export function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem> {
+    return typeof rule === "object" && rule !== null && "sortFn" in rule;
+}
+
+export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
+    return typeof rule === "object" && rule !== null && "searchFn" in rule;
+}
+
+export function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem> {
+    return typeof rule === "object" && rule !== null && "filterFn" in rule;
+}
+export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem> {
+    return isFilterRule(rule) && rule._isHydrated === true;
+}
+
+export function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem> {
+    return typeof rule === "object" && rule !== null && "groupFn" in rule;
 }

@@ -1,7 +1,6 @@
 import { groupBy, orderBy, Many } from "lodash";
 import { GroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
-import { getRuleFromIdentifier } from "../../utils/finder-utils";
-import { isGroupByRule } from "../../utils/type-enforcers";
+import { getRuleFromIdentifier, isGroupByRule } from "../../utils/finder-utils";
 
 class GroupByMixin<FItem> {
     #groupBy?: GroupByRule;

@@ -4,7 +4,15 @@ import { ElementType, ReactNode } from "react";
 export interface FinderInstance<FItem> {
     items: FItem[];
     matches: MatchesSnapshot<FItem>;
-    pagination: FinderPagination;
+    pagination: {
+        page?: number;
+        numItemsPerPage?: number;
+        numTotalItems: number;
+        lastPage?: number;
+        isPaginated: boolean;
+        setPage: (page: number) => void;
+        setNumItemsPerPage: (numItemsPerPage: number) => void;
+    };
     isEmpty: boolean;
     isLoading: boolean;
     disabled: boolean;
@@ -24,6 +32,7 @@ export interface FinderInstance<FItem> {
         isActive: (identifier: FilterRule | HydratedFilterRule | string, value?: any) => boolean;
         set: (identifier: FilterRule | HydratedFilterRule | string, value?: any) => void;
         get: (identifier: FilterRule | HydratedFilterRule | string) => any;
+        has: (identifier: FilterRule | HydratedFilterRule | string, optionValue?: FinderOption | any) => boolean;
         delete: (identifier: FilterRule | HydratedFilterRule | string) => void;
         toggle: (identifier: FilterRule | HydratedFilterRule | string) => void;
         toggleOption: (identifier: FilterRule | HydratedFilterRule | string, optionValue: FinderOption | any) => void;
@@ -31,14 +40,15 @@ export interface FinderInstance<FItem> {
         testOptions: (identifier: FilterRule | HydratedFilterRule | string, meta?: FinderMeta) => Map<FinderOption | boolean, FItem[] | undefined>;
     };
     sortBy: {
-        activeRule?: HydratedSortByRule<FItem>;
+        activeRule?: SortByRule<FItem>;
         activeRuleId?: string;
-        rules: HydratedSortByRule<FItem>[];
+        rules: SortByRule<FItem>[];
         sortDirection?: string;
-        set: (identifier?: string | SortByRule | HydratedSortByRule, sortDirection?: string) => void;
+        set: (identifier?: string | SortByRule, sortDirection?: string) => void;
         setSortDirection: (sortDirection?: string) => void;
         cycleSortDirection: () => void;
         toggleSortDirection: () => void;
+        reset: () => void;
     };
     groupBy: {
         activeRule?: GroupByRule<FItem>;
@@ -63,6 +73,7 @@ export interface FinderInstance<FItem> {
         value?: FinderMeta;
         set: (metaIdentifier: any, metaValue: any) => void;
         get: (metaIdentifier: any) => any;
+        has: (metaIdentifier: any) => boolean;
         delete: (metaIdentifier: any) => void;
         reset: () => void;
     };
@@ -148,10 +159,6 @@ export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<Filt
     options?: FinderOption<FValue>[];
 }
 
-export interface HydratedSortByRule<FItem = any, FValue = any> extends Omit<SortByRule<FItem>, "options"> {
-    options?: FinderOption<FValue>[];
-}
-
 export interface GroupByRule<FItem = any> extends Record<string, any> {
     id: string;
     groupFn: FinderPropertySelector<FItem>;
@@ -167,7 +174,6 @@ export interface SortByRule<FItem = any> extends Record<string, any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultSortDirection?: "asc" | "desc";
-    options?: FinderOption;
 }
 
 export interface FinderPagination {

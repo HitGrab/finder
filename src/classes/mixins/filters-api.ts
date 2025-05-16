@@ -27,6 +27,7 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
         toggleOption: mixin.toggleOption.bind(mixin),
         get: mixin.get.bind(mixin),
         set: mixin.set.bind(mixin),
+        has: mixin.has.bind(mixin),
         delete: (identifier: string | FilterRule | HydratedFilterRule) => {
             const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {

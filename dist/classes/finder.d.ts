@@ -27,16 +27,17 @@ declare class Finder<FItem> {
         toggleOption: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue: import("..").FinderOption | any) => void;
         get: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => any;
         set: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, incomingFilterValue: any) => void;
+        has: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue?: import("..").FinderOption | any) => any;
         delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
         test: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, filterValue: any, incomingMeta?: FinderMeta | undefined) => FItem[];
         testOptions: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, meta?: FinderMeta | undefined) => Map<boolean | import("..").FinderOption<any>, FItem[]>;
     };
     get sortBy(): {
-        activeRule: import("..").HydratedSortByRule<any, any> | undefined;
-        activeRuleId: any;
+        activeRule: import("..").SortByRule<unknown> | undefined;
+        activeRuleId: string | undefined;
         sortDirection: string | undefined;
-        rules: import("..").HydratedSortByRule<unknown, any>[];
-        set: (identifier?: string | import("..").SortByRule | import("..").HydratedSortByRule, incomingSortDirection?: string) => void;
+        rules: import("..").SortByRule<unknown>[];
+        set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: string) => void;
         setSortDirection: (incomingSortDirection?: string) => void;
         cycleSortDirection: () => void;
         toggleSortDirection: () => void;
@@ -57,6 +58,7 @@ declare class Finder<FItem> {
         value: FinderMeta | undefined;
         set: (metaIdentifier: any, value: any) => void;
         get: (metaIdentifier: any) => any;
+        has: (metaIdentifier: any) => boolean;
         delete: (metaIdentifier: any) => void;
         reset: () => void;
     };

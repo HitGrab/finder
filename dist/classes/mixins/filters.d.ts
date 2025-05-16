@@ -8,6 +8,7 @@ declare class FiltersMixin<FItem> {
     get activeRules(): HydratedFilterRule<unknown, any>[];
     get activeRuleIds(): any[];
     get(identifier: string | FilterRule | HydratedFilterRule): any;
+    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any): any;
     isActive(identifier: string | FilterRule | HydratedFilterRule): boolean;
     toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FinderOption | any): void;
     test(identifier: string | FilterRule | HydratedFilterRule, filterValue: any, incomingMeta?: FinderMeta | undefined): FItem[];

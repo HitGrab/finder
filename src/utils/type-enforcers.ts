@@ -1,4 +1,4 @@
-import { FinderConstructorOptions, FilterRule, GroupByRule, FinderOption, SearchRule, SortByRule, HydratedFilterRule, HydratedSortByRule } from "../types";
+import { FinderConstructorOptions, FilterRule, GroupByRule, SearchRule, SortByRule } from "../types";
 
 /**
  * Enforce constructor shape for a Finder Options param.
@@ -28,26 +28,4 @@ export function sortByRule<FItem>(rule: SortByRule<FItem>) {
 
 export function groupByRule<FItem>(rule: GroupByRule<FItem>) {
     return rule;
-}
-
-export function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem> {
-    return typeof rule === "object" && rule !== null && "sortFn" in rule;
-}
-export function isHydratedSortByRule<FItem>(rule: unknown): rule is HydratedSortByRule<FItem> {
-    return isSortByRule(rule) && rule._isHydrated === true;
-}
-
-export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
-    return typeof rule === "object" && rule !== null && "searchFn" in rule;
-}
-
-export function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem> {
-    return typeof rule === "object" && rule !== null && "filterFn" in rule;
-}
-export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem> {
-    return isFilterRule(rule) && rule._isHydrated === true;
-}
-
-export function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem> {
-    return typeof rule === "object" && rule !== null && "groupFn" in rule;
 }

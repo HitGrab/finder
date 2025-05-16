@@ -1,6 +1,6 @@
 import { FinderInjectedHandlers, FinderMeta } from "../../types";
 import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
-import { isSearchRule } from "../../utils/type-enforcers";
+import { isSearchRule } from "../../utils/finder-utils";
 
 class SearchMixin<FItem> {
     #searchTerm: string;

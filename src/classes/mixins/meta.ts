@@ -19,6 +19,9 @@ class MetaMixin<FItem> {
     get(metaIdentifier: any) {
         return this.meta?.get(metaIdentifier);
     }
+    has(metaIdentifier: any) {
+        return !!this.meta?.has(metaIdentifier);
+    }
     delete(metaIdentifier: any) {
         this.#handlers.onInit();
         const clonedMetaMap = new Map(this.meta);
