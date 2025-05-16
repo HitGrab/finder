@@ -61,6 +61,12 @@ function App() {
                 });
             },
         }),
+        filterRule({
+            id: "is_best_fruit",
+            filterFn: (item, value: string) => item.label === "Guava",
+            label: "Is best fruit",
+            is_boolean: true,
+        }),
         sortByRule({
             id: "alphabetical",
             label: "Alphabetical",
@@ -76,11 +82,15 @@ function App() {
             id: "rating",
             label: "By Rating",
             groupFn: (item) => item.rating,
+            sortGroupIdFn: (group) => {
+                return group.items.at(0)?.rating ?? group.id;
+            },
         }),
         groupByRule({
             id: "first_letter_of_label",
             label: "First letter",
             groupFn: (item) => item.label.substring(0, 1),
+            sortGroupIdFn: (group) => group.id,
         }),
     ]);
 
@@ -128,7 +138,7 @@ function App() {
                                     }}
                                 >
                                     {items.map((item) => (
-                                        <SamplePhoto photo={item} />
+                                        <SamplePhoto photo={item} key={item.sku} />
                                     ))}
                                 </div>
                             );
@@ -147,7 +157,7 @@ function App() {
                                     }}
                                 >
                                     {groups.map(({ id, items }) => (
-                                        <div>
+                                        <div key={id}>
                                             <h2>
                                                 {rule?.id === "rating"
                                                     ? range(0, Number(id)).map((value) => {
@@ -157,7 +167,7 @@ function App() {
                                             </h2>
                                             <div style={{ display: "flex", gap: "20px" }}>
                                                 {items.map((item) => (
-                                                    <SamplePhoto photo={item} />
+                                                    <SamplePhoto photo={item} key={item.sku} />
                                                 ))}
                                             </div>
                                         </div>
@@ -186,10 +196,11 @@ function SearchControls() {
 
 function FilterControls() {
     const finder = useFinderContext();
+    console.log(finder.filters.rules);
     return (
         <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
             {finder.filters.rules.map((rule) => {
-                return <FinderFilterControl label={rule.label ?? rule.id} rule={rule} />;
+                return <FinderFilterControl label={rule.label ?? rule.id} rule={rule} key={rule.id} />;
             })}
         </div>
     );
@@ -228,20 +239,38 @@ function GroupByControls() {
     return (
         <>
             <select
+                value={finder.groupBy.activeRuleId}
                 onChange={(e) => {
-                    console.log(e.currentTarget.value);
                     finder.groupBy.set(e.currentTarget.value);
                 }}
             >
                 {finder.groupBy.requireGroup === false && <option value="">-- None --</option>}
                 {finder.groupBy.rules.map((rule) => {
                     return (
-                        <option selected={rule.id === finder.groupBy.activeRuleId} value={rule.id} key={rule.id}>
+                        <option value={rule.id} key={rule.id}>
                             {rule.label ?? rule.id}
                         </option>
                     );
                 })}
             </select>
+            <>
+                <select
+                    value={String(finder.groupBy.groupIdSortDirection)}
+                    onChange={(e) => {
+                        finder.groupBy.setGroupIdSortDirection(e.currentTarget.value);
+                    }}
+                >
+                    <option value="" key="default">
+                        Default
+                    </option>
+                    <option value="desc" key="desc">
+                        Desc
+                    </option>
+                    <option value="asc" key="asc">
+                        Asc
+                    </option>
+                </select>
+            </>
             {finder.groupBy.activeRule && <button onClick={() => finder.groupBy.reset()}>Clear</button>}
         </>
     );
@@ -250,11 +279,16 @@ function GroupByControls() {
 function SelectedItems() {
     const finder = useFinderContext();
     return (
-        <ul>
-            {finder.selectedItems.items?.map((item) => {
-                return <li>{item.label}</li>;
-            })}
-        </ul>
+        <>
+            <ul>
+                {finder.selectedItems.items?.map((item) => {
+                    return <li key={item.label}>{item.label}</li>;
+                })}
+            </ul>
+            {Array.isArray(finder.selectedItems.items) && finder.selectedItems.items.length > 0 && (
+                <button onClick={() => finder.selectedItems.reset()}>Clear</button>
+            )}
+        </>
     );
 }
 

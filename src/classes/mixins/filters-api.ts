@@ -1,4 +1,4 @@
-import { FilterRule, FinderOption } from "../../types";
+import { FilterRule, FinderOption, HydratedFilterRule } from "../../types";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
 import { FiltersMixin } from "./filters";
 
@@ -12,7 +12,7 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
         activeRuleIds: mixin.activeRuleIds,
         rules: mixin.rules,
         isActive: mixin.isActive.bind(mixin),
-        toggle(identifier: FilterRule | string) {
+        toggle(identifier: string | FilterRule | HydratedFilterRule) {
             const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
                 throw new Error("Finder could not locate a rule for this filter.");
@@ -27,7 +27,7 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
         toggleOption: mixin.toggleOption.bind(mixin),
         get: mixin.get.bind(mixin),
         set: mixin.set.bind(mixin),
-        delete: (identifier: FilterRule | string) => {
+        delete: (identifier: string | FilterRule | HydratedFilterRule) => {
             const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
                 throw new Error("Finder could not locate a rule for this filter.");

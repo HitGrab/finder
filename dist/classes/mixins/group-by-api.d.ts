@@ -8,8 +8,10 @@ declare function groupByAPI<FItem>(mixin: GroupByMixin<FItem>): {
     activeRuleId: string | undefined;
     requireGroup: boolean;
     rules: GroupByRule<unknown>[];
-    set(identifier?: GroupByRule | string): void;
+    groupIdSortDirection: string | undefined;
+    set: (identifier?: GroupByRule | string) => void;
     toggle: (identifier: GroupByRule | string) => void;
+    setGroupIdSortDirection: (direction?: string) => void;
     reset: () => void;
 };
 export { groupByAPI };

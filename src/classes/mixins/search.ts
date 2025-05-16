@@ -19,15 +19,15 @@ class SearchMixin<FItem> {
     }
 
     get rule() {
-        return this.#handlers.getRules().find(isSearchRule);
+        return this.#handlers.getHydratedRules().find(isSearchRule);
     }
 
     get hasSearchRule() {
-        return this.#handlers.getRules().some(isSearchRule);
+        return this.#handlers.getHydratedRules().some(isSearchRule);
     }
 
     setSearchTerm(incomingSearchTerm: string) {
-        const rule = this.#handlers.getRules().find(isSearchRule);
+        const rule = this.#handlers.getHydratedRules().find(isSearchRule);
         if (!rule) {
             throw new Error("Finder could not locate a searchRule.");
         }
@@ -46,7 +46,7 @@ class SearchMixin<FItem> {
     }
 
     process(items: FItem[], meta?: FinderMeta) {
-        const searchRule = this.#handlers.getRules().find(isSearchRule);
+        const searchRule = this.#handlers.getHydratedRules().find(isSearchRule);
         if (this.#searchTerm === "" || searchRule === undefined) {
             return items;
         }

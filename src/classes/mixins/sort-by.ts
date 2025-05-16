@@ -1,21 +1,21 @@
-import { orderBy } from "lodash";
+import { Many, orderBy } from "lodash";
 import { getRuleFromIdentifier } from "../../utils/finder-utils";
-import { SortByRule, FinderSortDirection, FinderInjectedHandlers, FinderMeta } from "../../types";
-import { isSortByRule } from "../../utils/type-enforcers";
+import { SortByRule, FinderInjectedHandlers, FinderMeta, HydratedSortByRule } from "../../types";
+import { isHydratedSortByRule } from "../../utils/type-enforcers";
 
 class SortByMixin<FItem> {
-    #sortBy?: SortByRule;
-    sortDirection?: FinderSortDirection;
+    #sortBy?: HydratedSortByRule;
+    sortDirection?: string;
     #handlers: FinderInjectedHandlers<FItem>;
 
-    constructor(initialSortby: string | undefined, initialSortDirection: FinderSortDirection | undefined, handlers: FinderInjectedHandlers<FItem>) {
+    constructor(initialSortby: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>) {
         this.#handlers = handlers;
-        this.#sortBy = getRuleFromIdentifier<SortByRule>(initialSortby, this.rules);
+        this.#sortBy = getRuleFromIdentifier<HydratedSortByRule>(initialSortby, this.rules);
         this.sortDirection = initialSortDirection;
     }
 
     get rules() {
-        return this.#handlers.getRules().filter(isSortByRule);
+        return this.#handlers.getHydratedRules().filter(isHydratedSortByRule);
     }
 
     get activeRule() {
@@ -23,37 +23,39 @@ class SortByMixin<FItem> {
         return this.#sortBy ?? defaultSortByRule;
     }
 
-    setSortDirection(incomingSortDirection: string | string[] | undefined) {
+    setSortDirection(incomingSortDirection?: string) {
         if (this.#handlers.isDisabled()) {
             return;
         }
         this.#handlers.onInit();
         // TODO: Should use a type guard here.
-        this.sortDirection = incomingSortDirection as FinderSortDirection;
-        this.#handlers.onChange({ sortDirection: incomingSortDirection as FinderSortDirection });
+        this.sortDirection = incomingSortDirection;
+        this.#handlers.onChange({ sortDirection: incomingSortDirection });
     }
 
-    set(identifier: SortByRule | string | undefined, incomingSortDirection?: FinderSortDirection) {
+    set(identifier?: string | SortByRule | HydratedSortByRule, incomingSortDirection?: string) {
         if (this.#handlers.isDisabled()) {
             return;
         }
 
         this.#handlers.onInit();
 
-        const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<HydratedSortByRule>(identifier, this.rules);
         this.#sortBy = rule;
         this.sortDirection = incomingSortDirection;
         this.#handlers.onChange({ sortBy: rule?.id, sortDirection: incomingSortDirection });
     }
 
-    process(items: FItem[], meta?: FinderMeta) {
+    process(items: FItem[]) {
         const defaultSortByRule = this.rules.at(0);
         const activeSortByRule = this.#sortBy ?? defaultSortByRule;
         if (activeSortByRule === undefined) {
             return items;
         }
 
-        return orderBy(items, activeSortByRule.sortFn, this.sortDirection ?? activeSortByRule.defaultDirection) as FItem[];
+        // HACK: Lodash type import isn't great
+        const direction = (this.sortDirection ?? activeSortByRule.defaultSortDirection) as Many<boolean | "asc" | "desc">;
+        return orderBy(items, activeSortByRule.sortFn, direction) as FItem[];
     }
 }
 

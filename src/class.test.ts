@@ -4,6 +4,7 @@ import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./classes/finder";
 import { searchRule, filterRule, finderRules, sortByRule, groupByRule } from "./utils/type-enforcers";
+import { finderStringCompare } from "./utils/compare-utils";
 
 type MockObjectItem = {
     type: string;
@@ -30,6 +31,19 @@ describe("Search", () => {
 
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toStrictEqual([apple]);
+    });
+
+    test("finderStringCompare ignores case, whitespace, and line breaks", () => {
+        const items = ["a b c d e", "f g h i j"];
+        const rules = [
+            searchRule({
+                searchFn: (item: string, searchTerm: string) => finderStringCompare(item, searchTerm),
+            }),
+        ];
+
+        const finder = new Finder(items, { rules });
+        finder.search.setSearchTerm("AB    C\nD\r    E");
+        expect(finder.matches.items).toStrictEqual(["a b c d e"]);
     });
 
     test("Debounced search triggers once", async () => {
@@ -154,6 +168,69 @@ describe("Filter - Basic", () => {
 });
 
 describe("Filter - Advanced", () => {
+    test("Required filters with defined options array select first option", () => {
+        const rules = finderRules([
+            {
+                id: "price",
+                filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
+                required: true,
+                options: [
+                    {
+                        label: "one",
+                        value: 1,
+                    },
+                    {
+                        label: "two",
+                        value: 2,
+                    },
+                    {
+                        label: "ten",
+                        value: 10,
+                    },
+                ],
+            },
+        ]);
+
+        const finder = new Finder(objectItems, { rules });
+        expect(finder.matches.items).toStrictEqual([apple]);
+    });
+
+    test("Required filters with options callback selects first option", () => {
+        const rules = finderRules([
+            {
+                id: "price",
+                filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
+                required: true,
+                options: (items) =>
+                    items
+                        .map((item) => {
+                            return {
+                                label: String(item.price),
+                                value: item.price,
+                            };
+                        })
+                        .reverse(),
+            },
+        ]);
+
+        const finder = new Finder(objectItems, { rules });
+        expect(finder.matches.items).toStrictEqual([banana]);
+    });
+
+    test("Required filters with boolean type selects true", () => {
+        const rules = finderRules([
+            {
+                id: "price",
+                filterFn: (item: MockObjectItem) => item.price === 10,
+                required: true,
+                is_boolean: true,
+            },
+        ]);
+
+        const finder = new Finder(objectItems, { rules });
+        expect(finder.matches.items).toStrictEqual([banana]);
+    });
+
     test("Filters receive meta context", () => {
         const rules = finderRules([
             {
@@ -306,6 +383,35 @@ describe("GroupBy", () => {
         ];
 
         const finder = new Finder(objectItems, { rules, requireGroup: true });
+        expect(finder.matches.groups).toStrictEqual([
+            { id: "three", items: [apple] },
+            { id: "five", items: [orange, banana] },
+        ]);
+    });
+
+    test("Groups sort order", () => {
+        const rules = [
+            groupByRule({
+                id: "expiry_date",
+                groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+                sortGroupIdFn: (group) => group.id,
+            }),
+        ];
+
+        const finder = new Finder(objectItems, { rules, requireGroup: true });
+        act(() => {
+            finder.groupBy.setGroupIdSortDirection("asc");
+        });
+
+        expect(finder.matches.groups).toStrictEqual([
+            { id: "five", items: [orange, banana] },
+            { id: "three", items: [apple] },
+        ]);
+
+        act(() => {
+            finder.groupBy.setGroupIdSortDirection("desc");
+        });
+
         expect(finder.matches.groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },

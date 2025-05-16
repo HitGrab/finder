@@ -11,18 +11,8 @@ function groupByAPI<FItem>(mixin: GroupByMixin<FItem>) {
         activeRuleId: mixin.activeRule?.id,
         requireGroup: mixin.requireGroup,
         rules: mixin.rules,
-        set(identifier?: GroupByRule | string) {
-            if (typeof identifier === "string" && identifier.trim() === "") {
-                mixin.set(undefined);
-                return;
-            }
-            if (identifier) {
-                const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
-                mixin.set(rule);
-                return;
-            }
-            mixin.set(undefined);
-        },
+        groupIdSortDirection: mixin.groupIdSortDirection,
+        set: mixin.set.bind(mixin),
         toggle: (identifier: GroupByRule | string) => {
             const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
             if (mixin.activeRule === rule?.id) {
@@ -31,8 +21,10 @@ function groupByAPI<FItem>(mixin: GroupByMixin<FItem>) {
             }
             mixin.set(rule);
         },
+        setGroupIdSortDirection: mixin.setGroupIdSortDirection.bind(mixin),
         reset: () => {
-            return mixin.set(undefined);
+            mixin.setGroupIdSortDirection(undefined);
+            mixin.set(undefined);
         },
     };
 }

@@ -1,8 +1,8 @@
-import { FilterRule, FinderOption, useFinderContext } from "finder";
+import { HydratedFilterRule, useFinderContext } from "finder";
 
 interface FinderFilterControlProps {
     label: string;
-    rule: FilterRule;
+    rule: HydratedFilterRule;
 }
 
 /**
@@ -22,21 +22,10 @@ function FinderFilterControl({ label, rule }: FinderFilterControlProps) {
     }
 
     if (rule.options !== undefined) {
-        let options: FinderOption[] = [];
-
-        if (Array.isArray(rule.options)) {
-            options = rule.options;
-        }
-
-        // Some rule options may need to be constructed based on item or meta values not present at init.
-        if (typeof rule.options === "function") {
-            options = rule.options(finder.items, finder.meta.value);
-        }
-
         if (rule.multiple) {
             return (
                 <ul>
-                    {options.map((option) => {
+                    {rule.options.map((option) => {
                         return (
                             <li key={option.label}>
                                 <label>
@@ -55,14 +44,25 @@ function FinderFilterControl({ label, rule }: FinderFilterControlProps) {
             );
         }
 
+        let matches = new Map();
+        if (rule.options) {
+            matches = finder.filters.testOptions(rule);
+        }
+
         return (
             <label>
                 {label}
-                <select onChange={(e) => finder.filters.set(rule, e.currentTarget.value)}>
-                    {options.map((option) => {
+                <select value={ruleValue} onChange={(e) => finder.filters.set(rule, e.currentTarget.value)}>
+                    {!!rule.required === false && (
+                        <option value="" key="none">
+                            -- None --
+                        </option>
+                    )}
+                    {rule.options.map((option) => {
                         return (
-                            <option value={option.value} selected={ruleValue === option.value} key={option.value}>
+                            <option value={option.value} key={option.value}>
                                 {option.label}
+                                {matches.has(option) && `  ${matches.get(option).length} match(s) `}
                             </option>
                         );
                     })}

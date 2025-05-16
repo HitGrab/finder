@@ -1,6 +1,7 @@
 import { useState, useSyncExternalStore } from "react";
-import { FinderInstance, FinderConstructorOptions } from "../types";
+import { FinderConstructorOptions } from "../types";
 import { FinderSyncExternalStore } from "../classes/finder-store";
+import { Finder } from "../classes/finder";
 
 /**
  * Create a finder instance with contained state and controllers.
@@ -25,7 +26,7 @@ function useFinder<FItem>(
         onInit,
         onChange,
     }: FinderConstructorOptions<FItem>,
-): FinderInstance<FItem> {
+): Finder<FItem> {
     const [finderStore] = useState(
         () =>
             new FinderSyncExternalStore(items, {

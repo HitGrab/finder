@@ -1,12 +1,12 @@
-import { SortByRule, FinderSortDirection, FinderInjectedHandlers, FinderMeta } from "../../types";
+import { SortByRule, FinderInjectedHandlers, HydratedSortByRule } from "../../types";
 declare class SortByMixin<FItem> {
     #private;
-    sortDirection?: FinderSortDirection;
-    constructor(initialSortby: string | undefined, initialSortDirection: FinderSortDirection | undefined, handlers: FinderInjectedHandlers<FItem>);
-    get rules(): SortByRule<unknown>[];
-    get activeRule(): SortByRule<unknown> | undefined;
-    setSortDirection(incomingSortDirection: string | string[] | undefined): void;
-    set(identifier: SortByRule | string | undefined, incomingSortDirection?: FinderSortDirection): void;
-    process(items: FItem[], meta?: FinderMeta): FItem[];
+    sortDirection?: string;
+    constructor(initialSortby: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>);
+    get rules(): HydratedSortByRule<unknown, any>[];
+    get activeRule(): HydratedSortByRule<any, any> | undefined;
+    setSortDirection(incomingSortDirection?: string): void;
+    set(identifier?: string | SortByRule | HydratedSortByRule, incomingSortDirection?: string): void;
+    process(items: FItem[]): FItem[];
 }
 export { SortByMixin };
