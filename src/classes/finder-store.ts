@@ -11,6 +11,7 @@ class FinderSyncExternalStore<FItem> {
 
     constructor(items: FItem[] | null | undefined, { onChange, ...props }: FinderConstructorOptions<FItem>) {
         const wrappedOnChange: FinderOnChangeCallback = (diff, ref) => {
+            this.emitChanges();
             onChange && onChange(diff, ref);
             this.emitChanges();
         };

@@ -374,24 +374,31 @@ describe("Pagination", () => {
         });
 
         expect(result.current.matches.items).toStrictEqual([banana]);
-        rerender();
 
         // next page
-        page = 2;
-        rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
+        act(() => {
+            page = 2;
+            rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
+        });
         expect(result.current.matches.items).toStrictEqual([orange]);
 
         // last page
-        page = 3;
-        rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
+        act(() => {
+            page = 3;
+            rerender([objectItems, { rules, initialSortDirection, page, numItemsPerPage }]);
+        });
+
         expect(result.current.matches.items).toStrictEqual([apple]);
     });
 });
 
 describe("Selection", () => {
     test("Selects items", () => {
-        const { result, rerender } = renderHook(() => useFinder(objectItems, {}));
-        result.current.selectedItems.select(apple);
+        const { result } = renderHook(() => useFinder(objectItems, {}));
+        act(() => {
+            result.current.selectedItems.select(apple);
+        });
+
         expect(result.current.selectedItems.items).toStrictEqual([apple]);
     });
 
