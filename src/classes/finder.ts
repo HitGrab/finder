@@ -1,14 +1,5 @@
 import { isEqual } from "lodash";
-import {
-    FinderConstructorOptions,
-    FinderInjectedHandlers,
-    FinderOnChangeCallback,
-    FinderResultGroup,
-    FinderRule,
-    FinderDiff,
-    MatchesSnapshot,
-    FinderMeta,
-} from "../types";
+import { FinderConstructorOptions, FinderInjectedHandlers, FinderOnChangeCallback, FinderResultGroup, FinderRule, FinderDiff, MatchesSnapshot } from "../types";
 import { FiltersMixin } from "./mixins/filters";
 import { SortByMixin } from "./mixins/sort-by";
 import { GroupByMixin } from "./mixins/group-by";
@@ -29,8 +20,6 @@ class Finder<FItem> {
 
     // static rule definitions
     #rules: FinderRule<FItem>[];
-    // memoize rules with generated options
-    #hydratedRules?: FinderRule<FItem>[];
 
     #snapshot?: MatchesSnapshot<FItem> = undefined;
 
@@ -88,13 +77,10 @@ class Finder<FItem> {
         this.#onInit = onInit;
         this.#onChange = onChange;
 
-        // hydrate rules immediately
-        this.#hydratedRules = this.#takeHydratedRulesSnapshot(items ?? [], initialMeta);
-
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const handlers: FinderInjectedHandlers<FItem> = {
             getItems: () => this.items,
-            getHydratedRules: () => this.hydratedRules,
+            getRules: () => this.#rules,
             getMeta: () => this.#mixins.meta.meta,
             isDisabled: () => this.disabled,
             onChange: (diff: FinderDiff) => this.#onChangeEvent(diff),
@@ -149,31 +135,9 @@ class Finder<FItem> {
         };
     }
 
-    get hydratedRules() {
-        if (this.#hydratedRules === undefined) {
-            this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#items ?? [], this.#mixins.meta.meta);
-        }
-        return this.#hydratedRules;
-    }
-
-    // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: FItem[], meta?: FinderMeta) {
-        return this.#rules.map((rule) => {
-            if (typeof rule.options === "function") {
-                return { ...rule, options: rule.options(items, meta), _isHydrated: true };
-            }
-            return { ...rule, _isHydrated: true };
-        });
-    }
-
     #onChangeEvent(diff: FinderDiff) {
         this.#isTouched = true;
         this.updatedAt = Date.now();
-
-        // clear generated options if the variables have changed
-        if (diff.meta) {
-            this.#hydratedRules = undefined;
-        }
 
         if (this.#onChange) {
             this.#onChange(diff, this);
@@ -228,9 +192,6 @@ class Finder<FItem> {
         if (isEqual(items, this.#items) === false) {
             this.#items = items;
             this.#isTouched = true;
-
-            // clear generated filter options
-            this.#hydratedRules = undefined;
         }
     }
 

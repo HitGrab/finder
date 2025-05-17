@@ -1,4 +1,4 @@
-import { FinderConstructorOptions, FinderRule, MatchesSnapshot, FinderMeta } from "../types";
+import { FinderConstructorOptions, MatchesSnapshot } from "../types";
 declare class Finder<FItem> {
     #private;
     isLoading: boolean;
@@ -6,7 +6,6 @@ declare class Finder<FItem> {
     updatedAt?: number;
     constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortby, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, onInit, onChange, }: FinderConstructorOptions<FItem>);
     initializeOnce(): void;
-    get hydratedRules(): FinderRule<FItem>[];
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;
     get isEmpty(): boolean;
@@ -19,9 +18,9 @@ declare class Finder<FItem> {
     };
     get filters(): {
         value: Record<string, any>;
-        activeRules: import("..").HydratedFilterRule<unknown, any>[];
+        activeRules: import("..").HydratedFilterRule<FItem, any>[];
         activeRuleIds: any[];
-        rules: import("..").HydratedFilterRule<unknown, any>[];
+        rules: import("..").HydratedFilterRule<FItem, any>[];
         isActive: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => boolean;
         toggle(identifier: string | import("..").FilterRule | import("..").HydratedFilterRule): void;
         toggleOption: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue: import("..").FinderOption | any) => void;
@@ -29,8 +28,8 @@ declare class Finder<FItem> {
         set: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, incomingFilterValue: any) => void;
         has: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue?: import("..").FinderOption | any) => any;
         delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
-        test: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, filterValue: any, incomingMeta?: FinderMeta | undefined) => FItem[];
-        testOptions: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, meta?: FinderMeta | undefined) => Map<boolean | import("..").FinderOption<any>, FItem[]>;
+        test: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, filterValue: any, incomingMeta?: import("../types").FinderMeta | undefined) => FItem[];
+        testOptions: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, meta?: import("../types").FinderMeta | undefined) => Map<boolean | import("..").FinderOption<any>, FItem[]>;
     };
     get sortBy(): {
         activeRule: import("..").SortByRule<unknown> | undefined;
@@ -55,7 +54,7 @@ declare class Finder<FItem> {
         reset: () => void;
     };
     get meta(): {
-        value: FinderMeta | undefined;
+        value: import("../types").FinderMeta | undefined;
         set: (metaIdentifier: any, value: any) => void;
         get: (metaIdentifier: any) => any;
         has: (metaIdentifier: any) => boolean;

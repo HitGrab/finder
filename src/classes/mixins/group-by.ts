@@ -17,7 +17,7 @@ class GroupByMixin<FItem> {
     }
 
     get rules() {
-        return this.#handlers.getHydratedRules().filter(isGroupByRule);
+        return this.#handlers.getRules().filter(isGroupByRule);
     }
 
     get activeRule() {

@@ -20,7 +20,7 @@ Define a static rule array, and pass them to the Finder component. Finder will p
 ```
 function SearchControlComponent() {
     const finder = useFinderContext();
-    return <input type="text" onInput={finder.search.setSearchTerm(e.currentTarget.value)} />
+    return <input type="text" onInput={(e) => finder.search.setSearchTerm(e.currentTarget.value)} />
 }
 
 function Gallery() {
@@ -285,6 +285,16 @@ Only visible when an active GroupBy rule grouped items together.
 ### Matches
 
 Finder match results are snapshotted, and are recalculated when an internal onChange event is triggered.
+
+Finder processes rules in the following order:
+
+1. Search
+2. Filters
+3. SortBy
+4. Paginate
+5. GroupBy
+
+This means that a group might be split across multiple pages.
 
 ```
 function MatchesComponent() {
