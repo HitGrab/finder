@@ -5,9 +5,9 @@ import { FiltersMixin } from "./filters";
  */
 declare function filtersAPI<FItem>(mixin: FiltersMixin<FItem>): {
     value: Record<string, any>;
-    activeRules: HydratedFilterRule<unknown, any>[];
+    activeRules: HydratedFilterRule<FItem, any>[];
     activeRuleIds: any[];
-    rules: HydratedFilterRule<unknown, any>[];
+    rules: HydratedFilterRule<FItem, any>[];
     isActive: (identifier: string | FilterRule | HydratedFilterRule) => boolean;
     toggle(identifier: string | FilterRule | HydratedFilterRule): void;
     toggleOption: (identifier: string | FilterRule | HydratedFilterRule, optionValue: FinderOption | any) => void;

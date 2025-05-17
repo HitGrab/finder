@@ -4,8 +4,8 @@ declare class FiltersMixin<FItem> {
     filters: Record<string, any>;
     constructor(initialFilters: Record<string, any> | undefined, handlers: FinderInjectedHandlers<FItem>);
     set(identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any): void;
-    get rules(): HydratedFilterRule<unknown, any>[];
-    get activeRules(): HydratedFilterRule<unknown, any>[];
+    get rules(): HydratedFilterRule<FItem, any>[];
+    get activeRules(): HydratedFilterRule<FItem, any>[];
     get activeRuleIds(): any[];
     get(identifier: string | FilterRule | HydratedFilterRule): any;
     has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any): any;

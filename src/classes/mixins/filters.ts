@@ -1,9 +1,12 @@
 import { FinderInjectedHandlers, FilterRule, FinderOption, FinderMeta, HydratedFilterRule } from "../../types";
 import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
-import { getOptionFromIdentifier, getRuleFromIdentifier, isHydratedFilterRule } from "../../utils/finder-utils";
+import { getOptionFromIdentifier, getRuleFromIdentifier, isFilterRule } from "../../utils/finder-utils";
 
 class FiltersMixin<FItem> {
     filters: Record<string, any>;
+
+    // memoize rules with generated options
+    #hydratedRules?: HydratedFilterRule<FItem>[];
 
     #handlers: FinderInjectedHandlers<FItem>;
 
@@ -41,11 +44,17 @@ class FiltersMixin<FItem> {
 
             this.filters = { ...this.filters, [rule.id]: transformedFilterValue };
             this.#handlers.onChange({ filters: this.filters });
+
+            // clear hydrated rules in case something changed.
+            this.#hydratedRules = undefined;
         });
     }
 
     get rules() {
-        return this.#handlers.getHydratedRules().filter(isHydratedFilterRule);
+        if (this.#hydratedRules === undefined) {
+            this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#handlers.getItems(), this.#handlers.getMeta());
+        }
+        return this.#hydratedRules;
     }
 
     get activeRules() {
@@ -53,6 +62,17 @@ class FiltersMixin<FItem> {
     }
     get activeRuleIds() {
         return this.activeRules.map((rule) => rule.id);
+    }
+
+    // hydrate and memoize generated options
+    #takeHydratedRulesSnapshot(items: FItem[], meta?: FinderMeta) {
+        const filterRules = this.#handlers.getRules().filter(isFilterRule);
+        return filterRules.map((rule) => {
+            if (typeof rule.options === "function") {
+                return { ...rule, options: rule.options(items, meta), _isHydrated: true } as HydratedFilterRule<FItem>;
+            }
+            return { ...rule, _isHydrated: true } as HydratedFilterRule<FItem>;
+        });
     }
 
     get(identifier: string | FilterRule | HydratedFilterRule) {

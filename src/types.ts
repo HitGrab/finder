@@ -213,7 +213,7 @@ export interface FinderOption<FValue = any> {
 // Provides accessors for state owned by the parent.
 export type FinderInjectedHandlers<FItem> = {
     isDisabled: () => boolean;
-    getHydratedRules: () => FinderRule[];
+    getRules: () => FinderRule[];
     onInit: () => void;
     onChange: (diff: FinderDiff) => void;
     getMeta: () => FinderMeta | undefined;

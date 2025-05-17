@@ -14,7 +14,7 @@ class SortByMixin<FItem> {
     }
 
     get rules() {
-        return this.#handlers.getHydratedRules().filter(isSortByRule);
+        return this.#handlers.getRules().filter(isSortByRule);
     }
 
     get activeRule() {
