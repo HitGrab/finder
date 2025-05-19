@@ -1,35 +1,26 @@
 import {
+    FilterRule,
     filterRule,
     Finder,
     FinderContent,
+    FinderOption,
     finderRules,
     finderStringCompare,
     groupByRule,
+    HydratedFilterRule,
     searchRule,
     sortByRule,
     useFinderContext,
     useFinderRef,
 } from "finder";
-import { random, range } from "lodash";
-import { Fragment } from "react";
+import { capitalize, range } from "lodash";
+import { Fragment, useState } from "react";
 import { FinderFilterControl } from "./finder-filter-control";
+import { ProductItem } from "./product-item";
+import { Product } from "./types";
+import { generateProducts } from "./services/generateProducts";
 
-type Product = {
-    label: string;
-    sku: string;
-    rating: number;
-    price: string;
-};
-const names = ["Apple", "Orange", "Banana", "Guava", "Dragonfruit", "Cherry", "Blueberry", "Pear", "Grape"];
-const randomProducts = range(0, 9).map((index) => {
-    const sku = `SKU-${random(2, 10) * 100}-${random(200, 400)}`;
-    return {
-        label: names[index],
-        sku,
-        rating: random(1, 5),
-        price: new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(random(10, 100)),
-    };
-});
+const productList = generateProducts();
 
 function App() {
     const rules = finderRules<Product>([
@@ -51,6 +42,7 @@ function App() {
         }),
         filterRule({
             id: "min_rating",
+            label: "Rating is at least",
             filterFn: (item, value: number) => item.rating <= value,
             options: () => {
                 return range(1, 6).map((value) => {
@@ -62,10 +54,47 @@ function App() {
             },
         }),
         filterRule({
+            id: "colors",
+            filterFn: (item, value: string[]) => value.every((color) => item.colors.includes(color)),
+            multiple: true,
+            label: "Colours",
+            options: (items) => {
+                const uniqueColors = items
+                    .reduce((acc, item) => {
+                        item.colors.forEach((color) => {
+                            acc.add(color);
+                        });
+                        return acc;
+                    }, new Set<string>())
+                    .values();
+
+                return Array.from(uniqueColors)
+                    .sort()
+                    .map<FinderOption>((color) => {
+                        return {
+                            label: capitalize(color),
+                            value: color,
+                        };
+                    });
+            },
+        }),
+        filterRule({
             id: "is_best_fruit",
             filterFn: (item, value: string) => item.label === "Guava",
             label: "Is best fruit",
-            is_boolean: true,
+            isBoolean: true,
+        }),
+        filterRule<Product, [min: number, max: number]>({
+            id: "price_between",
+            filterFn: (item, [min, max]) => item.price >= min && item.price <= max,
+            label: "Price Between",
+            hidden: true,
+            debounceDelay: 300,
+        }),
+        sortByRule({
+            id: "index",
+            label: "Index",
+            sortFn: (item) => item.index,
         }),
         sortByRule({
             id: "alphabetical",
@@ -76,6 +105,12 @@ function App() {
             id: "rating",
             label: "By Rating",
             sortFn: (item) => item.rating,
+            defaultDirection: "desc",
+        }),
+        sortByRule({
+            id: "price",
+            label: "Price",
+            sortFn: (item) => item.price,
             defaultDirection: "desc",
         }),
         groupByRule({
@@ -97,8 +132,8 @@ function App() {
     const ref = useFinderRef();
 
     return (
-        <div style={{ display: "flex", gap: "10px" }}>
-            <Finder items={randomProducts} rules={rules} controllerRef={ref}>
+        <Finder items={productList} rules={rules} controllerRef={ref}>
+            <div style={{ display: "flex", gap: "10px" }}>
                 <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
                     <fieldset>
                         <legend>Search by</legend>
@@ -120,67 +155,79 @@ function App() {
                         <legend>Selected Items</legend>
                         <SelectedItems />
                     </fieldset>
+                    <fieldset>
+                        <legend>Pagination</legend>
+                        <PaginationControls />
+                    </fieldset>
                 </div>
 
                 <FinderContent>
                     {{
                         items: ({ items }) => {
                             return (
-                                <div
-                                    style={{
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(3, 1fr)",
-                                        gap: "20px",
-                                        border: "1px solid #000",
-                                        padding: "20px",
-                                        maxWidth: "800px",
-                                        flex: 1,
-                                    }}
-                                >
-                                    {items.map((item) => (
-                                        <SamplePhoto photo={item} key={item.sku} />
-                                    ))}
+                                <div style={{ display: "flex", flexDirection: "column", maxWidth: "800px" }}>
+                                    <PagerNavigation />
+                                    <div
+                                        style={{
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(4, 1fr)",
+                                            gap: "20px",
+                                            border: "1px solid #000",
+                                            padding: "20px",
+
+                                            flex: 1,
+                                            boxSizing: "border-box",
+                                        }}
+                                    >
+                                        {items.map((item) => (
+                                            <ProductItem product={item} key={item.sku} />
+                                        ))}
+                                    </div>
                                 </div>
                             );
                         },
                         groups: ({ groups, rule }) => {
                             return (
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: "20px",
-                                        border: "1px solid #000",
-                                        padding: "20px",
-                                        maxWidth: "800px",
-                                        flex: 1,
-                                    }}
-                                >
-                                    {groups.map(({ id, items }) => (
-                                        <div key={id}>
-                                            <h2>
-                                                {rule?.id === "rating"
-                                                    ? range(0, Number(id)).map((value) => {
-                                                          return <Fragment key={value}>*</Fragment>;
-                                                      })
-                                                    : id}
-                                            </h2>
-                                            <div style={{ display: "flex", gap: "20px" }}>
-                                                {items.map((item) => (
-                                                    <SamplePhoto photo={item} key={item.sku} />
-                                                ))}
+                                <>
+                                    <PagerNavigation />
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: "20px",
+
+                                            border: "1px solid #000",
+                                            padding: "20px",
+                                            maxWidth: "800px",
+                                            flex: 1,
+                                        }}
+                                    >
+                                        {groups.map(({ id, items }) => (
+                                            <div key={id}>
+                                                <h2>
+                                                    {rule?.id === "rating"
+                                                        ? range(0, Number(id)).map((value) => {
+                                                              return <Fragment key={value}>*</Fragment>;
+                                                          })
+                                                        : id}
+                                                </h2>
+                                                <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                                                    {items.map((item) => (
+                                                        <ProductItem product={item} key={item.sku} />
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                </>
                             );
                         },
                         empty: "No items found.",
                         noMatches: "No matches found.",
                     }}
                 </FinderContent>
-            </Finder>
-        </div>
+            </div>
+        </Finder>
     );
 }
 
@@ -196,13 +243,78 @@ function SearchControls() {
 
 function FilterControls() {
     const finder = useFinderContext();
-    console.log(finder.filters.rules);
+    const priceRule = finder.filters.rules.find(({ id }) => id === "price_between");
     return (
         <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-            {finder.filters.rules.map((rule) => {
-                return <FinderFilterControl label={rule.label ?? rule.id} rule={rule} key={rule.id} />;
-            })}
+            {finder.filters.rules
+                .filter((rule) => !rule.hidden)
+                .map((rule) => {
+                    if (rule.hidden) {
+                        return null;
+                    }
+                    return (
+                        <Fragment key={rule.id}>
+                            <FinderFilterControl rule={rule} key={rule.id} />
+                            <hr style={{ width: "100%" }} />
+                        </Fragment>
+                    );
+                })}
+            {priceRule && <PriceFilterControl rule={priceRule} />}
         </div>
+    );
+}
+
+function PriceFilterControl({ rule }: { rule: HydratedFilterRule }) {
+    const finder = useFinderContext();
+    const [filterMin, filterMax] = finder.filters.get(rule) ?? [10, 100];
+    const [min, setMin] = useState(filterMin);
+    const [max, setMax] = useState(filterMax);
+    const handleChange = ({ inputMin, inputMax }: { inputMin?: Number; inputMax?: Number }) => {
+        let filterMin = inputMin ?? min;
+        let filterMax = inputMax ?? max;
+
+        if (inputMin && inputMin > filterMax) {
+            filterMax = inputMin;
+            setMax(inputMin);
+        }
+        if (inputMax && inputMax < filterMin) {
+            filterMin = inputMax;
+            setMin(inputMax);
+        }
+        finder.filters.set(rule, [filterMin, filterMax]);
+    };
+    return (
+        <>
+            Price between:
+            <div>
+                <input
+                    value={min}
+                    type="range"
+                    min={10}
+                    max={100}
+                    onChange={(e) => {
+                        setMin(Number(e.currentTarget.value));
+                        handleChange({ inputMin: Number(e.currentTarget.value) });
+                    }}
+                />{" "}
+                {new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(min)}
+            </div>
+            <div>
+                <input
+                    value={100 - max}
+                    type="range"
+                    min={0}
+                    max={90}
+                    onChange={(e) => {
+                        const adjustedPrice = 100 - Number(e.currentTarget.value);
+                        setMax(adjustedPrice);
+                        handleChange({ inputMax: adjustedPrice });
+                    }}
+                    style={{ direction: "rtl" }}
+                />
+                {new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(max)}
+            </div>
+        </>
     );
 }
 
@@ -292,27 +404,47 @@ function SelectedItems() {
     );
 }
 
-function SamplePhoto({ photo }: { photo: Product }) {
+function PaginationControls() {
     const finder = useFinderContext();
-    const isSelected = finder.selectedItems.isSelected(photo);
     return (
-        <div
-            style={{ display: "flex", flexDirection: "column", padding: "10px", gap: "10px", background: isSelected ? "gold" : undefined }}
-            onClick={(e) => finder.selectedItems.toggle(photo)}
-        >
-            <div style={{ aspectRatio: "1/1", background: "#eee", width: "100px" }} />
-            <b>{photo.label}</b>
-            <div>
-                Rating:
-                {range(0, photo.rating).map((value) => {
-                    return <Fragment key={value}>*</Fragment>;
-                })}
+        <div>
+            Items per page:
+            <select value={finder.pagination.numItemsPerPage ?? ""} onChange={(e) => finder.pagination.setNumItemsPerPage(Number(e.target.value))}>
+                <option value="">No pagination</option>
+                <option value={10}>10</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+            </select>
+        </div>
+    );
+}
+
+function PagerNavigation() {
+    const finder = useFinderContext();
+    if (finder.pagination.isPaginated) {
+        return (
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <button type="button" onClick={() => finder.pagination.setPage(finder.pagination.page - 1)}>
+                    Previous
+                </button>
+                <div>
+                    <b>
+                        Page {finder.pagination.page}/{finder.pagination.lastPage}
+                    </b>
+                    <br />
+                    Showing {finder.pagination.offset}-{finder.pagination.offset + Number(finder.pagination.numItemsPerPage)} / {finder.matches.numMatchedItems}{" "}
+                    items
+                </div>
+                <button type="button" onClick={() => finder.pagination.setPage(finder.pagination.page + 1)}>
+                    Next
+                </button>
             </div>
-            <div>{photo.sku}</div>
-            <label style={{ pointerEvents: "none" }}>
-                <input checked={isSelected} type="checkbox" readOnly={true} />
-                Select
-            </label>
+        );
+    }
+
+    return (
+        <div style={{ display: "flex", alignItems: "center" }}>
+            Showing {finder.matches.numMatchedItems} / {finder.matches.numTotalItems} items
         </div>
     );
 }

@@ -1,22 +1,25 @@
+import { clamp } from "lodash";
 import { FinderInjectedHandlers } from "../../types";
 
 class PaginationMixin<FItem> {
-    page?: number;
+    #page: number;
+    #numDisplayedItems: number;
 
     numItemsPerPage?: number;
 
     #handlers: FinderInjectedHandlers<FItem>;
 
     constructor(page: number | undefined, numItemsPerPage: number | undefined, handlers: FinderInjectedHandlers<FItem>) {
-        this.page = page;
+        this.#page = page ?? 1;
         this.numItemsPerPage = numItemsPerPage;
         this.#handlers = handlers;
+        this.#numDisplayedItems = handlers.getItems().length;
     }
 
-    setPage(value?: number) {
-        if (value !== this.page) {
-            this.page = value;
-            this.#handlers.onChange({ page: this.page });
+    setPage(value: number) {
+        if (value !== this.#page) {
+            this.#page = value;
+            this.#handlers.onChange({ page: this.#page });
         }
     }
 
@@ -28,25 +31,44 @@ class PaginationMixin<FItem> {
     }
 
     get lastPage() {
-        if (this.page === undefined || this.numItemsPerPage === undefined) {
+        if (this.#page === undefined || this.numItemsPerPage === undefined) {
             return undefined;
         }
 
-        const numTotalItems = this.#handlers.getItems().length;
-        return Math.ceil(numTotalItems / this.numItemsPerPage);
+        return Math.ceil(this.#numDisplayedItems / this.numItemsPerPage);
     }
 
     get numTotalItems() {
         return this.#handlers.getItems().length;
     }
 
-    process(items: FItem[]) {
-        if (this.page === undefined || this.numItemsPerPage === undefined) {
+    get page() {
+        if (this.numItemsPerPage && this.lastPage) {
+            return clamp(this.#page, 1, this.lastPage);
+        }
+        return this.#page;
+    }
+
+    get offset() {
+        if (this.numItemsPerPage && this.lastPage) {
+            const clampedPage = clamp(this.#page, 1, this.lastPage);
+            return (clampedPage - 1) * this.numItemsPerPage;
+        }
+
+        return 0;
+    }
+
+    process(items: FItem[], numMatchedItems: number) {
+        if (this.numItemsPerPage === undefined) {
             return items;
         }
 
-        const lastPage = Math.ceil(items.length / this.numItemsPerPage);
-        const clampedPage = this.page > lastPage ? lastPage : this.page;
+        let page = this.#page ?? 1;
+
+        this.#numDisplayedItems = numMatchedItems;
+
+        const lastPage = Math.ceil(numMatchedItems / this.numItemsPerPage);
+        const clampedPage = clamp(page, 1, lastPage);
         const offset = (clampedPage - 1) * this.numItemsPerPage;
         return items.slice(offset, offset + this.numItemsPerPage);
     }

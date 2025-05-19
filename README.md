@@ -74,7 +74,7 @@ filterRule({
     options?: FinderOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FinderOption<FValue>[]);
     multiple?: boolean;
     required?: boolean;
-    is_boolean?: boolean;
+    isBoolean?: boolean;
     debounceDelay?: number;
 })
 ```
@@ -86,7 +86,7 @@ filterRule({
 | options       | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or a function to generate those options `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |
 | multiple      | If this filter has a single value or an array of values.                                                                                                             | false   |
 | required      | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                            | false   |
-| is_boolean    | If this filter has a true/false value. Useful for checkboxes!                                                                                                        | false   |
+| isBoolean     | If this filter has a true/false value. Useful for checkboxes!                                                                                                        | false   |
 | debounceDelay | If you want to debounce value changes, enter a time in milliseconds.                                                                                                 |
 
 Pro-tips:
@@ -431,7 +431,7 @@ function FilterComponent({rule} : {rule: HydratedFilterRule}}) {
             // Check if a specific filter option is active
             {finder.filters.has(rule, luckyOption) && 'Super lucky!'}
 
-            // filters with is_boolean can be toggled
+            // filters with isBoolean can be toggled
             <input type="checkbox" onChange={() => finder.filters.toggle(rule)}>
 
             <select>

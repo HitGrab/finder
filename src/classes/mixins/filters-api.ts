@@ -7,7 +7,8 @@ import { FiltersMixin } from "./filters";
  */
 function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
     return {
-        value: mixin.filters,
+        value: mixin.getFilters(),
+        filters: mixin.filters,
         activeRules: mixin.activeRules,
         activeRuleIds: mixin.activeRuleIds,
         rules: mixin.rules,
@@ -17,11 +18,11 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
             if (rule === undefined) {
                 throw new Error("Finder could not locate a rule for this filter.");
             }
-            if (!rule.is_boolean) {
+            if (!rule.isBoolean) {
                 throw new Error("Finder could not toggle this filter rule, as it is not boolean.");
             }
 
-            const filterValue = mixin.filters?.[rule.id];
+            const filterValue = mixin.get(rule.id);
             mixin.set(rule, !filterValue);
         },
         toggleOption: mixin.toggleOption.bind(mixin),
@@ -36,7 +37,8 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
             mixin.set(rule, undefined);
         },
         test: mixin.test.bind(mixin),
-        testOptions: mixin.testOptions.bind(mixin),
+        testRule: mixin.testRule.bind(mixin),
+        testRuleOptions: mixin.testRuleOptions.bind(mixin),
     };
 }
 

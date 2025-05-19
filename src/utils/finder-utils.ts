@@ -76,3 +76,19 @@ export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilt
 export function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem> {
     return typeof rule === "object" && rule !== null && "groupFn" in rule;
 }
+
+export function getRuleType(rule: FinderRule) {
+    if (isSearchRule(rule)) {
+        return "search";
+    }
+    if (isFilterRule(rule)) {
+        return "filter";
+    }
+    if (isSortByRule(rule)) {
+        return "sortBy";
+    }
+    if (isGroupByRule(rule)) {
+        return "groupBy";
+    }
+    throw new Error("Finder received an invalid rule.");
+}
