@@ -6,10 +6,11 @@ import { PaginationMixin } from "./pagination";
 function paginationAPI<FItem>(mixin: PaginationMixin<FItem>) {
     return {
         page: mixin.page,
+        offset: mixin.offset,
         numItemsPerPage: mixin.numItemsPerPage,
         numTotalItems: mixin.numTotalItems,
         lastPage: mixin.lastPage,
-        isPaginated: mixin.page !== undefined && mixin.numItemsPerPage !== undefined,
+        isPaginated: mixin.numItemsPerPage !== undefined,
         setPage: mixin.setPage.bind(mixin),
         setNumItemsPerPage: mixin.setNumItemsPerPage.bind(mixin),
     };

@@ -17,7 +17,8 @@ declare class Finder<FItem> {
         reset: () => void;
     };
     get filters(): {
-        value: Record<string, any>;
+        value: import("..").HydratedFilterRule<FItem, any>;
+        filters: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<FItem, any>[];
         activeRuleIds: any[];
         rules: import("..").HydratedFilterRule<FItem, any>[];
@@ -28,8 +29,9 @@ declare class Finder<FItem> {
         set: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, incomingFilterValue: any) => void;
         has: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue?: import("..").FinderOption | any) => any;
         delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
-        test: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, filterValue: any, incomingMeta?: import("../types").FinderMeta | undefined) => FItem[];
-        testOptions: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, meta?: import("../types").FinderMeta | undefined) => Map<boolean | import("..").FinderOption<any>, FItem[]>;
+        test: (options: import("../types").FilterTestOptions) => FItem[];
+        testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => FItem[];
+        testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<boolean | import("..").FinderOption<any>, FItem[]>;
     };
     get sortBy(): {
         activeRule: import("..").SortByRule<unknown> | undefined;
@@ -62,12 +64,13 @@ declare class Finder<FItem> {
         reset: () => void;
     };
     get pagination(): {
-        page: number | undefined;
+        page: number;
+        offset: number;
         numItemsPerPage: number | undefined;
         numTotalItems: number;
         lastPage: number | undefined;
         isPaginated: boolean;
-        setPage: (value?: number) => void;
+        setPage: (value: number) => void;
         setNumItemsPerPage: (value?: number) => void;
     };
     get selectedItems(): {

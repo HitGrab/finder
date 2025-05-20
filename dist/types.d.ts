@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ElementType, ReactNode } from "react";
+import { Finder } from "./classes/finder";
 
 export interface FinderInstance<FItem> {
     items: FItem[];
     matches: MatchesSnapshot<FItem>;
     pagination: {
-        page?: number;
+        page: number;
+        offset: number;
         numItemsPerPage?: number;
         numTotalItems: number;
         lastPage?: number;
@@ -26,6 +27,7 @@ export interface FinderInstance<FItem> {
     };
     filters: {
         value?: Record<string, any>;
+        filters?: Record<string, any>;
         rules: HydratedFilterRule<FItem>[];
         activeRules: HydratedFilterRule<FItem>[];
         activeRuleIds: string[];
@@ -36,8 +38,9 @@ export interface FinderInstance<FItem> {
         delete: (identifier: FilterRule | HydratedFilterRule | string) => void;
         toggle: (identifier: FilterRule | HydratedFilterRule | string) => void;
         toggleOption: (identifier: FilterRule | HydratedFilterRule | string, optionValue: FinderOption | any) => void;
-        test: (identifier: FilterRule | HydratedFilterRule | string, filterValue: any, meta?: FinderMeta) => FItem[];
-        testOptions: (identifier: FilterRule | HydratedFilterRule | string, meta?: FinderMeta) => Map<FinderOption | boolean, FItem[] | undefined>;
+        test: (options: FilterTestOptions) => FItem[];
+        testRule: (options: FilterTestRuleOptions) => FItem[];
+        testRuleOptions: (options: FilterTestRuleOptionsOptions) => Map<FinderOption | boolean, FItem[] | undefined>;
     };
     sortBy: {
         activeRule?: SortByRule<FItem>;
@@ -79,7 +82,7 @@ export interface FinderInstance<FItem> {
     };
 }
 
-export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, ref: FinderInstance<FItem>) => void;
+export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, ref: Finder<FItem>) => void;
 
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
@@ -151,7 +154,8 @@ export interface FilterRule<FItem = any, FValue = any> extends Record<string, an
     options?: FinderOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FinderOption<FValue>[]);
     multiple?: boolean;
     required?: boolean;
-    is_boolean?: boolean;
+    isBoolean?: boolean;
+    defaultValue?: FValue;
     debounceDelay?: number;
 }
 
@@ -223,5 +227,29 @@ export type FinderInjectedHandlers<FItem> = {
 export interface MatchesSnapshot<FItem> {
     items?: FItem[];
     groups?: FinderResultGroup<FItem>[];
-    numTotalItems?: number;
+    numMatchedItems: number;
+    numTotalItems: number;
+    hasGroupByRule: boolean;
+}
+
+export interface FilterTestOptions {
+    rules?: HydratedFilterRule[];
+    values?: any;
+    meta?: FinderMeta;
+    isAdditive?: boolean;
+}
+
+export interface FilterTestRuleOptions {
+    rule: string | FilterRule | HydratedFilterRule;
+    value: any;
+    meta?: FinderMeta;
+    isAdditive?: boolean;
+}
+
+// TODO: Maybe rename this
+export interface FilterTestRuleOptionsOptions {
+    rule: string | FilterRule | HydratedFilterRule;
+    meta?: FinderMeta;
+    isAdditive?: boolean;
+    mergeExistingValue?: boolean;
 }

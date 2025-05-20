@@ -58,9 +58,15 @@ function useFinder<FItem>(
     finderStore.instance.setItems(items);
     finderStore.instance.setIsLoading(isLoading);
     finderStore.instance.setDisabled(disabled);
-    finderStore.instance.pagination.setPage(page);
-    finderStore.instance.pagination.setNumItemsPerPage(numItemsPerPage);
-    finderStore.instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
+    if (page !== undefined) {
+        finderStore.instance.pagination.setPage(page);
+    }
+    if (numItemsPerPage !== undefined) {
+        finderStore.instance.pagination.setNumItemsPerPage(numItemsPerPage);
+    }
+    if (maxSelectedItems !== undefined) {
+        finderStore.instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
+    }
 
     return finderStore.instance;
 }

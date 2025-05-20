@@ -14,6 +14,7 @@ import { paginationAPI } from "./mixins/pagination-api";
 import { selectedItemsAPI } from "./mixins/selected-items-api";
 import { sortByAPI } from "./mixins/sort-by-api";
 import { searchAPI } from "./mixins/search-api";
+import { getRuleType, isSearchRule } from "../utils/finder-utils";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -70,7 +71,7 @@ class Finder<FItem> {
             onChange = () => {},
         }: FinderConstructorOptions<FItem>,
     ) {
-        this.#rules = rules || [];
+        this.#rules = this.#isValidRuleset(rules) ? rules : [];
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
@@ -109,29 +110,32 @@ class Finder<FItem> {
     }
 
     #takeMatchesSnapshot() {
-        let items: FItem[] = [];
+        let itemsToProcess: FItem[] = [];
         let groups: FinderResultGroup<FItem>[] = [];
 
         const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
-
+        let paginatedItemSlice: FItem[] = [];
         if (Array.isArray(this.#items)) {
             const meta = this.#mixins.meta.meta;
 
-            items = [...this.#items];
-            items = this.#mixins.search.process(items, meta);
-            items = this.#mixins.filters.process(items, meta);
-            items = this.#mixins.sortBy.process(items);
-            items = this.#mixins.pagination.process(items);
+            itemsToProcess = [...this.#items];
+            itemsToProcess = this.#mixins.search.process(itemsToProcess, meta);
+            itemsToProcess = this.#mixins.filters.process(itemsToProcess, meta);
+            itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
+
+            paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess, itemsToProcess.length);
 
             if (hasGroupByRule) {
-                groups = this.#mixins.groupBy.process(items);
+                groups = this.#mixins.groupBy.process(paginatedItemSlice);
             }
         }
 
         return {
-            items: !hasGroupByRule ? items : undefined,
+            items: !hasGroupByRule ? paginatedItemSlice : undefined,
             groups: hasGroupByRule ? groups : undefined,
-            numTotalItems: items.length,
+            numMatchedItems: itemsToProcess.length,
+            numTotalItems: this.items.length,
+            hasGroupByRule,
         };
     }
 
@@ -142,6 +146,27 @@ class Finder<FItem> {
         if (this.#onChange) {
             this.#onChange(diff, this);
         }
+    }
+
+    #isValidRuleset(rules?: FinderRule[]): rules is FinderRule[] {
+        if (!rules || rules.length === 0) {
+            return false;
+        }
+
+        const filterIds: string[] = [];
+        rules.forEach((rule) => {
+            if (rule.id === undefined && !isSearchRule(rule)) {
+                throw new Error("Finder is missing a unique rule id for rule.");
+            }
+
+            const uniqueName = [getRuleType(rule), rule.id].join(".");
+            if (filterIds.includes(uniqueName)) {
+                throw new Error(`Duplicate rule id: ${uniqueName}`);
+            }
+            filterIds.push(uniqueName);
+        });
+
+        return true;
     }
 
     get items() {

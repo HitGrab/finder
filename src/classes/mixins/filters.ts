@@ -1,4 +1,14 @@
-import { FinderInjectedHandlers, FilterRule, FinderOption, FinderMeta, HydratedFilterRule } from "../../types";
+import { uniqBy } from "lodash";
+import {
+    FinderInjectedHandlers,
+    FilterRule,
+    FinderOption,
+    FinderMeta,
+    HydratedFilterRule,
+    FilterTestOptions,
+    FilterTestRuleOptions,
+    FilterTestRuleOptionsOptions,
+} from "../../types";
 import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
 import { getOptionFromIdentifier, getRuleFromIdentifier, isFilterRule } from "../../utils/finder-utils";
 
@@ -82,14 +92,32 @@ class FiltersMixin<FItem> {
         }
 
         const value = this.filters?.[rule.id];
-        if (value === undefined && rule.required) {
-            if (rule.is_boolean) {
-                return true;
+
+        if (value === undefined) {
+            if (rule.defaultValue) {
+                return rule.defaultValue;
             }
-            if (Array.isArray(rule.options) && rule.options.length > 0) {
-                return rule.options.at(0);
+
+            if (rule.required) {
+                if (rule.isBoolean) {
+                    return true;
+                }
+
+                if (Array.isArray(rule.options) && rule.options.length > 0) {
+                    return rule.options.at(0)?.value;
+                }
+            }
+
+            // cast empty values to the correct shape
+            if (rule.multiple) {
+                return [];
+            }
+
+            if (rule.isBoolean) {
+                return false;
             }
         }
+
         return value;
     }
 
@@ -148,35 +176,65 @@ class FiltersMixin<FItem> {
         this.set(rule, [...previousFilterValue, option.value]);
     }
 
-    test(identifier: string | FilterRule | HydratedFilterRule, filterValue: any, incomingMeta = this.#handlers.getMeta()) {
-        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
-        if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+    test(options: FilterTestOptions) {
+        const optionsWithDefaults = { rules: [], meta: this.#handlers.getMeta(), values: {}, ...options };
+
+        // Additive tests use the current values of the filters.
+        if (options.isAdditive) {
+            const ruleset = uniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
+            const initialValues = { ...this.getFilters(), ...optionsWithDefaults.values };
+            return FiltersMixin.process(this.#handlers.getItems(), ruleset, initialValues, optionsWithDefaults.meta);
         }
 
-        const items = this.#handlers.getItems();
-        return FiltersMixin.process(items, [rule], { [rule.id]: filterValue }, incomingMeta);
+        return FiltersMixin.process(this.#handlers.getItems(), optionsWithDefaults.rules, optionsWithDefaults.values, optionsWithDefaults.meta);
     }
 
-    testOptions(identifier: FilterRule | HydratedFilterRule | string, meta = this.#handlers.getMeta()) {
+    testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
         const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        const items = this.#handlers.getItems();
+        return this.test({
+            rules: [rule],
+            values: { [rule.id]: value },
+            ...options,
+        });
+    }
 
-        if (rule.is_boolean === true) {
+    testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions) {
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
+        if (rule === undefined) {
+            throw new Error("Finder could not locate a rule for this filter.");
+        }
+
+        if (rule.isBoolean === true) {
             const resultMap = new Map<FinderOption | boolean, FItem[]>();
-            resultMap.set(true, FiltersMixin.process(items, [rule], { [rule.id]: true }, meta));
-            resultMap.set(false, FiltersMixin.process(items, [rule], { [rule.id]: false }, meta));
+            resultMap.set(true, this.testRule({ rule, value: true, ...options }));
+            resultMap.set(false, this.testRule({ rule, value: false, ...options }));
             return resultMap;
         }
 
         if (Array.isArray(rule.options)) {
             const resultMap = new Map<FinderOption | boolean, FItem[]>();
             rule.options.forEach((option) => {
-                resultMap.set(option, FiltersMixin.process(items, [rule], { [rule.id]: option.value }, meta));
+                let transformedOptionValue;
+
+                if (options.mergeExistingValue) {
+                    // use raw value, not calculated value
+                    const initialValue = this.filters?.[rule.id] ?? [];
+
+                    if (rule.multiple) {
+                        transformedOptionValue = [...initialValue, option.value];
+                    }
+                } else {
+                    if (rule.multiple) {
+                        transformedOptionValue = [option.value];
+                    } else {
+                        transformedOptionValue = option.value;
+                    }
+                }
+                resultMap.set(option, this.testRule({ rule: rule, value: transformedOptionValue, ...options }));
             });
             return resultMap;
         }
@@ -185,34 +243,25 @@ class FiltersMixin<FItem> {
         throw new Error("Finder was unable to test the options for this filter rule. It must be a boolean or have defined options.");
     }
 
+    // return all filter values with default options and type casts applied.
+    getFilters() {
+        return this.rules.reduce((acc, rule) => {
+            acc[rule.id] = this.get(rule);
+            return acc;
+        }, {});
+    }
+
     process(items: FItem[], meta?: FinderMeta) {
-        return FiltersMixin.process(items, this.rules, this.filters, meta);
+        return FiltersMixin.process(items, this.rules, this.getFilters(), meta);
     }
 
     static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta?: FinderMeta) {
-        const activeFilters = rules.filter((rule) => {
+        const activeRules = rules.filter((rule) => {
             return FiltersMixin.isActive(rule, values?.[rule.id]);
         });
+        // An item must pass ALL active filters to match.
         return items.filter((item) => {
-            // An item must pass ALL filters to match.
-            return activeFilters.every((rule) => {
-                const filterValue = values?.[rule.id];
-
-                if (rule.required && filterValue === undefined) {
-                    let options: FinderOption[] = [];
-
-                    if (Array.isArray(rule.options)) {
-                        options = rule.options;
-                    }
-
-                    const firstOption = options.at(0);
-                    if (firstOption) {
-                        return rule.filterFn(item, firstOption.value, meta);
-                    }
-                }
-
-                return rule.filterFn(item, filterValue, meta);
-            });
+            return activeRules.every((rule) => rule.filterFn(item, values?.[rule.id], meta));
         });
     }
 
@@ -231,7 +280,7 @@ class FiltersMixin<FItem> {
             return false;
         }
 
-        if (rule.is_boolean && value === false) {
+        if (rule.isBoolean && value === false) {
             return false;
         }
 

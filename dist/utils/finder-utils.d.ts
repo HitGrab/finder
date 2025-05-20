@@ -7,3 +7,4 @@ export declare function isSearchRule<FItem>(rule: unknown): rule is SearchRule<F
 export declare function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem>;
 export declare function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem>;
 export declare function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem>;
+export declare function getRuleType(rule: FinderRule): "search" | "filter" | "sortBy" | "groupBy";

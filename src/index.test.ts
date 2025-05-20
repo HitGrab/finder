@@ -19,6 +19,46 @@ const banana: MockObjectItem = { type: "banana", name: "Banana", price: 10, days
 
 const objectItems: MockObjectItem[] = [apple, orange, banana];
 
+describe("Constructor", () => {
+    test("Catches duplicate rules", () => {
+        const rules = [
+            {
+                id: "duplicate",
+                filterFn: () => true,
+            },
+            {
+                id: "duplicate",
+                filterFn: () => true,
+            },
+        ];
+        expect(() => {
+            const finder = new Finder(objectItems, { rules });
+        }).toThrowError();
+    });
+
+    test("Catches invalid rules", () => {
+        const rules = [
+            {
+                id: "invalid",
+                mysteryFn: () => true,
+            },
+        ];
+        expect(() => {
+            const finder = new Finder(objectItems, { rules });
+        }).toThrowError();
+    });
+
+    test("Catches missing ids", () => {
+        const rules = [
+            {
+                filterFn: () => true,
+            },
+        ];
+        expect(() => {
+            const finder = new Finder(objectItems, { rules });
+        }).toThrowError();
+    });
+});
 describe("Search", () => {
     test("Finds item", () => {
         const rules = [
@@ -31,19 +71,6 @@ describe("Search", () => {
 
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toStrictEqual([apple]);
-    });
-
-    test("finderStringCompare ignores case, whitespace, and line breaks", () => {
-        const items = ["a b c d e", "f g h i j"];
-        const rules = [
-            searchRule({
-                searchFn: (item: string, searchTerm: string) => finderStringCompare(item, searchTerm),
-            }),
-        ];
-
-        const finder = new Finder(items, { rules });
-        finder.search.setSearchTerm("AB    C\nD\r    E");
-        expect(finder.matches.items).toStrictEqual(["a b c d e"]);
     });
 
     test("Debounced search triggers once", async () => {
@@ -172,20 +199,20 @@ describe("Filter - Advanced", () => {
         const rules = finderRules([
             {
                 id: "price",
-                filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
+                filterFn: (item: MockObjectItem, value: number) => item.price === value,
                 required: true,
                 options: [
                     {
                         label: "one",
-                        value: 1,
+                        value: apple.price,
                     },
                     {
                         label: "two",
-                        value: 2,
+                        value: orange.price,
                     },
                     {
                         label: "ten",
-                        value: 10,
+                        value: banana.price,
                     },
                 ],
             },
@@ -223,7 +250,7 @@ describe("Filter - Advanced", () => {
                 id: "price",
                 filterFn: (item: MockObjectItem) => item.price === 10,
                 required: true,
-                is_boolean: true,
+                isBoolean: true,
             },
         ]);
 
@@ -275,7 +302,7 @@ describe("Filter - Advanced", () => {
         expect(onChange).toHaveBeenCalledTimes(1);
     });
 
-    test("Filter values can be tested without changing state", () => {
+    test("Filter values can be tested in advance", () => {
         const rule = filterRule({
             id: "price_is_below",
             filterFn: (item: MockObjectItem, value: number) => item.price <= value,
@@ -284,11 +311,26 @@ describe("Filter - Advanced", () => {
         const finder = new Finder(objectItems, { rules: [rule] });
 
         // test a filter without setting the state
-        const testResult = finder.filters.test(rule, 5);
+        const testResult = finder.filters.testRule({ rule, value: 5 });
         expect(testResult).toStrictEqual([apple, orange]);
+    });
 
-        // result state is unchanged
-        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
+    test("Filter values can be tested additively", () => {
+        const firstRule = filterRule({
+            id: "price_is_below",
+            filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+            defaultValue: 5,
+        });
+        const secondRule = filterRule({
+            id: "has_seeds",
+            filterFn: (item: MockObjectItem, value: string) => item.name === "Apple",
+        });
+
+        const finder = new Finder(objectItems, { rules: [firstRule, secondRule] });
+
+        // test a filter without setting the state
+        const testResult = finder.filters.testRule({ rule: secondRule, value: true, isAdditive: true });
+        expect(testResult).toStrictEqual([apple]);
     });
 
     test("Filter options can evaluate their number of potential matches.", () => {
@@ -313,18 +355,18 @@ describe("Filter - Advanced", () => {
         const booleanFilter = filterRule<MockObjectItem>({
             id: "expires_in_five_days",
             filterFn: (item) => item.daysUntilExpiryDate === "five",
-            is_boolean: true,
+            isBoolean: true,
         });
         const rules = [filter, booleanFilter];
         const finder = new Finder(objectItems, { rules });
 
         // test a filter without setting the state
-        const testResult = finder.filters.testOptions(filter);
+        const testResult = finder.filters.testRuleOptions({ rule: filter });
         expect(testResult.get(optionOne)?.length).toBe(1);
         expect(testResult.get(optionTwo)?.length).toBe(2);
         expect(testResult.get(optionThree)?.length).toBe(3);
 
-        const booleanTestResult = finder.filters.testOptions(booleanFilter);
+        const booleanTestResult = finder.filters.testRuleOptions({ rule: booleanFilter });
         expect(booleanTestResult.get(true)?.length).toBe(2);
         expect(booleanTestResult.get(false)?.length).toBe(3);
 
@@ -522,5 +564,20 @@ describe("onChange", () => {
 
         const finder = new Finder(objectItems, { rules, onChange });
         finder.filters.set("price_is_below", 5);
+    });
+});
+
+describe("Utils", () => {
+    test("finderStringCompare ignores case, whitespace, and line breaks", () => {
+        const items = ["a b c d e", "f g h i j"];
+        const rules = [
+            searchRule({
+                searchFn: (item: string, searchTerm: string) => finderStringCompare(item, searchTerm),
+            }),
+        ];
+
+        const finder = new Finder(items, { rules });
+        finder.search.setSearchTerm("AB    C\nD\r    E");
+        expect(finder.matches.items).toStrictEqual(["a b c d e"]);
     });
 });
