@@ -409,7 +409,12 @@ function PaginationControls() {
     return (
         <div>
             Items per page:
-            <select value={finder.pagination.numItemsPerPage ?? ""} onChange={(e) => finder.pagination.setNumItemsPerPage(Number(e.target.value))}>
+            <select
+                value={finder.pagination.numItemsPerPage ?? ""}
+                onChange={(e) => {
+                    return finder.pagination.setNumItemsPerPage(e.target.value !== "" ? Number(e.target.value) : undefined);
+                }}
+            >
                 <option value="">No pagination</option>
                 <option value={10}>10</option>
                 <option value={50}>50</option>
