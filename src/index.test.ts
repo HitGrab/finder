@@ -4,7 +4,7 @@ import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./classes/finder";
 import { searchRule, filterRule, finderRules, sortByRule, groupByRule } from "./utils/type-enforcers";
-import { finderStringCompare } from "./utils/compare-utils";
+import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./utils/compare-utils";
 
 type MockObjectItem = {
     type: string;
@@ -568,16 +568,38 @@ describe("onChange", () => {
 });
 
 describe("Utils", () => {
-    test("finderStringCompare ignores case, whitespace, and line breaks", () => {
-        const items = ["a b c d e", "f g h i j"];
-        const rules = [
-            searchRule({
-                searchFn: (item: string, searchTerm: string) => finderStringCompare(item, searchTerm),
-            }),
-        ];
+    test("finderStringCompare performs case-insensitive search and strips non-digit and non-word characters", () => {
+        const searchTerm = "AB    C\nD\r    E";
 
-        const finder = new Finder(items, { rules });
-        finder.search.setSearchTerm("AB    C\nD\r    E");
-        expect(finder.matches.items).toStrictEqual(["a b c d e"]);
+        const positiveHaystack = "a b c d e";
+        const positiveMatch = finderStringCompare(positiveHaystack, searchTerm);
+        expect(positiveMatch).toBe(true);
+
+        const negativeHaystack = "aaccd";
+        const negativeMatch = finderStringCompare(negativeHaystack, searchTerm);
+        expect(negativeMatch).toBe(false);
+    });
+
+    test("finderCharacterCompare checks that every digit or word character is present in a haystack", () => {
+        const searchTerm = "AB    C\nD\r    E";
+        const haystackWithReversedCharacters = "e d c b a";
+        const positiveMatch = finderCharacterCompare(haystackWithReversedCharacters, searchTerm);
+        expect(positiveMatch).toBe(true);
+
+        const negativeHaystack = "aaccd";
+        const negativeMatch = finderCharacterCompare(negativeHaystack, searchTerm);
+        expect(negativeMatch).toBe(false);
+    });
+
+    test("finderCharacterCompare checks that every digit or word character is sequentially present in a haystack,", () => {
+        const searchTerm = "AB    C\nD\r    E";
+
+        const positiveHaystack = "aabciop[cde";
+        const positiveMatch = finderSequentialCharacterCompare(positiveHaystack, searchTerm);
+        expect(positiveMatch).toBe(true);
+
+        const haystackWithReversedCharacters = "e d c b a";
+        const negativeMatch = finderSequentialCharacterCompare(haystackWithReversedCharacters, searchTerm);
+        expect(negativeMatch).toBe(false);
     });
 });
