@@ -3,7 +3,7 @@ import { PaginationMixin } from "./pagination";
 /**
  * Public surface for the pagination mixin
  */
-function paginationAPI<FItem>(mixin: PaginationMixin<FItem>) {
+function paginationInterface<FItem>(mixin: PaginationMixin<FItem>) {
     return {
         page: mixin.page,
         offset: mixin.offset,
@@ -16,4 +16,4 @@ function paginationAPI<FItem>(mixin: PaginationMixin<FItem>) {
     };
 }
 
-export { paginationAPI };
+export { paginationInterface };
