@@ -55,7 +55,7 @@ class Finder<FItem> {
         {
             rules,
             initialSearchTerm,
-            initialSortby,
+            initialSortBy,
             initialSortDirection,
             initialGroupBy,
             initialFilters,
@@ -92,7 +92,7 @@ class Finder<FItem> {
         this.#mixins = {
             search: new SearchMixin(initialSearchTerm, handlers),
             filters: new FiltersMixin(initialFilters, handlers),
-            sortBy: new SortByMixin(initialSortby, initialSortDirection, handlers),
+            sortBy: new SortByMixin(initialSortBy, initialSortDirection, handlers),
             groupBy: new GroupByMixin(initialGroupBy, !!requireGroup, handlers),
             meta: new MetaMixin(initialMeta, handlers),
             selectedItems: new SelectedItemsMixin(initialSelectedItems, maxSelectedItems, handlers),

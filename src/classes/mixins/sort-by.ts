@@ -7,9 +7,9 @@ class SortByMixin<FItem> {
     sortDirection?: string;
     #handlers: FinderInjectedHandlers<FItem>;
 
-    constructor(initialSortby: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>) {
+    constructor(initialSortBy: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>) {
         this.#handlers = handlers;
-        this.#sortBy = getRuleFromIdentifier<SortByRule>(initialSortby, this.rules);
+        this.#sortBy = getRuleFromIdentifier<SortByRule>(initialSortBy, this.rules);
         this.sortDirection = initialSortDirection;
     }
 
