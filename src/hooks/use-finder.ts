@@ -11,7 +11,7 @@ function useFinder<FItem>(
     {
         rules,
         initialSearchTerm,
-        initialSortby,
+        initialSortBy,
         initialSortDirection,
         initialGroupBy,
         initialFilters,
@@ -32,7 +32,7 @@ function useFinder<FItem>(
             new FinderSyncExternalStore(items, {
                 rules,
                 initialSearchTerm,
-                initialSortby,
+                initialSortBy,
                 initialSortDirection,
                 initialGroupBy,
                 initialFilters,

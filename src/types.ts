@@ -89,7 +89,7 @@ export interface FinderConstructorOptions<FItem> {
     rules?: FinderRule<FItem>[];
 
     initialSearchTerm?: string;
-    initialSortby?: string;
+    initialSortBy?: string;
     initialSortDirection?: "asc" | "desc";
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;

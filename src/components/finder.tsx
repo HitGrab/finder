@@ -12,7 +12,7 @@ function Finder<FItem>({
     items,
     rules,
     initialSearchTerm,
-    initialSortby,
+    initialSortBy,
     initialSortDirection,
     initialGroupBy,
     initialFilters,
@@ -32,7 +32,7 @@ function Finder<FItem>({
     const finderInstance = useFinder<FItem>(items, {
         rules,
         initialSearchTerm,
-        initialSortby,
+        initialSortBy,
         initialSortDirection,
         initialGroupBy,
         initialFilters,

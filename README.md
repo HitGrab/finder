@@ -44,6 +44,8 @@ function Gallery() {
 
 ## Rules
 
+All rules ( with the exception of SearchRules ) must have a unique id for their namespace. If you have two filters with the same id, Finder will error out.
+
 ### Search
 
 Match text against your item properties.
@@ -182,7 +184,7 @@ Props:
     items: FItem[];
     rules?: FinderRule<FItem>[];
     initialSearchTerm?: string;
-    initialSortby?: string;
+    initialSortBy?: string;
     initialSortDirection?: "asc" | "desc";
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
@@ -335,7 +337,7 @@ finder.matches = {
 
 ### Pagination
 
-If both a `page` and `numItemsPerPage` property are set, Finder will paginate items and groups.
+If the `numItemsPerPage` property is set, Finder will paginate items and groups.
 
 ```
 function DeclarativePaginationComponent() {
@@ -374,6 +376,21 @@ function ImperativePaginationControl() {
         </>
     );
 }
+```
+
+Full API
+
+```
+finder.pagination = {
+    page: number;
+    offset: number;
+    numItemsPerPage?: number;
+    numTotalItems: number;
+    lastPage?: number;
+    isPaginated: boolean;
+    setPage: (page: number) => void;
+    setNumItemsPerPage: (numItemsPerPage: number) => void;
+};
 ```
 
 ### Search
@@ -474,7 +491,8 @@ Full API
 
 ```
 finder.filters = {
-    value?: Record<string, any>;
+    value: Record<string, any>; /* Formatted and type-cast values including default values, etc.  */
+    filters: Record<string, any>; /* Direct state, in case you need access */
     rules: HydratedFilterRule<FItem>[];
     activeRules: HydratedFilterRule<FItem>[];
     activeRuleIds: string[];

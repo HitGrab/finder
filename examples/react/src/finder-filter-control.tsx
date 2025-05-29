@@ -1,4 +1,4 @@
-import { HydratedFilterRule, useFinderContext } from "finder";
+import { HydratedFilterRule, useFinderContext } from "@hitgrab/finder";
 import { Fragment } from "react/jsx-runtime";
 
 interface FinderFilterControlProps {
