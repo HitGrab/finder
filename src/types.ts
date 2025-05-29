@@ -12,7 +12,7 @@ export interface FinderInstance<FItem> {
         lastPage?: number;
         isPaginated: boolean;
         setPage: (page: number) => void;
-        setNumItemsPerPage: (numItemsPerPage: number) => void;
+        setNumItemsPerPage: (numItemsPerPage?: number) => void;
     };
     isEmpty: boolean;
     isLoading: boolean;
