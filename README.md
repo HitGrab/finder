@@ -17,7 +17,7 @@ Features:
 
 Define a static rule array, and pass them to the Finder component. Finder will provides a context with any matches, and an API to activate or mutate rules.
 
-```
+```ts
 function SearchControlComponent() {
     const finder = useFinderContext();
     return <input type="text" onInput={(e) => finder.search.setSearchTerm(e.currentTarget.value)} />
