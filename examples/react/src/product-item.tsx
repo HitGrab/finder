@@ -1,8 +1,8 @@
-import { useFinderContext } from "finder";
 import { range } from "lodash";
 import { Fragment } from "react/jsx-runtime";
 import { Product } from "./types";
 import { ColorSquare } from "./color-square";
+import { useFinderContext } from "@hitgrab/finder";
 
 interface ProductItemProps {
     product: Product;

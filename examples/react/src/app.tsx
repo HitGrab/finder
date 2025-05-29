@@ -1,24 +1,23 @@
-import {
-    FilterRule,
-    filterRule,
-    Finder,
-    FinderContent,
-    FinderOption,
-    finderRules,
-    finderStringCompare,
-    groupByRule,
-    HydratedFilterRule,
-    searchRule,
-    sortByRule,
-    useFinderContext,
-    useFinderRef,
-} from "finder";
 import { capitalize, range } from "lodash";
 import { Fragment, useState } from "react";
 import { FinderFilterControl } from "./finder-filter-control";
 import { ProductItem } from "./product-item";
 import { Product } from "./types";
 import { generateProducts } from "./services/generateProducts";
+import {
+    finderRules,
+    searchRule,
+    finderStringCompare,
+    filterRule,
+    FinderOption,
+    sortByRule,
+    groupByRule,
+    useFinderRef,
+    Finder,
+    FinderContent,
+    useFinderContext,
+    HydratedFilterRule,
+} from "@hitgrab/finder";
 
 const productList = generateProducts();
 
