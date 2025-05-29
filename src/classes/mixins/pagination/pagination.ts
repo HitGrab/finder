@@ -1,5 +1,5 @@
 import { clamp } from "lodash";
-import { FinderInjectedHandlers } from "../../types";
+import { FinderInjectedHandlers } from "../../../types";
 
 class PaginationMixin<FItem> {
     #page: number;

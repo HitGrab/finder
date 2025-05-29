@@ -1,11 +1,11 @@
-import { FilterRule, FinderOption, HydratedFilterRule } from "../../types";
-import { getRuleFromIdentifier } from "../../utils/finder-utils";
+import { FilterRule, HydratedFilterRule } from "../../../types";
+import { getRuleFromIdentifier } from "../../../utils/finder-utils";
 import { FiltersMixin } from "./filters";
 
 /**
  * Public surface for the Filters mixin
  */
-function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
+function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     return {
         value: mixin.getFilters(),
         filters: mixin.filters,
@@ -42,4 +42,4 @@ function filtersAPI<FItem>(mixin: FiltersMixin<FItem>) {
     };
 }
 
-export { filtersAPI };
+export { filtersInterface };

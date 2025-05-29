@@ -3,7 +3,7 @@ import { SortByMixin } from "./sort-by";
 /**
  * Public surface for the SortBy mixin
  */
-function sortByAPI<FItem>(mixin: SortByMixin<FItem>) {
+function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
         activeRuleId: mixin.activeRule?.id,
@@ -40,4 +40,4 @@ function sortByAPI<FItem>(mixin: SortByMixin<FItem>) {
     };
 }
 
-export { sortByAPI };
+export { sortByInterface };

@@ -1,11 +1,11 @@
-import { GroupByRule } from "../../types";
-import { getRuleFromIdentifier } from "../../utils/finder-utils";
+import { GroupByRule } from "../../../types";
+import { getRuleFromIdentifier } from "../../../utils/finder-utils";
 import { GroupByMixin } from "./group-by";
 
 /**
  * Public surface for the Group By mixin
  */
-function groupByAPI<FItem>(mixin: GroupByMixin<FItem>) {
+function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
         activeRuleId: mixin.activeRule?.id,
@@ -29,4 +29,4 @@ function groupByAPI<FItem>(mixin: GroupByMixin<FItem>) {
     };
 }
 
-export { groupByAPI };
+export { groupByInterface };
