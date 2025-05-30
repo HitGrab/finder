@@ -109,6 +109,8 @@ Pro-tips:
 - Use `finderStringCompare` to do a case-insensitive search that removes whitespace and line breaks.
 - If you have an enormous volume of data to process, you can add a `debounceDelay`.
 
+[SearchDocs](/src/classes/mixins/search/search.ts)
+
 ### Filters
 
 Define a filter predicate that will return a boolean for each item. If multiple filters are active, all filters must match for an item to be returned.
@@ -229,190 +231,14 @@ This is triggered whenever a rule value or core property changes. Diffs may incl
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Components
+## Pagination
 
-<details open>
-<summary><h3>&lt;Finder /&gt;</h3> The root query container</summary>
-Props:
-
-```ts
-    items: FItem[];
-    rules?: FinderRule<FItem>[];
-    initialSearchTerm?: string;
-    initialSortBy?: string;
-    initialSortDirection?: "asc" | "desc";
-    initialGroupBy?: string;
-    initialFilters?: Record<string, any>;
-    initialMeta?: Map<any, any>;
-    initialSelectedItems?: FItem[];
-    maxSelectedItems?: number;
-    isLoading?: boolean;
-    disabled?: boolean;
-    page?: number;
-    numItemsPerPage?: number;
-    requireGroup?: boolean;
-    onInit?: () => void;
-    onChange?: (diff: FinderDiff, ref: FinderInstance<FItem>) => void
-```
-</details>
-
-<details>
-<summary><h3>&lt;FinderContent /&gt;</h3> A convenience component to handle Finder states.</summary>
-    
- It accepts an array of renderProps and will determine the most appropriate state to display. Only a single state can be active at a time.
-```ts
-<FinderContent>
-    {{
-        // Displayed while Finder's isLoading property is true.
-        loading: ReactNode,
-
-        // Finder received an empty items array.
-        empty: ReactNode,
-
-        // No items were found that matched the current rules.
-        noMatches: ReactNode
-
-        // Items were found that matched the rules.
-        items: (items: FItem[], meta: FinderMeta, pagination: FinderPagination) => ReactNode,
-
-        // An active GroupBy rule grouped items together.
-        groups: (groups: FinderResultGroup<FItem>, meta: FinderMeta, pagination: FinderPagination) => ReactNode,
-
-    }}
-</FinderContent>
-```
-Pro-tips:
-
-- If pagination is enabled, the items and groups components will receive only the current page's slice.
-</details>
-
-<details>
-<summary><h3>&lt;FinderLoading /&gt;</h3></summary>
-    
-Only visible when `isLoading` is true.
-
-```ts
-<FinderLoading>
-    Requesting data: [██████__________]
-</FinderLoading>
-```
-</details>
-
-<details>
-<summary><h3>&lt;FinderEmpty /&gt;</h3></summary>
-
-Only visible when `isLoading` is false, and the `items` array is empty.
-
-```ts
-<FinderEmpty>
-    Nothing here!
-</FinderEmpty>
-```
-</details>
-
-<details>
-<summary><h3>&lt;FinderNoMatches /&gt;</h3></summary>
-
-Only visible when no items were found that matched the current rules.
-
-```ts
-<FinderNoMatches>
-    No items were found for that search.
-</FinderNoMatches>
-```
-</details>
-
-<details>
-<summary><h3>&lt;FinderItems /&gt;</h3></summary>
-
-Only visible when items were found that matched the rules.
-
-```ts
-<FinderItems>
-    {(items: FItem[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
-</FinderItems>
-```
-</details>
-
-<details>
-<summary><h3>&lt;FinderGroups /&gt;</h3></summary>
-
-Only visible when an active GroupBy rule grouped items together.
-
-```ts
-<FinderItems>
-    {(groups: FinderResultGroup<FItem>[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
-</FinderItems>
-```
-</details>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Interfaces
-
-### Matches
-
-Finder match results are snapshotted, and are recalculated when an internal onChange event is triggered.
-
-As a reminder, Finder processes rules in the following order:
-
-1. Search
-2. Filters
-3. SortBy
-4. Paginate
-5. GroupBy
-
-This means that a group might be split across multiple pages as pagination is not the last option considered. 
-
-<details>
-<summary><h3>&lt;MatchesComponent /&gt;</h3></summary>
-    
-```ts
-function MatchesComponent() {
-    const finder = useFinderContext();
-
-    return (
-        <>
-
-            // if no groupBy rule is set, the `finder.matches.items` property will be an array.
-            {finder.matches.items?.map((item) => <Photo item={item} />)}
-
-            // if a groupBy rule IS set, the `finder.matches.groups` property will be an array of result groups.
-            {finder.matches.groups?.map((group) => (
-                <>
-                    {group.id}
-                    {group.items.map((item) => {
-                        return <Photo item={item} />
-                    })}
-                </>)
-            }
-
-            // total items that Finder iterated through.
-            {finder.matches.numTotalItems}
-        </>
-    );
-}
-```
-</details>
-
-<details>
-<summary><h3>finder.matches type:</h3></summary>
-
-```ts
-finder.matches = {
-    items?: FItem[];
-    groups?: FinderResultGroup<FItem>[];
-    numTotalItems?: number;
-}
-```
-</details>
-
-### Pagination
-
+*Please note that pagination is not the final option considered in the functionality of the filtering / sorting process, therefore groupBy options could return unexpected results.*
+<br/>
+<br/>
 If the `numItemsPerPage` property is set, Finder will paginate items and groups. 
 <br/>
 <br/>
-*Please note that pagination is not the final option considered in the functionality of the filtering / sorting process, therefore groupBy options could return unexpected results.*
 
 ```ts
 function DeclarativePaginationComponent() {
@@ -452,8 +278,10 @@ function ImperativePaginationControl() {
     );
 }
 ```
+</details>
 
-Full API
+<details>
+<summary>Interface:</summary>
 
 ```ts
 finder.pagination = {
@@ -467,8 +295,189 @@ finder.pagination = {
     setNumItemsPerPage: (numItemsPerPage: number) => void;
 };
 ```
+</details>
 
-### Search
+
+## Components and Interfaces
+
+### Core Componenets
+
+<details open>
+<summary><i>&lt;Finder /&gt;</i> The root query container</summary>
+Props:
+
+```ts
+    items: FItem[];
+    rules?: FinderRule<FItem>[];
+    initialSearchTerm?: string;
+    initialSortBy?: string;
+    initialSortDirection?: "asc" | "desc";
+    initialGroupBy?: string;
+    initialFilters?: Record<string, any>;
+    initialMeta?: Map<any, any>;
+    initialSelectedItems?: FItem[];
+    maxSelectedItems?: number;
+    isLoading?: boolean;
+    disabled?: boolean;
+    page?: number;
+    numItemsPerPage?: number;
+    requireGroup?: boolean;
+    onInit?: () => void;
+    onChange?: (diff: FinderDiff, ref: FinderInstance<FItem>) => void
+```
+</details>
+
+<details>
+<summary><i>&lt;FinderContent /&gt;</i> A convenience component to handle Finder states.</summary>
+    
+ It accepts an array of renderProps and will determine the most appropriate state to display. Only a single state can be active at a time.
+```ts
+<FinderContent>
+    {{
+        // Displayed while Finder's isLoading property is true.
+        loading: ReactNode,
+
+        // Finder received an empty items array.
+        empty: ReactNode,
+
+        // No items were found that matched the current rules.
+        noMatches: ReactNode
+
+        // Items were found that matched the rules.
+        items: (items: FItem[], meta: FinderMeta, pagination: FinderPagination) => ReactNode,
+
+        // An active GroupBy rule grouped items together.
+        groups: (groups: FinderResultGroup<FItem>, meta: FinderMeta, pagination: FinderPagination) => ReactNode,
+
+    }}
+</FinderContent>
+```
+Pro-tips:
+
+- If pagination is enabled, the items and groups components will receive only the current page's slice.
+</details>
+
+<details>
+<summary><i>&lt;FinderLoading /&gt;</i></summary>
+    
+Only visible when `isLoading` is true.
+
+```ts
+<FinderLoading>
+    Requesting data: [██████__________]
+</FinderLoading>
+```
+</details>
+
+<details>
+<summary><i>&lt;FinderEmpty /&gt;</i></summary>
+
+Only visible when `isLoading` is false, and the `items` array is empty.
+
+```ts
+<FinderEmpty>
+    Nothing here!
+</FinderEmpty>
+```
+</details>
+
+<details>
+<summary><i>&lt;FinderNoMatches /&gt;</i></summary>
+
+Only visible when no items were found that matched the current rules.
+
+```ts
+<FinderNoMatches>
+    No items were found for that search.
+</FinderNoMatches>
+```
+</details>
+
+<details>
+<summary><i>&lt;FinderItems /&gt;</i></summary>
+
+Only visible when items were found that matched the rules.
+
+```ts
+<FinderItems>
+    {(items: FItem[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
+</FinderItems>
+```
+</details>
+
+<details>
+<summary><i>&lt;FinderGroups /&gt;</i></summary>
+
+Only visible when an active GroupBy rule grouped items together.
+
+```ts
+<FinderItems>
+    {(groups: FinderResultGroup<FItem>[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
+</FinderItems>
+```
+</details>
+
+
+### Matches
+
+Finder match results are snapshotted, and are recalculated when an internal onChange event is triggered.
+
+As a reminder, Finder processes rules in the following order:
+
+1. Search
+2. Filters
+3. SortBy
+4. Paginate
+5. GroupBy
+
+This means that a group might be split across multiple pages as pagination is not the last option considered. 
+
+<details>
+<summary><i>&lt;MatchesComponent /&gt;</i></summary>
+    
+```ts
+function MatchesComponent() {
+    const finder = useFinderContext();
+
+    return (
+        <>
+
+            // if no groupBy rule is set, the `finder.matches.items` property will be an array.
+            {finder.matches.items?.map((item) => <Photo item={item} />)}
+
+            // if a groupBy rule IS set, the `finder.matches.groups` property will be an array of result groups.
+            {finder.matches.groups?.map((group) => (
+                <>
+                    {group.id}
+                    {group.items.map((item) => {
+                        return <Photo item={item} />
+                    })}
+                </>)
+            }
+
+            // total items that Finder iterated through.
+            {finder.matches.numTotalItems}
+        </>
+    );
+}
+```
+</details>
+
+<details>
+<summary>Interface:</summary>
+
+```ts
+finder.matches = {
+    items?: FItem[];
+    groups?: FinderResultGroup<FItem>[];
+    numTotalItems?: number;
+}
+```
+</details>
+
+
+<details>
+<summary><i>&lt;SearchComponent /&gt;</i></summary>
 
 ```ts
 function SearchComponent() {
@@ -485,8 +494,10 @@ function SearchComponent() {
     );
 }
 ```
+</details>
 
-Full API
+<details>
+<summary>Interface</summary>
 
 ```ts
 finder.search = {
@@ -499,8 +510,11 @@ finder.search = {
 ```
 
 If no searchRule was provided, `activeRule` will be undefined.
+</details>
 
-### Filters
+<details>
+<summary><i>&lt;FilterComponent /&gt;</i></summary>
+
 
 ```ts
 function FilterComponent({rule} : {rule: HydratedFilterRule}}) {
@@ -561,8 +575,10 @@ function FilterComponent({rule} : {rule: HydratedFilterRule}}) {
     );
 }
 ```
+</details>
 
-Full API
+<details>
+<summary>Interface</summary>
 
 ```ts
 finder.filters = {
@@ -581,9 +597,12 @@ finder.filters = {
     testOptions: (identifier: FilterRule | HydratedFilterRule | string, meta?: FinderMeta) => Map<FinderOption | boolean, FItem[] | undefined>;
 };
 ```
+</details>
 
-### sortBy
 
+<details>
+<summary><i>&lt;SortByComponent /&gt;</i></summary>
+    
 ```ts
 function SortByComponent() {
    const finder = useFinderContext();
@@ -615,8 +634,10 @@ function SortByComponent() {
     );
 }
 ```
+</details>
 
-Full API:
+<details>
+<summary>Interface</summary>
 
 ```ts
 finder.sortBy = {
@@ -630,9 +651,11 @@ finder.sortBy = {
     toggleSortDirection: () => void;
 };
 ```
+</details>
 
-### GroupBy
-
+<details>
+<summary><i>&lt;GroupByComponent /&gt;</i></summary>
+    
 ```ts
 function GroupByComponent() {
    const finder = useFinderContext();
@@ -668,7 +691,11 @@ function GroupByComponent() {
 }
 ```
 
-Full API
+</details>
+
+<details>
+<summary>Interface</summary>
+
 
 ```ts
 finder.groupBy = {
@@ -684,7 +711,10 @@ finder.groupBy = {
 };
 ```
 
-### Selected Items
+</details>
+
+<details>
+<summary><i>&lt;MySelectedItemsComponent /&gt;</i>></summary>
 
 ```ts
 function MySelectedItemsComponent() {
@@ -720,7 +750,10 @@ function MySelectedItemsComponent() {
 }
 ```
 
-Full API
+</details>
+
+<details>
+<summary>Interface</summary>
 
 ```ts
 finder.selectedItems = {
@@ -732,11 +765,12 @@ finder.selectedItems = {
     reset: () => void;
 };
 ```
+</details>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Meta
 
-The Meta API allows you to provide additional context to your rules.
+The Meta layer allows you to provide additional context to your rules.
 
 ```ts
 function MetaComponent() {
@@ -765,7 +799,7 @@ function MetaComponent() {
 }
 ```
 
-Full API:
+Interface:
 
 ```ts
 finder.meta = {
@@ -793,17 +827,21 @@ Consume a parent Finder context.
 
 ## Utils
 
-### searchRule()
+
 
 Ensures that a search rule has the correct shape.
+
+<details><summary><h4>searchRule()</h4></summary>
 
 ```ts
 const rule = searchRule({
     searchFn: (item, searchTerm) => boolean
 });
 ```
+    
+</details>
 
-### filterRule()
+<details><summary><h4>filterRule()</h4></summary>
 
 Ensures that a filter rule has the correct shape.
 
@@ -814,7 +852,9 @@ const rule = filterRule({
 });
 ```
 
-### sortByRule()
+</details>
+
+<details><summary><h4>sortByRule()</h4></summary>
 
 Ensures that a sortBy rule has the correct shape.
 
@@ -825,7 +865,9 @@ const rule = sortByRule({
 });
 ```
 
-### groupByRule()
+</details>
+
+<details><summary><h4>groupByRule()</h4></summary>
 
 Ensures that a groupBy rule has the correct shape.
 
@@ -836,8 +878,10 @@ const rule = groupByRule({
 });
 ```
 
-### finderRules()
+</details>
 
+<details><summary><h4>finderRules()</h4></summary>
+    
 Ensures that an array of rules all have the correct shape.
 
 ```ts
@@ -853,7 +897,9 @@ const rule = finderRules([
 ])
 ```
 
-### finderStringCompare
+</details>
+
+<details><summary><h4>finderStringCompare()</h4></summary>
 
 ```ts
 finderStringCompare(haystack: string, needle: string, aliases?: string[])
@@ -867,3 +913,4 @@ finderStringCompare('guava', 'gu', ['guajava', 'guayaba']) // true
 ```
 
 Performs a case-insensitive search that removes whitespace and line breaks. If an `aliases` array is provided, the needle will be compared against all alias entries as well.
+</details>
