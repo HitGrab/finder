@@ -29,8 +29,9 @@
     <li><a href="#events">Events</a></li>
     <li><a href="#pagination">Pagination</a></li>
     <li><a href="#components-and-interfaces">Components and Interfaces</a></li>
-    <li><a href="#meta">Metadata</a></li>
+    <li><a href="#meta">Meta</a></li>
     <li><a href="#hooks">Custom Hooks</a></li>
+    <li><a href="#utils">Utils</a></li>
   </ul>
 </details>
 
