@@ -109,7 +109,11 @@ Pro-tips:
 - Use `finderStringCompare` to do a case-insensitive search that removes whitespace and line breaks.
 - If you have an enormous volume of data to process, you can add a `debounceDelay`.
 
-[SearchDocs](/src/classes/mixins/search.ts)
+[![source][search-source]](/src/classes/mixins/search.ts)
+[![implementation][search-implementation]](https://github.com/HitGrab/finder/blob/7af28570f85b946e173072ebf4e3dcaf706ec02b/examples/react/src/app.tsx#L26)
+
+[search-source]: https://img.shields.io/badge/Source_Code-555555?style=for-the-badge
+[search-implementation]: https://img.shields.io/badge/example_implementation-555555?style=for-the-badge
 
 ### Filters
 
@@ -140,6 +144,12 @@ filterRule({
 Pro-tips:
 
 - If a rule generates options with a function, Finder will hydrate the rule with a stable options array before emitting it to context.
+
+[![source][filter-source]](/src/classes/mixins/filters.ts)
+[![implementation][filter-implementation]](https://github.com/HitGrab/finder/blob/7af28570f85b946e173072ebf4e3dcaf706ec02b/examples/react/src/app.tsx#L29)
+
+[filter-source]: https://img.shields.io/badge/Source_Code-555555?style=for-the-badge
+[filter-implementation]: https://img.shields.io/badge/example_implementation-555555?style=for-the-badge
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
