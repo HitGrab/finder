@@ -109,7 +109,7 @@ Pro-tips:
 - Use `finderStringCompare` to do a case-insensitive search that removes whitespace and line breaks.
 - If you have an enormous volume of data to process, you can add a `debounceDelay`.
 
-[SearchDocs](/src/classes/mixins/search/search.ts)
+[SearchDocs](/src/classes/mixins/search.ts)
 
 ### Filters
 
