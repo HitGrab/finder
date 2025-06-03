@@ -6,7 +6,7 @@ declare class FiltersMixin<FItem> {
     set(identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any): void;
     get rules(): HydratedFilterRule<FItem, any>[];
     get activeRules(): HydratedFilterRule<FItem, any>[];
-    get activeRuleIds(): any[];
+    get activeRuleIds(): string[];
     get(identifier: string | FilterRule | HydratedFilterRule): any;
     has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any): any;
     isActive(identifier: string | FilterRule | HydratedFilterRule): boolean;
@@ -14,7 +14,7 @@ declare class FiltersMixin<FItem> {
     test(options: FilterTestOptions): FItem[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): FItem[];
     testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<boolean | FinderOption<any>, FItem[]>;
-    getFilters(): HydratedFilterRule<FItem, any>;
+    getFilters(): Record<string, any>;
     process(items: FItem[], meta?: FinderMeta): FItem[];
     static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta?: FinderMeta): FItem[];
     static isActive(rule: FilterRule | HydratedFilterRule, value: any): boolean;

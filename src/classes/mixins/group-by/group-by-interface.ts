@@ -15,7 +15,7 @@ function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
         set: mixin.set.bind(mixin),
         toggle: (identifier: GroupByRule | string) => {
             const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
-            if (mixin.activeRule === rule?.id) {
+            if (mixin.activeRule === rule) {
                 mixin.set(undefined);
                 return;
             }
