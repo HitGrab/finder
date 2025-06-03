@@ -1,4 +1,4 @@
-import { FinderInjectedHandlers } from "../../types";
+import { FinderInjectedHandlers } from "../../../types";
 declare class PaginationMixin<FItem> {
     #private;
     numItemsPerPage?: number;

@@ -1,4 +1,4 @@
-import { FinderInjectedHandlers, FilterRule, FinderOption, FinderMeta, HydratedFilterRule, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
+import { HydratedFilterRule, FinderInjectedHandlers, FilterRule, FinderMeta, FinderOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../../types";
 declare class FiltersMixin<FItem> {
     #private;
     filters: Record<string, any>;

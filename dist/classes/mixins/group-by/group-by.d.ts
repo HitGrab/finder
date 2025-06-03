@@ -1,4 +1,4 @@
-import { GroupByRule, FinderInjectedHandlers, FinderResultGroup, FinderMeta } from "../../types";
+import { GroupByRule, FinderInjectedHandlers, FinderMeta, FinderResultGroup } from "../../../types";
 declare class GroupByMixin<FItem> {
     #private;
     requireGroup: boolean;

@@ -2,7 +2,7 @@ import { PaginationMixin } from "./pagination";
 /**
  * Public surface for the pagination mixin
  */
-declare function paginationAPI<FItem>(mixin: PaginationMixin<FItem>): {
+declare function paginationInterface<FItem>(mixin: PaginationMixin<FItem>): {
     page: number;
     offset: number;
     numItemsPerPage: number | undefined;
@@ -12,4 +12,4 @@ declare function paginationAPI<FItem>(mixin: PaginationMixin<FItem>): {
     setPage: (value: number) => void;
     setNumItemsPerPage: (value?: number) => void;
 };
-export { paginationAPI };
+export { paginationInterface };

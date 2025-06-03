@@ -1,9 +1,9 @@
-import { GroupByRule } from "../../types";
+import { GroupByRule } from "../../../types";
 import { GroupByMixin } from "./group-by";
 /**
  * Public surface for the Group By mixin
  */
-declare function groupByAPI<FItem>(mixin: GroupByMixin<FItem>): {
+declare function groupByInterface<FItem>(mixin: GroupByMixin<FItem>): {
     activeRule: GroupByRule<unknown> | undefined;
     activeRuleId: string | undefined;
     requireGroup: boolean;
@@ -14,4 +14,4 @@ declare function groupByAPI<FItem>(mixin: GroupByMixin<FItem>): {
     setGroupIdSortDirection: (direction?: string) => void;
     reset: () => void;
 };
-export { groupByAPI };
+export { groupByInterface };

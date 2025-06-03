@@ -1,4 +1,4 @@
-import { FinderInjectedHandlers } from "../../types";
+import { FinderInjectedHandlers } from "../../../types";
 declare class SelectedItemsMixin<FItem> {
     #private;
     selectedItems: FItem[];

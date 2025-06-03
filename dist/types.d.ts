@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { PropsWithChildren, RefObject } from "react";
 import { Finder } from "./classes/finder";
 
 export interface FinderInstance<FItem> {
@@ -89,7 +90,7 @@ export interface FinderConstructorOptions<FItem> {
     rules?: FinderRule<FItem>[];
 
     initialSearchTerm?: string;
-    initialSortby?: string;
+    initialSortBy?: string;
     initialSortDirection?: "asc" | "desc";
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
@@ -252,4 +253,9 @@ export interface FilterTestRuleOptionsOptions {
     meta?: FinderMeta;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
+}
+
+export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
+    items: FItem[] | undefined | null;
+    controllerRef?: RefObject<FinderInstance<FItem> | null>;
 }
