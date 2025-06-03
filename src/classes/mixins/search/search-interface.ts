@@ -3,7 +3,7 @@ import { SearchMixin } from "./search";
 /*
  * Public surface for the Search mixin
  */
-function searchAPI<FItem>(mixin: SearchMixin<FItem>) {
+function searchInterface<FItem>(mixin: SearchMixin<FItem>) {
     return {
         searchTerm: mixin.searchTerm,
         activeRule: mixin.rule,
@@ -13,4 +13,4 @@ function searchAPI<FItem>(mixin: SearchMixin<FItem>) {
     };
 }
 
-export { searchAPI };
+export { searchInterface };

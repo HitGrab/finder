@@ -1,6 +1,6 @@
 import { Many, orderBy } from "lodash";
-import { getRuleFromIdentifier, isSortByRule } from "../../utils/finder-utils";
-import { SortByRule, FinderInjectedHandlers } from "../../types";
+import { SortByRule, FinderInjectedHandlers } from "../../../types";
+import { getRuleFromIdentifier, isSortByRule } from "../../../utils/finder-utils";
 
 class SortByMixin<FItem> {
     #sortBy?: SortByRule;

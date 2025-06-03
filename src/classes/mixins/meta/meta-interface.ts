@@ -3,7 +3,7 @@ import { MetaMixin } from "./meta";
 /**
  * Public surface for the Meta mixin
  */
-function metaAPI<FItem>(mixin: MetaMixin<FItem>) {
+function metaInterface<FItem>(mixin: MetaMixin<FItem>) {
     return {
         value: mixin.meta,
         set: mixin.set.bind(mixin),
@@ -14,4 +14,4 @@ function metaAPI<FItem>(mixin: MetaMixin<FItem>) {
     };
 }
 
-export { metaAPI };
+export { metaInterface };

@@ -1,20 +1,20 @@
 import { isEqual } from "lodash";
-import { FinderConstructorOptions, FinderInjectedHandlers, FinderOnChangeCallback, FinderResultGroup, FinderRule, FinderDiff, MatchesSnapshot } from "../types";
-import { FiltersMixin } from "./mixins/filters";
-import { SortByMixin } from "./mixins/sort-by";
-import { GroupByMixin } from "./mixins/group-by";
-import { MetaMixin } from "./mixins/meta";
-import { SelectedItemsMixin } from "./mixins/selected-items";
-import { PaginationMixin } from "./mixins/pagination";
-import { SearchMixin } from "./mixins/search";
-import { filtersAPI } from "./mixins/filters-api";
-import { groupByAPI } from "./mixins/group-by-api";
-import { metaAPI } from "./mixins/meta-api";
-import { paginationAPI } from "./mixins/pagination-api";
-import { selectedItemsAPI } from "./mixins/selected-items-api";
-import { sortByAPI } from "./mixins/sort-by-api";
-import { searchAPI } from "./mixins/search-api";
-import { getRuleType, isSearchRule } from "../utils/finder-utils";
+import { FinderRule, MatchesSnapshot, FinderOnChangeCallback, FinderConstructorOptions, FinderInjectedHandlers, FinderDiff, FinderResultGroup } from "../types";
+import { isSearchRule, getRuleType } from "../utils/finder-utils";
+import { FiltersMixin } from "./mixins/filters/filters";
+import { GroupByMixin } from "./mixins/group-by/group-by";
+import { MetaMixin } from "./mixins/meta/meta";
+import { PaginationMixin } from "./mixins/pagination/pagination";
+import { SearchMixin } from "./mixins/search/search";
+import { SelectedItemsMixin } from "./mixins/selected-items/selected-items";
+import { SortByMixin } from "./mixins/sort-by/sort-by";
+import { searchInterface } from "./mixins/search/search-interface";
+import { filtersInterface } from "./mixins/filters/filters-interface";
+import { sortByInterface } from "./mixins/sort-by/sort-by-interface";
+import { groupByInterface } from "./mixins/group-by/group-by-interface";
+import { metaInterface } from "./mixins/meta/meta-interface";
+import { paginationInterface } from "./mixins/pagination/pagination-interface";
+import { selectedItemsInterface } from "./mixins/selected-items/selected-items-interface";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -186,31 +186,31 @@ class Finder<FItem> {
     }
 
     get search() {
-        return searchAPI(this.#mixins.search);
+        return searchInterface(this.#mixins.search);
     }
 
     get filters() {
-        return filtersAPI(this.#mixins.filters);
+        return filtersInterface(this.#mixins.filters);
     }
 
     get sortBy() {
-        return sortByAPI(this.#mixins.sortBy);
+        return sortByInterface(this.#mixins.sortBy);
     }
 
     get groupBy() {
-        return groupByAPI(this.#mixins.groupBy);
+        return groupByInterface(this.#mixins.groupBy);
     }
 
     get meta() {
-        return metaAPI(this.#mixins.meta);
+        return metaInterface(this.#mixins.meta);
     }
 
     get pagination() {
-        return paginationAPI(this.#mixins.pagination);
+        return paginationInterface(this.#mixins.pagination);
     }
 
     get selectedItems() {
-        return selectedItemsAPI(this.#mixins.selectedItems);
+        return selectedItemsInterface(this.#mixins.selectedItems);
     }
 
     setItems(items: FItem[] | null | undefined) {

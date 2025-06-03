@@ -3,7 +3,7 @@ import { SelectedItemsMixin } from "./selected-items";
 /**
  * Public surface for the Selected Items mixin
  */
-function selectedItemsAPI<FItem>(mixin: SelectedItemsMixin<FItem>) {
+function selectedItemsInterface<FItem>(mixin: SelectedItemsMixin<FItem>) {
     return {
         items: mixin.selectedItems,
         maxSelectedItems: mixin.maxSelectedItems,
@@ -22,4 +22,4 @@ function selectedItemsAPI<FItem>(mixin: SelectedItemsMixin<FItem>) {
     };
 }
 
-export { selectedItemsAPI };
+export { selectedItemsInterface };

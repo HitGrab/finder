@@ -1,16 +1,16 @@
 import { uniqBy } from "lodash";
 import {
+    HydratedFilterRule,
     FinderInjectedHandlers,
     FilterRule,
-    FinderOption,
     FinderMeta,
-    HydratedFilterRule,
+    FinderOption,
     FilterTestOptions,
     FilterTestRuleOptions,
     FilterTestRuleOptionsOptions,
-} from "../../types";
-import { DebounceCallbackRegistry } from "../../utils/debounce-callback-registry";
-import { getOptionFromIdentifier, getRuleFromIdentifier, isFilterRule } from "../../utils/finder-utils";
+} from "../../../types";
+import { DebounceCallbackRegistry } from "../../../utils/debounce-callback-registry";
+import { getRuleFromIdentifier, isFilterRule, getOptionFromIdentifier } from "../../../utils/finder-utils";
 
 class FiltersMixin<FItem> {
     filters: Record<string, any>;
