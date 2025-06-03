@@ -354,6 +354,12 @@ describe("Filter - Advanced", () => {
             filterFn: (item, value) => item.price <= value,
             options: [optionOne, optionTwo, optionThree],
         });
+        const multipleFilter = filterRule<MockObjectItem, number>({
+            id: "price_is_below",
+            filterFn: (item, value) => item.price <= value,
+            multiple: true,
+            options: () => [optionOne, optionTwo, optionThree],
+        });
         const booleanFilter = filterRule<MockObjectItem>({
             id: "expires_in_five_days",
             filterFn: (item) => item.daysUntilExpiryDate === "five",
@@ -368,6 +374,13 @@ describe("Filter - Advanced", () => {
         expect(testResult.get(optionTwo)?.length).toBe(2);
         expect(testResult.get(optionThree)?.length).toBe(3);
 
+        // test multiple filter
+        const multipleTestResult = finder.filters.testRuleOptions({ rule: multipleFilter });
+        expect(multipleTestResult.get(optionOne)?.length).toBe(1);
+        expect(multipleTestResult.get(optionTwo)?.length).toBe(2);
+        expect(multipleTestResult.get(optionThree)?.length).toBe(3);
+
+        // test boolean filter
         const booleanTestResult = finder.filters.testRuleOptions({ rule: booleanFilter });
         expect(booleanTestResult.get(true)?.length).toBe(2);
         expect(booleanTestResult.get(false)?.length).toBe(3);
