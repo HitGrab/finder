@@ -4252,7 +4252,7 @@ let M_ = (_o = class {
   constructor(a, {
     rules: i,
     initialSearchTerm: d,
-    initialSortby: R,
+    initialSortBy: R,
     initialSortDirection: S,
     initialGroupBy: b,
     initialFilters: $,
@@ -4397,7 +4397,7 @@ Ue = new WeakMap();
 function B_(o, {
   rules: a,
   initialSearchTerm: i,
-  initialSortby: d,
+  initialSortBy: d,
   initialSortDirection: R,
   initialGroupBy: S,
   initialFilters: b,
@@ -4416,7 +4416,7 @@ function B_(o, {
     () => new W_(o, {
       rules: a,
       initialSearchTerm: i,
-      initialSortby: d,
+      initialSortBy: d,
       initialSortDirection: R,
       initialGroupBy: S,
       initialFilters: b,
@@ -4741,7 +4741,7 @@ function J_({
   items: o,
   rules: a,
   initialSearchTerm: i,
-  initialSortby: d,
+  initialSortBy: d,
   initialSortDirection: R,
   initialGroupBy: S,
   initialFilters: b,
@@ -4761,7 +4761,7 @@ function J_({
   const ct = B_(o, {
     rules: a,
     initialSearchTerm: i,
-    initialSortby: d,
+    initialSortBy: d,
     initialSortDirection: R,
     initialGroupBy: S,
     initialFilters: b,

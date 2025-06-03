@@ -4,7 +4,7 @@ declare class Finder<FItem> {
     isLoading: boolean;
     disabled: boolean;
     updatedAt?: number;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortby, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, onInit, onChange, }: FinderConstructorOptions<FItem>);
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, onInit, onChange, }: FinderConstructorOptions<FItem>);
     initializeOnce(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;

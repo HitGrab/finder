@@ -2,7 +2,7 @@ import { SortByRule, FinderInjectedHandlers } from "../../types";
 declare class SortByMixin<FItem> {
     #private;
     sortDirection?: string;
-    constructor(initialSortby: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>);
+    constructor(initialSortBy: string | undefined, initialSortDirection: "asc" | "desc" | undefined, handlers: FinderInjectedHandlers<FItem>);
     get rules(): SortByRule<unknown>[];
     get activeRule(): SortByRule<unknown> | undefined;
     setSortDirection(incomingSortDirection?: string): void;
