@@ -1,4 +1,4 @@
-import { FinderInjectedHandlers, FinderMeta } from "../../types";
+import { FinderMeta, FinderInjectedHandlers } from "../../../types";
 declare class MetaMixin<FItem> {
     #private;
     meta?: FinderMeta;

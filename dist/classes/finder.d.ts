@@ -1,4 +1,4 @@
-import { FinderConstructorOptions, MatchesSnapshot } from "../types";
+import { MatchesSnapshot, FinderConstructorOptions } from "../types";
 declare class Finder<FItem> {
     #private;
     isLoading: boolean;

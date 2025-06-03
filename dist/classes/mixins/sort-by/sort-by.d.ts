@@ -1,4 +1,4 @@
-import { SortByRule, FinderInjectedHandlers } from "../../types";
+import { SortByRule, FinderInjectedHandlers } from "../../../types";
 declare class SortByMixin<FItem> {
     #private;
     sortDirection?: string;
