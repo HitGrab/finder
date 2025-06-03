@@ -160,8 +160,15 @@ export interface FilterRule<FItem = any, FValue = any> extends Record<string, an
     debounceDelay?: number;
 }
 
-export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<FilterRule<FItem, FValue>, "options"> {
+export interface HydratedFilterRule<FItem = any, FValue = any> {
+    id: string;
+    filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
     options?: FinderOption<FValue>[];
+    multiple: boolean;
+    required: boolean;
+    isBoolean: boolean;
+    defaultValue?: FValue;
+    debounceDelay?: number;
 }
 
 export interface GroupByRule<FItem = any> extends Record<string, any> {

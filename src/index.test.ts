@@ -44,6 +44,7 @@ describe("Constructor", () => {
             },
         ];
         expect(() => {
+            // @ts-expect-error
             const finder = new Finder(objectItems, { rules });
         }).toThrowError();
     });
@@ -55,6 +56,7 @@ describe("Constructor", () => {
             },
         ];
         expect(() => {
+            // @ts-expect-error
             const finder = new Finder(objectItems, { rules });
         }).toThrowError();
     });

@@ -17,10 +17,10 @@ declare class Finder<FItem> {
         reset: () => void;
     };
     get filters(): {
-        value: import("..").HydratedFilterRule<FItem, any>;
+        value: Record<string, any>;
         filters: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<FItem, any>[];
-        activeRuleIds: any[];
+        activeRuleIds: string[];
         rules: import("..").HydratedFilterRule<FItem, any>[];
         isActive: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => boolean;
         toggle(identifier: string | import("..").FilterRule | import("..").HydratedFilterRule): void;

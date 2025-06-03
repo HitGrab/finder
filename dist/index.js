@@ -3882,7 +3882,10 @@ const je = class je {
   }
   // return all filter values with default options and type casts applied.
   getFilters() {
-    return this.rules.reduce((a, i) => (a[i.id] = this.get(i), a), {});
+    return this.rules.reduce(
+      (a, i) => (a[i.id] = this.get(i), a),
+      {}
+    );
   }
   process(a, i) {
     return je.process(a, this.rules, this.getFilters(), i);
@@ -3897,7 +3900,17 @@ const je = class je {
 };
 tn = new WeakMap(), At = new WeakMap(), En = new WeakMap(), ui = new WeakSet(), // hydrate and memoize generated options
 Ro = function(a, i) {
-  return m(this, At).getRules().filter(mo).map((R) => typeof R.options == "function" ? { ...R, options: R.options(a, i), _isHydrated: !0 } : { ...R, _isHydrated: !0 });
+  return m(this, At).getRules().filter(mo).map((R) => typeof R.options == "function" ? {
+    ...R,
+    // trigger option generator
+    options: R.options(a, i),
+    // reduce uncertainty
+    multiple: !!R.multiple,
+    required: !!R.required,
+    isBoolean: !!R.isBoolean,
+    // brand it
+    _isHydrated: !0
+  } : { ...R, _isHydrated: !0 });
 };
 let Ou = je;
 var en, ye;

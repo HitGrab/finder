@@ -28,7 +28,7 @@ class FiltersMixin<FItem> {
     }
 
     set(identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any) {
-        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -79,14 +79,27 @@ class FiltersMixin<FItem> {
         const filterRules = this.#handlers.getRules().filter(isFilterRule);
         return filterRules.map((rule) => {
             if (typeof rule.options === "function") {
-                return { ...rule, options: rule.options(items, meta), _isHydrated: true } as HydratedFilterRule<FItem>;
+                return {
+                    ...rule,
+
+                    // trigger option generator
+                    options: rule.options(items, meta),
+
+                    // reduce uncertainty
+                    multiple: !!rule.multiple,
+                    required: !!rule.required,
+                    isBoolean: !!rule.isBoolean,
+
+                    // brand it
+                    _isHydrated: true,
+                } as HydratedFilterRule<FItem>;
             }
             return { ...rule, _isHydrated: true } as HydratedFilterRule<FItem>;
         });
     }
 
     get(identifier: string | FilterRule | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -122,7 +135,7 @@ class FiltersMixin<FItem> {
     }
 
     has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any) {
-        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -245,10 +258,13 @@ class FiltersMixin<FItem> {
 
     // return all filter values with default options and type casts applied.
     getFilters() {
-        return this.rules.reduce((acc, rule) => {
-            acc[rule.id] = this.get(rule);
-            return acc;
-        }, {});
+        return this.rules.reduce(
+            (acc, rule) => {
+                acc[rule.id] = this.get(rule);
+                return acc;
+            },
+            {} as Record<string, any>,
+        );
     }
 
     process(items: FItem[], meta?: FinderMeta) {

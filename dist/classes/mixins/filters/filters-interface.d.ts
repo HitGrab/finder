@@ -4,10 +4,10 @@ import { FiltersMixin } from "./filters";
  * Public surface for the Filters mixin
  */
 declare function filtersInterface<FItem>(mixin: FiltersMixin<FItem>): {
-    value: HydratedFilterRule<FItem, any>;
+    value: Record<string, any>;
     filters: Record<string, any>;
     activeRules: HydratedFilterRule<FItem, any>[];
-    activeRuleIds: any[];
+    activeRuleIds: string[];
     rules: HydratedFilterRule<FItem, any>[];
     isActive: (identifier: string | FilterRule | HydratedFilterRule) => boolean;
     toggle(identifier: string | FilterRule | HydratedFilterRule): void;
