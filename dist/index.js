@@ -4196,7 +4196,7 @@ function L_(o) {
     set: o.set.bind(o),
     toggle: (i) => {
       const d = Ft(i, o.rules);
-      if (o.activeRule === (d == null ? void 0 : d.id)) {
+      if (o.activeRule === d) {
         o.set(void 0);
         return;
       }
