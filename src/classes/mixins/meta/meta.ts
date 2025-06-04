@@ -1,4 +1,5 @@
 import { FinderMeta, FinderInjectedHandlers } from "../../../types";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class MetaMixin<FItem> {
     meta?: FinderMeta;
@@ -10,11 +11,11 @@ class MetaMixin<FItem> {
     }
 
     set(metaIdentifier: any, value: any) {
-        this.#handlers.onInit();
         const clonedMetaMap = new Map(this.meta);
         clonedMetaMap.set(metaIdentifier, value);
         this.meta = clonedMetaMap;
-        this.#handlers.onChange({ meta: clonedMetaMap });
+        this.#handlers.emit(FINDER_EVENTS.SET_META, { id: metaIdentifier, value });
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { meta: clonedMetaMap });
     }
     get(metaIdentifier: any) {
         return this.meta?.get(metaIdentifier);
@@ -23,14 +24,14 @@ class MetaMixin<FItem> {
         return !!this.meta?.has(metaIdentifier);
     }
     delete(metaIdentifier: any) {
-        this.#handlers.onInit();
         const clonedMetaMap = new Map(this.meta);
         clonedMetaMap.delete(metaIdentifier);
         this.meta = clonedMetaMap;
-        this.#handlers.onChange({ meta: clonedMetaMap });
+        this.#handlers.emit(FINDER_EVENTS.SET_META, { id: metaIdentifier, undefined });
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { meta: clonedMetaMap });
     }
     reset() {
-        this.#handlers.onInit();
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { meta: undefined });
         this.meta = undefined;
     }
 }

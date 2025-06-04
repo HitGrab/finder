@@ -1,89 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PropsWithChildren, RefObject } from "react";
 import { Finder } from "./classes/finder";
+import { searchInterface } from "./classes/mixins/search/search-interface";
+import { filtersInterface } from "./classes/mixins/filters/filters-interface";
+import { sortByInterface } from "./classes/mixins/sort-by/sort-by-interface";
+import { groupByInterface } from "./classes/mixins/group-by/group-by-interface";
+import { selectedItemsInterface } from "./classes/mixins/selected-items/selected-items-interface";
+import { metaInterface } from "./classes/mixins/meta/meta-interface";
+import { paginationInterface } from "./classes/mixins/pagination/pagination-interface";
 
 export interface FinderInstance<FItem> {
     items: FItem[];
-    matches: MatchesSnapshot<FItem>;
-    pagination: {
-        page: number;
-        offset: number;
-        numItemsPerPage?: number;
-        numTotalItems: number;
-        lastPage?: number;
-        isPaginated: boolean;
-        setPage: (page: number) => void;
-        setNumItemsPerPage: (numItemsPerPage?: number) => void;
-    };
     isEmpty: boolean;
     isLoading: boolean;
     disabled: boolean;
     updatedAt?: number;
-    search: {
-        searchTerm: string;
-        activeRule?: SearchRule<FItem>;
-        hasSearchTerm: boolean;
-        setSearchTerm: (value: string) => void;
-        reset: () => void;
-    };
-    filters: {
-        value?: Record<string, any>;
-        filters?: Record<string, any>;
-        rules: HydratedFilterRule<FItem>[];
-        activeRules: HydratedFilterRule<FItem>[];
-        activeRuleIds: string[];
-        isActive: (identifier: FilterRule | HydratedFilterRule | string, value?: any) => boolean;
-        set: (identifier: FilterRule | HydratedFilterRule | string, value?: any) => void;
-        get: (identifier: FilterRule | HydratedFilterRule | string) => any;
-        has: (identifier: FilterRule | HydratedFilterRule | string, optionValue?: FinderOption | any) => boolean;
-        delete: (identifier: FilterRule | HydratedFilterRule | string) => void;
-        toggle: (identifier: FilterRule | HydratedFilterRule | string) => void;
-        toggleOption: (identifier: FilterRule | HydratedFilterRule | string, optionValue: FinderOption | any) => void;
-        test: (options: FilterTestOptions) => FItem[];
-        testRule: (options: FilterTestRuleOptions) => FItem[];
-        testRuleOptions: (options: FilterTestRuleOptionsOptions) => Map<FinderOption | boolean, FItem[] | undefined>;
-    };
-    sortBy: {
-        activeRule?: SortByRule<FItem>;
-        activeRuleId?: string;
-        rules: SortByRule<FItem>[];
-        sortDirection?: string;
-        set: (identifier?: string | SortByRule, sortDirection?: string) => void;
-        setSortDirection: (sortDirection?: string) => void;
-        cycleSortDirection: () => void;
-        toggleSortDirection: () => void;
-        reset: () => void;
-    };
-    groupBy: {
-        activeRule?: GroupByRule<FItem>;
-        activeRuleId?: string;
-        rules: GroupByRule<FItem>[];
-        requireGroup: boolean;
-        groupIdSortDirection?: string;
-        set: (identifier?: GroupByRule | string, value?: string) => void;
-        toggle: (identifier: GroupByRule | string) => void;
-        setGroupIdSortDirection: (direction?: string) => void;
-        reset: () => void;
-    };
-    selectedItems: {
-        items?: FItem[];
-        select: (item: FItem) => void;
-        delete: (item: FItem) => void;
-        toggle: (item: FItem) => void;
-        isSelected: (item: FItem) => boolean;
-        reset: () => void;
-    };
-    meta: {
-        value?: FinderMeta;
-        set: (metaIdentifier: any, metaValue: any) => void;
-        get: (metaIdentifier: any) => any;
-        has: (metaIdentifier: any) => boolean;
-        delete: (metaIdentifier: any) => void;
-        reset: () => void;
-    };
+    matches: MatchesSnapshot<FItem>;
+    pagination: ReturnType<typeof paginationInterface<FItem>>;
+    search: ReturnType<typeof searchInterface<FItem>>;
+    filters: ReturnType<typeof filtersInterface<FItem>>;
+    sortBy: ReturnType<typeof sortByInterface<FItem>>;
+    groupBy: ReturnType<typeof groupByInterface<FItem>>;
+    selectedItems: ReturnType<typeof selectedItemsInterface<FItem>>;
+    meta: ReturnType<typeof metaInterface<FItem>>;
 }
 
-export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, ref: Finder<FItem>) => void;
+export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, snapshot: FinderSnapshot<FItem>) => void;
 
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
@@ -111,6 +53,8 @@ export interface FinderConstructorOptions<FItem> {
     // If no groupBy is set, the first valid group rule will be used.
     requireGroup?: boolean;
 
+    plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
+
     // Triggered a single time after Finder first processes a rule.
     onInit?: () => void;
 
@@ -122,6 +66,7 @@ export interface FinderConstructorOptions<FItem> {
  * Passed to the onChange event, indicating which mixin was just mutated.
  */
 export interface FinderDiff<FItem = any> {
+    filter?: Record<string, any>;
     filters?: Record<string, any>;
     searchTerm?: string;
     sortBy?: string;
@@ -146,6 +91,8 @@ export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | Hy
 export interface SearchRule<FItem = any> extends Record<string, any> {
     id?: string;
     searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
+    label?: string;
+    hidden?: boolean;
     debounceDelay?: number;
 }
 
@@ -157,6 +104,8 @@ export interface FilterRule<FItem = any, FValue = any> extends Record<string, an
     required?: boolean;
     isBoolean?: boolean;
     defaultValue?: FValue;
+    label?: string;
+    hidden?: boolean;
     debounceDelay?: number;
 }
 
@@ -168,6 +117,8 @@ export interface HydratedFilterRule<FItem = any, FValue = any> {
     required: boolean;
     isBoolean: boolean;
     defaultValue?: FValue;
+    label?: string;
+    hidden: boolean;
     debounceDelay?: number;
 }
 
@@ -180,30 +131,26 @@ export interface GroupByRule<FItem = any> extends Record<string, any> {
         header?: string | string[];
         footer?: string | string[];
     };
+    label?: string;
+    hidden?: boolean;
 }
 
 export interface SortByRule<FItem = any> extends Record<string, any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultSortDirection?: "asc" | "desc";
-}
-
-export interface FinderPagination {
-    page?: number;
-    lastPage?: number;
-    numTotalItems: number;
-    numItemsPerPage?: number;
-    isPaginated: boolean;
+    label?: string;
+    hidden?: boolean;
 }
 
 export interface FinderItemsComponentProps<FItem> {
     items: FItem[];
-    pagination?: FinderPagination;
+    pagination?: ReturnType<typeof paginationInterface>;
     meta?: FinderMeta;
 }
 export interface FinderGroupsComponentProps<FItem> {
     groups: FinderResultGroup<FItem>[];
-    pagination?: FinderPagination;
+    pagination?: ReturnType<typeof paginationInterface>;
     meta?: FinderMeta;
     rule?: GroupByRule;
 }
@@ -226,8 +173,7 @@ export interface FinderOption<FValue = any> {
 export type FinderInjectedHandlers<FItem> = {
     isDisabled: () => boolean;
     getRules: () => FinderRule[];
-    onInit: () => void;
-    onChange: (diff: FinderDiff) => void;
+    emit: (event: FinderEventNames, payload: any) => void;
     getMeta: () => FinderMeta | undefined;
     getItems: () => FItem[];
 };
@@ -265,4 +211,33 @@ export interface FilterTestRuleOptionsOptions {
 export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderInstance<FItem> | null>;
+}
+
+export type FinderEventNames = "init" | "change" | "setSearchTerm" | "setFilter" | "setSortBy" | "setGroupBy" | "toggleSelectedItem" | "setMeta";
+
+export type EventPayloads<FItem> =
+    | { event: "init"; payload: undefined }
+    | { event: "change"; payload: { diff: FinderDiff; snapshot: FinderSnapshot<FItem> } }
+    | { event: "setSearchTerm"; payload: { rule: SearchRule; searchTerm: string; snapshot: FinderSnapshot<FItem> } }
+    | { event: "setFilter"; payload: { rule: HydratedFilterRule; value: any; snapshot: FinderSnapshot<FItem> } }
+    | { event: "setSortBy"; payload: { rule: SortByRule; sortDirection: string; snapshot: FinderSnapshot<FItem> } }
+    | { event: "setGroupBy"; payload: { rule: GroupByRule; groupIdSortDirection: string; snapshot: FinderSnapshot<FItem> } }
+    | { event: "toggleSelectedItem"; payload: { item: FItem; isSelected: boolean } }
+    | { event: "setMeta"; payload: { id: any; value: any } };
+
+export interface FinderSnapshot<FItem> {
+    searchTerm?: string;
+    filters?: Record<string, any>;
+    sortBy?: SortByRule<FItem>;
+    groupBy?: GroupByRule<FItem>;
+    selectedItems?: FItem[];
+    meta?: FinderMeta;
+}
+
+export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
+
+export interface FinderPluginInterface {
+    id: string;
+    register: (finder: Finder<any>) => void;
+    [k: string]: any;
 }

@@ -1,5 +1,6 @@
 import { clamp } from "lodash";
 import { FinderInjectedHandlers } from "../../../types";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class PaginationMixin<FItem> {
     #page: number;
@@ -19,14 +20,14 @@ class PaginationMixin<FItem> {
     setPage(value: number) {
         if (value !== this.#page) {
             this.#page = value;
-            this.#handlers.onChange({ page: this.#page });
+            this.#handlers.emit(FINDER_EVENTS.CHANGE, { page: this.#page });
         }
     }
 
     setNumItemsPerPage(value?: number) {
         if (value !== this.numItemsPerPage) {
             this.numItemsPerPage = value;
-            this.#handlers.onChange({ numItemsPerPage: this.numItemsPerPage });
+            this.#handlers.emit(FINDER_EVENTS.CHANGE, { numItemsPerPage: this.numItemsPerPage });
         }
     }
 

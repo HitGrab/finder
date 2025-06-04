@@ -1,10 +1,11 @@
 import { test } from "vitest";
-import { FinderMeta, FinderOnChangeCallback } from "./types";
+import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
 import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./classes/finder";
 import { searchRule, filterRule, finderRules, sortByRule, groupByRule } from "./utils/type-enforcers";
 import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./utils/compare-utils";
+import { FinderPlugin } from "./classes/plugin";
 
 type MockObjectItem = {
     type: string;
@@ -574,7 +575,7 @@ describe("onChange", () => {
             }),
         ];
         const onChange: FinderOnChangeCallback<MockObjectItem> = (diff) => {
-            expect(diff.filters).toStrictEqual({ price_is_below: 5 });
+            expect(diff.filter).toStrictEqual({ price_is_below: 5 });
         };
 
         const finder = new Finder(objectItems, { rules, onChange });
@@ -616,5 +617,65 @@ describe("Utils", () => {
         const haystackWithReversedCharacters = "e d c b a";
         const negativeMatch = finderSequentialCharacterCompare(haystackWithReversedCharacters, searchTerm);
         expect(negativeMatch).toBe(false);
+    });
+});
+
+describe("Plugins", () => {
+    test("Sample plugin", () => {
+        const rules = finderRules<MockObjectItem>([
+            searchRule({
+                searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+            }),
+            filterRule({
+                id: "price_is_below",
+                filterFn: (item, value: number) => {
+                    return item.price <= value;
+                },
+            }),
+            filterRule({
+                id: "expires_in_five_days",
+                filterFn: (item) => item.daysUntilExpiryDate === "five",
+                isBoolean: true,
+            }),
+        ]);
+
+        const onRegister = vitest.fn();
+        const onChange = vitest.fn();
+
+        interface MyPlugin extends FinderPluginInterface {
+            setValue: (value: number) => void;
+            getValue: () => number;
+        }
+        const mockPlugin: FinderPluginFn<MyPlugin> = () => {
+            let value = 5;
+            let instance: Finder<any>;
+            return {
+                id: "test",
+                register: (finder) => {
+                    instance = finder;
+                    onRegister();
+                    finder.events.on("change", () => {
+                        onChange();
+                    });
+                },
+                setValue(currentValue: number) {
+                    value = currentValue;
+                },
+                getValue: () => value,
+            };
+        };
+
+        const initializedPlugin = mockPlugin();
+        const finder = new Finder(objectItems, { rules, plugins: [initializedPlugin] });
+
+        expect(onRegister).toHaveBeenCalledTimes(1);
+
+        finder.filters.set("price_is_below", 3);
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+
+        finder.plugins.get(initializedPlugin).setValue(10);
+
+        expect(finder.plugins.get(initializedPlugin).getValue()).toBe(10);
     });
 });

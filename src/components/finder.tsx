@@ -3,7 +3,7 @@ import { FinderContext } from "../context/finder-context";
 import { FinderProps } from "../types";
 import { useFinder } from "../hooks/use-finder";
 
-function Finder<FItem>({
+function Finder<FItem = any>({
     items,
     rules,
     initialSearchTerm,
@@ -19,6 +19,7 @@ function Finder<FItem>({
     page,
     numItemsPerPage,
     requireGroup,
+    plugins,
     onInit,
     onChange,
     children,
@@ -39,6 +40,7 @@ function Finder<FItem>({
         page,
         numItemsPerPage,
         requireGroup,
+        plugins,
         onInit,
         onChange,
     });
