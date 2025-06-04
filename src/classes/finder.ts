@@ -1,5 +1,14 @@
 import { isEqual } from "lodash";
-import { FinderRule, MatchesSnapshot, FinderOnChangeCallback, FinderConstructorOptions, FinderInjectedHandlers, FinderDiff, FinderResultGroup } from "../types";
+import {
+    FinderRule,
+    MatchesSnapshot,
+    FinderConstructorOptions,
+    FinderInjectedHandlers,
+    FinderResultGroup,
+    FinderEventNames,
+    EventPayloads,
+    FinderSnapshot,
+} from "../types";
 import { isSearchRule, getRuleType } from "../utils/finder-utils";
 import { FiltersMixin } from "./mixins/filters/filters";
 import { GroupByMixin } from "./mixins/group-by/group-by";
@@ -15,6 +24,9 @@ import { groupByInterface } from "./mixins/group-by/group-by-interface";
 import { metaInterface } from "./mixins/meta/meta-interface";
 import { paginationInterface } from "./mixins/pagination/pagination-interface";
 import { selectedItemsInterface } from "./mixins/selected-items/selected-items-interface";
+import { EventCallback, EventEmitter } from "./event-emitter";
+import { FINDER_EVENTS } from "./finder-events";
+import { PluginMediator } from "./plugin-mediator/plugin-mediator";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -30,14 +42,12 @@ class Finder<FItem> {
 
     updatedAt?: number;
 
-    #onChange?: FinderOnChangeCallback;
-
-    #onInit?: () => void;
-
     #isInitialized: boolean = false;
 
     // If true, the next call to findMatches() will force a render.
     #isTouched = false;
+
+    #eventEmitter: EventEmitter<FinderEventNames, EventPayloads<FItem>>;
 
     // Subclasses that extend functionality
     #mixins: {
@@ -49,6 +59,8 @@ class Finder<FItem> {
         selectedItems: SelectedItemsMixin<FItem>;
         pagination: PaginationMixin<FItem>;
     };
+
+    plugins: PluginMediator<FItem>;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -67,16 +79,32 @@ class Finder<FItem> {
             disabled,
             requireGroup,
             maxSelectedItems,
+            plugins,
             onInit,
-            onChange = () => {},
+            onChange,
         }: FinderConstructorOptions<FItem>,
     ) {
         this.#rules = this.#isValidRuleset(rules) ? rules : [];
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
-        this.#onInit = onInit;
-        this.#onChange = onChange;
+        this.#eventEmitter = new EventEmitter();
+
+        if (onInit) {
+            this.#eventEmitter.on(FINDER_EVENTS.INIT, onInit);
+        }
+
+        this.#eventEmitter.on(FINDER_EVENTS.CHANGE, () => {
+            this.initializeOnce();
+            this.#isTouched = true;
+            this.updatedAt = Date.now();
+        });
+
+        if (onChange) {
+            this.#eventEmitter.on(FINDER_EVENTS.CHANGE, ({ diff, snapshot }) => {
+                onChange(diff, snapshot);
+            });
+        }
 
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const handlers: FinderInjectedHandlers<FItem> = {
@@ -84,8 +112,7 @@ class Finder<FItem> {
             getRules: () => this.#rules,
             getMeta: () => this.#mixins.meta.meta,
             isDisabled: () => this.disabled,
-            onChange: (diff: FinderDiff) => this.#onChangeEvent(diff),
-            onInit: () => this.initializeOnce(),
+            emit: (event, diff) => this.#eventEmitter.emit(event, { diff, snapshot: this.#takeStateSnapshot() }),
         };
 
         // initialize all mixins with their default values.
@@ -98,13 +125,15 @@ class Finder<FItem> {
             selectedItems: new SelectedItemsMixin(initialSelectedItems, maxSelectedItems, handlers),
             pagination: new PaginationMixin(page, numItemsPerPage, handlers),
         };
+
+        // must be initialized after all mixins have been instantiated
+        this.plugins = new PluginMediator(plugins || [], () => this);
     }
 
     initializeOnce() {
         if (this.#isInitialized === false) {
-            if (this.#onInit) {
-                this.#onInit();
-            }
+            this.#eventEmitter.emit(FINDER_EVENTS.INIT);
+
             this.#isInitialized = true;
         }
     }
@@ -139,13 +168,18 @@ class Finder<FItem> {
         };
     }
 
-    #onChangeEvent(diff: FinderDiff) {
-        this.#isTouched = true;
-        this.updatedAt = Date.now();
-
-        if (this.#onChange) {
-            this.#onChange(diff, this);
-        }
+    /**
+     * Return the current state values for each mixin. Only used for onChange events.
+     */
+    #takeStateSnapshot(): FinderSnapshot<FItem> {
+        return {
+            searchTerm: this.#mixins.search.searchTerm,
+            filters: this.#mixins.filters.getFilters(),
+            sortBy: this.#mixins.sortBy.activeRule,
+            groupBy: this.#mixins.groupBy.activeRule,
+            selectedItems: this.#mixins.selectedItems.selectedItems,
+            meta: this.#mixins.meta.meta,
+        };
     }
 
     #isValidRuleset(rules?: FinderRule[]): rules is FinderRule[] {
@@ -211,6 +245,14 @@ class Finder<FItem> {
 
     get selectedItems() {
         return selectedItemsInterface(this.#mixins.selectedItems);
+    }
+
+    get events() {
+        return {
+            on: (event: FinderEventNames, callback: EventCallback) => this.#eventEmitter.on(event, callback),
+            off: (event: FinderEventNames, callback: EventCallback) => this.#eventEmitter.off(event, callback),
+            batch: (callback: CallableFunction) => this.#eventEmitter.batch(callback),
+        };
     }
 
     setItems(items: FItem[] | null | undefined) {

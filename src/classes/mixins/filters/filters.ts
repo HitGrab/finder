@@ -11,6 +11,7 @@ import {
 } from "../../../types";
 import { DebounceCallbackRegistry } from "../../../utils/debounce-callback-registry";
 import { getRuleFromIdentifier, isFilterRule, getOptionFromIdentifier } from "../../../utils/finder-utils";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class FiltersMixin<FItem> {
     filters: Record<string, any>;
@@ -41,7 +42,6 @@ class FiltersMixin<FItem> {
             if (this.#handlers.isDisabled()) {
                 return;
             }
-            this.#handlers.onInit();
 
             // empty strings are treated as if a filter is being deleted.
             const isBlankString = typeof incomingFilterValue === "string" && incomingFilterValue.trim() === "";
@@ -53,7 +53,8 @@ class FiltersMixin<FItem> {
             }
 
             this.filters = { ...this.filters, [rule.id]: transformedFilterValue };
-            this.#handlers.onChange({ filters: this.filters });
+            this.#handlers.emit(FINDER_EVENTS.SET_FILTER, { rule, value: transformedFilterValue });
+            this.#handlers.emit(FINDER_EVENTS.CHANGE, { filter: { [rule.id]: incomingFilterValue } });
 
             // clear hydrated rules in case something changed.
             this.#hydratedRules = undefined;
@@ -89,6 +90,7 @@ class FiltersMixin<FItem> {
                     multiple: !!rule.multiple,
                     required: !!rule.required,
                     isBoolean: !!rule.isBoolean,
+                    hidden: !!rule.hidden,
 
                     // brand it
                     _isHydrated: true,

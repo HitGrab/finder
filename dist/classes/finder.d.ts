@@ -1,10 +1,13 @@
-import { MatchesSnapshot, FinderConstructorOptions } from "../types";
+import { MatchesSnapshot, FinderConstructorOptions, FinderEventNames } from "../types";
+import { EventCallback } from "./event-emitter";
+import { PluginMediator } from "./plugin-mediator/plugin-mediator";
 declare class Finder<FItem> {
     #private;
     isLoading: boolean;
     disabled: boolean;
     updatedAt?: number;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, onInit, onChange, }: FinderConstructorOptions<FItem>);
+    plugins: PluginMediator<FItem>;
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, plugins, onInit, onChange, }: FinderConstructorOptions<FItem>);
     initializeOnce(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;
@@ -82,6 +85,11 @@ declare class Finder<FItem> {
         toggle: (item: FItem) => void;
         isSelected: (item: FItem) => boolean;
         reset: () => void;
+    };
+    get events(): {
+        on: (event: FinderEventNames, callback: EventCallback) => void;
+        off: (event: FinderEventNames, callback: EventCallback) => void;
+        batch: (callback: CallableFunction) => Promise<void>;
     };
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;

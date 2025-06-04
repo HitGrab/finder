@@ -1,4 +1,5 @@
 import { FinderInjectedHandlers } from "../../../types";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class SelectedItemsMixin<FItem> {
     selectedItems: FItem[];
@@ -16,8 +17,13 @@ class SelectedItemsMixin<FItem> {
     setMaxSelectedItems(value?: number) {
         if (value !== this.maxSelectedItems) {
             this.maxSelectedItems = value;
-            this.#handlers.onChange({ maxSelectedItems: this.maxSelectedItems });
+            this.#handlers.emit(FINDER_EVENTS.CHANGE, { maxSelectedItems: this.maxSelectedItems });
         }
+    }
+
+    set(items: FItem[]) {
+        this.selectedItems = items;
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { selectedItems: this.selectedItems });
     }
 
     select(item: FItem) {
@@ -27,25 +33,23 @@ class SelectedItemsMixin<FItem> {
         if (this.maxSelectedItems !== undefined && this.selectedItems.length >= this.maxSelectedItems) {
             throw new Error("Finder cannot select this item without exceeding the selected items limit.");
         }
-        this.selectedItems = [...this.selectedItems.filter((row) => item !== row), item];
-
-        this.#handlers.onChange({ selectedItems: this.selectedItems });
+        this.#handlers.emit(FINDER_EVENTS.TOGGLE_SELECTED_ITEM, { item, isSelected: true });
+        this.set([...this.selectedItems.filter((row) => item !== row), item]);
     }
 
     delete(item: FItem) {
         if (this.#handlers.isDisabled()) {
             return;
         }
-        this.selectedItems = this.selectedItems?.filter((row) => row !== item);
-        this.#handlers.onChange({ selectedItems: this.selectedItems });
+        this.#handlers.emit(FINDER_EVENTS.TOGGLE_SELECTED_ITEM, { item, isSelected: false });
+        this.set(this.selectedItems?.filter((row) => row !== item));
     }
 
     reset() {
         if (this.#handlers.isDisabled()) {
             return;
         }
-        this.selectedItems = [];
-        this.#handlers.onChange({ selectedItems: this.selectedItems });
+        this.set([]);
     }
 }
 

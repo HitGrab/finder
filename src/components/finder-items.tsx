@@ -2,7 +2,7 @@ import { ElementType, isValidElement, cloneElement } from "react";
 import { FinderItemsComponentProps } from "../types";
 import { useFinderContext } from "../hooks/use-finder-context";
 
-interface FinderItemsProps<FItem> {
+interface FinderItemsProps<FItem = any> {
     children: ElementType<FinderItemsComponentProps<FItem>>;
 }
 function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {

@@ -1,6 +1,7 @@
 import { FinderInjectedHandlers, FinderMeta } from "../../../types";
 import { DebounceCallbackRegistry } from "../../../utils/debounce-callback-registry";
 import { isSearchRule } from "../../../utils/finder-utils";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class SearchMixin<FItem> {
     #searchTerm: string;
@@ -39,19 +40,18 @@ class SearchMixin<FItem> {
             if (this.#handlers.isDisabled()) {
                 return;
             }
-            this.#handlers.onInit();
             this.#searchTerm = incomingSearchTerm;
-            this.#handlers.onChange({ searchTerm: incomingSearchTerm });
+            this.#handlers.emit(FINDER_EVENTS.SET_SEARCH_TERM, { rule, searchTerm: this.#searchTerm });
+            this.#handlers.emit(FINDER_EVENTS.CHANGE, { searchTerm: incomingSearchTerm });
         });
     }
 
     process(items: FItem[], meta?: FinderMeta) {
-        const searchRule = this.#handlers.getRules().find(isSearchRule);
-        if (this.#searchTerm === "" || searchRule === undefined) {
+        if (this.#searchTerm === "" || this.rule === undefined) {
             return items;
         }
 
-        return items.filter((item) => searchRule.searchFn(item, this.#searchTerm, meta));
+        return items.filter((item) => this.rule?.searchFn(item, this.#searchTerm, meta));
     }
 }
 

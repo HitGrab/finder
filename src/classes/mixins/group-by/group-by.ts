@@ -1,6 +1,7 @@
 import { groupBy, orderBy, Many } from "lodash";
 import { GroupByRule, FinderInjectedHandlers, FinderMeta, FinderResultGroup } from "../../../types";
 import { getRuleFromIdentifier, isGroupByRule } from "../../../utils/finder-utils";
+import { FINDER_EVENTS } from "../../finder-events";
 
 class GroupByMixin<FItem> {
     #groupBy?: GroupByRule;
@@ -39,8 +40,6 @@ class GroupByMixin<FItem> {
             rule = getRuleFromIdentifier<GroupByRule>(identifier, this.rules);
         }
 
-        this.#handlers.onInit();
-
         // early exit if nothing changed
         if (this.#groupBy === rule) {
             return;
@@ -48,12 +47,15 @@ class GroupByMixin<FItem> {
 
         this.#groupBy = rule;
         this.groupIdSortDirection = undefined;
-        this.#handlers.onChange({ groupBy: rule?.id, groupIdSortDirection: undefined });
+
+        this.#handlers.emit(FINDER_EVENTS.SET_GROUP_BY, { rule });
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { groupBy: rule?.id, groupIdSortDirection: undefined });
     }
 
     setGroupIdSortDirection(direction?: string) {
         this.groupIdSortDirection = direction;
-        this.#handlers.onChange({ groupIdSortDirection: direction });
+        this.#handlers.emit(FINDER_EVENTS.SET_GROUP_BY, { rule: this.activeRule, direction });
+        this.#handlers.emit(FINDER_EVENTS.CHANGE, { groupIdSortDirection: direction });
     }
 
     process(items: FItem[], meta?: FinderMeta) {

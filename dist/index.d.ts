@@ -8,5 +8,5 @@ export { FinderLoading } from "./components/finder-loading";
 export { FinderContent } from "./components/finder-content";
 export { useFinderRef } from "./utils/ref-utils";
 export { finderStringCompare } from "./utils/compare-utils";
-export type { FinderProps, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FinderOption } from "./types";
+export type { FinderPluginFn, FinderPluginInterface, FinderSnapshot, FinderProps, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FinderOption, } from "./types";
 export * from "./utils/type-enforcers";
