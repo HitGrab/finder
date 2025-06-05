@@ -2,10 +2,9 @@ import { test } from "vitest";
 import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
 import { act } from "react";
 import { range } from "lodash";
-import { Finder } from "./classes/finder";
-import { searchRule, filterRule, finderRules, sortByRule, groupByRule } from "./utils/type-enforcers";
-import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./utils/compare-utils";
-import { FinderPlugin } from "./classes/plugin";
+import { Finder } from "./core/finder";
+import { filterRule, finderRules, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
+import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./core/utils/string-compare-utils";
 
 type MockObjectItem = {
     type: string;

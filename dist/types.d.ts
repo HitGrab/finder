@@ -1,31 +1,9 @@
+/**
+ * Public types that are necessary to use the library.
+ */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { PropsWithChildren, RefObject } from "react";
-import { Finder } from "./classes/finder";
-import { searchInterface } from "./classes/mixins/search/search-interface";
-import { filtersInterface } from "./classes/mixins/filters/filters-interface";
-import { sortByInterface } from "./classes/mixins/sort-by/sort-by-interface";
-import { groupByInterface } from "./classes/mixins/group-by/group-by-interface";
-import { selectedItemsInterface } from "./classes/mixins/selected-items/selected-items-interface";
-import { metaInterface } from "./classes/mixins/meta/meta-interface";
-import { paginationInterface } from "./classes/mixins/pagination/pagination-interface";
-
-export interface FinderInstance<FItem> {
-    items: FItem[];
-    isEmpty: boolean;
-    isLoading: boolean;
-    disabled: boolean;
-    updatedAt?: number;
-    matches: MatchesSnapshot<FItem>;
-    pagination: ReturnType<typeof paginationInterface<FItem>>;
-    search: ReturnType<typeof searchInterface<FItem>>;
-    filters: ReturnType<typeof filtersInterface<FItem>>;
-    sortBy: ReturnType<typeof sortByInterface<FItem>>;
-    groupBy: ReturnType<typeof groupByInterface<FItem>>;
-    selectedItems: ReturnType<typeof selectedItemsInterface<FItem>>;
-    meta: ReturnType<typeof metaInterface<FItem>>;
-}
-
-export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, snapshot: FinderSnapshot<FItem>) => void;
+import { Finder as FinderCore } from "./core/finder";
 
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
@@ -79,6 +57,8 @@ export interface FinderDiff<FItem = any> {
     maxSelectedItems?: number;
     groupIdSortDirection?: string;
 }
+
+export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, snapshot: FinderSnapshot<FItem>) => void;
 
 export interface FinderResultGroup<FItem> {
     id: string;
@@ -143,18 +123,6 @@ export interface SortByRule<FItem = any> extends Record<string, any> {
     hidden?: boolean;
 }
 
-export interface FinderItemsComponentProps<FItem> {
-    items: FItem[];
-    pagination?: ReturnType<typeof paginationInterface>;
-    meta?: FinderMeta;
-}
-export interface FinderGroupsComponentProps<FItem> {
-    groups: FinderResultGroup<FItem>[];
-    pagination?: ReturnType<typeof paginationInterface>;
-    meta?: FinderMeta;
-    rule?: GroupByRule;
-}
-
 /**
  * Select a property from the item to sort by.
  */
@@ -168,15 +136,6 @@ export interface FinderOption<FValue = any> {
     value: FValue;
     disabled?: boolean;
 }
-
-// Provides accessors for state owned by the parent.
-export type FinderInjectedHandlers<FItem> = {
-    isDisabled: () => boolean;
-    getRules: () => FinderRule[];
-    emit: (event: FinderEventNames, payload: any) => void;
-    getMeta: () => FinderMeta | undefined;
-    getItems: () => FItem[];
-};
 
 export interface MatchesSnapshot<FItem> {
     items?: FItem[];
@@ -208,23 +167,6 @@ export interface FilterTestRuleOptionsOptions {
     mergeExistingValue?: boolean;
 }
 
-export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
-    items: FItem[] | undefined | null;
-    controllerRef?: RefObject<FinderInstance<FItem> | null>;
-}
-
-export type FinderEventNames = "init" | "change" | "setSearchTerm" | "setFilter" | "setSortBy" | "setGroupBy" | "toggleSelectedItem" | "setMeta";
-
-export type EventPayloads<FItem> =
-    | { event: "init"; payload: undefined }
-    | { event: "change"; payload: { diff: FinderDiff; snapshot: FinderSnapshot<FItem> } }
-    | { event: "setSearchTerm"; payload: { rule: SearchRule; searchTerm: string; snapshot: FinderSnapshot<FItem> } }
-    | { event: "setFilter"; payload: { rule: HydratedFilterRule; value: any; snapshot: FinderSnapshot<FItem> } }
-    | { event: "setSortBy"; payload: { rule: SortByRule; sortDirection: string; snapshot: FinderSnapshot<FItem> } }
-    | { event: "setGroupBy"; payload: { rule: GroupByRule; groupIdSortDirection: string; snapshot: FinderSnapshot<FItem> } }
-    | { event: "toggleSelectedItem"; payload: { item: FItem; isSelected: boolean } }
-    | { event: "setMeta"; payload: { id: any; value: any } };
-
 export interface FinderSnapshot<FItem> {
     searchTerm?: string;
     filters?: Record<string, any>;
@@ -232,12 +174,13 @@ export interface FinderSnapshot<FItem> {
     groupBy?: GroupByRule<FItem>;
     selectedItems?: FItem[];
     meta?: FinderMeta;
+    updatedAt?: number;
 }
 
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 
-export interface FinderPluginInterface {
+export interface FinderPluginInterface<FItem = any> {
     id: string;
-    register: (finder: Finder<any>) => void;
+    register: (finder: FinderCore<FItem>, touch: (diff: FinderDiff) => void) => void;
     [k: string]: any;
 }
