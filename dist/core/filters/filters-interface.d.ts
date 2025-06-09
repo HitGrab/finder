@@ -3,21 +3,31 @@ import { FiltersMixin } from "./filters";
 /**
  * Public surface for the Filters mixin
  */
-declare function filtersInterface<FItem>(mixin: FiltersMixin<FItem>): {
+declare function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>): {
     value: Record<string, any>;
     filters: Record<string, any>;
     activeRules: HydratedFilterRule<FItem, any>[];
-    activeRuleIds: string[];
     rules: HydratedFilterRule<FItem, any>[];
     isActive: (identifier: string | FilterRule | HydratedFilterRule) => boolean;
+    get: (identifier: string | FilterRule | HydratedFilterRule) => any;
+    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
+    getRule: (id: string) => HydratedFilterRule<FItem, any> | undefined;
+};
+declare function filtersInterface<FItem>(mixin: FiltersMixin<FItem>): {
     toggle(identifier: string | FilterRule | HydratedFilterRule): void;
     toggleOption: (identifier: string | FilterRule | HydratedFilterRule, optionValue: import("../..").FilterOption | any) => void;
-    get: (identifier: string | FilterRule | HydratedFilterRule) => any;
     set: (identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any) => void;
-    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
     delete: (identifier: string | FilterRule | HydratedFilterRule) => void;
     test: (options: import("../../types").FilterTestOptions) => FItem[];
     testRule: ({ rule: identifier, value, ...options }: import("../../types").FilterTestRuleOptions) => FItem[];
     testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<boolean | import("../..").FilterOption<any>, FItem[]>;
+    value: Record<string, any>;
+    filters: Record<string, any>;
+    activeRules: HydratedFilterRule<FItem, any>[];
+    rules: HydratedFilterRule<FItem, any>[];
+    isActive: (identifier: string | FilterRule | HydratedFilterRule) => boolean;
+    get: (identifier: string | FilterRule | HydratedFilterRule) => any;
+    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
+    getRule: (id: string) => HydratedFilterRule<FItem, any> | undefined;
 };
-export { filtersInterface };
+export { readonlyFiltersInterface, filtersInterface };
