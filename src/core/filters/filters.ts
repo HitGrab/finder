@@ -1,7 +1,7 @@
 import { uniqBy } from "lodash";
-import { HydratedFilterRule, FilterRule, FinderMeta, FinderOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
+import { HydratedFilterRule, FilterRule, FinderMeta, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
 import { FINDER_EVENTS } from "../events/event-constants";
-import { getRuleFromIdentifier, isFilterRule, getOptionFromIdentifier } from "../utils/rule-utils";
+import { getRuleFromIdentifier, isFilterRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/core-types";
 
 type InitialValues = {
@@ -128,7 +128,7 @@ class FiltersMixin<FItem> {
         return value;
     }
 
-    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any) {
+    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FilterOption | any) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -140,7 +140,7 @@ class FiltersMixin<FItem> {
             return value !== undefined;
         }
 
-        const option = getOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
+        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
 
         if (rule.multiple) {
             return value.includes(option);
@@ -157,7 +157,7 @@ class FiltersMixin<FItem> {
         return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
     }
 
-    toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FinderOption | any) {
+    toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FilterOption | any) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -171,7 +171,7 @@ class FiltersMixin<FItem> {
             );
         }
 
-        const option = getOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems());
+        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems());
 
         const previousFilterValue: any[] = this.filters?.[rule.id] ?? [];
 
@@ -216,14 +216,14 @@ class FiltersMixin<FItem> {
         }
 
         if (rule.isBoolean === true) {
-            const resultMap = new Map<FinderOption | boolean, FItem[]>();
+            const resultMap = new Map<FilterOption | boolean, FItem[]>();
             resultMap.set(true, this.testRule({ rule, value: true, ...options }));
             resultMap.set(false, this.testRule({ rule, value: false, ...options }));
             return resultMap;
         }
 
         if (Array.isArray(rule.options)) {
-            const resultMap = new Map<FinderOption | boolean, FItem[]>();
+            const resultMap = new Map<FilterOption | boolean, FItem[]>();
             rule.options.forEach((option) => {
                 let transformedOptionValue;
 

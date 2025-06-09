@@ -1,4 +1,4 @@
-import { HydratedFilterRule, FilterRule, FinderMeta, FinderOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
+import { HydratedFilterRule, FilterRule, FinderMeta, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
 import { MixinInjectedDependencies } from "../types/core-types";
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
@@ -12,12 +12,12 @@ declare class FiltersMixin<FItem> {
     get activeRules(): HydratedFilterRule<FItem, any>[];
     get activeRuleIds(): string[];
     get(identifier: string | FilterRule | HydratedFilterRule): any;
-    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any): any;
+    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FilterOption | any): any;
     isActive(identifier: string | FilterRule | HydratedFilterRule): boolean;
-    toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FinderOption | any): void;
+    toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FilterOption | any): void;
     test(options: FilterTestOptions): FItem[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): FItem[];
-    testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<boolean | FinderOption<any>, FItem[]>;
+    testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<boolean | FilterOption<any>, FItem[]>;
     getFilters(): Record<string, any>;
     process(items: FItem[], meta?: FinderMeta): FItem[];
     static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta?: FinderMeta): FItem[];

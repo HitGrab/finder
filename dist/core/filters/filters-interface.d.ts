@@ -11,13 +11,13 @@ declare function filtersInterface<FItem>(mixin: FiltersMixin<FItem>): {
     rules: HydratedFilterRule<FItem, any>[];
     isActive: (identifier: string | FilterRule | HydratedFilterRule) => boolean;
     toggle(identifier: string | FilterRule | HydratedFilterRule): void;
-    toggleOption: (identifier: string | FilterRule | HydratedFilterRule, optionValue: import("../..").FinderOption | any) => void;
+    toggleOption: (identifier: string | FilterRule | HydratedFilterRule, optionValue: import("../..").FilterOption | any) => void;
     get: (identifier: string | FilterRule | HydratedFilterRule) => any;
     set: (identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any) => void;
-    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: import("../..").FinderOption | any) => any;
+    has: (identifier: string | FilterRule | HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
     delete: (identifier: string | FilterRule | HydratedFilterRule) => void;
     test: (options: import("../../types").FilterTestOptions) => FItem[];
     testRule: ({ rule: identifier, value, ...options }: import("../../types").FilterTestRuleOptions) => FItem[];
-    testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<boolean | import("../..").FinderOption<any>, FItem[]>;
+    testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<boolean | import("../..").FilterOption<any>, FItem[]>;
 };
 export { filtersInterface };

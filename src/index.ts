@@ -22,7 +22,7 @@ export type {
     SortByRule,
     GroupByRule,
     FinderResultGroup,
-    FinderOption,
+    FilterOption,
 } from "./types";
 
 export type { FinderProps } from "./react/types/react-types";

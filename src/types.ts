@@ -79,7 +79,7 @@ export interface SearchRule<FItem = any> extends Record<string, any> {
 export interface FilterRule<FItem = any, FValue = any> extends Record<string, any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
-    options?: FinderOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FinderOption<FValue>[]);
+    options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
     multiple?: boolean;
     required?: boolean;
     isBoolean?: boolean;
@@ -92,7 +92,7 @@ export interface FilterRule<FItem = any, FValue = any> extends Record<string, an
 export interface HydratedFilterRule<FItem = any, FValue = any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
-    options?: FinderOption<FValue>[];
+    options?: FilterOption<FValue>[];
     multiple: boolean;
     required: boolean;
     isBoolean: boolean;
@@ -131,7 +131,7 @@ export type FinderPropertySelector<FItem> = (item: FItem, meta?: FinderMeta) => 
 /**
  * Describes the display of a filter or sort option.
  */
-export interface FinderOption<FValue = any> {
+export interface FilterOption<FValue = any> {
     label: string;
     value: FValue;
     disabled?: boolean;
