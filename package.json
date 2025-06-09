@@ -1,5 +1,6 @@
 {
     "name": "@hitgrab/finder",
+
     "version": "v0.0.5-alpha",
     "description": "Headless datatables for things that aren't tables.",
     "type": "module",

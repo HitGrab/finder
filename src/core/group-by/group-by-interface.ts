@@ -5,13 +5,18 @@ import { GroupByMixin } from "./group-by";
 /**
  * Public surface for the Group By mixin
  */
-function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
+
+function readonlyGroupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
-        activeRuleId: mixin.activeRule?.id,
         requireGroup: mixin.requireGroup,
         rules: mixin.rules,
         groupIdSortDirection: mixin.groupIdSortDirection,
+    };
+}
+function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
+    return {
+        ...readonlyGroupByInterface(mixin),
         set: mixin.set.bind(mixin),
         toggle: (identifier: GroupByRule | string) => {
             const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
@@ -29,4 +34,4 @@ function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
     };
 }
 
-export { groupByInterface };
+export { readonlyGroupByInterface, groupByInterface };

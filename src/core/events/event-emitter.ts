@@ -1,24 +1,24 @@
-import { merge, uniq } from "lodash";
-import { EventPayload, DiscriminatedPayload, EventCallback } from "../types/core-types";
+import { EventCallback } from "../types/internal-types";
 
-type ListenerObject<T extends string> = Record<T, EventCallback[]>;
+type ListenerObject = Record<string, EventCallback[]>;
 
 /**
  * A barebones event emitter
  */
-export class EventEmitter<T extends string, P extends EventPayload> {
-    #listeners: ListenerObject<T> = {} as ListenerObject<T>;
+export class EventEmitter {
+    #listeners: ListenerObject = {} as ListenerObject;
     #batchMode: boolean = false;
-    #batchBucket: { event: T; payload: DiscriminatedPayload<P, T> }[] = [];
+    // #batchBucket: { event: T; payload: DiscriminatedPayload<T> }[] = [];
+    #disabled: boolean = false;
 
-    on(event: T, callback: EventCallback) {
+    on(event: string, callback: EventCallback) {
         if (this.#listeners[event] === undefined) {
             this.#listeners[event] = [];
         }
         this.#listeners[event].push(callback);
     }
 
-    off(event: T, callback: EventCallback) {
+    off(event: string, callback: EventCallback) {
         if (this.#listeners[event] === undefined) {
             return;
         }
@@ -32,37 +32,47 @@ export class EventEmitter<T extends string, P extends EventPayload> {
         });
     }
 
-    emit(event: T, payload?: DiscriminatedPayload<P, T>) {
-        if (this.#batchMode) {
-            this.#batchBucket.push({ event, payload });
+    emit(event: string, payload?: any) {
+        if (this.#disabled) {
             return;
         }
+
+        // if (this.#batchMode) {
+        //     this.#batchBucket.push({ event, payload });
+        //     return;
+        // }
 
         this.#listeners[event]?.forEach((callback) => callback(payload));
     }
 
-    #setBatchMode(value: boolean) {
-        this.#batchMode = value;
-    }
+    // #setBatchMode(value: boolean) {
+    //     this.#batchMode = value;
+    // }
 
-    async batch(callback: CallableFunction) {
-        this.#setBatchMode(true);
-        await callback();
-        this.#setBatchMode(false);
+    // async batch(callback: CallableFunction) {
+    //     this.#setBatchMode(true);
+    //     await callback();
+    //     this.#setBatchMode(false);
 
-        if (this.#batchBucket.length > 0) {
-            const eventNames = uniq(this.#batchBucket.map(({ event }) => event));
-            eventNames.forEach((event) => {
-                const matchingEventPayloads = this.#batchBucket.filter((row) => row.event === event).map(({ payload }) => payload);
-                const payloadBuckets: Record<string, any[]> = {};
-                matchingEventPayloads.forEach((row) => {
-                    Object.keys(row).forEach((key) => {
-                        payloadBuckets[key] = merge(payloadBuckets[key], row[key]);
-                    });
-                });
+    //     if (this.#batchBucket.length > 0) {
+    //         const eventNames = uniq(this.#batchBucket.map(({ event }) => event));
+    //         eventNames.forEach((event) => {
+    //             const matchingEventPayloads = this.#batchBucket.filter((row) => row.event === event).map(({ payload }) => payload);
+    //             const payloadBuckets: Record<string, any[]> = {};
+    //             matchingEventPayloads.forEach((row) => {
+    //                 Object.keys(row).forEach((key) => {
+    //                     payloadBuckets[key] = merge(payloadBuckets[key], row[key]);
+    //                 });
+    //             });
 
-                this.emit(event, payloadBuckets);
-            });
-        }
+    //             this.emit(event, payloadBuckets);
+    //         });
+    //     }
+    // }
+
+    silently(callback: CallableFunction) {
+        this.#disabled = true;
+        callback();
+        this.#disabled = false;
     }
 }

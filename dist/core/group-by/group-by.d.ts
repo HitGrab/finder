@@ -1,5 +1,5 @@
 import { GroupByRule, FinderMeta, FinderResultGroup } from "../../types";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialGroupBy: string | undefined;
     requireGroup: boolean;

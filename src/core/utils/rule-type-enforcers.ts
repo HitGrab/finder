@@ -10,7 +10,7 @@ export function finderOptions<FItem>(options: FinderConstructorOptions<FItem>) {
 /**
  * Enforce structure for an array of rule of mixed types.
  */
-export function finderRules<FItem>(rules: (SearchRule<FItem> | FilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>)[]) {
+export function finderRuleset<FItem>(rules: (SearchRule<FItem> | FilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>)[]) {
     return rules;
 }
 

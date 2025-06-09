@@ -1,8 +1,7 @@
 import { uniqBy } from "lodash";
 import { HydratedFilterRule, FilterRule, FinderMeta, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
-import { FINDER_EVENTS } from "../events/event-constants";
 import { getRuleFromIdentifier, isFilterRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
@@ -26,6 +25,8 @@ class FiltersMixin<FItem> {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
+        const previousValue = this.get(identifier);
+
         if (this.#deps.debouncer.has(rule.id) === false) {
             this.#deps.debouncer.register(rule.id, rule?.debounceDelay);
         }
@@ -45,8 +46,15 @@ class FiltersMixin<FItem> {
             }
 
             this.filters = { ...this.filters, [rule.id]: transformedFilterValue };
-            this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_FILTER, { rule, value: transformedFilterValue });
-            this.#deps.touch({ filter: { [rule.id]: incomingFilterValue } });
+            this.#deps.touch({
+                source: "filters",
+                event: "change.filters.set",
+                current: {
+                    rule,
+                    value: incomingFilterValue,
+                },
+                initial: { rule, value: previousValue },
+            });
 
             // clear hydrated rules in case something changed.
             this.#hydratedRules = undefined;
@@ -60,11 +68,12 @@ class FiltersMixin<FItem> {
         return this.#hydratedRules;
     }
 
+    getRule(id: string) {
+        return getRuleFromIdentifier(id, this.rules);
+    }
+
     get activeRules() {
         return this.rules.filter((rule) => this.isActive(rule));
-    }
-    get activeRuleIds() {
-        return this.activeRules.map((rule) => rule.id);
     }
 
     // hydrate and memoize generated options
@@ -143,7 +152,7 @@ class FiltersMixin<FItem> {
         const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
 
         if (rule.multiple) {
-            return value.includes(option);
+            return value.includes(option.value);
         }
 
         return value === option;

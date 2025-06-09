@@ -1,4 +1,4 @@
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues<FItem> = {
     initialSelectedItems: FItem[] | undefined;
     maxSelectedItems: number | undefined;
@@ -11,6 +11,12 @@ declare class SelectedItemsMixin<FItem> {
     setMaxSelectedItems(value?: number): void;
     set(items: FItem[]): void;
     select(item: FItem): void;
+    /**
+     * Select a single item and clear any other selected items.
+     */
+    selectOnly(item: FItem): void;
+    toggle(item: FItem): void;
+    toggleOnly(item: FItem): void;
     delete(item: FItem): void;
     reset(): void;
 }

@@ -1,4 +1,4 @@
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     page: number | undefined;
     numItemsPerPage: number | undefined;

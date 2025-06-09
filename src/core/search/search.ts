@@ -1,6 +1,5 @@
 import { FinderMeta } from "../../types";
-import { FINDER_EVENTS } from "../events/event-constants";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
 
 type InitialValues = { initialSearchTerm: string | undefined };
@@ -39,9 +38,28 @@ class SearchMixin<FItem> {
             if (this.#deps.isDisabled()) {
                 return;
             }
+            const previousValue = this.#searchTerm;
             this.#searchTerm = incomingSearchTerm;
-            this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_SEARCH_TERM, { rule, searchTerm: this.#searchTerm });
-            this.#deps.touch({ searchTerm: incomingSearchTerm });
+            this.#deps.touch({
+                source: "search",
+                event: "change.search.setSearchTerm",
+                current: { searchTerm: incomingSearchTerm },
+                initial: { searchTerm: previousValue },
+            });
+        });
+    }
+
+    reset() {
+        if (this.#deps.isDisabled()) {
+            return;
+        }
+        const previousValue = this.#searchTerm;
+        this.#searchTerm = "";
+        this.#deps.touch({
+            source: "search",
+            event: "change.search.reset",
+            current: { searchTerm: "" },
+            initial: { searchTerm: previousValue },
         });
     }
 
