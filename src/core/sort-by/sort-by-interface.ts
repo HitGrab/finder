@@ -3,12 +3,17 @@ import { SortByMixin } from "./sort-by";
 /**
  * Public surface for the SortBy mixin
  */
-function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
+function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
-        activeRuleId: mixin.activeRule?.id,
         sortDirection: mixin.sortDirection,
         rules: mixin.rules,
+    };
+}
+
+function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
+    return {
+        ...readonlySortByInterface(mixin),
         set: mixin.set.bind(mixin),
         setSortDirection: mixin.setSortDirection.bind(mixin),
         // rotate between the rule default, desc, and asc.
@@ -40,4 +45,4 @@ function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
     };
 }
 
-export { sortByInterface };
+export { readonlySortByInterface, sortByInterface };

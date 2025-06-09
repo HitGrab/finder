@@ -1,5 +1,5 @@
 import { HydratedFilterRule, FilterRule, FinderMeta, FinderOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
 };
@@ -9,8 +9,8 @@ declare class FiltersMixin<FItem> {
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies<FItem>);
     set(identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any): void;
     get rules(): HydratedFilterRule<FItem, any>[];
+    getRule(id: string): HydratedFilterRule<FItem, any> | undefined;
     get activeRules(): HydratedFilterRule<FItem, any>[];
-    get activeRuleIds(): string[];
     get(identifier: string | FilterRule | HydratedFilterRule): any;
     has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FinderOption | any): any;
     isActive(identifier: string | FilterRule | HydratedFilterRule): boolean;

@@ -22,6 +22,7 @@ function Finder<FItem = any>({
     plugins,
     onInit,
     onChange,
+    onFirstUserInteraction,
     children,
     controllerRef,
 }: FinderProps<FItem>) {
@@ -43,6 +44,7 @@ function Finder<FItem = any>({
         plugins,
         onInit,
         onChange,
+        onFirstUserInteraction,
     });
 
     useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);

@@ -3,7 +3,13 @@
  */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { Finder as FinderCore } from "./core/finder";
+import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
+import { readonlyMetaInterface } from "./core/meta/meta-interface";
+import { readonlySearchInterface } from "./core/search/search-interface";
+import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
+import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
@@ -33,38 +39,21 @@ export interface FinderConstructorOptions<FItem> {
 
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
 
-    // Triggered a single time after Finder first processes a rule.
-    onInit?: () => void;
+    // Triggered after Finder initializes for the first time.
+    onInit?: FinderOnInitCallback;
+
+    // Triggered the first time a user interacts with the component.
+    onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
 
     // When values are changed, a snapshot is emitted to listeners
-    onChange?: FinderOnChangeCallback<FItem>;
+    onChange?: FinderOnChangeCallback;
 }
-
-/**
- * Passed to the onChange event, indicating which mixin was just mutated.
- */
-export interface FinderDiff<FItem = any> {
-    filter?: Record<string, any>;
-    filters?: Record<string, any>;
-    searchTerm?: string;
-    sortBy?: string;
-    sortDirection?: string;
-    groupBy?: string;
-    selectedItems?: FItem[];
-    meta?: FinderMeta;
-    page?: number;
-    numItemsPerPage?: number;
-    maxSelectedItems?: number;
-    groupIdSortDirection?: string;
-}
-
-export type FinderOnChangeCallback<FItem = any> = (diff: FinderDiff, snapshot: FinderSnapshot<FItem>) => void;
 
 export interface FinderResultGroup<FItem> {
     id: string;
     items: FItem[];
 }
-export type FinderMeta = Map<any, any>;
+export type FinderMeta = Record<string, any>;
 
 export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
@@ -168,19 +157,93 @@ export interface FilterTestRuleOptionsOptions {
 }
 
 export interface FinderSnapshot<FItem> {
-    searchTerm?: string;
-    filters?: Record<string, any>;
-    sortBy?: SortByRule<FItem>;
-    groupBy?: GroupByRule<FItem>;
-    selectedItems?: FItem[];
-    meta?: FinderMeta;
-    updatedAt?: number;
+    search: ReturnType<typeof readonlySearchInterface<FItem>>;
+    filters: ReturnType<typeof readonlyFiltersInterface<FItem>>;
+    sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
+    groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
+    selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
+    meta: ReturnType<typeof readonlyMetaInterface<FItem>>;
+    updatedAt: number | undefined;
 }
+
+export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderChangeEvent;
+
+type FinderBaseEvent = {
+    source: string;
+    event: string;
+    snapshot: FinderSnapshot<any>;
+    timestamp: number;
+};
+export type FinderOnInitCallback = (event: FinderInitEvent) => void;
+export type FinderOnFirstUserInteractCallback = (event: FinderFirstUserInteractionEvent) => void;
+
+export interface FinderInitEvent extends FinderBaseEvent {
+    source: "core";
+    event: "finder.core.init";
+}
+export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
+    source: "core";
+    event: "finder.core.first-user-interaction";
+}
+
+export type FinderTouchSource = "core" | "finder" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
+
+export type FinderTouchCallback = (event: FinderTouchEvent) => void;
+/**
+ * Internal type for communicating between mixins and core
+ */
+export interface FinderTouchEvent {
+    source: FinderTouchSource;
+    event: FinderChangeEventName;
+    current: any;
+    initial: any;
+}
+
+/**
+ * External type that consumers will receive
+ */
+export type FinderChangeEvent = FinderTouchEvent & FinderBaseEvent;
+
+export type FinderChangeEventName =
+    | "change"
+    | `change.filters`
+    | "change.filters.set"
+    | `change.groupBy`
+    | "change.groupBy.set"
+    | "change.groupBy.setGroupIdSortDirection"
+    | "change.meta"
+    | "change.meta.set"
+    | "change.meta.delete"
+    | "change.meta.reset"
+    | "change.pagination"
+    | "change.pagination.setPage"
+    | "change.pagination.setNumItemsPerPage"
+    | "change.search"
+    | "change.search.setSearchTerm"
+    | "change.search.reset"
+    | "change.selectedItems"
+    | "change.selectedItems.setMaxSelectedItems"
+    | "change.selectedItems.set"
+    | "change.selectedItems.select"
+    | "change.selectedItems.toggle"
+    | "change.selectedItems.delete"
+    | "change.selectedItems.reset"
+    | "change.sortBy"
+    | "change.sortBy.set"
+    | "change.sortBy.setSortDirection"
+    | `change.plugin`
+    | `change.plugin.${string}`
+    | "change.core.setIsLoading"
+    | "change.core.setIsDisabled";
+
+export type FinderOnChangeCallback = (event: FinderChangeEvent) => void;
 
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 
 export interface FinderPluginInterface<FItem = any> {
     id: string;
-    register: (finder: FinderCore<FItem>, touch: (diff: FinderDiff) => void) => void;
+    register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
+    onInit?: FinderOnInitCallback;
+    onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
     [k: string]: any;
 }

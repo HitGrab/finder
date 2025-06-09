@@ -23,6 +23,10 @@ export type {
     GroupByRule,
     FinderResultGroup,
     FinderOption,
+    FinderEvent,
+    FinderChangeEvent,
+    FinderInitEvent,
+    FinderFirstUserInteractionEvent as FinderInteractEvent,
 } from "./types";
 
 export type { FinderProps } from "./react/types/react-types";

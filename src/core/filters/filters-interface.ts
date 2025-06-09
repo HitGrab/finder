@@ -5,14 +5,22 @@ import { FiltersMixin } from "./filters";
 /**
  * Public surface for the Filters mixin
  */
-function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
+function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     return {
         value: mixin.getFilters(),
         filters: mixin.filters,
         activeRules: mixin.activeRules,
-        activeRuleIds: mixin.activeRuleIds,
         rules: mixin.rules,
         isActive: mixin.isActive.bind(mixin),
+        get: mixin.get.bind(mixin),
+        has: mixin.has.bind(mixin),
+        getRule: mixin.getRule.bind(mixin),
+    };
+}
+
+function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
+    return {
+        ...readonlyFiltersInterface(mixin),
         toggle(identifier: string | FilterRule | HydratedFilterRule) {
             const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
@@ -26,9 +34,7 @@ function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
             mixin.set(rule, !filterValue);
         },
         toggleOption: mixin.toggleOption.bind(mixin),
-        get: mixin.get.bind(mixin),
         set: mixin.set.bind(mixin),
-        has: mixin.has.bind(mixin),
         delete: (identifier: string | FilterRule | HydratedFilterRule) => {
             const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
             if (rule === undefined) {
@@ -42,4 +48,4 @@ function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     };
 }
 
-export { filtersInterface };
+export { readonlyFiltersInterface, filtersInterface };

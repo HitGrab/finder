@@ -1,0 +1,188 @@
+@font-face {
+    src: url("/fonts/MP16REG.ttf");
+    font-family: MisterPixelSixteen;
+}
+
+@font-face {
+    font-style: normal;
+    src: url("/fonts/MP16REG.ttf");
+    font-family: MisterPixelSixteen;
+    font-display: swap;
+    font-optical-sizing: auto;
+    font-variation-settings: "wdth" 100;
+}
+
+:root {
+    font-family: MisterPixelSixteen, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    --color: #21c921;
+    --color-dark: #208520;
+    --color-bright: #1cff1c;
+    --accent: #163c3e;
+    color: var(--color);
+    letter-spacing: 2px;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+html {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #0d1323, #142403 90%, #17153b);
+}
+
+.layout {
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 20px;
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border-bottom: 1px solid var(--color-dark);
+    }
+}
+
+.equipmentList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+
+    &:has(> .group) {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.group {
+    .title {
+        font-size: 120%;
+        font-weight: bold;
+        column-span: 99;
+        grid-column-start: 1;
+        grid-column-end: -1;
+    }
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.equipmentCard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    outline: var(--color-dark) 1px dashed;
+    padding: 20px;
+    align-items: center;
+    transition: all 0.3s ease-out;
+
+    &.armed {
+        outline-color: var(--color-bright);
+        outline-style: solid;
+        background: linear-gradient(93deg, var(--accent) 50%, transparent 10%);
+    }
+
+    b {
+        font-size: 1.3rem;
+        font-weight: bold;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        align-self: flex-start;
+    }
+
+    .equipmentImage {
+        width: 100px;
+        aspect-ratio: 1/1;
+        image-rendering: pixelated;
+    }
+
+    .stats {
+        display: grid;
+        align-self: stretch;
+        grid-template-columns: 1fr 1fr;
+        justify-content: space-between;
+        color: var(--color-dark);
+
+        span {
+            text-align: right;
+            color: var(--color-bright);
+        }
+    }
+
+    &.notOwned {
+        filter: grayscale(1);
+        cursor: not-allowed;
+    }
+
+    button {
+        all: unset;
+        padding: 10px 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        outline: var(--color-dark) 1px solid;
+        align-self: stretch;
+        cursor: pointer;
+
+        &.armed {
+            outline-color: var(--color-bright);
+            background: repeating-linear-gradient(to bottom, var(--color-dark) 0 1px, transparent 1px 2px);
+            box-shadow: 0 0 30px #000 inset;
+            text-shadow: 1px 1px 2px #000;
+        }
+    }
+}
+
+.eventContainer {
+    position: sticky;
+    bottom: 10px;
+    margin: 10px;
+    max-height: 200px;
+    overflow: auto;
+    background: repeating-linear-gradient(to bottom, var(--accent) 0 1px, transparent 1px 2px);
+    box-shadow: 0 0 30px #000 inset;
+    padding: 20px;
+    outline: var(--color-dark) 1px solid;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    backdrop-filter: blur(3px);
+    scroll-behavior: smooth;
+}
+
+.eventProps {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: 5px 20px;
+    font-size: 80%;
+    text-wrap: pre-line;
+    margin-left: 20px;
+    margin-top: 5px;
+    color: var(--color-dark);
+    transition: all 0.1s ease-out;
+
+    &:hover {
+        color: var(--color);
+    }
+}
+
+.event:last-child {
+    .eventProps {
+        color: var(--color);
+    }
+
+    b {
+        color: var(--color-bright);
+    }
+}

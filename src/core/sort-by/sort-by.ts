@@ -1,8 +1,7 @@
 import { Many, orderBy } from "lodash";
 import { SortByRule } from "../../types";
-import { FINDER_EVENTS } from "../events/event-constants";
 import { getRuleFromIdentifier, isSortByRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
     initialSortBy: string | undefined;
@@ -34,10 +33,15 @@ class SortByMixin<FItem> {
         if (this.#deps.isDisabled() || !this.activeRule) {
             return;
         }
+        const previousValue = this.sortDirection;
         // TODO: Should use a type guard here.
         this.sortDirection = incomingSortDirection;
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_SORT_BY, { rule: this.activeRule, sortDirection: incomingSortDirection });
-        this.#deps.touch({ sortDirection: incomingSortDirection });
+        this.#deps.touch({
+            source: "sortBy",
+            event: "change.sortBy.setSortDirection",
+            current: { sortDirection: incomingSortDirection },
+            initial: { sortDirection: previousValue },
+        });
     }
 
     set(identifier?: string | SortByRule, incomingSortDirection?: string) {
@@ -45,11 +49,17 @@ class SortByMixin<FItem> {
             return;
         }
 
+        const previousSortDirection = this.sortDirection;
+        const previousRule = this.#sortBy;
         const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
         this.#sortBy = rule;
         this.sortDirection = incomingSortDirection;
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_SORT_BY, { rule, sortDirection: incomingSortDirection });
-        this.#deps.touch({ sortBy: rule?.id, sortDirection: incomingSortDirection });
+        this.#deps.touch({
+            source: "sortBy",
+            event: "change.sortBy.set",
+            current: { rule, sortDirection: incomingSortDirection },
+            initial: { rule: previousRule, sortDirection: previousSortDirection },
+        });
     }
 
     process(items: FItem[]) {
