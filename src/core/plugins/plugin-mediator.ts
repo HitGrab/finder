@@ -1,4 +1,4 @@
-import { FinderDiff, FinderPluginFn, FinderPluginInterface } from "../../types";
+import { FinderInitEvent, FinderFirstUserInteractionEvent, FinderPluginFn, FinderPluginInterface, FinderSnapshot, FinderTouchCallback } from "../../types";
 import { Finder } from "../finder";
 import { FinderPlugin } from "./plugin-super-class";
 
@@ -8,7 +8,7 @@ export class PluginMediator<FItem> {
     constructor(
         plugins: (FinderPluginFn<FinderPluginInterface> | FinderPluginInterface | FinderPlugin)[],
         getInstance: () => Finder<FItem>,
-        touch: (diff: FinderDiff) => void,
+        touch: FinderTouchCallback,
     ) {
         // bind a referene to the container Finder instance to each plugin
         const instance = getInstance();
@@ -61,6 +61,25 @@ export class PluginMediator<FItem> {
         } catch (e) {
             return false;
         }
+    }
+
+    /**
+     * Notify all plugins that Finder is alive
+     */
+    onInit(event: FinderInitEvent) {
+        this.#plugins.forEach((plugin) => {
+            if (plugin.onInit) {
+                plugin.onInit(event);
+            }
+        });
+    }
+
+    onFirstUserInteraction(event: FinderFirstUserInteractionEvent) {
+        this.#plugins.forEach((plugin) => {
+            if (plugin.onFirstUserInteraction) {
+                plugin.onFirstUserInteraction(event);
+            }
+        });
     }
 }
 

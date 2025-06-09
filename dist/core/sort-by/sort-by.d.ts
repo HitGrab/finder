@@ -1,5 +1,5 @@
 import { SortByRule } from "../../types";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialSortBy: string | undefined;
     initialSortDirection: "asc" | "desc" | undefined;

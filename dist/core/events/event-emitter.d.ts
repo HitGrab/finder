@@ -1,11 +1,11 @@
-import { EventPayload, DiscriminatedPayload, EventCallback } from "../types/core-types";
+import { EventCallback } from "../types/internal-types";
 /**
  * A barebones event emitter
  */
-export declare class EventEmitter<T extends string, P extends EventPayload> {
+export declare class EventEmitter {
     #private;
-    on(event: T, callback: EventCallback): void;
-    off(event: T, callback: EventCallback): void;
-    emit(event: T, payload?: DiscriminatedPayload<P, T>): void;
-    batch(callback: CallableFunction): Promise<void>;
+    on(event: string, callback: EventCallback): void;
+    off(event: string, callback: EventCallback): void;
+    emit(event: string, payload?: any): void;
+    silently(callback: CallableFunction): void;
 }

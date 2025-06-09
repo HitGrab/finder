@@ -6,7 +6,10 @@ interface FinderNoMatchesProps {
 }
 function FinderNoMatches({ children: renderProp }: FinderNoMatchesProps) {
     const finder = useFinderContext();
-    if (Array.isArray(finder.matches.items) && finder.matches.items.length === 0 && renderProp) {
+    const isReady = finder.isLoading === false;
+    const hasItems = Array.isArray(finder.items) && finder.items.length > 0;
+    const hasNoMatches = Array.isArray(finder.matches.items) && finder.matches.items.length === 0;
+    if (isReady && hasItems && hasNoMatches && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;
         }

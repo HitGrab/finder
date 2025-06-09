@@ -1,4 +1,4 @@
-import { FinderDiff, FinderPluginInterface } from "../../types";
+import { FinderInitEvent, FinderPluginInterface, FinderSnapshot, FinderTouchCallback } from "../../types";
 import { Finder } from "../finder";
 
 export abstract class FinderPlugin implements FinderPluginInterface {
@@ -6,7 +6,16 @@ export abstract class FinderPlugin implements FinderPluginInterface {
 
     instance: Finder<any> | undefined;
 
-    register(finder: Finder<any>, touch: (diff: FinderDiff) => void) {
+    initialState?: FinderSnapshot<any> | undefined;
+
+    touch: FinderTouchCallback | undefined;
+
+    register(finder: Finder<any>, touch: FinderTouchCallback) {
         this.instance = finder;
+        this.touch = touch;
+    }
+
+    onInit(event: FinderInitEvent) {
+        this.initialState = event.snapshot;
     }
 }

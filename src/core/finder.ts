@@ -1,26 +1,35 @@
-import { isEqual } from "lodash";
-import { FinderRule, MatchesSnapshot, FinderConstructorOptions, FinderResultGroup, FinderSnapshot, FinderOnChangeCallback, FinderDiff } from "../types";
+import { isEqual, random } from "lodash";
+import {
+    FinderRule,
+    MatchesSnapshot,
+    FinderConstructorOptions,
+    FinderResultGroup,
+    FinderSnapshot,
+    FinderChangeEvent,
+    FinderTouchEvent,
+    FinderChangeEventName,
+    FinderInitEvent,
+    FinderFirstUserInteractionEvent,
+} from "../types";
 import { isValidRuleset } from "./utils/rule-utils";
-import { FINDER_EVENTS } from "./events/event-constants";
 import { FiltersMixin } from "./filters/filters";
-import { filtersInterface } from "./filters/filters-interface";
+import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
-import { groupByInterface } from "./group-by/group-by-interface";
+import { groupByInterface, readonlyGroupByInterface } from "./group-by/group-by-interface";
 import { MetaMixin } from "./meta/meta";
-import { metaInterface } from "./meta/meta-interface";
+import { metaInterface, readonlyMetaInterface } from "./meta/meta-interface";
 import { PaginationMixin } from "./pagination/pagination";
 import { paginationInterface } from "./pagination/pagination-interface";
 import { PluginMediator } from "./plugins/plugin-mediator";
 import { SearchMixin } from "./search/search";
-import { searchInterface } from "./search/search-interface";
+import { readonlySearchInterface, searchInterface } from "./search/search-interface";
 import { SelectedItemsMixin } from "./selected-items/selected-items";
-import { selectedItemsInterface } from "./selected-items/selected-items-interface";
+import { readonlySelectedItemsInterface, selectedItemsInterface } from "./selected-items/selected-items-interface";
 import { SortByMixin } from "./sort-by/sort-by";
-import { sortByInterface } from "./sort-by/sort-by-interface";
+import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
-import { FinderEventNames, EventPayloads, FinderEventEmitter, EventCallback } from "./types/core-types";
-
 import { DebounceCallbackRegistry } from "./utils/debounce-callback-registry";
+import { EventCallback } from "./types/internal-types";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -36,16 +45,14 @@ class Finder<FItem> {
 
     updatedAt?: number;
 
-    #onInit?: () => void;
-
-    #onChange?: FinderOnChangeCallback;
-
-    #isInitialized: boolean = false;
+    #hasEmittedFirstUserInteraction = false;
 
     // If true, the next call to findMatches() will force a render.
     #isTouched = false;
 
-    #eventEmitter: FinderEventEmitter<FItem>;
+    #eventEmitter: EventEmitter;
+
+    id = Symbol(`uniqe identifier${random(0, 99)}`);
 
     // Subclasses that extend functionality
     #mixins: {
@@ -79,6 +86,7 @@ class Finder<FItem> {
             maxSelectedItems,
             plugins,
             onInit,
+            onFirstUserInteraction,
             onChange,
         }: FinderConstructorOptions<FItem>,
     ) {
@@ -86,9 +94,7 @@ class Finder<FItem> {
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
-        this.#onInit = onInit;
-        this.#onChange = onChange;
-        this.#eventEmitter = new EventEmitter<FinderEventNames, EventPayloads<FItem>>();
+        this.#eventEmitter = new EventEmitter();
 
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const mixinDeps = {
@@ -96,8 +102,7 @@ class Finder<FItem> {
             getRules: () => this.#rules,
             getMeta: () => this.#mixins.meta.meta,
             isDisabled: () => this.disabled,
-            touch: (diff: FinderDiff) => this.#touch(diff),
-            eventEmitter: this.#eventEmitter,
+            touch: (event: FinderTouchEvent) => this.#touch(event, true),
             debouncer: new DebounceCallbackRegistry(),
         };
 
@@ -112,16 +117,45 @@ class Finder<FItem> {
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
         };
 
-        // must be initialized after all mixins have been instantiated
+        // The plugin mediator must be initialized after all mixins have been instantiated
         this.plugins = new PluginMediator(
             plugins || [],
             () => this,
-            (diff: FinderDiff) => this.#touch(diff),
+            (event: FinderTouchEvent) => this.#touch(event, true),
         );
+
+        const initPayload: FinderInitEvent = {
+            source: "core",
+            snapshot: this.#takeStateSnapshot(),
+            event: "finder.core.init",
+            timestamp: Date.now(),
+        };
+
+        // Don't trigger any events while any plugin methods trigger
+        this.#eventEmitter.silently(() => {
+            this.plugins.onInit(initPayload);
+        });
+
+        if (onInit) {
+            this.#eventEmitter.on("init", onInit);
+        }
+        if (onChange) {
+            this.#eventEmitter.on("change", onChange);
+        }
+
+        if (onFirstUserInteraction) {
+            this.#eventEmitter.on("first_user_interaction", onFirstUserInteraction);
+        }
+
+        // notify external listeners
+        this.#eventEmitter.emit("init", initPayload);
     }
 
-    #touch(diff: FinderDiff) {
-        this.initializeOnce();
+    #touch(touchEvent: FinderTouchEvent, canTriggerUserInteractEvent: boolean) {
+        // some events, like 'loading' or 'disabled', do not count as user interactions.
+        if (canTriggerUserInteractEvent) {
+            this.emitFirstUserInteraction();
+        }
 
         this.#isTouched = true;
         this.#snapshot = undefined;
@@ -129,23 +163,37 @@ class Finder<FItem> {
 
         const stateSnapshot = this.#takeStateSnapshot();
 
-        // emit the public-facing change event
-        this.#eventEmitter.emit(FINDER_EVENTS.CHANGE, { diff, snapshot: stateSnapshot });
+        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: stateSnapshot, timestamp: Date.now() };
 
-        if (this.#onChange) {
-            this.#onChange(diff, stateSnapshot);
-        }
+        // emit the change event for the specific mixin action
+        // e.g: 'change.filters.set'
+        this.#eventEmitter.emit(`change.${touchEvent.event}`, changeEvent);
+
+        // emit the change event for the whole mixin
+        // e.g: 'change.filters'
+        this.#eventEmitter.emit(`change.${touchEvent.source}`, changeEvent);
+
+        // emit the broadest change event
+        // e.g: 'change'
+        this.#eventEmitter.emit("change", changeEvent);
     }
 
-    initializeOnce() {
-        if (this.#isInitialized === false) {
-            this.#isInitialized = true;
+    emitFirstUserInteraction() {
+        if (this.#hasEmittedFirstUserInteraction === false) {
+            this.#hasEmittedFirstUserInteraction = true;
 
-            this.#eventEmitter.emit(FINDER_EVENTS.INIT);
+            const payload: FinderFirstUserInteractionEvent = {
+                source: "core",
+                event: "finder.core.first-user-interaction",
+                snapshot: this.#takeStateSnapshot(),
+                timestamp: Date.now(),
+            };
 
-            if (this.#onInit) {
-                this.#onInit();
-            }
+            // trigger all plugins
+            this.plugins.onFirstUserInteraction(payload);
+
+            // emit the public-facing change event
+            this.#eventEmitter.emit("first_user_interaction", payload);
         }
     }
 
@@ -184,12 +232,12 @@ class Finder<FItem> {
      */
     #takeStateSnapshot(): FinderSnapshot<FItem> {
         return {
-            searchTerm: this.#mixins.search.searchTerm,
-            filters: this.#mixins.filters.getFilters(),
-            sortBy: this.#mixins.sortBy.activeRule,
-            groupBy: this.#mixins.groupBy.activeRule,
-            selectedItems: this.#mixins.selectedItems.selectedItems,
-            meta: this.#mixins.meta.meta,
+            search: readonlySearchInterface(this.#mixins.search),
+            filters: readonlyFiltersInterface(this.#mixins.filters),
+            sortBy: readonlySortByInterface(this.#mixins.sortBy),
+            groupBy: readonlyGroupByInterface(this.#mixins.groupBy),
+            selectedItems: readonlySelectedItemsInterface(this.#mixins.selectedItems),
+            meta: readonlyMetaInterface(this.#mixins.meta),
             updatedAt: this.updatedAt,
         };
     }
@@ -207,7 +255,7 @@ class Finder<FItem> {
     }
 
     get isEmpty() {
-        return this.items.length === 0;
+        return this.isLoading === false && this.items.length === 0;
     }
 
     get search() {
@@ -240,9 +288,8 @@ class Finder<FItem> {
 
     get events() {
         return {
-            on: (event: FinderEventNames, callback: EventCallback) => this.#eventEmitter.on(event, callback),
-            off: (event: FinderEventNames, callback: EventCallback) => this.#eventEmitter.off(event, callback),
-            batch: (callback: CallableFunction) => this.#eventEmitter.batch(callback),
+            on: (event: FinderChangeEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
+            off: (event: FinderChangeEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
         };
     }
 
@@ -255,14 +302,18 @@ class Finder<FItem> {
 
     setIsLoading(value?: boolean) {
         if (!!value !== this.isLoading) {
+            const previousValue = this.isLoading;
             this.isLoading = !!value;
             this.#isTouched = true;
+            this.#touch({ source: "finder", event: "change.core.setIsLoading", current: !!value, initial: previousValue }, false);
         }
     }
-    setDisabled(value?: boolean) {
+    setIsDisabled(value?: boolean) {
         if (!!value !== this.disabled) {
+            const previousValue = this.disabled;
             this.disabled = !!value;
             this.#isTouched = true;
+            this.#touch({ source: "finder", event: "change.core.setIsDisabled", current: !!value, initial: previousValue }, false);
         }
     }
 }

@@ -1,42 +1,63 @@
 import { FinderMeta } from "../../types";
-import { FINDER_EVENTS } from "../events/event-constants";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
-    initialMeta: FinderMeta | undefined;
+    initialMeta?: FinderMeta;
 };
 class MetaMixin<FItem> {
     meta;
     #deps;
 
     constructor({ initialMeta }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
-        this.meta = initialMeta;
+        this.meta = initialMeta || {};
         this.#deps = deps;
     }
 
     set(metaIdentifier: any, value: any) {
-        const clonedMetaMap = new Map(this.meta);
-        clonedMetaMap.set(metaIdentifier, value);
-        this.meta = clonedMetaMap;
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_META, { id: metaIdentifier, value });
-        this.#deps.touch({ meta: clonedMetaMap });
+        const previousValue = this.get(metaIdentifier);
+        this.meta = { ...this.meta, [metaIdentifier]: value };
+        this.#deps.touch({
+            source: "meta",
+            event: "change.meta.set",
+            current: { key: metaIdentifier, value },
+            initial: { key: metaIdentifier, value: previousValue },
+        });
     }
+
     get(metaIdentifier: any) {
-        return this.meta?.get(metaIdentifier);
+        return this.meta?.[metaIdentifier];
     }
+
     has(metaIdentifier: any) {
-        return !!this.meta?.has(metaIdentifier);
+        return this.meta?.[metaIdentifier] !== undefined;
     }
+
     delete(metaIdentifier: any) {
-        const clonedMetaMap = new Map(this.meta);
-        clonedMetaMap.delete(metaIdentifier);
-        this.meta = clonedMetaMap;
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_META, { id: metaIdentifier, value: undefined });
-        this.#deps.touch({ meta: clonedMetaMap });
+        const previousValue = this.get(metaIdentifier);
+        const clonedMeta = { ...this.meta };
+        delete clonedMeta[metaIdentifier];
+        this.meta = clonedMeta;
+
+        this.#deps.touch({
+            source: "meta",
+            event: "change.meta.delete",
+            current: { key: metaIdentifier, value: undefined },
+            initial: { key: metaIdentifier, value: previousValue },
+        });
     }
     reset() {
-        this.#deps.touch({ meta: undefined });
-        this.meta = undefined;
+        const previousValue = this.meta;
+        this.meta = {};
+        this.#deps.touch({
+            source: "meta",
+            event: "change.meta.reset",
+            current: { meta: this.meta },
+            initial: { meta: previousValue },
+        });
+    }
+
+    get value() {
+        return this.meta;
     }
 }
 

@@ -1,5 +1,4 @@
-import { FINDER_EVENTS } from "../events/event-constants";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues<FItem> = {
     initialSelectedItems: FItem[] | undefined;
@@ -20,14 +19,26 @@ class SelectedItemsMixin<FItem> {
 
     setMaxSelectedItems(value?: number) {
         if (value !== this.maxSelectedItems) {
+            const previousValue = this.maxSelectedItems;
             this.maxSelectedItems = value;
-            this.deps.touch({ maxSelectedItems: this.maxSelectedItems });
+            this.deps.touch({
+                source: "selectedItems",
+                event: "change.selectedItems.setMaxSelectedItems",
+                current: { maxSelectedItems: this.maxSelectedItems },
+                initial: { maxSelectedItems: previousValue },
+            });
         }
     }
 
     set(items: FItem[]) {
+        const previousValue = this.selectedItems;
         this.selectedItems = items;
-        this.deps.touch({ selectedItems: this.selectedItems });
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.set",
+            current: { selectedItems: this.selectedItems },
+            initial: { selectedItems: previousValue },
+        });
     }
 
     select(item: FItem) {
@@ -37,15 +48,84 @@ class SelectedItemsMixin<FItem> {
         if (this.maxSelectedItems !== undefined && this.selectedItems.length >= this.maxSelectedItems) {
             throw new Error("Finder cannot select this item without exceeding the selected items limit.");
         }
-        this.deps.eventEmitter.emit(FINDER_EVENTS.TOGGLE_SELECTED_ITEM, { item, isSelected: true });
-        this.set([...this.selectedItems.filter((row) => item !== row), item]);
+        this.selectedItems = [...this.selectedItems.filter((row) => item !== row), item];
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.select",
+            current: { item },
+            initial: { item },
+        });
+    }
+
+    /**
+     * Select a single item and clear any other selected items.
+     */
+    selectOnly(item: FItem) {
+        if (this.deps.isDisabled()) {
+            return;
+        }
+
+        this.selectedItems = [item];
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.select",
+            current: { item },
+            initial: { item },
+        });
+    }
+
+    toggle(item: FItem) {
+        if (this.deps.isDisabled()) {
+            return;
+        }
+        const wasSelected = this.selectedItems.includes(item);
+        if (wasSelected) {
+            // delete it if found
+            this.selectedItems = this.selectedItems?.filter((row) => row !== item);
+        } else {
+            // add it otherwise
+            this.selectedItems = [...this.selectedItems, item];
+        }
+
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.toggle",
+            current: { item, is_selected: !wasSelected },
+            initial: { item, is_selected: wasSelected },
+        });
+    }
+
+    toggleOnly(item: FItem) {
+        if (this.deps.isDisabled()) {
+            return;
+        }
+        const wasSelected = this.selectedItems.includes(item);
+        if (wasSelected) {
+            // delete it if found
+            this.selectedItems = [];
+        } else {
+            // add it otherwise
+            this.selectedItems = [item];
+        }
+
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.toggle",
+            current: { item, is_selected: !wasSelected },
+            initial: { item, is_selected: wasSelected },
+        });
     }
 
     delete(item: FItem) {
         if (this.deps.isDisabled()) {
             return;
         }
-        this.deps.eventEmitter.emit(FINDER_EVENTS.TOGGLE_SELECTED_ITEM, { item, isSelected: false });
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.delete",
+            current: { item, is_selected: false },
+            initial: { item, is_selected: true },
+        });
         this.set(this.selectedItems?.filter((row) => row !== item));
     }
 
@@ -53,7 +133,14 @@ class SelectedItemsMixin<FItem> {
         if (this.deps.isDisabled()) {
             return;
         }
-        this.set([]);
+        const previousValue = this.selectedItems;
+        this.selectedItems = [];
+        this.deps.touch({
+            source: "selectedItems",
+            event: "change.selectedItems.reset",
+            current: { selectedItems: [] },
+            initial: { selectedItems: previousValue },
+        });
     }
 }
 

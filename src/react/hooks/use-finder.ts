@@ -1,7 +1,6 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { FinderConstructorOptions } from "../../types";
 import { Finder as FinderCore } from "../../core/finder";
-import { FinderSyncExternalStore } from "../bridge/finder-sync-external-store";
 
 /**
  * Create a finder instance with contained state and controllers.
@@ -26,11 +25,12 @@ function useFinder<FItem>(
         maxSelectedItems,
         onInit,
         onChange,
+        onFirstUserInteraction,
     }: FinderConstructorOptions<FItem>,
 ): FinderCore<FItem> {
-    const [finderStore] = useState(
+    const [instance] = useState(
         () =>
-            new FinderSyncExternalStore(items, {
+            new FinderCore(items, {
                 rules,
                 initialSearchTerm,
                 initialSortBy,
@@ -48,29 +48,31 @@ function useFinder<FItem>(
                 requireGroup,
                 onInit,
                 onChange,
+                onFirstUserInteraction,
             }),
     );
 
-    useSyncExternalStore(
-        (l) => finderStore.subscribe(l),
-        () => finderStore.getSnapshot(),
-    );
+    // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
+    const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
+    useEffect(() => {
+        instance.events.on("change", ({ diff, snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+    }, []);
 
     // Finder will only render a new snapshot if these values have changed.
-    finderStore.instance.setItems(items);
-    finderStore.instance.setIsLoading(isLoading);
-    finderStore.instance.setDisabled(disabled);
+    instance.setItems(items);
+    instance.setIsLoading(isLoading);
+    instance.setIsDisabled(disabled);
     if (page !== undefined) {
-        finderStore.instance.pagination.setPage(page);
+        instance.pagination.setPage(page);
     }
     if (numItemsPerPage !== undefined) {
-        finderStore.instance.pagination.setNumItemsPerPage(numItemsPerPage);
+        instance.pagination.setNumItemsPerPage(numItemsPerPage);
     }
     if (maxSelectedItems !== undefined) {
-        finderStore.instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
+        instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
     }
 
-    return finderStore.instance;
+    return instance;
 }
 
 export { useFinder };

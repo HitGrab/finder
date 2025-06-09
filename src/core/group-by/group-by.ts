@@ -1,8 +1,7 @@
 import { groupBy, orderBy, Many } from "lodash";
 import { GroupByRule, FinderMeta, FinderResultGroup } from "../../types";
-import { FINDER_EVENTS } from "../events/event-constants";
 import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
     initialGroupBy: string | undefined;
@@ -36,6 +35,8 @@ class GroupByMixin<FItem> {
             return;
         }
 
+        const previousRule = this.#groupBy;
+
         let rule: GroupByRule | undefined;
         const isBlankString = typeof identifier === "string" && identifier.trim() === "";
         if (isBlankString) {
@@ -53,14 +54,24 @@ class GroupByMixin<FItem> {
         this.#groupBy = rule;
         this.groupIdSortDirection = undefined;
 
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_GROUP_BY, { rule });
-        this.#deps.touch({ groupBy: rule?.id, groupIdSortDirection: undefined });
+        this.#deps.touch({
+            source: "groupBy",
+            event: "change.groupBy.set",
+            current: { rule },
+            initial: { rule: previousRule },
+        });
     }
 
     setGroupIdSortDirection(direction?: string) {
+        const previousValue = this.groupIdSortDirection;
         this.groupIdSortDirection = direction;
-        this.#deps.eventEmitter.emit(FINDER_EVENTS.SET_GROUP_BY, { rule: this.activeRule, groupIdSortDirection: this.groupIdSortDirection });
-        this.#deps.touch({ groupIdSortDirection: direction });
+
+        this.#deps.touch({
+            source: "groupBy",
+            event: "change.groupBy.setGroupIdSortDirection",
+            current: { groupIdSortDirection: direction },
+            initial: { groupIdSortDirection: previousValue },
+        });
     }
 
     process(items: FItem[], meta?: FinderMeta) {

@@ -3,9 +3,9 @@ import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterfa
 import { act } from "react";
 import { range } from "lodash";
 import { Finder } from "./core/finder";
-import { filterRule, finderRules, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
+import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
 import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./core/utils/string-compare-utils";
-
+import { renderHook } from "@testing-library/react";
 type MockObjectItem = {
     type: string;
     name: string;
@@ -167,7 +167,7 @@ describe("Filter - Basic", () => {
     });
 
     test("Inactive filters have no effect", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -182,7 +182,7 @@ describe("Filter - Basic", () => {
     });
 
     test("Return empty array for unmatched filters", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -198,7 +198,7 @@ describe("Filter - Basic", () => {
 
 describe("Filter - Advanced", () => {
     test("Required filters with defined options array select first option", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem, value: number) => item.price === value,
@@ -225,7 +225,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Required filters with options callback selects first option", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
@@ -247,7 +247,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Required filters with boolean type selects true", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem) => item.price === 10,
@@ -261,7 +261,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Filters receive meta context", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number, meta) => {
@@ -573,8 +573,9 @@ describe("onChange", () => {
                 },
             }),
         ];
-        const onChange: FinderOnChangeCallback<MockObjectItem> = (diff) => {
-            expect(diff.filter).toStrictEqual({ price_is_below: 5 });
+        const onChange: FinderOnChangeCallback = (event) => {
+            expect(event.current.rule.id).toStrictEqual("price_is_below");
+            expect(event.current.value).toStrictEqual(5);
         };
 
         const finder = new Finder(objectItems, { rules, onChange });
@@ -621,7 +622,7 @@ describe("Utils", () => {
 
 describe("Plugins", () => {
     test("Sample plugin", () => {
-        const rules = finderRules<MockObjectItem>([
+        const rules = finderRuleset<MockObjectItem>([
             searchRule({
                 searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
             }),
@@ -638,8 +639,10 @@ describe("Plugins", () => {
             }),
         ]);
 
+        const onInit = vitest.fn();
         const onRegister = vitest.fn();
         const onChange = vitest.fn();
+        const onInteract = vitest.fn();
 
         interface MyPlugin extends FinderPluginInterface {
             setValue: (value: number) => void;
@@ -647,15 +650,24 @@ describe("Plugins", () => {
         }
         const mockPlugin: FinderPluginFn<MyPlugin> = () => {
             let value = 5;
-            let instance: Finder<any>;
             return {
                 id: "test",
+                // Finder has instantiated plugin and injected a reference
                 register: (finder) => {
-                    instance = finder;
                     onRegister();
                     finder.events.on("change", () => {
                         onChange();
                     });
+                },
+
+                // Finder has finished initializing
+                onInit: () => {
+                    onInit();
+                },
+
+                // First change has been triggered
+                onFirstUserInteraction: () => {
+                    onInteract();
                 },
                 setValue(currentValue: number) {
                     value = currentValue;
@@ -666,12 +678,21 @@ describe("Plugins", () => {
 
         const initializedPlugin = mockPlugin();
         const finder = new Finder(objectItems, { rules, plugins: [initializedPlugin] });
-
+        expect(onInit).toHaveBeenCalledTimes(1);
         expect(onRegister).toHaveBeenCalledTimes(1);
+
+        // onInteract is not triggered until the first state change
+        expect(onInteract).toHaveBeenCalledTimes(0);
 
         finder.filters.set("price_is_below", 3);
 
         expect(onChange).toHaveBeenCalledTimes(1);
+
+        // onInteract can only be triggered once
+        finder.filters.set("price_is_below", 1);
+        finder.filters.set("price_is_below", 2);
+        finder.filters.set("price_is_below", 5);
+        expect(onInteract).toHaveBeenCalledTimes(1);
 
         finder.plugins.get(initializedPlugin).setValue(10);
 

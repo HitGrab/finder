@@ -1,5 +1,5 @@
 import { clamp } from "lodash";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
     page: number | undefined;
@@ -7,6 +7,7 @@ type InitialValues = {
 };
 class PaginationMixin<FItem> {
     #page: number;
+
     #numDisplayedItems: number;
 
     numItemsPerPage?: number;
@@ -22,15 +23,28 @@ class PaginationMixin<FItem> {
 
     setPage(value: number) {
         if (value !== this.#page) {
+            const previousPage = this.#page;
             this.#page = value;
-            this.#deps.touch({ page: this.#page });
+            this.#deps.touch({
+                source: "pagination",
+                event: "change.pagination.setPage",
+                current: { page: this.#page },
+                initial: { page: previousPage },
+            });
         }
     }
 
     setNumItemsPerPage(value?: number) {
         if (value !== this.numItemsPerPage) {
+            const previousValue = this.numItemsPerPage;
             this.numItemsPerPage = value;
-            this.#deps.touch({ numItemsPerPage: this.numItemsPerPage });
+
+            this.#deps.touch({
+                source: "pagination",
+                event: "change.pagination.setNumItemsPerPage",
+                current: { numItemsPerPage: this.numItemsPerPage },
+                initial: { numItemsPerPage: previousValue },
+            });
         }
     }
 

@@ -1,5 +1,5 @@
 import { FinderMeta } from "../../types";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialSearchTerm: string | undefined;
 };
@@ -10,6 +10,7 @@ declare class SearchMixin<FItem> {
     get rule(): import("../..").SearchRule<unknown> | undefined;
     get hasSearchRule(): boolean;
     setSearchTerm(incomingSearchTerm: string): void;
+    reset(): void;
     process(items: FItem[], meta?: FinderMeta): FItem[];
 }
 export { SearchMixin };
