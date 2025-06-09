@@ -350,7 +350,7 @@ function GroupByControls() {
     return (
         <>
             <select
-                value={finder.groupBy.activeRuleId}
+                value={finder.groupBy.activeRule?.id}
                 onChange={(e) => {
                     finder.groupBy.set(e.currentTarget.value);
                 }}
