@@ -22,11 +22,11 @@ export type {
     SortByRule,
     GroupByRule,
     FinderResultGroup,
-    FinderOption,
+    FilterOption,
     FinderEvent,
     FinderChangeEvent,
     FinderInitEvent,
-    FinderFirstUserInteractionEvent as FinderInteractEvent,
+    FinderFirstUserInteractionEvent,
 } from "./types";
 
 export type { FinderProps } from "./react/types/react-types";

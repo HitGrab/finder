@@ -10,6 +10,6 @@ export { useFinderRef } from "./react/hooks/use-finder-ref";
 export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
 export { Finder as FinderCore } from "./core/finder";
 export { FinderPlugin } from "./core/plugins/plugin-super-class";
-export type { FinderPluginFn, FinderPluginInterface, FinderSnapshot, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FinderOption, FinderEvent, FinderChangeEvent, FinderInitEvent, FinderFirstUserInteractionEvent as FinderInteractEvent, } from "./types";
+export type { FinderPluginFn, FinderPluginInterface, FinderSnapshot, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FilterOption, FinderEvent, FinderChangeEvent, FinderInitEvent, FinderFirstUserInteractionEvent, } from "./types";
 export type { FinderProps } from "./react/types/react-types";
 export * from "./core/utils/rule-type-enforcers";
