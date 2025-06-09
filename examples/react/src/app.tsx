@@ -5,7 +5,6 @@ import { ProductItem } from "./product-item";
 import { Product } from "./types";
 import { generateProducts } from "./services/generateProducts";
 import {
-    finderRules,
     searchRule,
     finderStringCompare,
     filterRule,
@@ -17,12 +16,13 @@ import {
     FinderContent,
     useFinderContext,
     HydratedFilterRule,
+    finderRuleset,
 } from "@hitgrab/finder";
 
 const productList = generateProducts();
 
 function App() {
-    const rules = finderRules<Product>([
+    const rules = finderRuleset<Product>([
         searchRule({
             searchFn: (item, searchTerm) => finderStringCompare(item.label, searchTerm),
         }),
