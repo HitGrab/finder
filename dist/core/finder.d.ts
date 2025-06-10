@@ -91,6 +91,7 @@ declare class Finder<FItem> {
         on: (event: FinderChangeEventName, callback: EventCallback) => void;
         off: (event: FinderChangeEventName, callback: EventCallback) => void;
     };
+    get state(): "loading" | "empty" | "groups" | "noMatches" | "items";
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
