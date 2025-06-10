@@ -1,4 +1,4 @@
-import { isEqual, random } from "lodash";
+import { isEqual } from "lodash";
 import {
     FinderRule,
     MatchesSnapshot,
