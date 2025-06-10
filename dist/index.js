@@ -4469,7 +4469,7 @@ function $v(a) {
     // rotate between the rule default, desc, and asc.
     cycleSortDirection: () => {
       var i;
-      const f = a.sortDirection ?? ((i = a.activeRule) == null ? void 0 : i.defaultDirection);
+      const f = a.sortDirection ?? ((i = a.activeRule) == null ? void 0 : i.defaultSortDirection);
       if (f === void 0) {
         a.setSortDirection("desc");
         return;
@@ -4483,7 +4483,7 @@ function $v(a) {
     // flip between desc and asc.
     toggleSortDirection: () => {
       var i;
-      if ((a.sortDirection ?? ((i = a.activeRule) == null ? void 0 : i.defaultDirection)) === "desc") {
+      if ((a.sortDirection ?? ((i = a.activeRule) == null ? void 0 : i.defaultSortDirection)) === "desc") {
         a.setSortDirection("asc");
         return;
       }
