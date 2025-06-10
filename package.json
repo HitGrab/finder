@@ -1,6 +1,6 @@
 {
     "name": "@hitgrab/finder",
-    "version": "v0.0.9-alpha",
+    "version": "v0.0.10-alpha",
     "description": "Headless datatables for things that aren't tables.",
     "type": "module",
     "files": [
@@ -35,7 +35,8 @@
         "datatable",
         "filter",
         "search",
-        "sort"
+        "sort",
+        "group"
     ],
     "author": "Hitgrab Labs Inc",
     "license": "ISC",
