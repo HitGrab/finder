@@ -1,7 +1,6 @@
-import { ElementType, ReactElement } from "react";
-import { FinderBaseComponentProps } from "../types/react-types";
+import { FinderBaseRenderProp } from "../types/react-types";
 interface FinderNoMatchesProps {
-    children: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
+    children: FinderBaseRenderProp;
 }
-declare function FinderNoMatches({ children: renderProp }: FinderNoMatchesProps): string | import("react/jsx-runtime").JSX.Element | null;
+declare function FinderNoMatches({ children: renderProp }: FinderNoMatchesProps): Iterable<import("react").ReactNode> | import("react/jsx-runtime").JSX.Element | null;
 export { FinderNoMatches };

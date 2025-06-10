@@ -10,14 +10,14 @@ type InitialValues = {
 class SortByMixin<FItem> {
     #sortBy;
 
-    sortDirection?: string;
+    #sortDirection?: string;
 
     #deps;
 
     constructor({ initialSortBy, initialSortDirection }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         this.#sortBy = getRuleFromIdentifier(initialSortBy, this.rules);
-        this.sortDirection = initialSortDirection;
+        this.#sortDirection = initialSortDirection;
     }
 
     get rules() {
@@ -29,13 +29,21 @@ class SortByMixin<FItem> {
         return this.#sortBy ?? defaultSortByRule;
     }
 
+    get sortDirection() {
+        return this.#sortDirection ?? this.activeRule?.defaultSortDirection ?? "asc";
+    }
+
+    get userHasSetSortDirection() {
+        return this.#sortDirection !== null;
+    }
+
     setSortDirection(incomingSortDirection?: string) {
         if (this.#deps.isDisabled() || !this.activeRule) {
             return;
         }
-        const previousValue = this.sortDirection;
+        const previousValue = this.#sortDirection;
         // TODO: Should use a type guard here.
-        this.sortDirection = incomingSortDirection;
+        this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
             source: "sortBy",
             event: "change.sortBy.setSortDirection",
@@ -49,11 +57,11 @@ class SortByMixin<FItem> {
             return;
         }
 
-        const previousSortDirection = this.sortDirection;
+        const previousSortDirection = this.#sortDirection;
         const previousRule = this.#sortBy;
         const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
         this.#sortBy = rule;
-        this.sortDirection = incomingSortDirection;
+        this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
             source: "sortBy",
             event: "change.sortBy.set",
@@ -70,7 +78,7 @@ class SortByMixin<FItem> {
         }
 
         // HACK: Lodash type import isn't great
-        const direction = (this.sortDirection ?? activeSortByRule.defaultSortDirection) as Many<boolean | "asc" | "desc">;
+        const direction = (this.#sortDirection ?? activeSortByRule.defaultSortDirection) as Many<boolean | "asc" | "desc">;
         return orderBy(items, activeSortByRule.sortFn, direction) as FItem[];
     }
 }

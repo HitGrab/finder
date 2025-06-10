@@ -183,7 +183,7 @@ export interface FinderInitEvent extends FinderBaseEvent {
 }
 export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
     source: "core";
-    event: "finder.core.first-user-interaction";
+    event: "finder.core.firstUserInteraction";
 }
 
 export type FinderTouchSource = "core" | "finder" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";

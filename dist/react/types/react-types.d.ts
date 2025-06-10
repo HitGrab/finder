@@ -1,7 +1,7 @@
 /**
  * React-specific types for creating consumer components.
  */
-import { PropsWithChildren, RefObject } from "react";
+import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
 import { FinderConstructorOptions, FinderMeta, FinderResultGroup } from "../../types";
 import { Finder as FinderCore } from "../../core/finder";
 import { paginationInterface } from "../../core/pagination/pagination-interface";
@@ -21,3 +21,4 @@ export interface FinderGroupsComponentProps<FItem> extends FinderBaseComponentPr
     groups: FinderResultGroup<FItem>[];
     selectedItems: FItem[];
 }
+export type FinderBaseRenderProp = ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | Iterable<ReactNode>;

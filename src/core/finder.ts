@@ -189,7 +189,7 @@ class Finder<FItem> {
 
             const payload: FinderFirstUserInteractionEvent = {
                 source: "core",
-                event: "finder.core.first-user-interaction",
+                event: "finder.core.firstUserInteraction",
                 snapshot: this.#takeStateSnapshot(),
                 timestamp: Date.now(),
             };

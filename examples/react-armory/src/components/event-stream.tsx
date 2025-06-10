@@ -1,5 +1,5 @@
-import { FinderEvent, useFinderContext } from "@hitgrab/finder";
-import { useCallback, useEffect, useState } from "react";
+import { FinderEvent } from "@hitgrab/finder";
+import { useCallback, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 
 interface EventStreamProps {
@@ -28,36 +28,46 @@ function EventStream({ stream }: EventStreamProps) {
         <div className="eventContainer" ref={ref}>
             <b>Event Log</b>
             {stream.map((e, index) => {
-                const date = new Date(e.timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
-                return (
-                    <div className="event" key={index}>
-                        <b>
-                            {index}) {date} - {e.event}
-                        </b>
-                        <div className="eventProps">
-                            {Object.entries(e).map(([key, value]) => {
-                                let transformedValue = "";
-                                if (typeof value === "string" || typeof value === "number") {
-                                    transformedValue = String(value);
-                                }
-                                if (typeof value === "boolean") {
-                                    transformedValue = value ? "true" : "false";
-                                }
-                                if (transformedValue === "") {
-                                    transformedValue = JSON.stringify(value);
-                                }
-
-                                return (
-                                    <Fragment key={key}>
-                                        <span>{key}:</span>
-                                        <span>{transformedValue}</span>
-                                    </Fragment>
-                                );
-                            })}
-                        </div>
-                    </div>
-                );
+                return <EventDetails event={e} index={index} key={index} />;
             })}
+        </div>
+    );
+}
+
+interface EventDetailsProps {
+    event: FinderEvent;
+    index: number;
+}
+function EventDetails({ event, index }: EventDetailsProps) {
+    const date = new Date(event.timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
+    return (
+        <div className="event">
+            <button type="button" onClick={() => setIsExpanded(!isExpanded)}>
+                {index}) {date} - {event.event} {isExpanded === false && "(...)"}
+            </button>
+            <div className="eventProps">
+                {isExpanded &&
+                    Object.entries(event).map(([key, value]) => {
+                        let transformedValue = "";
+                        if (typeof value === "string" || typeof value === "number") {
+                            transformedValue = String(value);
+                        }
+                        if (typeof value === "boolean") {
+                            transformedValue = value ? "true" : "false";
+                        }
+                        if (transformedValue === "") {
+                            transformedValue = JSON.stringify(value);
+                        }
+
+                        return (
+                            <Fragment key={key}>
+                                <span>{key}:</span>
+                                <span>{transformedValue}</span>
+                            </Fragment>
+                        );
+                    })}
+            </div>
         </div>
     );
 }

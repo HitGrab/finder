@@ -41,6 +41,7 @@ html {
     display: grid;
     grid-template-columns: 200px 1fr;
     gap: 20px;
+    min-height: 100vh;
 
     .controls {
         display: flex;
@@ -161,6 +162,24 @@ html {
     scroll-behavior: smooth;
 }
 
+.event {
+    &:last-child {
+        .eventProps {
+            color: var(--color);
+        }
+
+        b {
+            color: var(--color-bright);
+        }
+    }
+
+    button {
+        all: unset;
+        cursor: pointer;
+        font-weight: bold;
+    }
+}
+
 .eventProps {
     display: grid;
     grid-template-columns: min-content 1fr;
@@ -174,15 +193,5 @@ html {
 
     &:hover {
         color: var(--color);
-    }
-}
-
-.event:last-child {
-    .eventProps {
-        color: var(--color);
-    }
-
-    b {
-        color: var(--color-bright);
     }
 }

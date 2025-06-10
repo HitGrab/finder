@@ -43,7 +43,8 @@ declare class Finder<FItem> {
         toggleSortDirection: () => void;
         reset(): void;
         activeRule: import("..").SortByRule<unknown> | undefined;
-        sortDirection: string | undefined;
+        sortDirection: string;
+        userHasSetSortDirection: boolean;
         rules: import("..").SortByRule<unknown>[];
     };
     get groupBy(): {

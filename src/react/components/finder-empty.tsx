@@ -1,9 +1,9 @@
-import { cloneElement, ElementType, isValidElement, ReactElement } from "react";
+import { cloneElement, isValidElement } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderBaseComponentProps } from "../types/react-types";
+import { FinderBaseRenderProp } from "../types/react-types";
 
 interface FinderEmptyProps {
-    children: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
+    children: FinderBaseRenderProp;
 }
 function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
     const finder = useFinderContext();

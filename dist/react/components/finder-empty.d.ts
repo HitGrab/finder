@@ -1,7 +1,6 @@
-import { ElementType, ReactElement } from "react";
-import { FinderBaseComponentProps } from "../types/react-types";
+import { FinderBaseRenderProp } from "../types/react-types";
 interface FinderEmptyProps {
-    children: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
+    children: FinderBaseRenderProp;
 }
-declare function FinderEmpty({ children: renderProp }: FinderEmptyProps): string | import("react/jsx-runtime").JSX.Element | null;
+declare function FinderEmpty({ children: renderProp }: FinderEmptyProps): Iterable<import("react").ReactNode> | import("react/jsx-runtime").JSX.Element | null;
 export { FinderEmpty };

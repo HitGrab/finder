@@ -14,6 +14,10 @@ function SortByDropdown() {
                     );
                 })}
             </select>
+            <select value={finder.sortBy.sortDirection} onChange={(e) => finder.sortBy.setSortDirection(e.currentTarget.value)}>
+                <option value="asc">Asc</option>
+                <option value="desc">Desc</option>
+            </select>
         </label>
     );
 }
