@@ -293,6 +293,27 @@ class Finder<FItem> {
         };
     }
 
+    get state() {
+        if (this.isLoading) {
+            return "loading";
+        }
+        if (this.items && this.items.length === 0) {
+            return "empty";
+        }
+        const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
+        if (hasGroupByRule) {
+            if (Array.isArray(this.matches.groups) && this.matches.groups.length > 0) {
+                return "groups";
+            }
+            return "noMatches";
+        }
+
+        if (Array.isArray(this.matches.items) && this.matches.items.length > 0) {
+            return "items";
+        }
+        return "noMatches";
+    }
+
     setItems(items: FItem[] | null | undefined) {
         if (isEqual(items, this.#items) === false) {
             this.#items = items;

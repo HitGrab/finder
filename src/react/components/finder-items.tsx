@@ -7,8 +7,7 @@ interface FinderItemsProps<FItem = any> {
 }
 function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
     const finder = useFinderContext();
-
-    if (Array.isArray(finder.matches.items) && finder.matches.items.length > 0 && renderProp) {
+    if (finder.state === "items" && finder.matches.items && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return cloneElement(renderProp, { items: finder.matches.items, pagination: finder.pagination, meta: finder.meta.value });
         }

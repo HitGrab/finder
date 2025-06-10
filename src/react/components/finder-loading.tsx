@@ -6,7 +6,7 @@ interface FinderLoadingProps {
 }
 function FinderLoading({ children: renderProp }: FinderLoadingProps) {
     const finder = useFinderContext();
-    if (finder.isLoading && renderProp) {
+    if (finder.state === "loading" && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;
         }

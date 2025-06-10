@@ -7,8 +7,7 @@ interface FinderGroupsProps<FItem = any> {
 }
 function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>) {
     const finder = useFinderContext();
-
-    if (Array.isArray(finder.matches.groups) && finder.matches.groups.length > 0 && renderProp) {
+    if (finder.state === "groups" && finder.matches.groups && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return cloneElement(renderProp, {
                 groups: finder.matches.groups,

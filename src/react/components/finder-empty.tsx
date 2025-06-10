@@ -6,7 +6,7 @@ interface FinderEmptyProps {
 }
 function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
     const finder = useFinderContext();
-    if (finder.isEmpty && renderProp) {
+    if (finder.state === "empty" && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return renderProp;
         }
