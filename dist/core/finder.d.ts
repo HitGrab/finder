@@ -61,7 +61,7 @@ declare class Finder<FItem> {
         set: (metaIdentifier: any, value: any) => void;
         delete: (metaIdentifier: any) => void;
         reset: () => void;
-        value: import("../types").FinderMeta;
+        value: import("..").FinderMeta;
         get: (metaIdentifier: any) => any;
         has: (metaIdentifier: any) => boolean;
     };

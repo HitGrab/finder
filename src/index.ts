@@ -28,6 +28,7 @@ export type {
     FinderChangeEvent,
     FinderInitEvent,
     FinderFirstUserInteractionEvent,
+    FinderMeta,
 } from "./types";
 
 export type { FinderProps } from "./react/types/react-types";
