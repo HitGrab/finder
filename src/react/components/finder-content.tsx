@@ -6,7 +6,7 @@ import { FinderLoading } from "./finder-loading";
 import { FinderNoMatches } from "./finder-no-matches";
 import { FinderBaseRenderProp, FinderGroupsComponentProps, FinderItemsComponentProps } from "../types/react-types";
 
-interface FinderContentProps<FItem = any> {
+interface FinderContentProps<FItem> {
     children: {
         loading?: FinderBaseRenderProp;
         empty?: FinderBaseRenderProp;
@@ -16,7 +16,7 @@ interface FinderContentProps<FItem = any> {
     };
 }
 
-function FinderContent({ children: renderProps }: FinderContentProps) {
+function FinderContent<FItem = any>({ children: renderProps }: FinderContentProps<FItem>) {
     if (!renderProps || Object.values(renderProps).length === 0) {
         throw new Error("No render props were found.");
     }
