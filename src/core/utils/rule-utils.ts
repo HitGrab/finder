@@ -1,4 +1,4 @@
-import { FilterRule, FinderMeta, FinderOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../../types";
+import { FilterRule, FinderMeta, FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -47,15 +47,15 @@ export function getRuleFromIdentifier<T extends FinderRule>(identifier: T | stri
     throw new Error("Finder received an invalid rule request format.");
 }
 
-export function getOptionFromIdentifier<FItem>(
-    optionOrOptionValue: FinderOption | any,
-    options: FinderOption[] | ((items: FItem[], meta?: FinderMeta) => FinderOption[]) | undefined,
+export function getFilterOptionFromIdentifier<FItem>(
+    optionOrOptionValue: FilterOption | any,
+    options: FilterOption[] | ((items: FItem[], meta?: FinderMeta) => FilterOption[]) | undefined,
     items: FItem[],
     meta?: FinderMeta,
 ) {
-    let option: FinderOption | any;
+    let option: FilterOption | any;
 
-    let composedOptions: FinderOption[] = [];
+    let composedOptions: FilterOption[] = [];
     if (typeof options === "function") {
         composedOptions = options(items, meta);
     }
@@ -63,7 +63,7 @@ export function getOptionFromIdentifier<FItem>(
         composedOptions = options;
     }
 
-    if (isFinderOption(optionOrOptionValue)) {
+    if (isFilterOption(optionOrOptionValue)) {
         option = composedOptions?.find((row) => row === optionOrOptionValue);
         if (option === undefined) {
             throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
@@ -78,7 +78,7 @@ export function getOptionFromIdentifier<FItem>(
     return option;
 }
 
-export function isFinderOption(data: unknown): data is FinderOption {
+export function isFilterOption(data: unknown): data is FilterOption {
     return typeof data === "object" && data !== null && "label" in data && "value" in data;
 }
 
