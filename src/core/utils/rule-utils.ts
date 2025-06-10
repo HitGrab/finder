@@ -110,7 +110,7 @@ export function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem> {
     return typeof rule === "object" && rule !== null && "filterFn" in rule;
 }
 export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem> {
-    return isFilterRule(rule) && rule._isHydrated === true;
+    return typeof rule === "object" && rule !== null && "filterFn" in rule && "_isHydrated" in rule;
 }
 
 export function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem> {

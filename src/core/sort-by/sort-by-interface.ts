@@ -19,7 +19,7 @@ function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
         setSortDirection: mixin.setSortDirection.bind(mixin),
         // rotate between the rule default, desc, and asc.
         cycleSortDirection: () => {
-            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultDirection;
+            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultSortDirection;
             if (initialDirection === undefined) {
                 mixin.setSortDirection("desc");
                 return;
@@ -33,7 +33,7 @@ function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
         },
         // flip between desc and asc.
         toggleSortDirection: () => {
-            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultDirection;
+            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultSortDirection;
             if (initialDirection === "desc") {
                 mixin.setSortDirection("asc");
                 return;

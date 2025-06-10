@@ -57,7 +57,7 @@ export type FinderMeta = Record<string, any>;
 
 export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
-export interface SearchRule<FItem = any> extends Record<string, any> {
+export interface SearchRule<FItem = any> {
     id?: string;
     searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
     label?: string;
@@ -65,7 +65,7 @@ export interface SearchRule<FItem = any> extends Record<string, any> {
     debounceDelay?: number;
 }
 
-export interface FilterRule<FItem = any, FValue = any> extends Record<string, any> {
+export interface FilterRule<FItem = any, FValue = any> {
     id: string;
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
     options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
@@ -89,9 +89,10 @@ export interface HydratedFilterRule<FItem = any, FValue = any> {
     label?: string;
     hidden: boolean;
     debounceDelay?: number;
+    _isHydrated: true;
 }
 
-export interface GroupByRule<FItem = any> extends Record<string, any> {
+export interface GroupByRule<FItem = any> {
     id: string;
     groupFn: FinderPropertySelector<FItem>;
     sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem>>;
@@ -104,7 +105,7 @@ export interface GroupByRule<FItem = any> extends Record<string, any> {
     hidden?: boolean;
 }
 
-export interface SortByRule<FItem = any> extends Record<string, any> {
+export interface SortByRule<FItem = any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
     defaultSortDirection?: "asc" | "desc";
