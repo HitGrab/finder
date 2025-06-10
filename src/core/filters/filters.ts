@@ -55,9 +55,6 @@ class FiltersMixin<FItem> {
                 },
                 initial: { rule, value: previousValue },
             });
-
-            // clear hydrated rules in case something changed.
-            this.#hydratedRules = undefined;
         });
     }
 
@@ -66,6 +63,10 @@ class FiltersMixin<FItem> {
             this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getMeta());
         }
         return this.#hydratedRules;
+    }
+
+    recalculateHydratedRules() {
+        this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getMeta());
     }
 
     getRule(id: string) {
@@ -80,24 +81,22 @@ class FiltersMixin<FItem> {
     #takeHydratedRulesSnapshot(items: FItem[], meta?: FinderMeta) {
         const filterRules = this.#deps.getRules().filter(isFilterRule);
         return filterRules.map((rule) => {
-            if (typeof rule.options === "function") {
-                return {
-                    ...rule,
+            // trigger option generator if found
+            let hydratedOptions = typeof rule.options === "function" ? rule.options(items, meta) : rule.options;
+            return {
+                ...rule,
 
-                    // trigger option generator
-                    options: rule.options(items, meta),
+                options: hydratedOptions,
 
-                    // reduce uncertainty
-                    multiple: !!rule.multiple,
-                    required: !!rule.required,
-                    isBoolean: !!rule.isBoolean,
-                    hidden: !!rule.hidden,
+                // reduce uncertainty
+                multiple: !!rule.multiple,
+                required: !!rule.required,
+                isBoolean: !!rule.isBoolean,
+                hidden: !!rule.hidden,
 
-                    // brand it
-                    _isHydrated: true,
-                } as HydratedFilterRule<FItem>;
-            }
-            return { ...rule, _isHydrated: true } as HydratedFilterRule<FItem>;
+                // brand it
+                _isHydrated: true,
+            } as HydratedFilterRule<FItem>;
         });
     }
 
@@ -193,6 +192,11 @@ class FiltersMixin<FItem> {
     }
 
     test(options: FilterTestOptions) {
+        // If no data is available, we cannot perform any tests.
+        if (this.#deps.isLoading()) {
+            return [];
+        }
+
         const optionsWithDefaults = { rules: [], meta: this.#deps.getMeta(), values: {}, ...options };
 
         // Additive tests use the current values of the filters.
@@ -206,6 +210,11 @@ class FiltersMixin<FItem> {
     }
 
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
+        // If no data is available, we cannot perform any tests.
+        if (this.#deps.isLoading()) {
+            return [];
+        }
+
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -219,6 +228,11 @@ class FiltersMixin<FItem> {
     }
 
     testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions) {
+        // If no data is available, we cannot perform any tests.
+        if (this.#deps.isLoading()) {
+            return new Map();
+        }
+
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");

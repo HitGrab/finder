@@ -52,8 +52,6 @@ class Finder<FItem> {
 
     #eventEmitter: EventEmitter;
 
-    id = Symbol(`uniqe identifier${random(0, 99)}`);
-
     // Subclasses that extend functionality
     #mixins: {
         search: SearchMixin<FItem>;
@@ -101,6 +99,7 @@ class Finder<FItem> {
             getItems: () => this.items,
             getRules: () => this.#rules,
             getMeta: () => this.#mixins.meta.meta,
+            isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             touch: (event: FinderTouchEvent) => this.#touch(event, true),
             debouncer: new DebounceCallbackRegistry(),
@@ -124,21 +123,24 @@ class Finder<FItem> {
             (event: FinderTouchEvent) => this.#touch(event, true),
         );
 
-        const initPayload: FinderInitEvent = {
-            source: "core",
-            snapshot: this.#takeStateSnapshot(),
-            event: "finder.core.init",
-            timestamp: Date.now(),
-        };
-
-        // Don't trigger any events while any plugin methods trigger
+        // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
+            const initPayload: FinderInitEvent = {
+                source: "core",
+                snapshot: this.#takeStateSnapshot(),
+                event: "finder.core.init",
+                timestamp: Date.now(),
+            };
+
+            // init all plugins
             this.plugins.onInit(initPayload);
+
+            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
+            if (onInit) {
+                onInit(initPayload);
+            }
         });
 
-        if (onInit) {
-            this.#eventEmitter.on("init", onInit);
-        }
         if (onChange) {
             this.#eventEmitter.on("change", onChange);
         }
@@ -147,12 +149,16 @@ class Finder<FItem> {
             this.#eventEmitter.on("first_user_interaction", onFirstUserInteraction);
         }
 
-        // notify external listeners
-        this.#eventEmitter.emit("init", initPayload);
+        if (isLoading) {
+            this.#eventEmitter.on("change.core.setIsLoading", () => {
+                // Some filters may be using option generators, so we re-process all rules once data is available.
+                this.#mixins.filters.recalculateHydratedRules();
+            });
+        }
     }
 
     #touch(touchEvent: FinderTouchEvent, canTriggerUserInteractEvent: boolean) {
-        // some events, like 'loading' or 'disabled', do not count as user interactions.
+        // some touch events, like 'loading' or 'disabled', do not count as user interactions.
         if (canTriggerUserInteractEvent) {
             this.emitFirstUserInteraction();
         }
@@ -161,13 +167,12 @@ class Finder<FItem> {
         this.#snapshot = undefined;
         this.updatedAt = Date.now();
 
-        const stateSnapshot = this.#takeStateSnapshot();
-
-        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: stateSnapshot, timestamp: Date.now() };
+        // transform the internal touch event to a public change event
+        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
 
         // emit the change event for the specific mixin action
         // e.g: 'change.filters.set'
-        this.#eventEmitter.emit(`change.${touchEvent.event}`, changeEvent);
+        this.#eventEmitter.emit(touchEvent.event, changeEvent);
 
         // emit the change event for the whole mixin
         // e.g: 'change.filters'

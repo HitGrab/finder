@@ -190,7 +190,7 @@ export type FinderTouchSource = "core" | "finder" | "filters" | "groupBy" | "met
 
 export type FinderTouchCallback = (event: FinderTouchEvent) => void;
 /**
- * Internal type for communicating between mixins and core
+ * Internal communication between mixins and core
  */
 export interface FinderTouchEvent {
     source: FinderTouchSource;

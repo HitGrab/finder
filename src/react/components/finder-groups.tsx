@@ -11,6 +11,7 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return cloneElement(renderProp, {
                 groups: finder.matches.groups,
+                selectedItems: finder.selectedItems.items,
                 pagination: finder.pagination,
                 meta: finder.meta.value,
                 rule: finder.groupBy.activeRule,
@@ -19,7 +20,9 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component groups={finder.matches.groups} pagination={finder.pagination} meta={finder.meta.value} rule={finder.groupBy.activeRule} />;
+            return (
+                <Component groups={finder.matches.groups} selectedItems={finder.selectedItems.items} pagination={finder.pagination} meta={finder.meta.value} />
+            );
         }
     }
 

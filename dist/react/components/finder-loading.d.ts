@@ -1,6 +1,7 @@
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactElement } from "react";
+import { FinderBaseComponentProps } from "../types/react-types";
 interface FinderLoadingProps {
-    children: ElementType | ReactNode;
+    children: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
 }
-declare function FinderLoading({ children: renderProp }: FinderLoadingProps): string | number | bigint | true | Iterable<ReactNode> | Promise<string | number | bigint | boolean | import("react").ReactPortal | import("react").ReactElement<unknown, string | import("react").JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | import("react/jsx-runtime").JSX.Element | null;
+declare function FinderLoading({ children: renderProp }: FinderLoadingProps): string | import("react/jsx-runtime").JSX.Element | null;
 export { FinderLoading };

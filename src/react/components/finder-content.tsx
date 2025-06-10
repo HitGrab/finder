@@ -1,16 +1,16 @@
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactElement } from "react";
 import { FinderEmpty } from "./finder-empty";
 import { FinderGroups } from "./finder-groups";
 import { FinderItems } from "./finder-items";
 import { FinderLoading } from "./finder-loading";
 import { FinderNoMatches } from "./finder-no-matches";
-import { FinderGroupsComponentProps, FinderItemsComponentProps } from "../types/react-types";
+import { FinderBaseComponentProps, FinderGroupsComponentProps, FinderItemsComponentProps } from "../types/react-types";
 
 interface FinderContentProps<FItem = any> {
     children: {
-        loading?: ElementType | ReactNode;
-        empty?: ElementType | ReactNode;
-        noMatches?: ElementType | ReactNode;
+        loading?: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
+        empty?: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
+        noMatches?: ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | string;
         items?: ElementType<FinderItemsComponentProps<FItem>>;
         groups?: ElementType<FinderGroupsComponentProps<FItem>>;
     };

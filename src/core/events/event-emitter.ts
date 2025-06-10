@@ -7,8 +7,6 @@ type ListenerObject = Record<string, EventCallback[]>;
  */
 export class EventEmitter {
     #listeners: ListenerObject = {} as ListenerObject;
-    #batchMode: boolean = false;
-    // #batchBucket: { event: T; payload: DiscriminatedPayload<T> }[] = [];
     #disabled: boolean = false;
 
     on(event: string, callback: EventCallback) {
@@ -36,39 +34,8 @@ export class EventEmitter {
         if (this.#disabled) {
             return;
         }
-
-        // if (this.#batchMode) {
-        //     this.#batchBucket.push({ event, payload });
-        //     return;
-        // }
-
         this.#listeners[event]?.forEach((callback) => callback(payload));
     }
-
-    // #setBatchMode(value: boolean) {
-    //     this.#batchMode = value;
-    // }
-
-    // async batch(callback: CallableFunction) {
-    //     this.#setBatchMode(true);
-    //     await callback();
-    //     this.#setBatchMode(false);
-
-    //     if (this.#batchBucket.length > 0) {
-    //         const eventNames = uniq(this.#batchBucket.map(({ event }) => event));
-    //         eventNames.forEach((event) => {
-    //             const matchingEventPayloads = this.#batchBucket.filter((row) => row.event === event).map(({ payload }) => payload);
-    //             const payloadBuckets: Record<string, any[]> = {};
-    //             matchingEventPayloads.forEach((row) => {
-    //                 Object.keys(row).forEach((key) => {
-    //                     payloadBuckets[key] = merge(payloadBuckets[key], row[key]);
-    //                 });
-    //             });
-
-    //             this.emit(event, payloadBuckets);
-    //         });
-    //     }
-    // }
 
     silently(callback: CallableFunction) {
         this.#disabled = true;

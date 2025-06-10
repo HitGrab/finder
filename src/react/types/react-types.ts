@@ -13,14 +13,15 @@ export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, Pro
     controllerRef?: RefObject<FinderCore<FItem> | null>;
 }
 
-export interface FinderItemsComponentProps<FItem> {
-    items: FItem[];
+export interface FinderBaseComponentProps {
     pagination?: ReturnType<typeof paginationInterface>;
     meta?: FinderMeta;
 }
-export interface FinderGroupsComponentProps<FItem> {
+export interface FinderItemsComponentProps<FItem> extends FinderBaseComponentProps {
+    items: FItem[];
+    selectedItems: FItem[];
+}
+export interface FinderGroupsComponentProps<FItem> extends FinderBaseComponentProps {
     groups: FinderResultGroup<FItem>[];
-    pagination?: ReturnType<typeof paginationInterface>;
-    meta?: FinderMeta;
-    rule?: GroupByRule;
+    selectedItems: FItem[];
 }
