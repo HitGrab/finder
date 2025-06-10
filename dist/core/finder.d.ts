@@ -6,7 +6,6 @@ declare class Finder<FItem> {
     isLoading: boolean;
     disabled: boolean;
     updatedAt?: number;
-    id: symbol;
     plugins: PluginMediator<FItem>;
     constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, plugins, onInit, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
     emitFirstUserInteraction(): void;
@@ -27,7 +26,7 @@ declare class Finder<FItem> {
         delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
         test: (options: import("../types").FilterTestOptions) => FItem[];
         testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => FItem[];
-        testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<boolean | import("..").FilterOption<any>, FItem[]>;
+        testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
         value: Record<string, any>;
         filters: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<FItem, any>[];
@@ -44,7 +43,8 @@ declare class Finder<FItem> {
         toggleSortDirection: () => void;
         reset(): void;
         activeRule: import("..").SortByRule<unknown> | undefined;
-        sortDirection: string | undefined;
+        sortDirection: string;
+        userHasSetSortDirection: boolean;
         rules: import("..").SortByRule<unknown>[];
     };
     get groupBy(): {
@@ -91,6 +91,7 @@ declare class Finder<FItem> {
         on: (event: FinderChangeEventName, callback: EventCallback) => void;
         off: (event: FinderChangeEventName, callback: EventCallback) => void;
     };
+    get state(): "loading" | "empty" | "groups" | "noMatches" | "items";
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;

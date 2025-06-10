@@ -12,6 +12,7 @@ export interface EventPayload {
 export type DiscriminatedPayload<P extends EventPayload, T extends string> = Extract<P, { event: `${T}` }>["payload"];
 
 export interface MixinInjectedDependencies<FItem> {
+    isLoading: () => boolean;
     isDisabled: () => boolean;
     getRules: () => FinderRule[];
     touch: FinderTouchCallback;

@@ -1,22 +1,20 @@
-import { ElementType, isValidElement, ReactNode } from "react";
+import { cloneElement, isValidElement } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
+import { FinderBaseRenderProp } from "../types/react-types";
 
 interface FinderNoMatchesProps {
-    children: ElementType | ReactNode;
+    children: FinderBaseRenderProp;
 }
 function FinderNoMatches({ children: renderProp }: FinderNoMatchesProps) {
     const finder = useFinderContext();
-    const isReady = finder.isLoading === false;
-    const hasItems = Array.isArray(finder.items) && finder.items.length > 0;
-    const hasNoMatches = Array.isArray(finder.matches.items) && finder.matches.items.length === 0;
-    if (isReady && hasItems && hasNoMatches && renderProp) {
+    if (finder.state === "noMatches" && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return renderProp;
+            return cloneElement(renderProp, { pagination: finder.pagination, meta: finder.meta.value });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component />;
+            return <Component pagination={finder.pagination} meta={finder.meta.value} />;
         }
 
         return renderProp;

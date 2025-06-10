@@ -183,14 +183,14 @@ export interface FinderInitEvent extends FinderBaseEvent {
 }
 export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
     source: "core";
-    event: "finder.core.first-user-interaction";
+    event: "finder.core.firstUserInteraction";
 }
 
 export type FinderTouchSource = "core" | "finder" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
 
 export type FinderTouchCallback = (event: FinderTouchEvent) => void;
 /**
- * Internal type for communicating between mixins and core
+ * Internal communication between mixins and core
  */
 export interface FinderTouchEvent {
     source: FinderTouchSource;

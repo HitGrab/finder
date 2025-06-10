@@ -27,7 +27,11 @@ function App() {
     const ref = useFinderRef();
     const [eventStream, setEventStream] = useState<FinderEvent[]>([]);
     const handleEventStream = useCallback((event: FinderEvent) => {
+        // This defer hack is to get around React rendering JSX to two elements at once.
         defer(() => {
+            if (event.event === "finder.core.init") {
+                return setEventStream([event]);
+            }
             setEventStream((initialEvents) => [...initialEvents, event]);
         });
     }, []);

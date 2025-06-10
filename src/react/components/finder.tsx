@@ -1,7 +1,7 @@
 import { useImperativeHandle } from "react";
 import { useFinder } from "../hooks/use-finder";
 import { FinderContext } from "../providers/finder-context";
-import { FinderProps } from "../..";
+import { FinderProps } from "../types/react-types";
 
 function Finder<FItem = any>({
     items,

@@ -7,6 +7,7 @@ function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
         sortDirection: mixin.sortDirection,
+        userHasSetSortDirection: mixin.userHasSetSortDirection,
         rules: mixin.rules,
     };
 }

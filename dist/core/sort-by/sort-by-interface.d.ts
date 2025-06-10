@@ -4,7 +4,8 @@ import { SortByMixin } from "./sort-by";
  */
 declare function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>): {
     activeRule: import("../..").SortByRule<unknown> | undefined;
-    sortDirection: string | undefined;
+    sortDirection: string;
+    userHasSetSortDirection: boolean;
     rules: import("../..").SortByRule<unknown>[];
 };
 declare function sortByInterface<FItem>(mixin: SortByMixin<FItem>): {
@@ -14,7 +15,8 @@ declare function sortByInterface<FItem>(mixin: SortByMixin<FItem>): {
     toggleSortDirection: () => void;
     reset(): void;
     activeRule: import("../..").SortByRule<unknown> | undefined;
-    sortDirection: string | undefined;
+    sortDirection: string;
+    userHasSetSortDirection: boolean;
     rules: import("../..").SortByRule<unknown>[];
 };
 export { readonlySortByInterface, sortByInterface };

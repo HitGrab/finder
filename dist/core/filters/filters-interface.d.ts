@@ -20,7 +20,7 @@ declare function filtersInterface<FItem>(mixin: FiltersMixin<FItem>): {
     delete: (identifier: string | FilterRule | HydratedFilterRule) => void;
     test: (options: import("../../types").FilterTestOptions) => FItem[];
     testRule: ({ rule: identifier, value, ...options }: import("../../types").FilterTestRuleOptions) => FItem[];
-    testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<boolean | import("../..").FilterOption<any>, FItem[]>;
+    testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<any, any>;
     value: Record<string, any>;
     filters: Record<string, any>;
     activeRules: HydratedFilterRule<FItem, any>[];
