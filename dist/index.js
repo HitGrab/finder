@@ -5047,13 +5047,13 @@ function Vv({ children: a }) {
     if (typeof a == "object" && or(a))
       return ar(a, {
         items: f.matches.items,
-        selectedItems: f.selectedItems.items,
+        selectedItems: f.selectedItems,
         pagination: f.pagination,
-        meta: f.meta.value
+        meta: f.meta
       });
     if (typeof a == "function") {
       const i = a;
-      return /* @__PURE__ */ ct.jsx(i, { items: f.matches.items, selectedItems: f.selectedItems.items, pagination: f.pagination, meta: f.meta.value });
+      return /* @__PURE__ */ ct.jsx(i, { items: f.matches.items, selectedItems: f.selectedItems, pagination: f.pagination, meta: f.meta });
     }
   }
   return null;
@@ -5107,10 +5107,10 @@ function Qv({ children: a }) {
   const f = lr();
   if (f.state === "empty" && a) {
     if (typeof a == "object" && or(a))
-      return ar(a, { pagination: f.pagination, meta: f.meta.value });
+      return ar(a, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     if (typeof a == "function") {
       const i = a;
-      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta.value });
+      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     }
     return a;
   }
@@ -5122,14 +5122,14 @@ function jv({ children: a }) {
     if (typeof a == "object" && or(a))
       return ar(a, {
         groups: f.matches.groups,
-        selectedItems: f.selectedItems.items,
+        rule: f.groupBy.activeRule,
+        selectedItems: f.selectedItems,
         pagination: f.pagination,
-        meta: f.meta.value,
-        rule: f.groupBy.activeRule
+        meta: f.meta
       });
     if (typeof a == "function") {
       const i = a;
-      return /* @__PURE__ */ ct.jsx(i, { groups: f.matches.groups, selectedItems: f.selectedItems.items, pagination: f.pagination, meta: f.meta.value });
+      return /* @__PURE__ */ ct.jsx(i, { groups: f.matches.groups, selectedItems: f.selectedItems, pagination: f.pagination, meta: f.meta });
     }
   }
   return null;
@@ -5138,10 +5138,10 @@ function e_({ children: a }) {
   const f = lr();
   if (f.state === "loading" && a) {
     if (typeof a == "object" && a !== null && or(a))
-      return ar(a, { pagination: f.pagination, meta: f.meta.value });
+      return ar(a, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     if (typeof a == "function") {
       const i = a;
-      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta.value });
+      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     }
     return a;
   }
@@ -5151,10 +5151,10 @@ function t_({ children: a }) {
   const f = lr();
   if (f.state === "noMatches" && a) {
     if (typeof a == "object" && or(a))
-      return ar(a, { pagination: f.pagination, meta: f.meta.value });
+      return ar(a, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     if (typeof a == "function") {
       const i = a;
-      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta.value });
+      return /* @__PURE__ */ ct.jsx(i, { pagination: f.pagination, meta: f.meta, selectedItems: f.selectedItems });
     }
     return a;
   }
