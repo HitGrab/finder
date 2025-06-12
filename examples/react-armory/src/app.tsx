@@ -8,32 +8,25 @@ import {
     groupByRule,
     searchRule,
     sortByRule,
-    useFinderRef,
 } from "@hitgrab/finder";
 import "./global.css";
 import { useGetItems } from "./hooks/use-get-items";
-import { capitalize, defer, range } from "lodash";
+import { capitalize, range } from "lodash";
 import { SearchInput } from "./components/search-input";
 import { QuantityFilter } from "./components/quantity-filter";
 import { EquipmentCard, EquipmentCardSkeleton } from "./components/equipment-card";
-import { EventStream } from "./components/event-stream";
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { RarityFilter } from "./components/rarity-filter";
 import { SortByDropdown } from "./components/sort-by-dropdown";
 import { GroupByDropdown } from "./components/group-by-dropdown";
+import { appendEventString } from "./utils/event-stream-util";
 
 function App() {
     const { data, isPending } = useGetItems();
-    const ref = useFinderRef();
-    const [eventStream, setEventStream] = useState<FinderEvent[]>([]);
+
+    // to prevent a React error with multiple points of the virtual dom being updated simultaneously, we leave React to update the DOM directly.
     const handleEventStream = useCallback((event: FinderEvent) => {
-        // This defer hack is to get around React rendering JSX to two elements at once.
-        defer(() => {
-            if (event.event === "finder.core.init") {
-                return setEventStream([event]);
-            }
-            setEventStream((initialEvents) => [...initialEvents, event]);
-        });
+        appendEventString(event);
     }, []);
 
     const rules = finderRuleset<Equipment>([
@@ -69,7 +62,6 @@ function App() {
             items={data}
             rules={rules}
             isLoading={isPending}
-            controllerRef={ref}
             onInit={handleEventStream}
             onFirstUserInteraction={handleEventStream}
             onChange={handleEventStream}
@@ -88,31 +80,29 @@ function App() {
                             loading: range(0, 12).map((index) => <EquipmentCardSkeleton key={index} />),
                             empty: "No items in list",
                             noMatches: "No matches found.",
-                            items: ({ items }) => {
+                            items: ({ items, selectedItems }) => {
                                 return items.map((item: Equipment) => {
-                                    const isSelected = !!ref.current?.selectedItems.isSelected(item);
                                     return (
                                         <EquipmentCard
                                             item={item}
-                                            isSelected={isSelected}
-                                            onSelect={() => ref.current?.selectedItems.toggleOnly(item)}
+                                            isSelected={selectedItems.isSelected(item)}
+                                            onSelect={() => selectedItems.toggleOnly(item)}
                                             key={item.name}
                                         />
                                     );
                                 });
                             },
-                            groups: ({ groups }) => {
+                            groups: ({ groups, selectedItems }) => {
                                 return groups.map(({ id, items }) => {
                                     return (
                                         <div className="group" key={id}>
                                             <div className="title">{capitalize(id)}</div>
                                             {items.map((item: Equipment) => {
-                                                const isSelected = !!ref.current?.selectedItems.isSelected(item);
                                                 return (
                                                     <EquipmentCard
                                                         item={item}
-                                                        isSelected={isSelected}
-                                                        onSelect={() => ref.current?.selectedItems.toggleOnly(item)}
+                                                        isSelected={selectedItems.isSelected(item)}
+                                                        onSelect={() => selectedItems.toggleOnly(item)}
                                                         key={item.name}
                                                     />
                                                 );
@@ -126,7 +116,6 @@ function App() {
                 </div>
             </div>
             Assets from https://emblemadept.itch.io/pixel-armor-pack-3-greece-rome
-            <EventStream stream={eventStream} />
         </Finder>
     );
 }

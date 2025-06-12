@@ -9,12 +9,12 @@ function FinderLoading({ children: renderProp }: FinderLoadingProps) {
     const finder = useFinderContext();
     if (finder.state === "loading" && renderProp) {
         if (typeof renderProp === "object" && renderProp !== null && isValidElement(renderProp)) {
-            return cloneElement(renderProp, { pagination: finder.pagination, meta: finder.meta.value });
+            return cloneElement(renderProp, { pagination: finder.pagination, meta: finder.meta, selectedItems: finder.selectedItems });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component pagination={finder.pagination} meta={finder.meta.value} />;
+            return <Component pagination={finder.pagination} meta={finder.meta} selectedItems={finder.selectedItems} />;
         }
 
         return renderProp;

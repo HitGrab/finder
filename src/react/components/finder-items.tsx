@@ -11,17 +11,15 @@ function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return cloneElement(renderProp, {
                 items: finder.matches.items,
-                selectedItems: finder.selectedItems.items,
+                selectedItems: finder.selectedItems,
                 pagination: finder.pagination,
-                meta: finder.meta.value,
+                meta: finder.meta,
             });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return (
-                <Component items={finder.matches.items} selectedItems={finder.selectedItems.items} pagination={finder.pagination} meta={finder.meta.value} />
-            );
+            return <Component items={finder.matches.items} selectedItems={finder.selectedItems} pagination={finder.pagination} meta={finder.meta} />;
         }
     }
     return null;
