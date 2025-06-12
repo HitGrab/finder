@@ -145,7 +145,7 @@ html {
     }
 }
 
-.eventContainer {
+#eventStream {
     position: sticky;
     bottom: 10px;
     margin: 10px;
@@ -163,35 +163,35 @@ html {
 }
 
 .event {
-    &:last-child {
-        .eventProps {
-            color: var(--color);
-        }
-
-        b {
-            color: var(--color-bright);
-        }
-    }
-
     button {
         all: unset;
         cursor: pointer;
         font-weight: bold;
     }
-}
 
-.eventProps {
-    display: grid;
-    grid-template-columns: min-content 1fr;
-    gap: 5px 20px;
-    font-size: 80%;
-    text-wrap: pre-line;
-    margin-left: 20px;
-    margin-top: 5px;
-    color: var(--color-dark);
-    transition: all 0.1s ease-out;
+    .eventProps {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+        gap: 5px 20px;
+        font-size: 80%;
+        text-wrap: pre-line;
+        margin-left: 20px;
+        margin-top: 5px;
+        color: var(--color-dark);
+        transition: all 0.1s ease-out;
+    }
 
-    &:hover {
+    &:hover .eventProps {
         color: var(--color);
+    }
+
+    &:not(.expanded) {
+        button::after {
+            content: " (...)";
+        }
+
+        .eventProps {
+            display: none;
+        }
     }
 }
