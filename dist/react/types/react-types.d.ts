@@ -12,8 +12,8 @@ export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, Pro
     controllerRef?: RefObject<FinderCore<FItem> | null>;
 }
 export interface FinderBaseComponentProps {
-    pagination?: ReturnType<typeof paginationInterface>;
-    meta?: ReturnType<typeof metaInterface>;
+    pagination: ReturnType<typeof paginationInterface>;
+    meta: ReturnType<typeof metaInterface>;
     selectedItems: ReturnType<typeof selectedItemsInterface>;
 }
 export interface FinderItemsComponentProps<FItem> extends FinderBaseComponentProps {
