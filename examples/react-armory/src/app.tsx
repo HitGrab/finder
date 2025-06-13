@@ -65,6 +65,7 @@ function App() {
             onInit={handleEventStream}
             onFirstUserInteraction={handleEventStream}
             onChange={handleEventStream}
+            onReady={handleEventStream}
         >
             <div className="layout">
                 <div className="controls">

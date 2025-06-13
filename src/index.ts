@@ -1,3 +1,42 @@
+/** Vanilla JS library */
+export { Finder as FinderCore } from "./core/finder";
+export { FinderPlugin } from "./core/plugins/plugin-super-class";
+
+// Utility methods for enforcing rule shape
+export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
+
+// String comparison utilities
+export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
+
+export type {
+    FinderSnapshot,
+    FinderMeta,
+
+    // rules
+    FinderRule,
+    SearchRule,
+    FilterRule,
+    HydratedFilterRule,
+    SortByRule,
+    GroupByRule,
+    FinderResultGroup,
+    FilterOption,
+
+    // events
+    FinderEvent,
+    FinderInitEvent,
+    FinderReadyEvent,
+    FinderFirstUserInteractionEvent,
+    FinderChangeEvent,
+
+    // plugins
+    FinderPluginFn,
+    FinderPluginInterface,
+} from "./types";
+
+/**
+ * React hooks and components
+ */
 export { useFinder } from "./react/hooks/use-finder";
 export { useFinderContext } from "./react/hooks/use-finder-context";
 export { FinderItems } from "./react/components/finder-items";
@@ -8,29 +47,5 @@ export { FinderLoading } from "./react/components/finder-loading";
 export { FinderNoMatches } from "./react/components/finder-no-matches";
 export { FinderContent } from "./react/components/finder-content";
 export { useFinderRef } from "./react/hooks/use-finder-ref";
-export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
-export { Finder as FinderCore } from "./core/finder";
-export { FinderPlugin } from "./core/plugins/plugin-super-class";
-
-export type {
-    FinderPluginFn,
-    FinderPluginInterface,
-    FinderSnapshot,
-    FinderRule,
-    SearchRule,
-    FilterRule,
-    HydratedFilterRule,
-    SortByRule,
-    GroupByRule,
-    FinderResultGroup,
-    FilterOption,
-    FinderEvent,
-    FinderChangeEvent,
-    FinderInitEvent,
-    FinderFirstUserInteractionEvent,
-    FinderMeta,
-} from "./types";
 
 export type { FinderProps } from "./react/types/react-types";
-
-export * from "./core/utils/rule-type-enforcers";

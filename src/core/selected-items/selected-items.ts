@@ -45,9 +45,13 @@ class SelectedItemsMixin<FItem> {
         if (this.deps.isDisabled()) {
             return;
         }
-        if (this.maxSelectedItems !== undefined && this.selectedItems.length >= this.maxSelectedItems) {
-            throw new Error("Finder cannot select this item without exceeding the selected items limit.");
+
+        const selectionLimitReached = this.maxSelectedItems !== undefined && this.selectedItems.length >= this.maxSelectedItems;
+        const isAlreadySelected = this.selectedItems.includes(item);
+        if (selectionLimitReached || isAlreadySelected) {
+            return;
         }
+
         this.selectedItems = [...this.selectedItems.filter((row) => item !== row), item];
         this.deps.touch({
             source: "selectedItems",
@@ -65,13 +69,14 @@ class SelectedItemsMixin<FItem> {
             return;
         }
 
-        this.selectedItems = [item];
-        this.deps.touch({
-            source: "selectedItems",
-            event: "change.selectedItems.select",
-            current: { item },
-            initial: { item },
-        });
+        const isAlreadySelected = this.selectedItems.includes(item);
+        if (isAlreadySelected) {
+            return;
+        }
+
+        // silently empty out all other selected items
+        this.selectedItems = [];
+        this.select(item);
     }
 
     toggle(item: FItem) {

@@ -42,6 +42,9 @@ export interface FinderConstructorOptions<FItem> {
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;
 
+    // A valid items array was received
+    onReady?: FinderOnReadyCallback;
+
     // Triggered the first time a user interacts with the component.
     onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
 
@@ -167,27 +170,32 @@ export interface FinderSnapshot<FItem> {
     updatedAt: number | undefined;
 }
 
-export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderChangeEvent;
+export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderReadyEvent | FinderChangeEvent;
 
 type FinderBaseEvent = {
     source: string;
-    event: string;
+    event: FinderEventName;
     snapshot: FinderSnapshot<any>;
     timestamp: number;
 };
 export type FinderOnInitCallback = (event: FinderInitEvent) => void;
+export type FinderOnReadyCallback = (event: FinderReadyEvent) => void;
 export type FinderOnFirstUserInteractCallback = (event: FinderFirstUserInteractionEvent) => void;
 
 export interface FinderInitEvent extends FinderBaseEvent {
     source: "core";
-    event: "finder.core.init";
+    event: "init";
 }
 export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
     source: "core";
-    event: "finder.core.firstUserInteraction";
+    event: "firstUserInteraction";
+}
+export interface FinderReadyEvent extends FinderBaseEvent {
+    source: "core";
+    event: "ready";
 }
 
-export type FinderTouchSource = "core" | "finder" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
 
 export type FinderTouchCallback = (event: FinderTouchEvent) => void;
 /**
@@ -195,7 +203,7 @@ export type FinderTouchCallback = (event: FinderTouchEvent) => void;
  */
 export interface FinderTouchEvent {
     source: FinderTouchSource;
-    event: FinderChangeEventName;
+    event: FinderEventName;
     current: any;
     initial: any;
 }
@@ -205,8 +213,15 @@ export interface FinderTouchEvent {
  */
 export type FinderChangeEvent = FinderTouchEvent & FinderBaseEvent;
 
-export type FinderChangeEventName =
+export type FinderEventName =
+    | "init"
+    | "firstUserInteraction"
+    | "ready"
     | "change"
+    | "change.core"
+    | "change.core.setIsLoading"
+    | "change.core.setIsDisabled"
+    | "change.core.setItems"
     | `change.filters`
     | "change.filters.set"
     | `change.groupBy`
@@ -233,9 +248,7 @@ export type FinderChangeEventName =
     | "change.sortBy.set"
     | "change.sortBy.setSortDirection"
     | `change.plugin`
-    | `change.plugin.${string}`
-    | "change.core.setIsLoading"
-    | "change.core.setIsDisabled";
+    | `change.plugin.${string}`;
 
 export type FinderOnChangeCallback = (event: FinderChangeEvent) => void;
 
@@ -244,7 +257,5 @@ export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) =
 export interface FinderPluginInterface<FItem = any> {
     id: string;
     register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
-    onInit?: FinderOnInitCallback;
-    onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
     [k: string]: any;
 }
