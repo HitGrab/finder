@@ -16,10 +16,10 @@ export interface FinderBaseComponentProps {
     meta: ReturnType<typeof metaInterface>;
     selectedItems: ReturnType<typeof selectedItemsInterface>;
 }
-export interface FinderItemsComponentProps<FItem> extends FinderBaseComponentProps {
+export interface FinderItemsComponentProps<FItem = any> extends FinderBaseComponentProps {
     items: FItem[];
 }
-export interface FinderGroupsComponentProps<FItem> extends FinderBaseComponentProps {
+export interface FinderGroupsComponentProps<FItem = any> extends FinderBaseComponentProps {
     groups: FinderResultGroup<FItem>[];
 }
 export type FinderBaseRenderProp = ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | Iterable<ReactNode>;
