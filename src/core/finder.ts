@@ -7,9 +7,10 @@ import {
     FinderSnapshot,
     FinderChangeEvent,
     FinderTouchEvent,
-    FinderChangeEventName,
+    FinderEventName,
     FinderInitEvent,
     FinderFirstUserInteractionEvent,
+    FinderReadyEvent,
 } from "../types";
 import { isValidRuleset } from "./utils/rule-utils";
 import { FiltersMixin } from "./filters/filters";
@@ -39,6 +40,8 @@ class Finder<FItem> {
 
     #snapshot?: MatchesSnapshot<FItem> = undefined;
 
+    isReady: boolean = false;
+
     isLoading: boolean;
 
     disabled: boolean;
@@ -50,7 +53,7 @@ class Finder<FItem> {
     // If true, the next call to findMatches() will force a render.
     #isTouched = false;
 
-    #eventEmitter: EventEmitter;
+    #eventEmitter: EventEmitter<FinderEventName>;
 
     // Subclasses that extend functionality
     #mixins: {
@@ -84,6 +87,7 @@ class Finder<FItem> {
             maxSelectedItems,
             plugins,
             onInit,
+            onReady,
             onFirstUserInteraction,
             onChange,
         }: FinderConstructorOptions<FItem>,
@@ -101,7 +105,7 @@ class Finder<FItem> {
             getMeta: () => this.#mixins.meta.meta,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
-            touch: (event: FinderTouchEvent) => this.#touch(event, true),
+            touch: (event: FinderTouchEvent) => this.#touch(event),
             debouncer: new DebounceCallbackRegistry(),
         };
 
@@ -120,15 +124,15 @@ class Finder<FItem> {
         this.plugins = new PluginMediator(
             plugins || [],
             () => this,
-            (event: FinderTouchEvent) => this.#touch(event, true),
+            (event: FinderTouchEvent) => this.#touch(event),
         );
 
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
             const initPayload: FinderInitEvent = {
                 source: "core",
+                event: "init",
                 snapshot: this.#takeStateSnapshot(),
-                event: "finder.core.init",
                 timestamp: Date.now(),
             };
 
@@ -146,22 +150,39 @@ class Finder<FItem> {
         }
 
         if (onFirstUserInteraction) {
-            this.#eventEmitter.on("first_user_interaction", onFirstUserInteraction);
+            this.#eventEmitter.on("firstUserInteraction", onFirstUserInteraction);
         }
 
-        if (isLoading) {
-            this.#eventEmitter.on("change.core.setIsLoading", () => {
-                // Some filters may be using option generators, so we re-process all rules once data is available.
+        this.isReady = isLoading === false && Array.isArray(items) && items.length > 0;
+        if (onReady) {
+            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
+            if (this.isReady) {
+                const readyPayload: FinderReadyEvent = {
+                    source: "core",
+                    event: "ready",
+                    snapshot: this.#takeStateSnapshot(),
+                    timestamp: Date.now(),
+                };
+                onReady(readyPayload);
+            }
+        }
+
+        if (this.isReady === false) {
+            this.#eventEmitter.on("ready", (payload) => {
+                // Some filters may be using option generator functions, so we re-process all rules once data is available.
                 this.#mixins.filters.recalculateHydratedRules();
+
+                onReady && onReady(payload);
             });
         }
     }
 
-    #touch(touchEvent: FinderTouchEvent, canTriggerUserInteractEvent: boolean) {
-        // some touch events, like 'loading' or 'disabled', do not count as user interactions.
-        if (canTriggerUserInteractEvent) {
-            this.emitFirstUserInteraction();
-        }
+    /**
+     * Changes that reflect a user interaction.
+     * e.g: entering a search term or selecting a filter.
+     */
+    #touch(touchEvent: FinderTouchEvent) {
+        this.emitFirstUserInteraction();
 
         this.#isTouched = true;
         this.#snapshot = undefined;
@@ -183,22 +204,43 @@ class Finder<FItem> {
         this.#eventEmitter.emit("change", changeEvent);
     }
 
+    /** Changes that do not reflect a user interaction  */
+    #systemTouch(touchEvent: FinderTouchEvent) {
+        this.#isTouched = true;
+        this.#snapshot = undefined;
+        this.updatedAt = Date.now();
+
+        // transform the internal touch event to a public change event
+        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
+        this.#eventEmitter.emit(touchEvent.event, changeEvent);
+    }
+
     emitFirstUserInteraction() {
         if (this.#hasEmittedFirstUserInteraction === false) {
             this.#hasEmittedFirstUserInteraction = true;
 
             const payload: FinderFirstUserInteractionEvent = {
                 source: "core",
-                event: "finder.core.firstUserInteraction",
+                event: "firstUserInteraction",
                 snapshot: this.#takeStateSnapshot(),
                 timestamp: Date.now(),
             };
 
-            // trigger all plugins
-            this.plugins.onFirstUserInteraction(payload);
-
             // emit the public-facing change event
-            this.#eventEmitter.emit("first_user_interaction", payload);
+            this.#eventEmitter.emit("firstUserInteraction", payload);
+        }
+    }
+
+    #emitReady() {
+        if (this.isReady === false) {
+            this.isReady = true;
+            const readyPayload: FinderReadyEvent = {
+                source: "core",
+                event: "ready",
+                snapshot: this.#takeStateSnapshot(),
+                timestamp: Date.now(),
+            };
+            this.#eventEmitter.emit("ready", readyPayload);
         }
     }
 
@@ -293,8 +335,8 @@ class Finder<FItem> {
 
     get events() {
         return {
-            on: (event: FinderChangeEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
-            off: (event: FinderChangeEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
+            on: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
+            off: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
         };
     }
 
@@ -306,40 +348,40 @@ class Finder<FItem> {
             return "empty";
         }
         const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
-        if (hasGroupByRule) {
-            if (Array.isArray(this.matches.groups) && this.matches.groups.length > 0) {
-                return "groups";
-            }
-            return "noMatches";
+        if (hasGroupByRule && Array.isArray(this.matches.groups) && this.matches.groups.length > 0) {
+            return "groups";
         }
 
-        if (Array.isArray(this.matches.items) && this.matches.items.length > 0) {
+        if (hasGroupByRule === false && Array.isArray(this.matches.items) && this.matches.items.length > 0) {
             return "items";
         }
+
         return "noMatches";
     }
 
     setItems(items: FItem[] | null | undefined) {
         if (isEqual(items, this.#items) === false) {
+            const previousValue = this.#items;
             this.#items = items;
-            this.#isTouched = true;
+            this.#systemTouch({ source: "core", event: "change.core.setItems", current: items, initial: previousValue });
         }
     }
 
     setIsLoading(value?: boolean) {
         if (!!value !== this.isLoading) {
-            const previousValue = this.isLoading;
+            const previousValue = !!this.isLoading;
             this.isLoading = !!value;
-            this.#isTouched = true;
-            this.#touch({ source: "finder", event: "change.core.setIsLoading", current: !!value, initial: previousValue }, false);
+            this.#systemTouch({ source: "core", event: "change.core.setIsLoading", current: !!value, initial: previousValue });
+            if (this.isLoading === false) {
+                this.#emitReady();
+            }
         }
     }
     setIsDisabled(value?: boolean) {
         if (!!value !== this.disabled) {
             const previousValue = this.disabled;
             this.disabled = !!value;
-            this.#isTouched = true;
-            this.#touch({ source: "finder", event: "change.core.setIsDisabled", current: !!value, initial: previousValue }, false);
+            this.#systemTouch({ source: "core", event: "change.core.setIsDisabled", current: !!value, initial: previousValue });
         }
     }
 }

@@ -5,18 +5,18 @@ type ListenerObject = Record<string, EventCallback[]>;
 /**
  * A barebones event emitter
  */
-export class EventEmitter {
+export class EventEmitter<EventNames extends string> {
     #listeners: ListenerObject = {} as ListenerObject;
     #disabled: boolean = false;
 
-    on(event: string, callback: EventCallback) {
+    on(event: EventNames, callback: EventCallback) {
         if (this.#listeners[event] === undefined) {
             this.#listeners[event] = [];
         }
         this.#listeners[event].push(callback);
     }
 
-    off(event: string, callback: EventCallback) {
+    off(event: EventNames, callback: EventCallback) {
         if (this.#listeners[event] === undefined) {
             return;
         }
@@ -30,7 +30,7 @@ export class EventEmitter {
         });
     }
 
-    emit(event: string, payload?: any) {
+    emit(event: EventNames, payload?: any) {
         if (this.#disabled) {
             return;
         }

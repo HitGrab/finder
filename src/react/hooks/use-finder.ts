@@ -24,8 +24,9 @@ function useFinder<FItem>(
         requireGroup,
         maxSelectedItems,
         onInit,
-        onChange,
+        onReady,
         onFirstUserInteraction,
+        onChange,
     }: FinderConstructorOptions<FItem>,
 ): FinderCore<FItem> {
     const [instance] = useState(
@@ -47,8 +48,9 @@ function useFinder<FItem>(
                 plugins,
                 requireGroup,
                 onInit,
-                onChange,
+                onReady,
                 onFirstUserInteraction,
+                onChange,
             }),
     );
 

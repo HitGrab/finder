@@ -6,6 +6,11 @@ export function appendEventString(event: FinderEvent) {
         return;
     }
 
+    // Strictmode will render the init event twice, so we clear the first instance.
+    if (event.event === "init") {
+        container.innerHTML = "";
+    }
+
     const date = new Date(event.timestamp).toLocaleString("en-GB", { timeZone: "UTC" });
 
     container.innerHTML += `

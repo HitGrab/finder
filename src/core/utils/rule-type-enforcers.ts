@@ -1,13 +1,6 @@
 import { FinderConstructorOptions, SearchRule, FilterRule, SortByRule, GroupByRule } from "../../types";
 
 /**
- * Enforce constructor shape for a Finder Options param.
- */
-export function finderOptions<FItem>(options: FinderConstructorOptions<FItem>) {
-    return options;
-}
-
-/**
  * Enforce structure for an array of rule of mixed types.
  */
 export function finderRuleset<FItem>(rules: (SearchRule<FItem> | FilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>)[]) {
