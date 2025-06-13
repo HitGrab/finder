@@ -11,15 +11,15 @@ export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, Pro
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderCore<FItem> | null>;
 }
-export interface FinderBaseComponentProps {
+export interface FinderContentComponentProps {
     pagination: ReturnType<typeof paginationInterface>;
     meta: ReturnType<typeof metaInterface>;
     selectedItems: ReturnType<typeof selectedItemsInterface>;
 }
-export interface FinderItemsComponentProps<FItem = any> extends FinderBaseComponentProps {
+export interface FinderItemsComponentProps<FItem> extends FinderContentComponentProps {
     items: FItem[];
 }
-export interface FinderGroupsComponentProps<FItem = any> extends FinderBaseComponentProps {
+export interface FinderGroupsComponentProps<FItem> extends FinderContentComponentProps {
     groups: FinderResultGroup<FItem>[];
 }
-export type FinderBaseRenderProp = ElementType<FinderBaseComponentProps> | ReactElement<FinderBaseComponentProps> | Iterable<ReactNode>;
+export type FinderBaseRenderProp = ElementType<FinderContentComponentProps> | ReactElement<FinderContentComponentProps> | Iterable<ReactNode>;
