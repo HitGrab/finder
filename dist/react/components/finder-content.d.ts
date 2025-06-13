@@ -1,5 +1,5 @@
 import { ElementType } from "react";
-import { FinderBaseRenderProp, FinderGroupsComponentProps, FinderItemsComponentProps } from "../types/react-types";
+import { FinderBaseRenderProp, FinderItemsComponentProps, FinderGroupsComponentProps } from "../types/react-types";
 interface FinderContentProps<FItem> {
     children: {
         loading?: FinderBaseRenderProp;

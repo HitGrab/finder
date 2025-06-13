@@ -4,7 +4,7 @@ import { FinderGroups } from "./finder-groups";
 import { FinderItems } from "./finder-items";
 import { FinderLoading } from "./finder-loading";
 import { FinderNoMatches } from "./finder-no-matches";
-import { FinderBaseRenderProp, FinderGroupsComponentProps, FinderItemsComponentProps } from "../types/react-types";
+import { FinderBaseRenderProp, FinderItemsComponentProps, FinderGroupsComponentProps } from "../types/react-types";
 
 interface FinderContentProps<FItem> {
     children: {
