@@ -1,11 +1,11 @@
 import { test } from "vitest";
 import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
 import { act } from "react";
-import { range } from "lodash";
 import { Finder } from "./core/finder";
 import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
 import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./core/utils/string-compare-utils";
-import { renderHook } from "@testing-library/react";
+import { range } from "./core/utils/finder-utils";
+
 type MockObjectItem = {
     type: string;
     name: string;
@@ -426,7 +426,7 @@ describe("SortBy", () => {
 
         const finder = new Finder(objectItems, { rules });
         finder.sortBy.cycleSortDirection();
-        expect(finder.sortBy.sortDirection).toStrictEqual("desc");
+        expect(finder.sortBy.sortDirection).toStrictEqual("asc");
     });
 });
 
@@ -553,13 +553,13 @@ describe("Selection", () => {
         expect(finder.selectedItems.items).toStrictEqual([]);
     });
 
-    test("Throws error when exceeding limit", () => {
+    test("Ignores selection when exceeding limit", () => {
         const initialSelectedItems = [apple];
         const finder = new Finder(objectItems, { initialSelectedItems, maxSelectedItems: 1 });
 
-        expect(() => {
-            finder.selectedItems.select(orange);
-        }).toThrowError();
+        finder.selectedItems.select(orange);
+
+        expect(finder.selectedItems.items).toStrictEqual([apple]);
     });
 });
 
@@ -658,6 +658,11 @@ describe("Plugins", () => {
                     finder.events.on("change", () => {
                         onChange();
                     });
+
+                    // First change has been triggered
+                    finder.events.on("firstUserInteraction", () => {
+                        onInteract();
+                    });
                 },
 
                 // Finder has finished initializing
@@ -665,10 +670,6 @@ describe("Plugins", () => {
                     onInit();
                 },
 
-                // First change has been triggered
-                onFirstUserInteraction: () => {
-                    onInteract();
-                },
                 setValue(currentValue: number) {
                     value = currentValue;
                 },

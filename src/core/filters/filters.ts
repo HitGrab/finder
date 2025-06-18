@@ -1,7 +1,7 @@
-import { uniqBy } from "lodash";
 import { HydratedFilterRule, FilterRule, FinderMeta, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
 import { getRuleFromIdentifier, isFilterRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
+import { simpleUniqBy } from "../utils/finder-utils";
 
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
@@ -201,7 +201,7 @@ class FiltersMixin<FItem> {
 
         // Additive tests use the current values of the filters.
         if (options.isAdditive) {
-            const ruleset = uniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
+            const ruleset = simpleUniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
             const initialValues = { ...this.getFilters(), ...optionsWithDefaults.values };
             return FiltersMixin.process(this.#deps.getItems(), ruleset, initialValues, optionsWithDefaults.meta);
         }

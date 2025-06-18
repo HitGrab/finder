@@ -1,7 +1,8 @@
-import { groupBy, orderBy, Many } from "lodash";
-import { GroupByRule, FinderMeta, FinderResultGroup } from "../../types";
+import { GroupByRule, FinderMeta, FinderResultGroup, SortDirection } from "../../types";
 import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
+import orderBy from "lodash.orderby";
+import groupBy from "lodash.groupby";
 
 type InitialValues = {
     initialGroupBy: string | undefined;
@@ -11,7 +12,7 @@ class GroupByMixin<FItem> {
     #groupBy;
 
     requireGroup;
-    groupIdSortDirection?: string;
+    groupIdSortDirection?: SortDirection;
 
     #deps;
 
@@ -62,7 +63,7 @@ class GroupByMixin<FItem> {
         });
     }
 
-    setGroupIdSortDirection(direction?: string) {
+    setGroupIdSortDirection(direction?: SortDirection) {
         const previousValue = this.groupIdSortDirection;
         this.groupIdSortDirection = direction;
 
@@ -79,7 +80,13 @@ class GroupByMixin<FItem> {
             return [];
         }
 
-        const groupObject = groupBy(items, (item) => this.activeRule?.groupFn(item, meta));
+        const groupObject = groupBy(items, (item) => {
+            const value = this.activeRule?.groupFn(item, meta);
+            if (value === undefined) {
+                throw new Error("groupFn did not return a value.");
+            }
+            return value;
+        });
 
         // transform the object into a sortable array
         const groups = Object.keys(groupObject).map((id) => {
@@ -103,8 +110,8 @@ class GroupByMixin<FItem> {
         }
 
         if (orderByCallbacks.length > 0) {
-            // HACK: Lodash type import isn't great
-            return orderBy(groups, orderByCallbacks, orderSortDirection as Many<boolean | "asc" | "desc">) as FinderResultGroup<FItem>[];
+            const direction = (orderSortDirection ?? "desc") as SortDirection;
+            return orderBy(groups, orderByCallbacks, direction) as FinderResultGroup<FItem>[];
         }
 
         return groups as FinderResultGroup<FItem>[];

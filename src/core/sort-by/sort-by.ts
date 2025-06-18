@@ -1,16 +1,16 @@
-import { Many, orderBy } from "lodash";
-import { SortByRule } from "../../types";
+import { SortByRule, SortDirection } from "../../types";
 import { getRuleFromIdentifier, isSortByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
+import orderBy from "lodash.orderby";
 
 type InitialValues = {
     initialSortBy: string | undefined;
-    initialSortDirection: "asc" | "desc" | undefined;
+    initialSortDirection?: SortDirection;
 };
 class SortByMixin<FItem> {
     #sortBy;
 
-    #sortDirection?: string;
+    #sortDirection?: SortDirection;
 
     #deps;
 
@@ -37,12 +37,11 @@ class SortByMixin<FItem> {
         return this.#sortDirection !== null;
     }
 
-    setSortDirection(incomingSortDirection?: string) {
+    setSortDirection(incomingSortDirection?: SortDirection) {
         if (this.#deps.isDisabled() || !this.activeRule) {
             return;
         }
         const previousValue = this.#sortDirection;
-        // TODO: Should use a type guard here.
         this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
             source: "sortBy",
@@ -52,7 +51,7 @@ class SortByMixin<FItem> {
         });
     }
 
-    set(identifier?: string | SortByRule, incomingSortDirection?: string) {
+    set(identifier?: string | SortByRule, incomingSortDirection?: SortDirection) {
         if (this.#deps.isDisabled() || !this.activeRule) {
             return;
         }
@@ -77,8 +76,7 @@ class SortByMixin<FItem> {
             return items;
         }
 
-        // HACK: Lodash type import isn't great
-        const direction = (this.#sortDirection ?? activeSortByRule.defaultSortDirection) as Many<boolean | "asc" | "desc">;
+        const direction = this.#sortDirection ?? activeSortByRule.defaultSortDirection;
         return orderBy(items, activeSortByRule.sortFn, direction) as FItem[];
     }
 }

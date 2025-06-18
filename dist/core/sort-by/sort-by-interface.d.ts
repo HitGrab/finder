@@ -4,18 +4,18 @@ import { SortByMixin } from "./sort-by";
  */
 declare function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>): {
     activeRule: import("../..").SortByRule<unknown> | undefined;
-    sortDirection: string;
+    sortDirection: import("../../types").SortDirection;
     userHasSetSortDirection: boolean;
     rules: import("../..").SortByRule<unknown>[];
 };
 declare function sortByInterface<FItem>(mixin: SortByMixin<FItem>): {
-    set: (identifier?: string | import("../..").SortByRule, incomingSortDirection?: string) => void;
-    setSortDirection: (incomingSortDirection?: string) => void;
+    set: (identifier?: string | import("../..").SortByRule, incomingSortDirection?: import("../../types").SortDirection) => void;
+    setSortDirection: (incomingSortDirection?: import("../../types").SortDirection) => void;
     cycleSortDirection: () => void;
     toggleSortDirection: () => void;
     reset(): void;
     activeRule: import("../..").SortByRule<unknown> | undefined;
-    sortDirection: string;
+    sortDirection: import("../../types").SortDirection;
     userHasSetSortDirection: boolean;
     rules: import("../..").SortByRule<unknown>[];
 };

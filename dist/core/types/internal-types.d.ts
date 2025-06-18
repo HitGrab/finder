@@ -2,7 +2,7 @@
  * These internal types are not intended for public consumption.
  */
 import { FinderRule, FinderMeta, FinderTouchCallback } from "../../types";
-import { DebounceCallbackRegistry } from "../utils/debounce-callback-registry";
+import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
 export interface EventPayload {
     event: string;
     payload: any;
