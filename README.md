@@ -446,7 +446,7 @@ Props:
 Pro-tips:
 
 - If pagination is enabled, the items and groups components will receive only the current page's slice.
-      </details>
+  </details>
 
 <details>
 <summary><i>&lt;FinderLoading /&gt;</i></summary>
@@ -1003,10 +1003,10 @@ Performs a case-insensitive comparison of needle characters against the haystack
 finderCharacterCompare("e d c b a", "AB    C\nD\r    E"); // true
 ```
 
-### finderCharacterCompare
+### finderSequentialCharacterCompare
 
 ```ts
-finderCharacterCompare(haystack: string, needle: string, aliases?: string[])
+finderSequentialCharacterCompare(haystack: string, needle: string, aliases?: string[])
 ```
 
 Performs a case-insensitive comparison of needle characters against the haystack. The characters can appear in any order.
