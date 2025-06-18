@@ -1,13 +1,51 @@
-export { useFinder } from "./hooks/use-finder";
-export { useFinderContext } from "./hooks/use-finder-context";
-export { FinderItems } from "./components/finder-items";
-export { Finder } from "./components/finder";
-export { FinderEmpty } from "./components/finder-empty";
-export { FinderGroups } from "./components/finder-groups";
-export { FinderLoading } from "./components/finder-loading";
-export { FinderContent } from "./components/finder-content";
-export { useFinderRef } from "./utils/ref-utils";
-export { finderStringCompare } from "./utils/compare-utils";
-export type { FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FinderOption } from "./types";
+/** Vanilla JS library */
+export { Finder as FinderCore } from "./core/finder";
+export { FinderPlugin } from "./core/plugins/plugin-super-class";
 
-export * from "./utils/type-enforcers";
+// Utility methods for enforcing rule shape
+export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
+
+// String comparison utilities
+export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
+
+export type {
+    FinderSnapshot,
+    FinderMeta,
+
+    // rules
+    FinderRule,
+    SearchRule,
+    FilterRule,
+    HydratedFilterRule,
+    SortByRule,
+    GroupByRule,
+    FinderResultGroup,
+    FilterOption,
+
+    // events
+    FinderEvent,
+    FinderInitEvent,
+    FinderReadyEvent,
+    FinderFirstUserInteractionEvent,
+    FinderChangeEvent,
+
+    // plugins
+    FinderPluginFn,
+    FinderPluginInterface,
+} from "./types";
+
+/**
+ * React hooks and components
+ */
+export { useFinder } from "./react/hooks/use-finder";
+export { useFinderContext } from "./react/hooks/use-finder-context";
+export { FinderItems } from "./react/components/finder-items";
+export { Finder } from "./react/components/finder";
+export { FinderEmpty } from "./react/components/finder-empty";
+export { FinderGroups } from "./react/components/finder-groups";
+export { FinderLoading } from "./react/components/finder-loading";
+export { FinderNoMatches } from "./react/components/finder-no-matches";
+export { FinderContent } from "./react/components/finder-content";
+export { useFinderRef } from "./react/hooks/use-finder-ref";
+
+export type { FinderProps } from "./react/types/react-types";

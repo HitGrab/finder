@@ -1,10 +1,10 @@
 import { test } from "vitest";
-import { FinderMeta, FinderOnChangeCallback } from "./types";
+import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
 import { act } from "react";
-import { range } from "lodash";
-import { Finder } from "./classes/finder";
-import { searchRule, filterRule, finderRules, sortByRule, groupByRule } from "./utils/type-enforcers";
-import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./utils/compare-utils";
+import { Finder } from "./core/finder";
+import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
+import { finderCharacterCompare, finderSequentialCharacterCompare, finderStringCompare } from "./core/utils/string-compare-utils";
+import { range } from "./core/utils/finder-utils";
 
 type MockObjectItem = {
     type: string;
@@ -44,6 +44,7 @@ describe("Constructor", () => {
             },
         ];
         expect(() => {
+            // @ts-expect-error
             const finder = new Finder(objectItems, { rules });
         }).toThrowError();
     });
@@ -55,6 +56,7 @@ describe("Constructor", () => {
             },
         ];
         expect(() => {
+            // @ts-expect-error
             const finder = new Finder(objectItems, { rules });
         }).toThrowError();
     });
@@ -165,7 +167,7 @@ describe("Filter - Basic", () => {
     });
 
     test("Inactive filters have no effect", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -180,7 +182,7 @@ describe("Filter - Basic", () => {
     });
 
     test("Return empty array for unmatched filters", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "tastiest_fruit_name",
                 filterFn: (item: MockObjectItem, value: string) => item.name === value,
@@ -196,7 +198,7 @@ describe("Filter - Basic", () => {
 
 describe("Filter - Advanced", () => {
     test("Required filters with defined options array select first option", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem, value: number) => item.price === value,
@@ -223,7 +225,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Required filters with options callback selects first option", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
@@ -245,7 +247,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Required filters with boolean type selects true", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price",
                 filterFn: (item: MockObjectItem) => item.price === 10,
@@ -259,7 +261,7 @@ describe("Filter - Advanced", () => {
     });
 
     test("Filters receive meta context", () => {
-        const rules = finderRules([
+        const rules = finderRuleset([
             {
                 id: "price_is_below",
                 filterFn: (item: MockObjectItem, value: number, meta) => {
@@ -352,6 +354,12 @@ describe("Filter - Advanced", () => {
             filterFn: (item, value) => item.price <= value,
             options: [optionOne, optionTwo, optionThree],
         });
+        const multipleFilter = filterRule<MockObjectItem, number>({
+            id: "price_is_below",
+            filterFn: (item, value) => item.price <= value,
+            multiple: true,
+            options: () => [optionOne, optionTwo, optionThree],
+        });
         const booleanFilter = filterRule<MockObjectItem>({
             id: "expires_in_five_days",
             filterFn: (item) => item.daysUntilExpiryDate === "five",
@@ -366,6 +374,13 @@ describe("Filter - Advanced", () => {
         expect(testResult.get(optionTwo)?.length).toBe(2);
         expect(testResult.get(optionThree)?.length).toBe(3);
 
+        // test multiple filter
+        const multipleTestResult = finder.filters.testRuleOptions({ rule: multipleFilter });
+        expect(multipleTestResult.get(optionOne)?.length).toBe(1);
+        expect(multipleTestResult.get(optionTwo)?.length).toBe(2);
+        expect(multipleTestResult.get(optionThree)?.length).toBe(3);
+
+        // test boolean filter
         const booleanTestResult = finder.filters.testRuleOptions({ rule: booleanFilter });
         expect(booleanTestResult.get(true)?.length).toBe(2);
         expect(booleanTestResult.get(false)?.length).toBe(3);
@@ -411,7 +426,7 @@ describe("SortBy", () => {
 
         const finder = new Finder(objectItems, { rules });
         finder.sortBy.cycleSortDirection();
-        expect(finder.sortBy.sortDirection).toStrictEqual("desc");
+        expect(finder.sortBy.sortDirection).toStrictEqual("asc");
     });
 });
 
@@ -538,13 +553,13 @@ describe("Selection", () => {
         expect(finder.selectedItems.items).toStrictEqual([]);
     });
 
-    test("Throws error when exceeding limit", () => {
+    test("Ignores selection when exceeding limit", () => {
         const initialSelectedItems = [apple];
         const finder = new Finder(objectItems, { initialSelectedItems, maxSelectedItems: 1 });
 
-        expect(() => {
-            finder.selectedItems.select(orange);
-        }).toThrowError();
+        finder.selectedItems.select(orange);
+
+        expect(finder.selectedItems.items).toStrictEqual([apple]);
     });
 });
 
@@ -558,8 +573,9 @@ describe("onChange", () => {
                 },
             }),
         ];
-        const onChange: FinderOnChangeCallback<MockObjectItem> = (diff) => {
-            expect(diff.filters).toStrictEqual({ price_is_below: 5 });
+        const onChange: FinderOnChangeCallback = (event) => {
+            expect(event.current.rule.id).toStrictEqual("price_is_below");
+            expect(event.current.value).toStrictEqual(5);
         };
 
         const finder = new Finder(objectItems, { rules, onChange });
@@ -601,5 +617,86 @@ describe("Utils", () => {
         const haystackWithReversedCharacters = "e d c b a";
         const negativeMatch = finderSequentialCharacterCompare(haystackWithReversedCharacters, searchTerm);
         expect(negativeMatch).toBe(false);
+    });
+});
+
+describe("Plugins", () => {
+    test("Sample plugin", () => {
+        const rules = finderRuleset<MockObjectItem>([
+            searchRule({
+                searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+            }),
+            filterRule({
+                id: "price_is_below",
+                filterFn: (item, value: number) => {
+                    return item.price <= value;
+                },
+            }),
+            filterRule({
+                id: "expires_in_five_days",
+                filterFn: (item) => item.daysUntilExpiryDate === "five",
+                isBoolean: true,
+            }),
+        ]);
+
+        const onInit = vitest.fn();
+        const onRegister = vitest.fn();
+        const onChange = vitest.fn();
+        const onInteract = vitest.fn();
+
+        interface MyPlugin extends FinderPluginInterface {
+            setValue: (value: number) => void;
+            getValue: () => number;
+        }
+        const mockPlugin: FinderPluginFn<MyPlugin> = () => {
+            let value = 5;
+            return {
+                id: "test",
+                // Finder has instantiated plugin and injected a reference
+                register: (finder) => {
+                    onRegister();
+                    finder.events.on("change", () => {
+                        onChange();
+                    });
+
+                    // First change has been triggered
+                    finder.events.on("firstUserInteraction", () => {
+                        onInteract();
+                    });
+                },
+
+                // Finder has finished initializing
+                onInit: () => {
+                    onInit();
+                },
+
+                setValue(currentValue: number) {
+                    value = currentValue;
+                },
+                getValue: () => value,
+            };
+        };
+
+        const initializedPlugin = mockPlugin();
+        const finder = new Finder(objectItems, { rules, plugins: [initializedPlugin] });
+        expect(onInit).toHaveBeenCalledTimes(1);
+        expect(onRegister).toHaveBeenCalledTimes(1);
+
+        // onInteract is not triggered until the first state change
+        expect(onInteract).toHaveBeenCalledTimes(0);
+
+        finder.filters.set("price_is_below", 3);
+
+        expect(onChange).toHaveBeenCalledTimes(1);
+
+        // onInteract can only be triggered once
+        finder.filters.set("price_is_below", 1);
+        finder.filters.set("price_is_below", 2);
+        finder.filters.set("price_is_below", 5);
+        expect(onInteract).toHaveBeenCalledTimes(1);
+
+        finder.plugins.get(initializedPlugin).setValue(10);
+
+        expect(finder.plugins.get(initializedPlugin).getValue()).toBe(10);
     });
 });
