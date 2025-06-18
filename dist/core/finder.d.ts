@@ -38,25 +38,25 @@ declare class Finder<FItem> {
         getRule: (id: string) => import("..").HydratedFilterRule<FItem, any> | undefined;
     };
     get sortBy(): {
-        set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("../types").SortDirection) => void;
-        setSortDirection: (incomingSortDirection?: import("../types").SortDirection) => void;
+        set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;
+        setSortDirection: (incomingSortDirection?: import("..").SortDirection) => void;
         cycleSortDirection: () => void;
         toggleSortDirection: () => void;
         reset(): void;
         activeRule: import("..").SortByRule<unknown> | undefined;
-        sortDirection: import("../types").SortDirection;
+        sortDirection: import("..").SortDirection;
         userHasSetSortDirection: boolean;
         rules: import("..").SortByRule<unknown>[];
     };
     get groupBy(): {
         set: (identifier?: import("..").GroupByRule | string) => void;
         toggle: (identifier: import("..").GroupByRule | string) => void;
-        setGroupIdSortDirection: (direction?: import("../types").SortDirection) => void;
+        setGroupIdSortDirection: (direction?: import("..").SortDirection) => void;
         reset: () => void;
         activeRule: import("..").GroupByRule<unknown> | undefined;
         requireGroup: boolean;
         rules: import("..").GroupByRule<unknown>[];
-        groupIdSortDirection: import("../types").SortDirection | undefined;
+        groupIdSortDirection: import("..").SortDirection | undefined;
     };
     get meta(): {
         set: (metaIdentifier: any, value: any) => void;
