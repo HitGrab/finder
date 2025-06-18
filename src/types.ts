@@ -99,7 +99,7 @@ export interface GroupByRule<FItem = any> {
     id: string;
     groupFn: FinderPropertySelector<FItem>;
     sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem>>;
-    groupIdSortDirection?: "asc" | "desc";
+    groupIdSortDirection?: SortDirection;
     sticky?: {
         header?: string | string[];
         footer?: string | string[];
@@ -111,7 +111,7 @@ export interface GroupByRule<FItem = any> {
 export interface SortByRule<FItem = any> {
     id: string;
     sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
-    defaultSortDirection?: "asc" | "desc";
+    defaultSortDirection?: SortDirection;
     label?: string;
     hidden?: boolean;
 }
