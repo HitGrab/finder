@@ -263,8 +263,8 @@ Bn = function(r, a) {
 let Gn = cr;
 function ni(n) {
   return {
-    value: n.getFilters(),
-    filters: n.filters,
+    filters: n.getFilters(),
+    raw: n.filters,
     activeRules: n.activeRules,
     rules: n.rules,
     isActive: n.isActive.bind(n),

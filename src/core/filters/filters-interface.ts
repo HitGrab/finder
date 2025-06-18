@@ -7,8 +7,8 @@ import { FiltersMixin } from "./filters";
  */
 function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     return {
-        value: mixin.getFilters(),
-        filters: mixin.filters,
+        filters: mixin.getFilters(),
+        raw: mixin.filters,
         activeRules: mixin.activeRules,
         rules: mixin.rules,
         isActive: mixin.isActive.bind(mixin),

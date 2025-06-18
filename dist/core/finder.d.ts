@@ -28,8 +28,8 @@ declare class Finder<FItem> {
         test: (options: import("../types").FilterTestOptions) => FItem[];
         testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => FItem[];
         testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
-        value: Record<string, any>;
         filters: Record<string, any>;
+        raw: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<FItem, any>[];
         rules: import("..").HydratedFilterRule<FItem, any>[];
         isActive: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => boolean;
