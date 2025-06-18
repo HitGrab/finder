@@ -17,7 +17,7 @@ export interface FinderConstructorOptions<FItem> {
 
     initialSearchTerm?: string;
     initialSortBy?: string;
-    initialSortDirection?: "asc" | "desc";
+    initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
     initialMeta?: FinderMeta;
@@ -259,3 +259,5 @@ export interface FinderPluginInterface<FItem = any> {
     register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
     [k: string]: any;
 }
+
+export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];

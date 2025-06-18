@@ -30,11 +30,11 @@ class SearchMixin<FItem> {
         if (!rule) {
             throw new Error("Finder could not locate a searchRule.");
         }
-        if (this.#deps.debouncer.has("search") === false) {
-            this.#deps.debouncer.register("search", rule?.debounceDelay);
+        if (this.#deps.debouncer.has("_search") === false) {
+            this.#deps.debouncer.register("_search", rule?.debounceDelay);
         }
 
-        this.#deps.debouncer.call("search", () => {
+        this.#deps.debouncer.call("_search", () => {
             if (this.#deps.isDisabled()) {
                 return;
             }

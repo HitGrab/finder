@@ -1,5 +1,5 @@
-import { clamp } from "lodash";
 import { MixinInjectedDependencies } from "../types/internal-types";
+import { clamp } from "../utils/finder-utils";
 
 type InitialValues = {
     page: number | undefined;

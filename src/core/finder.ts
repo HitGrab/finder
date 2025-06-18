@@ -1,4 +1,3 @@
-import { isEqual } from "lodash";
 import {
     FinderRule,
     MatchesSnapshot,
@@ -29,8 +28,9 @@ import { readonlySelectedItemsInterface, selectedItemsInterface } from "./select
 import { SortByMixin } from "./sort-by/sort-by";
 import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
-import { DebounceCallbackRegistry } from "./utils/debounce-callback-registry";
 import { EventCallback } from "./types/internal-types";
+import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
+import isEqual from "lodash.isequal";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
