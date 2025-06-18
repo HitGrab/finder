@@ -32,6 +32,9 @@ export type {
     // plugins
     FinderPluginFn,
     FinderPluginInterface,
+
+    // utils
+    SortDirection,
 } from "./types";
 
 /**

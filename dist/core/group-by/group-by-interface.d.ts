@@ -7,16 +7,16 @@ declare function readonlyGroupByInterface<FItem>(mixin: GroupByMixin<FItem>): {
     activeRule: GroupByRule<unknown> | undefined;
     requireGroup: boolean;
     rules: GroupByRule<unknown>[];
-    groupIdSortDirection: import("../../types").SortDirection | undefined;
+    groupIdSortDirection: import("../..").SortDirection | undefined;
 };
 declare function groupByInterface<FItem>(mixin: GroupByMixin<FItem>): {
     set: (identifier?: GroupByRule | string) => void;
     toggle: (identifier: GroupByRule | string) => void;
-    setGroupIdSortDirection: (direction?: import("../../types").SortDirection) => void;
+    setGroupIdSortDirection: (direction?: import("../..").SortDirection) => void;
     reset: () => void;
     activeRule: GroupByRule<unknown> | undefined;
     requireGroup: boolean;
     rules: GroupByRule<unknown>[];
-    groupIdSortDirection: import("../../types").SortDirection | undefined;
+    groupIdSortDirection: import("../..").SortDirection | undefined;
 };
 export { readonlyGroupByInterface, groupByInterface };

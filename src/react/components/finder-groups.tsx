@@ -7,7 +7,7 @@ interface FinderGroupsProps<FItem = any> {
 }
 function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>) {
     const finder = useFinderContext();
-    if (finder.state === "groups" && finder.matches.groups && renderProp) {
+    if (finder.state === "groups" && finder.matches.groups && finder.groupBy.activeRule && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
             return cloneElement(renderProp, {
                 groups: finder.matches.groups,
@@ -20,7 +20,15 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component groups={finder.matches.groups} selectedItems={finder.selectedItems} pagination={finder.pagination} meta={finder.meta} />;
+            return (
+                <Component
+                    groups={finder.matches.groups}
+                    rule={finder.groupBy.activeRule}
+                    selectedItems={finder.selectedItems}
+                    pagination={finder.pagination}
+                    meta={finder.meta}
+                />
+            );
         }
     }
 

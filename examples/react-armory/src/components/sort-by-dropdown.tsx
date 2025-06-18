@@ -1,4 +1,4 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { SortDirection, useFinderContext } from "@hitgrab/finder";
 
 function SortByDropdown() {
     const finder = useFinderContext();
@@ -14,7 +14,7 @@ function SortByDropdown() {
                     );
                 })}
             </select>
-            <select value={finder.sortBy.sortDirection} onChange={(e) => finder.sortBy.setSortDirection(e.currentTarget.value)}>
+            <select value={finder.sortBy.sortDirection} onChange={(e) => finder.sortBy.setSortDirection(e.currentTarget.value as SortDirection)}>
                 <option value="asc">Asc</option>
                 <option value="desc">Desc</option>
             </select>

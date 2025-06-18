@@ -3,7 +3,7 @@ export { Finder as FinderCore } from "./core/finder";
 export { FinderPlugin } from "./core/plugins/plugin-super-class";
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
 export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
-export type { FinderSnapshot, FinderMeta, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FilterOption, FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent, FinderPluginFn, FinderPluginInterface, } from "./types";
+export type { FinderSnapshot, FinderMeta, FinderRule, SearchRule, FilterRule, HydratedFilterRule, SortByRule, GroupByRule, FinderResultGroup, FilterOption, FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent, FinderPluginFn, FinderPluginInterface, SortDirection, } from "./types";
 /**
  * React hooks and components
  */

@@ -3,7 +3,7 @@
  */
 
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
-import { FinderConstructorOptions, FinderResultGroup } from "../../types";
+import { FinderConstructorOptions, FinderResultGroup, GroupByRule } from "../../types";
 import { Finder as FinderCore } from "../../core/finder";
 import { paginationInterface } from "../../core/pagination/pagination-interface";
 import { selectedItemsInterface } from "../../core/selected-items/selected-items-interface";
@@ -24,6 +24,7 @@ export interface FinderItemsComponentProps<FItem> extends FinderContentComponent
 }
 export interface FinderGroupsComponentProps<FItem> extends FinderContentComponentProps {
     groups: FinderResultGroup<FItem>[];
+    rule: GroupByRule;
 }
 
 export type FinderBaseRenderProp = ElementType<FinderContentComponentProps> | ReactElement<FinderContentComponentProps> | Iterable<ReactNode>;
