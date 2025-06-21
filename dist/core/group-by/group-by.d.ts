@@ -1,4 +1,4 @@
-import { GroupByRule, FinderMeta, FinderResultGroup, SortDirection } from "../../types";
+import { GroupByRule, FinderResultGroup, SortDirection, MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialGroupBy: string | undefined;
@@ -13,6 +13,6 @@ declare class GroupByMixin<FItem> {
     get activeRule(): GroupByRule<unknown> | undefined;
     set(identifier?: GroupByRule | string): void;
     setGroupIdSortDirection(direction?: SortDirection): void;
-    process(items: FItem[], meta?: FinderMeta): FinderResultGroup<FItem>[];
+    process(items: FItem[], meta: MetaInterface): FinderResultGroup<FItem>[];
 }
 export { GroupByMixin };

@@ -21,7 +21,7 @@ declare class Finder<FItem> {
         hasSearchTerm: boolean;
     };
     get filters(): {
-        toggle(identifier: string | import("..").FilterRule | import("..").HydratedFilterRule): void;
+        toggle: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
         toggleOption: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue: import("..").FilterOption | any) => void;
         set: (identifier: import("..").FilterRule | import("..").HydratedFilterRule | string, incomingFilterValue: any) => void;
         delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
@@ -30,12 +30,12 @@ declare class Finder<FItem> {
         testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
         filters: Record<string, any>;
         raw: Record<string, any>;
-        activeRules: import("..").HydratedFilterRule<FItem, any>[];
-        rules: import("..").HydratedFilterRule<FItem, any>[];
+        activeRules: import("..").HydratedFilterRule<FItem>[];
+        rules: import("..").HydratedFilterRule<FItem>[];
         isActive: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => boolean;
         get: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => any;
         has: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
-        getRule: (id: string) => import("..").HydratedFilterRule<FItem, any> | undefined;
+        getRule: (id: string) => import("..").HydratedFilterRule<FItem> | undefined;
     };
     get sortBy(): {
         set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;
@@ -62,7 +62,7 @@ declare class Finder<FItem> {
         set: (metaIdentifier: any, value: any) => void;
         delete: (metaIdentifier: any) => void;
         reset: () => void;
-        value: import("..").FinderMeta;
+        value: Record<string, any>;
         get: (metaIdentifier: any) => any;
         has: (metaIdentifier: any) => boolean;
     };

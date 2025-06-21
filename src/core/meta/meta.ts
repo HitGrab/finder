@@ -1,8 +1,7 @@
-import { FinderMeta } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 
 type InitialValues = {
-    initialMeta?: FinderMeta;
+    initialMeta?: Record<string, any>;
 };
 class MetaMixin<FItem> {
     meta;

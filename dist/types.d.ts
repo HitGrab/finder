@@ -6,11 +6,12 @@
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { Finder as FinderCore } from "./core/finder";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
-import { readonlyMetaInterface } from "./core/meta/meta-interface";
+import { metaInterface, readonlyMetaInterface } from "./core/meta/meta-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 
+export type MetaInterface = ReturnType<typeof metaInterface>;
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
     rules?: FinderRule<FItem>[];
@@ -20,7 +21,7 @@ export interface FinderConstructorOptions<FItem> {
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    initialMeta?: FinderMeta;
+    initialMeta?: Record<string, any>;
     initialSelectedItems?: FItem[];
 
     // determine how many items can be selected
@@ -56,44 +57,50 @@ export interface FinderResultGroup<FItem> {
     id: string;
     items: FItem[];
 }
-export type FinderMeta = Record<string, any>;
 
 export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
 export interface SearchRule<FItem = any> {
     id?: string;
-    searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
+    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
     label?: string;
     hidden?: boolean;
     debounceDelay?: number;
 }
 
-export interface FilterRule<FItem = any, FValue = any> {
+interface FilterRuleBase<FItem, FValue> {
     id: string;
-    filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
-    options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
-    multiple?: boolean;
+    options?: FilterOption<FValue>[] | ((items: FItem[], meta: MetaInterface) => FilterOption<FValue>[]);
     required?: boolean;
     isBoolean?: boolean;
-    defaultValue?: FValue;
     label?: string;
     hidden?: boolean;
     debounceDelay?: number;
 }
+interface FilterRuleWithSingleValue<FItem, FValue> extends FilterRuleBase<FItem, FValue> {
+    multiple?: false;
+    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
+    defaultValue?: FValue;
+}
 
-export interface HydratedFilterRule<FItem = any, FValue = any> {
-    id: string;
-    filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
+interface FilterRuleWithMultipleValues<FItem, FValue> extends FilterRuleBase<FItem, FValue> {
+    multiple: true;
+    filterFn: (item: FItem, value: FValue[], meta: MetaInterface) => boolean;
+    defaultValue?: FValue[];
+}
+
+export type FilterRule<FItem = any, FValue = any> = FilterRuleWithSingleValue<FItem, FValue> | FilterRuleWithMultipleValues<FItem, FValue>;
+
+/**
+ * A hydrated filter has rendered any option generator functions, and narrowed uncertain properties from FilterRule.
+ */
+export type HydratedFilterRule<FItem = any, FValue = any> = {
     options?: FilterOption<FValue>[];
-    multiple: boolean;
     required: boolean;
     isBoolean: boolean;
-    defaultValue?: FValue;
-    label?: string;
     hidden: boolean;
-    debounceDelay?: number;
     _isHydrated: true;
-}
+} & Omit<FilterRule<FItem, FValue>, "options" | "required" | "isBoolean" | "hidden">;
 
 export interface GroupByRule<FItem = any> {
     id: string;
@@ -119,7 +126,7 @@ export interface SortByRule<FItem = any> {
 /**
  * Select a property from the item to sort by.
  */
-export type FinderPropertySelector<FItem> = (item: FItem, meta?: FinderMeta) => string | number;
+export type FinderPropertySelector<FItem> = (item: FItem, meta: MetaInterface) => string | number;
 
 /**
  * Describes the display of a filter or sort option.
@@ -141,21 +148,21 @@ export interface MatchesSnapshot<FItem> {
 export interface FilterTestOptions {
     rules?: HydratedFilterRule[];
     values?: any;
-    meta?: FinderMeta;
+    meta?: MetaInterface;
     isAdditive?: boolean;
 }
 
 export interface FilterTestRuleOptions {
     rule: string | FilterRule | HydratedFilterRule;
     value: any;
-    meta?: FinderMeta;
+    meta?: MetaInterface;
     isAdditive?: boolean;
 }
 
 // TODO: Maybe rename this
 export interface FilterTestRuleOptionsOptions {
     rule: string | FilterRule | HydratedFilterRule;
-    meta?: FinderMeta;
+    meta?: MetaInterface;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
 }

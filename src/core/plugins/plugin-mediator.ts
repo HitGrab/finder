@@ -1,4 +1,4 @@
-import { FinderInitEvent, FinderFirstUserInteractionEvent, FinderPluginFn, FinderPluginInterface, FinderSnapshot, FinderTouchCallback } from "../../types";
+import { FinderInitEvent, FinderFirstUserInteractionEvent, FinderPluginFn, FinderPluginInterface, FinderTouchCallback } from "../../types";
 import { Finder } from "../finder";
 import { FinderPlugin } from "./plugin-super-class";
 

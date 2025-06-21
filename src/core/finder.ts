@@ -30,7 +30,7 @@ import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-inte
 import { EventEmitter } from "./events/event-emitter";
 import { EventCallback } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
-import isEqual from "lodash.isequal";
+import { isEqual } from "lodash";
 
 class Finder<FItem> {
     #items: FItem[] | null | undefined;
@@ -102,7 +102,7 @@ class Finder<FItem> {
         const mixinDeps = {
             getItems: () => this.items,
             getRules: () => this.#rules,
-            getMeta: () => this.#mixins.meta.meta,
+            getMeta: () => metaInterface(this.#mixins.meta),
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             touch: (event: FinderTouchEvent) => this.#touch(event),
@@ -251,7 +251,7 @@ class Finder<FItem> {
         const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
         let paginatedItemSlice: FItem[] = [];
         if (Array.isArray(this.#items)) {
-            const meta = this.#mixins.meta.meta;
+            const meta = metaInterface(this.#mixins.meta);
 
             itemsToProcess = [...this.#items];
             itemsToProcess = this.#mixins.search.process(itemsToProcess, meta);
@@ -261,7 +261,7 @@ class Finder<FItem> {
             paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess);
 
             if (hasGroupByRule) {
-                groups = this.#mixins.groupBy.process(paginatedItemSlice);
+                groups = this.#mixins.groupBy.process(paginatedItemSlice, meta);
             }
         }
 

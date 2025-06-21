@@ -1,4 +1,12 @@
-import { HydratedFilterRule, FilterRule, FinderMeta, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions } from "../../types";
+import {
+    HydratedFilterRule,
+    FilterRule,
+    FilterOption,
+    FilterTestOptions,
+    FilterTestRuleOptions,
+    FilterTestRuleOptionsOptions,
+    MetaInterface,
+} from "../../types";
 import { getRuleFromIdentifier, isFilterRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { simpleUniqBy } from "../utils/finder-utils";
@@ -78,7 +86,7 @@ class FiltersMixin<FItem> {
     }
 
     // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: FItem[], meta?: FinderMeta) {
+    #takeHydratedRulesSnapshot(items: FItem[], meta: MetaInterface) {
         const filterRules = this.#deps.getRules().filter(isFilterRule);
         return filterRules.map((rule) => {
             // trigger option generator if found
@@ -142,19 +150,27 @@ class FiltersMixin<FItem> {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        const value = this.get(rule);
+        const ruleValue = this.get(rule);
 
         if (optionValue === undefined) {
-            return value !== undefined;
+            return ruleValue !== undefined;
         }
 
         const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
 
         if (rule.multiple) {
-            return value.includes(option.value);
+            return ruleValue.includes(option.value);
         }
 
-        return value === option;
+        return ruleValue === option.value;
+    }
+
+    delete(identifier: string | FilterRule | HydratedFilterRule) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        if (rule === undefined) {
+            throw new Error("Finder could not locate a rule for this filter.");
+        }
+        return this.set(rule, undefined);
     }
 
     isActive(identifier: string | FilterRule | HydratedFilterRule) {
@@ -163,6 +179,21 @@ class FiltersMixin<FItem> {
             return false;
         }
         return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
+    }
+
+    toggle(identifier: string | FilterRule | HydratedFilterRule) {
+        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+        if (rule === undefined) {
+            throw new Error("Finder could not locate a rule for this filter.");
+        }
+
+        if (rule.isBoolean) {
+            const filterValue = this.get(rule.id);
+            this.set(rule, !filterValue);
+            return;
+        }
+
+        throw new Error("Finder could not toggle this filter rule, as it is not boolean.");
     }
 
     toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FilterOption | any) {
@@ -179,7 +210,7 @@ class FiltersMixin<FItem> {
             );
         }
 
-        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems());
+        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
 
         const previousFilterValue: any[] = this.filters?.[rule.id] ?? [];
 
@@ -284,11 +315,11 @@ class FiltersMixin<FItem> {
         );
     }
 
-    process(items: FItem[], meta?: FinderMeta) {
+    process(items: FItem[], meta: MetaInterface) {
         return FiltersMixin.process(items, this.rules, this.getFilters(), meta);
     }
 
-    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta?: FinderMeta) {
+    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta: MetaInterface) {
         const activeRules = rules.filter((rule) => {
             return FiltersMixin.isActive(rule, values?.[rule.id]);
         });

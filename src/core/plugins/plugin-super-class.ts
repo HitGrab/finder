@@ -1,4 +1,4 @@
-import { FinderInitEvent, FinderPluginInterface, FinderSnapshot, FinderTouchCallback } from "../../types";
+import { FinderPluginInterface, FinderTouchCallback } from "../../types";
 import { Finder } from "../finder";
 
 export abstract class FinderPlugin implements FinderPluginInterface {
