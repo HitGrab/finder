@@ -45,9 +45,9 @@ function App() {
                 });
             },
         }),
-        filterRule({
+        filterRule<Product, string>({
             id: "colors",
-            filterFn: (item, value: string[]) => value.every((color) => item.colors.includes(color)),
+            filterFn: (item, value) => value.every((color) => item.colors.includes(color)),
             multiple: true,
             label: "Colours",
             options: (items) => {
