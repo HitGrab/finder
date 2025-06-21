@@ -1,8 +1,7 @@
-import { GroupByRule, FinderMeta, FinderResultGroup, SortDirection } from "../../types";
+import { GroupByRule, FinderResultGroup, SortDirection, MetaInterface } from "../../types";
 import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
-import orderBy from "lodash.orderby";
-import groupBy from "lodash.groupby";
+import { groupBy, orderBy } from "lodash";
 
 type InitialValues = {
     initialGroupBy: string | undefined;
@@ -75,7 +74,7 @@ class GroupByMixin<FItem> {
         });
     }
 
-    process(items: FItem[], meta?: FinderMeta) {
+    process(items: FItem[], meta: MetaInterface) {
         if (this.activeRule === undefined) {
             return [];
         }

@@ -1,4 +1,4 @@
-import { FinderConstructorOptions, SearchRule, FilterRule, SortByRule, GroupByRule } from "../../types";
+import { SearchRule, FilterRule, SortByRule, GroupByRule } from "../../types";
 
 /**
  * Enforce structure for an array of rule of mixed types.

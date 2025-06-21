@@ -57,7 +57,7 @@ function useFinder<FItem>(
     // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
     useEffect(() => {
-        instance.events.on("change", ({ diff, snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+        instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
     }, []);
 
     // Finder will only render a new snapshot if these values have changed.

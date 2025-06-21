@@ -1,5 +1,3 @@
-import { FilterRule, HydratedFilterRule } from "../../types";
-import { getRuleFromIdentifier } from "../utils/rule-utils";
 import { FiltersMixin } from "./filters";
 
 /**
@@ -21,27 +19,10 @@ function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>) {
 function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     return {
         ...readonlyFiltersInterface(mixin),
-        toggle(identifier: string | FilterRule | HydratedFilterRule) {
-            const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
-            if (rule === undefined) {
-                throw new Error("Finder could not locate a rule for this filter.");
-            }
-            if (!rule.isBoolean) {
-                throw new Error("Finder could not toggle this filter rule, as it is not boolean.");
-            }
-
-            const filterValue = mixin.get(rule.id);
-            mixin.set(rule, !filterValue);
-        },
+        toggle: mixin.toggle.bind(mixin),
         toggleOption: mixin.toggleOption.bind(mixin),
         set: mixin.set.bind(mixin),
-        delete: (identifier: string | FilterRule | HydratedFilterRule) => {
-            const rule = getRuleFromIdentifier<FilterRule>(identifier, mixin.rules);
-            if (rule === undefined) {
-                throw new Error("Finder could not locate a rule for this filter.");
-            }
-            mixin.set(rule, undefined);
-        },
+        delete: mixin.delete.bind(mixin),
         test: mixin.test.bind(mixin),
         testRule: mixin.testRule.bind(mixin),
         testRuleOptions: mixin.testRuleOptions.bind(mixin),

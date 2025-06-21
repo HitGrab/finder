@@ -10,7 +10,6 @@ export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterC
 
 export type {
     FinderSnapshot,
-    FinderMeta,
 
     // rules
     FinderRule,

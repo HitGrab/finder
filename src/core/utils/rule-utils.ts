@@ -1,4 +1,4 @@
-import { FilterRule, FinderMeta, FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../../types";
+import { FilterRule, FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, MetaInterface } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -49,9 +49,9 @@ export function getRuleFromIdentifier<T extends FinderRule>(identifier: T | stri
 
 export function getFilterOptionFromIdentifier<FItem>(
     optionOrOptionValue: FilterOption | any,
-    options: FilterOption[] | ((items: FItem[], meta?: FinderMeta) => FilterOption[]) | undefined,
+    options: FilterOption[] | ((items: FItem[], meta: MetaInterface) => FilterOption[]) | undefined,
     items: FItem[],
-    meta?: FinderMeta,
+    meta: MetaInterface,
 ) {
     let option: FilterOption | any;
 

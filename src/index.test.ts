@@ -1,5 +1,5 @@
 import { test } from "vitest";
-import { FinderMeta, FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
+import { FinderOnChangeCallback, FinderPluginFn, FinderPluginInterface } from "./types";
 import { act } from "react";
 import { Finder } from "./core/finder";
 import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "./core/utils/rule-type-enforcers";
@@ -32,7 +32,7 @@ describe("Constructor", () => {
             },
         ];
         expect(() => {
-            const finder = new Finder(objectItems, { rules });
+            new Finder(objectItems, { rules });
         }).toThrowError();
     });
 
@@ -141,7 +141,7 @@ describe("Filter - Basic", () => {
     test("A single filter allows multiple options", () => {
         const rule = filterRule<MockObjectItem, string>({
             id: "employee_favourite_fruits",
-            filterFn: (item, value) => item.name === value,
+            filterFn: (item, value) => value.includes(item.name),
             multiple: true,
             options: [
                 {
@@ -167,15 +167,15 @@ describe("Filter - Basic", () => {
     });
 
     test("Inactive filters have no effect", () => {
-        const rules = finderRuleset([
-            {
+        const rules = finderRuleset<MockObjectItem>([
+            filterRule({
                 id: "tastiest_fruit_name",
-                filterFn: (item: MockObjectItem, value: string) => item.name === value,
-            },
-            {
+                filterFn: (item, value: string) => item.name === value,
+            }),
+            filterRule({
                 id: "price_is_below",
-                filterFn: (item: MockObjectItem, value: number) => item.price <= value,
-            },
+                filterFn: (item, value: number) => item.price <= value,
+            }),
         ]);
         const finder = new Finder(objectItems, { rules });
         expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
@@ -228,7 +228,7 @@ describe("Filter - Advanced", () => {
         const rules = finderRuleset([
             {
                 id: "price",
-                filterFn: (item: MockObjectItem, value: number, meta) => item.price === value,
+                filterFn: (item: MockObjectItem, value: number) => item.price === value,
                 required: true,
                 options: (items) =>
                     items
@@ -261,23 +261,22 @@ describe("Filter - Advanced", () => {
     });
 
     test("Filters receive meta context", () => {
-        const rules = finderRuleset([
-            {
+        const rules = finderRuleset<MockObjectItem>([
+            filterRule({
                 id: "price_is_below",
-                filterFn: (item: MockObjectItem, value: number, meta) => {
-                    if (meta?.get("user_dislikes") === item) {
+                filterFn: (item, value, meta) => {
+                    if (meta.get("user_dislikes") === item) {
                         return false;
                     }
 
                     return item.price <= value;
                 },
-            },
+            }),
         ]);
         const initialFilters = {
             price_is_below: 5,
         };
-        const initialMeta: FinderMeta = new Map();
-        initialMeta.set("user_dislikes", apple);
+        const initialMeta = { user_dislikes: apple };
 
         const finder = new Finder(objectItems, { rules, initialFilters, initialMeta });
         expect(finder.matches.items).toStrictEqual([orange]);
@@ -325,7 +324,7 @@ describe("Filter - Advanced", () => {
         });
         const secondRule = filterRule({
             id: "has_seeds",
-            filterFn: (item: MockObjectItem, value: string) => item.name === "Apple",
+            filterFn: (item: MockObjectItem) => item.name === "Apple",
         });
 
         const finder = new Finder(objectItems, { rules: [firstRule, secondRule] });
@@ -356,7 +355,7 @@ describe("Filter - Advanced", () => {
         });
         const multipleFilter = filterRule<MockObjectItem, number>({
             id: "price_is_below",
-            filterFn: (item, value) => item.price <= value,
+            filterFn: (item, value) => value.includes(item.price),
             multiple: true,
             options: () => [optionOne, optionTwo, optionThree],
         });

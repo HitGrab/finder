@@ -1,4 +1,4 @@
-import { FinderMeta } from "../../types";
+import { MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
 
@@ -63,7 +63,7 @@ class SearchMixin<FItem> {
         });
     }
 
-    process(items: FItem[], meta?: FinderMeta) {
+    process(items: FItem[], meta: MetaInterface) {
         if (this.#searchTerm === "" || this.rule === undefined) {
             return items;
         }
