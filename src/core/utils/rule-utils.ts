@@ -1,4 +1,4 @@
-import { FilterRule, FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, MetaInterface } from "../../types";
+import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, MetaInterface, FilterRuleUnion } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -24,7 +24,7 @@ export function isValidRuleset(rules?: FinderRule[]): rules is FinderRule[] {
     return true;
 }
 
-export function getRuleFromIdentifier<T extends FinderRule>(identifier: T | string | undefined, rules: T[]): T | undefined {
+export function getRuleFromIdentifier<T extends FinderRule>(identifier: FinderRule | string | undefined, rules: T[]): T | undefined {
     if (identifier === undefined) {
         return undefined;
     }
@@ -86,7 +86,7 @@ export function getRuleType(rule: FinderRule) {
     if (isSearchRule(rule)) {
         return "search";
     }
-    if (isFilterRule(rule)) {
+    if (isFilterUnionRule(rule)) {
         return "filter";
     }
     if (isSortByRule(rule)) {
@@ -106,7 +106,7 @@ export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
     return typeof rule === "object" && rule !== null && "searchFn" in rule;
 }
 
-export function isFilterRule<FItem>(rule: unknown): rule is FilterRule<FItem> {
+export function isFilterUnionRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {
     return typeof rule === "object" && rule !== null && "filterFn" in rule;
 }
 export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem> {

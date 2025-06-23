@@ -58,7 +58,7 @@ export interface FinderResultGroup<FItem> {
     items: FItem[];
 }
 
-export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRule<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
+export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRuleUnion<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
 export interface SearchRule<FItem = any> {
     id?: string;
@@ -73,39 +73,61 @@ export interface FilterOptionGeneratorFnOptions<FItem> {
     meta: MetaInterface;
 }
 
-interface FilterRuleBase<FItem, FValue> {
+export interface FilterRule<FItem = any, FValue = any> {
     id: string;
     options?: FilterOption<FValue>[] | ((options: FilterOptionGeneratorFnOptions<FItem>) => FilterOption<FValue>[]);
     required?: boolean;
-    isBoolean?: boolean;
     label?: string;
     hidden?: boolean;
     debounceDelay?: number;
+
+    // these properties will be narrowed by FilterRuleUnion
+    multiple?: boolean;
+    isBoolean?: boolean;
+    filterFn: CallableFunction;
+    defaultValue?: any;
 }
-interface FilterRuleWithSingleValue<FItem, FValue> extends FilterRuleBase<FItem, FValue> {
+
+interface FilterRuleWithBooleanValue<FItem> extends FilterRule<FItem, boolean> {
     multiple?: false;
+    isBoolean: true;
+    filterFn: (item: FItem, value: boolean, meta: MetaInterface) => boolean;
+    defaultValue?: boolean;
+}
+interface FilterRuleWithScalarValue<FItem, FValue> extends FilterRule<FItem, FValue> {
+    multiple?: false;
+    isBoolean?: false;
     filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
     defaultValue?: FValue;
 }
 
-interface FilterRuleWithMultipleValues<FItem, FValue> extends FilterRuleBase<FItem, FValue> {
+interface FilterRuleWithMultipleValues<FItem, FValue> extends FilterRule<FItem, FValue> {
     multiple: true;
+    isBoolean?: false;
     filterFn: (item: FItem, value: FValue[], meta: MetaInterface) => boolean;
     defaultValue?: FValue[];
 }
 
-export type FilterRule<FItem = any, FValue = any> = FilterRuleWithSingleValue<FItem, FValue> | FilterRuleWithMultipleValues<FItem, FValue>;
+export type FilterRuleUnion<FItem = any, FValue = any> =
+    | FilterRuleWithBooleanValue<FItem>
+    | FilterRuleWithScalarValue<FItem, FValue>
+    | FilterRuleWithMultipleValues<FItem, FValue>;
 
 /**
  * A hydrated filter has rendered any option generator functions, and narrowed uncertain properties from FilterRule.
  */
-export type HydratedFilterRule<FItem = any, FValue = any> = {
+export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<FilterRule<FItem, FValue>, "options" | "required" | "isBoolean" | "hidden"> {
     options?: FilterOption<FValue>[];
     required: boolean;
     isBoolean: boolean;
     hidden: boolean;
+    multiple: boolean;
+
+    // filterfn
+    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean | ((item: FItem, value: FValue[], meta: MetaInterface) => boolean);
+    defaultValue?: FValue | FValue[];
     _isHydrated: true;
-} & Omit<FilterRule<FItem, FValue>, "options" | "required" | "isBoolean" | "hidden">;
+}
 
 export interface GroupByRule<FItem = any> {
     id: string;
@@ -158,7 +180,7 @@ export interface FilterTestOptions {
 }
 
 export interface FilterTestRuleOptions {
-    rule: string | FilterRule | HydratedFilterRule;
+    rule: string | FilterRuleUnion | HydratedFilterRule;
     value: any;
     meta?: MetaInterface;
     isAdditive?: boolean;
@@ -166,7 +188,7 @@ export interface FilterTestRuleOptions {
 
 // TODO: Maybe rename this
 export interface FilterTestRuleOptionsOptions {
-    rule: string | FilterRule | HydratedFilterRule;
+    rule: string | FilterRuleUnion | HydratedFilterRule;
     meta?: MetaInterface;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
