@@ -14,21 +14,21 @@ import { simpleUniqBy } from "../utils/finder-utils";
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
 };
-class FiltersMixin<FItem> {
+class FiltersMixin {
     filters;
 
     // memoize rules with generated options
-    #hydratedRules?: HydratedFilterRule<FItem>[];
+    #hydratedRules?: HydratedFilterRule[];
 
     #deps;
 
-    constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
+    constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
         this.filters = initialFilters || {};
         this.#deps = deps;
     }
 
-    set(identifier: FilterRule | HydratedFilterRule | string, incomingFilterValue: any) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+    set<FItem, FValue>(identifier: FilterRule<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
+        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -73,12 +73,16 @@ class FiltersMixin<FItem> {
         return this.#hydratedRules;
     }
 
-    recalculateHydratedRules() {
-        this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getMeta());
+    clearHydratedRules() {
+        this.#hydratedRules = undefined;
     }
 
-    getRule(id: string) {
-        return getRuleFromIdentifier(id, this.rules);
+    getRule<FItem = any, FValue = any>(identifier: FilterRule<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string) {
+        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
+        if (rule === undefined) {
+            throw new Error("Finder could not locate the requested rule");
+        }
+        return rule;
     }
 
     get activeRules() {
@@ -86,11 +90,11 @@ class FiltersMixin<FItem> {
     }
 
     // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: FItem[], meta: MetaInterface) {
+    #takeHydratedRulesSnapshot(items: any[], meta: MetaInterface) {
         const filterRules = this.#deps.getRules().filter(isFilterRule);
         return filterRules.map((rule) => {
             // trigger option generator if found
-            let hydratedOptions = typeof rule.options === "function" ? rule.options(items, meta) : rule.options;
+            let hydratedOptions = typeof rule.options === "function" ? rule.options({ items, meta }) : rule.options;
             return {
                 ...rule,
 
@@ -104,7 +108,7 @@ class FiltersMixin<FItem> {
 
                 // brand it
                 _isHydrated: true,
-            } as HydratedFilterRule<FItem>;
+            } as HydratedFilterRule;
         });
     }
 
@@ -270,14 +274,14 @@ class FiltersMixin<FItem> {
         }
 
         if (rule.isBoolean === true) {
-            const resultMap = new Map<FilterOption | boolean, FItem[]>();
+            const resultMap = new Map<FilterOption | boolean, any[]>();
             resultMap.set(true, this.testRule({ rule, value: true, ...options }));
             resultMap.set(false, this.testRule({ rule, value: false, ...options }));
             return resultMap;
         }
 
         if (Array.isArray(rule.options)) {
-            const resultMap = new Map<FilterOption | boolean, FItem[]>();
+            const resultMap = new Map<FilterOption | boolean, any[]>();
             rule.options.forEach((option) => {
                 let transformedOptionValue;
 
@@ -315,7 +319,7 @@ class FiltersMixin<FItem> {
         );
     }
 
-    process(items: FItem[], meta: MetaInterface) {
+    process(items: any[], meta: MetaInterface) {
         return FiltersMixin.process(items, this.rules, this.getFilters(), meta);
     }
 

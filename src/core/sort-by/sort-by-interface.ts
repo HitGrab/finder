@@ -1,4 +1,7 @@
+import { SortDirection } from "../../types";
 import { SortByMixin } from "./sort-by";
+
+const cycleOrder: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;
 
 /**
  * Public surface for the SortBy mixin
@@ -19,17 +22,11 @@ function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
         setSortDirection: mixin.setSortDirection.bind(mixin),
         // rotate between the rule default, desc, and asc.
         cycleSortDirection: () => {
-            const initialDirection = mixin.sortDirection ?? mixin.activeRule?.defaultSortDirection;
-            if (initialDirection === undefined) {
-                mixin.setSortDirection("desc");
-                return;
+            const initialIndex = cycleOrder.findIndex((direction) => direction === mixin.sortDirection);
+            if (initialIndex !== -1) {
+                const currentIndex = initialIndex + (1 % (cycleOrder.length - 1));
+                mixin.setSortDirection(cycleOrder[currentIndex]);
             }
-            if (initialDirection === "desc") {
-                mixin.setSortDirection("asc");
-                return;
-            }
-            mixin.setSortDirection(undefined);
-            return;
         },
         // flip between desc and asc.
         toggleSortDirection: () => {

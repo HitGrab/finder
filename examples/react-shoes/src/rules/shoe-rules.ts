@@ -49,7 +49,7 @@ export const rules = finderRuleset<Shoe>([
         label: "Size",
         multiple: true,
         filterFn: (item, value) => intersection(item.sizes, value).length > 0,
-        options: (items) => {
+        options: ({ items }) => {
             const sizeSet = new Set<number>();
             items.forEach((item) => {
                 item.sizes.forEach((size) => {
@@ -76,7 +76,7 @@ export const rules = finderRuleset<Shoe>([
         id: "color",
         label: "Color",
         filterFn: (item, value) => item.colors.includes(value),
-        options: (items) => {
+        options: ({ items }) => {
             const uniqueColors = items
                 .reduce((acc, item) => {
                     item.colors.forEach((color) => {
