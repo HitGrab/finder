@@ -21,21 +21,21 @@ declare class Finder<FItem> {
         hasSearchTerm: boolean;
     };
     get filters(): {
-        toggle: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
-        toggleOption: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue: import("..").FilterOption | any) => void;
-        set: <FItem_1, FValue>(identifier: string | import("..").FilterRule<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>, incomingFilterValue: FValue | FValue[]) => void;
-        delete: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => void;
+        toggle: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => void;
+        toggleOption: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule, optionValue: import("..").FilterOption | any) => void;
+        set: <FItem_1, FValue>(identifier: string | import("../types").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>, incomingFilterValue: FValue | FValue[]) => void;
+        delete: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => void;
         test: (options: import("../types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => any[];
         testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
         filters: Record<string, any>;
         raw: Record<string, any>;
-        activeRules: import("..").HydratedFilterRule[];
-        rules: import("..").HydratedFilterRule[];
-        isActive: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => boolean;
-        get: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule) => any;
-        has: (identifier: string | import("..").FilterRule | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
-        getRule: <FItem_1 = any, FValue = any>(identifier: string | import("..").FilterRule<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>) => import("..").HydratedFilterRule<FItem_1, FValue>;
+        activeRules: import("..").HydratedFilterRule<any, any>[];
+        rules: import("..").HydratedFilterRule<any, any>[];
+        isActive: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => boolean;
+        get: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => any;
+        has: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
+        getRule: <FItem_1 = any, FValue = any>(identifier: string | import("../types").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>) => import("..").HydratedFilterRule<FItem_1, FValue>;
     };
     get sortBy(): {
         set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;

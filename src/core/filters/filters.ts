@@ -1,13 +1,13 @@
 import {
     HydratedFilterRule,
-    FilterRule,
     FilterOption,
     FilterTestOptions,
     FilterTestRuleOptions,
     FilterTestRuleOptionsOptions,
     MetaInterface,
+    FilterRuleUnion,
 } from "../../types";
-import { getRuleFromIdentifier, isFilterRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
+import { getRuleFromIdentifier, isFilterUnionRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { simpleUniqBy } from "../utils/finder-utils";
 
@@ -27,7 +27,7 @@ class FiltersMixin {
         this.#deps = deps;
     }
 
-    set<FItem, FValue>(identifier: FilterRule<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
+    set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -77,7 +77,7 @@ class FiltersMixin {
         this.#hydratedRules = undefined;
     }
 
-    getRule<FItem = any, FValue = any>(identifier: FilterRule<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string) {
+    getRule<FItem = any, FValue = any>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate the requested rule");
@@ -91,7 +91,7 @@ class FiltersMixin {
 
     // hydrate and memoize generated options
     #takeHydratedRulesSnapshot(items: any[], meta: MetaInterface) {
-        const filterRules = this.#deps.getRules().filter(isFilterRule);
+        const filterRules = this.#deps.getRules().filter(isFilterUnionRule);
         return filterRules.map((rule) => {
             // trigger option generator if found
             let hydratedOptions = typeof rule.options === "function" ? rule.options({ items, meta }) : rule.options;
@@ -112,7 +112,7 @@ class FiltersMixin {
         });
     }
 
-    get(identifier: string | FilterRule | HydratedFilterRule) {
+    get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -148,7 +148,7 @@ class FiltersMixin {
         return value;
     }
 
-    has(identifier: string | FilterRule | HydratedFilterRule, optionValue?: FilterOption | any) {
+    has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
         const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
@@ -169,24 +169,24 @@ class FiltersMixin {
         return ruleValue === option.value;
     }
 
-    delete(identifier: string | FilterRule | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+    delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+        const rule = getRuleFromIdentifier(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
         return this.set(rule, undefined);
     }
 
-    isActive(identifier: string | FilterRule | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+    isActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+        const rule = getRuleFromIdentifier(identifier, this.rules);
         if (!rule) {
             return false;
         }
         return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
     }
 
-    toggle(identifier: string | FilterRule | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier<FilterRule>(identifier, this.rules);
+    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+        const rule = getRuleFromIdentifier(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -200,8 +200,8 @@ class FiltersMixin {
         throw new Error("Finder could not toggle this filter rule, as it is not boolean.");
     }
 
-    toggleOption(identifier: string | FilterRule | HydratedFilterRule, optionValue: FilterOption | any) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+    toggleOption(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue: FilterOption | any) {
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -250,7 +250,7 @@ class FiltersMixin {
             return [];
         }
 
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -268,7 +268,7 @@ class FiltersMixin {
             return new Map();
         }
 
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -333,7 +333,7 @@ class FiltersMixin {
         });
     }
 
-    static isActive(rule: FilterRule | HydratedFilterRule, value: any) {
+    static isActive(rule: FilterRuleUnion | HydratedFilterRule, value: any) {
         if (rule.required) {
             return true;
         }
