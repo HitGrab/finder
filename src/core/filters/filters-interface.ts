@@ -3,7 +3,7 @@ import { FiltersMixin } from "./filters";
 /**
  * Public surface for the Filters mixin
  */
-function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>) {
+function readonlyFiltersInterface(mixin: FiltersMixin) {
     return {
         filters: mixin.getFilters(),
         raw: mixin.filters,
@@ -16,7 +16,7 @@ function readonlyFiltersInterface<FItem>(mixin: FiltersMixin<FItem>) {
     };
 }
 
-function filtersInterface<FItem>(mixin: FiltersMixin<FItem>) {
+function filtersInterface(mixin: FiltersMixin) {
     return {
         ...readonlyFiltersInterface(mixin),
         toggle: mixin.toggle.bind(mixin),

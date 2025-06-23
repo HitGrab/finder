@@ -58,7 +58,7 @@ class Finder<FItem> {
     // Subclasses that extend functionality
     #mixins: {
         search: SearchMixin<FItem>;
-        filters: FiltersMixin<FItem>;
+        filters: FiltersMixin;
         sortBy: SortByMixin<FItem>;
         groupBy: GroupByMixin<FItem>;
         meta: MetaMixin<FItem>;
@@ -153,7 +153,7 @@ class Finder<FItem> {
             this.#eventEmitter.on("firstUserInteraction", onFirstUserInteraction);
         }
 
-        this.isReady = isLoading === false && Array.isArray(items) && items.length > 0;
+        this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
         if (onReady) {
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
             if (this.isReady) {
@@ -167,18 +167,13 @@ class Finder<FItem> {
             }
         }
 
-        if (this.isReady === false) {
-            this.#eventEmitter.on("ready", (payload) => {
-                // Some filters may be using option generator functions, so we re-process all rules once data is available.
-                this.#mixins.filters.recalculateHydratedRules();
-
-                onReady && onReady(payload);
-            });
+        if (this.isReady === false && onReady) {
+            this.#eventEmitter.on("ready", onReady);
         }
     }
 
     /**
-     * Changes that reflect a user interaction.
+     * Events that reflect a user interaction.
      * e.g: entering a search term or selecting a filter.
      */
     #touch(touchEvent: FinderTouchEvent) {
@@ -187,6 +182,11 @@ class Finder<FItem> {
         this.#isTouched = true;
         this.#snapshot = undefined;
         this.updatedAt = Date.now();
+
+        // if a meta value changed, updated any option generators
+        if (touchEvent.source === "meta") {
+            this.#mixins.filters.clearHydratedRules();
+        }
 
         // transform the internal touch event to a public change event
         const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
@@ -204,7 +204,7 @@ class Finder<FItem> {
         this.#eventEmitter.emit("change", changeEvent);
     }
 
-    /** Changes that do not reflect a user interaction  */
+    /** Internal events not triggered by a user action  */
     #systemTouch(touchEvent: FinderTouchEvent) {
         this.#isTouched = true;
         this.#snapshot = undefined;
@@ -363,6 +363,10 @@ class Finder<FItem> {
         if (isEqual(items, this.#items) === false) {
             const previousValue = this.#items;
             this.#items = items;
+
+            // filter option generators will need to be recalculated
+            this.#mixins.filters.clearHydratedRules();
+
             this.#systemTouch({ source: "core", event: "change.core.setItems", current: items, initial: previousValue });
         }
     }

@@ -68,9 +68,14 @@ export interface SearchRule<FItem = any> {
     debounceDelay?: number;
 }
 
+export interface FilterOptionGeneratorFnOptions<FItem> {
+    items: FItem[];
+    meta: MetaInterface;
+}
+
 interface FilterRuleBase<FItem, FValue> {
     id: string;
-    options?: FilterOption<FValue>[] | ((items: FItem[], meta: MetaInterface) => FilterOption<FValue>[]);
+    options?: FilterOption<FValue>[] | ((options: FilterOptionGeneratorFnOptions<FItem>) => FilterOption<FValue>[]);
     required?: boolean;
     isBoolean?: boolean;
     label?: string;
@@ -169,7 +174,7 @@ export interface FilterTestRuleOptionsOptions {
 
 export interface FinderSnapshot<FItem> {
     search: ReturnType<typeof readonlySearchInterface<FItem>>;
-    filters: ReturnType<typeof readonlyFiltersInterface<FItem>>;
+    filters: ReturnType<typeof readonlyFiltersInterface>;
     sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
     selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;

@@ -1,5 +1,5 @@
 import { capitalize, range } from "lodash";
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Product } from "./types";
 import { generateProducts } from "./services/generateProducts";
 import {
@@ -14,7 +14,6 @@ import {
     FinderContent,
     useFinderContext,
     finderRuleset,
-    SortDirection,
 } from "@hitgrab/finder";
 import "./global.css";
 import { ProductItem } from "./components/product-item";
@@ -50,7 +49,7 @@ function App() {
             filterFn: (item, value) => value.every((color) => item.colors.includes(color)),
             multiple: true,
             label: "Colours",
-            options: (items) => {
+            options: ({ items }) => {
                 const uniqueColors = items
                     .reduce((acc, item) => {
                         item.colors.forEach((color) => {
