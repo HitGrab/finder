@@ -3,13 +3,6 @@
  */
 import { FinderRule, FinderTouchCallback, MetaInterface } from "../../types";
 import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
-export interface EventPayload {
-    event: string;
-    payload: any;
-}
-export type DiscriminatedPayload<P extends EventPayload, T extends string> = Extract<P, {
-    event: `${T}`;
-}>["payload"];
 export interface MixinInjectedDependencies<FItem = any> {
     isLoading: () => boolean;
     isDisabled: () => boolean;

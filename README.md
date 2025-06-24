@@ -29,7 +29,8 @@ Finder provides a headless interface for manipulating datasets with easily confi
     <li><a href="#events">Events</a></li>
     <li><a href="#pagination">Pagination</a></li>
     <li><a href="#components-and-interfaces">Components and Interfaces</a></li>
-    <li><a href="#meta">Meta</a></li>
+    <li><a href="#meta">Meta Mixin</a></li>
+    <li><a href="#layout">Layout Mixin</a></li>
     <li><a href="#hooks">Custom Hooks</a></li>
     <li><a href="#utils">Utils</a></li>
   </ul>
@@ -46,7 +47,15 @@ Finder provides a headless interface for manipulating datasets with easily confi
 
 ## Basic Usage
 
-Finder accepts an item array, and processes it according to static rules. The matches and current state are passed to a React context for easy consumption.
+Finder accepts an array of items, and processes them according to static rules. The matches and current rule state are passed to React context for easy consumption. A robust imperative API is provided to allow developers to build their control components in the theming library of their choice.
+
+### Tutorial examples:
+
+1. [Kicking Rad Shoe Store](https://stackblitz.com/edit/vitejs-vite-vsu7v2pg?file=src%2Fapp.tsx)
+   Demonstrates filtering, sorting, and displays active rules as toggleable chips.
+2. [Ancient Armory](https://stackblitz.com/edit/vitejs-vite-x4ng7k3m?file=src%2Fapp.tsx) Demonstrates searching, filtering, grouping, and the event life cycle.
+
+### To all things a pattern
 
 Finder processes rules in the following order:
 
@@ -143,7 +152,7 @@ filterRule({
 | Prop          | Description                                                                                                                                                                        | Default | Required |
 | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
 | id            | Every filter rule must have a unique string id.                                                                                                                                    |         | ✓        |
-| filterFn      | A predicate that returns a boolean. Note that it receives a Meta parameter, which can be any instance-wide arbitrary data.                                                         |         | ✓        |
+| filterFn      | A predicate that returns a boolean. Note that it receives the Meta mixin, which can contain instance-wide arbitrary data.                                                          |         | ✓        |
 | options       | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or an option generator function that returns options. `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |          |
 | multiple      | If this filter has a single value or an array of values.                                                                                                                           | false   |          |
 | required      | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                                          | false   |          |
@@ -173,13 +182,13 @@ sortByRule({
 })
 ```
 
-| Prop                 | Description                                                                                                                | Default | Required |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
-| id                   | Every sortBy rule must have a unique string id.                                                                            |         | ✓        |
-| sortFn               | A predicate that returns a boolean. Note that it receives a Meta parameter, which can be any instance-wide arbitrary data. |         | ✓        |
-| defaultSortDirection | 'asc' or 'desc'.                                                                                                           | 'asc'   |          |
-| label                | Optional label for your client to display.                                                                                 |         |          |
-| hidden               | Optional display value for your client to display.                                                                         | false   |          |
+| Prop                 | Description                                                                                                               | Default | Required |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| id                   | Every sortBy rule must have a unique string id.                                                                           |         | ✓        |
+| sortFn               | A predicate that returns a boolean. Note that it receives the Meta mixin, which can contain instance-wide arbitrary data. |         | ✓        |
+| defaultSortDirection | 'asc' or 'desc'.                                                                                                          | 'asc'   |          |
+| label                | Optional label for your client to display.                                                                                |         |          |
+| hidden               | Optional display value for your client to display.                                                                        | false   |          |
 
 Pro-tips:
 
@@ -224,7 +233,7 @@ Pro-tips:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Meta
+## Meta Mixin
 
 The Meta mixin allows you to provide additional context that doesn't belong to either items or rules. For example, a filter might be affected by a user's purchase history or browser preferences.
 
@@ -248,6 +257,39 @@ function MetaComponent() {
     return (
         <Finder items={items} rules={rules} initialMeta={initialMeta}>
             // contents
+        </Finder>
+    )
+}
+```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Layout Mixin
+
+The Layout mixin can be used to inform rendering logic inside your React components.
+
+```ts
+function MetaComponent() {
+    const items = [...];
+    const rules = [...];
+    const layoutVariants: LayoutVariant[] = [
+        {
+            id: 'gallery'
+        }
+        {
+            id: 'table'
+        }
+    ]
+
+    return (
+        <Finder items={items} rules={rules} layoutVariants={layoutVariants} initialLayout='table'>
+            <FinderItems>
+                {
+                    ({items, layout}) => {
+                        return layout.is('table') ? <TableComponent items={items} /> : <GalleryComponent items={items} />
+                    }
+                }
+            </FinderItems>
         </Finder>
     )
 }
@@ -368,7 +410,7 @@ Triggered whenever a rule's state changes.
 ```ts
 // FinderChangeEvent
 {
-    source: "core" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
+    source: "core" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy" | "layout";
     event: "change";
     current: any;
     initial: any;
@@ -407,6 +449,8 @@ Props:
     page?: number;
     numItemsPerPage?: number;
     requireGroup?: boolean;
+    layoutVariants?: LayoutVariant[];
+    initialLayout?: string;
     plugins?: FinderPlugin[];
     onInit?: (event: FinderInitEvent) => void;
     onReady?: (event: FinderReadyEvent) => void
@@ -434,10 +478,10 @@ Props:
         noMatches: ReactNode
 
         // Items were found that matched the rules.
-        items: (items: FItem[], meta: FinderMeta, pagination: FinderPagination, selectedItems: FinderSelectedItems) => ReactNode,
+        items: ({items: FItem[], meta: MetaMixin, pagination: FinderPagination, selectedItems: FinderSelectedItems, layout: LayoutMixin}) => ReactNode,
 
         // An active GroupBy rule grouped items together.
-        groups: (groups: FinderResultGroup<FItem>, meta: FinderMeta, pagination: FinderPagination, selectedItems: FinderSelectedItems) => ReactNode,
+        groups: ({groups: FinderResultGroup<FItem>, meta: MetaMixin, pagination: FinderPagination, selectedItems: FinderSelectedItems, layout: LayoutMixin}) => ReactNode,
 
     }}
 
@@ -446,7 +490,7 @@ Props:
 Pro-tips:
 
 - If pagination is enabled, the items and groups components will receive only the current page's slice.
-      </details>
+  </details>
 
 <details>
 <summary><i>&lt;FinderLoading /&gt;</i></summary>
@@ -494,7 +538,7 @@ Only visible when items were found that matched the rules.
 
 ```ts
 <FinderItems>
-    {(items: FItem[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
+    {({items: FItem[], meta: MetaMixin, pagination: FinderPagination, selectedItems: FinderSelectedItems, layout: LayoutMixin }) => ReactNode}
 </FinderItems>
 ```
 
@@ -507,7 +551,7 @@ Only visible when an active GroupBy rule grouped items together.
 
 ```ts
 <FinderItems>
-    {(groups: FinderResultGroup<FItem>[], meta: FinderMeta, pagination: FinderPagination) => ReactNode}
+    {({groups: FinderResultGroup<FItem>[],  meta: MetaMixin, pagination: FinderPagination, selectedItems: FinderSelectedItems, layout: LayoutMixin}) => ReactNode}
 </FinderItems>
 ```
 
@@ -881,6 +925,19 @@ finder.meta = {
     get: (metaIdentifier: any) => any;
     has: (metaIdentifier: any) => boolean;
     delete: (metaIdentifier: any) => void;
+    reset: () => void;
+};
+```
+
+### Layout
+
+```ts
+finder.layout = {
+    variants?: LayoutVariant[];
+    activeLayout?: LayoutVariant;
+    raw?: LayoutVariant;
+    is: (layoutIdentifier: string | LayoutVariant) => boolean;
+    set: (layoutIdentifier: string | LayoutVariant) => void;
     reset: () => void;
 };
 ```

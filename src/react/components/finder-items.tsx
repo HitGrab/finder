@@ -14,12 +14,21 @@ function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
                 selectedItems: finder.selectedItems,
                 pagination: finder.pagination,
                 meta: finder.meta,
+                layout: finder.layout,
             });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component items={finder.matches.items} selectedItems={finder.selectedItems} pagination={finder.pagination} meta={finder.meta} />;
+            return (
+                <Component
+                    items={finder.matches.items}
+                    selectedItems={finder.selectedItems}
+                    pagination={finder.pagination}
+                    meta={finder.meta}
+                    layout={finder.layout}
+                />
+            );
         }
     }
     return null;

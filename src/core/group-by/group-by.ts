@@ -74,6 +74,20 @@ class GroupByMixin<FItem> {
         });
     }
 
+    toggle(identifier: GroupByRule | string) {
+        const rule = getRuleFromIdentifier<GroupByRule>(identifier, this.rules);
+        if (this.activeRule === rule) {
+            this.set(undefined);
+            return;
+        }
+        this.set(rule);
+    }
+
+    reset() {
+        this.setGroupIdSortDirection(undefined);
+        this.set(undefined);
+    }
+
     process(items: FItem[], meta: MetaInterface) {
         if (this.activeRule === undefined) {
             return [];

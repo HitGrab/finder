@@ -8,7 +8,7 @@ declare class Finder<FItem> {
     disabled: boolean;
     updatedAt?: number;
     plugins: PluginMediator<FItem>;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, initialMeta, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, layoutVariants, initialLayout, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;
@@ -21,10 +21,10 @@ declare class Finder<FItem> {
         hasSearchTerm: boolean;
     };
     get filters(): {
-        toggle: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => void;
-        toggleOption: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule, optionValue: import("..").FilterOption | any) => void;
-        set: <FItem_1, FValue>(identifier: string | import("../types").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>, incomingFilterValue: FValue | FValue[]) => void;
-        delete: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => void;
+        toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => void;
+        toggleOption: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule, optionValue: import("..").FilterOption | any) => void;
+        set: <FItem_1, FValue>(identifier: string | import("..").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>, incomingFilterValue: FValue | FValue[]) => void;
+        delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => void;
         test: (options: import("../types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => any[];
         testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
@@ -32,10 +32,10 @@ declare class Finder<FItem> {
         raw: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<any, any>[];
         rules: import("..").HydratedFilterRule<any, any>[];
-        isActive: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => boolean;
-        get: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule) => any;
-        has: (identifier: string | import("../types").FilterRuleUnion | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
-        getRule: <FItem_1 = any, FValue = any>(identifier: string | import("../types").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>) => import("..").HydratedFilterRule<FItem_1, FValue>;
+        isActive: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => boolean;
+        get: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => any;
+        has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
+        getRule: <FItem_1 = any, FValue = any>(identifier: string | import("..").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue>) => import("..").HydratedFilterRule<FItem_1, FValue>;
     };
     get sortBy(): {
         set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;
@@ -87,6 +87,14 @@ declare class Finder<FItem> {
         items: FItem[];
         maxSelectedItems: number | undefined;
         isSelected: (item: FItem) => boolean;
+    };
+    get layout(): {
+        set: (identifier: string | import("..").LayoutVariant | undefined) => void;
+        reset: () => void;
+        variants: import("..").LayoutVariant[];
+        activeLayout: import("..").LayoutVariant | undefined;
+        raw: import("..").LayoutVariant | undefined;
+        is: (identifier: string | import("..").LayoutVariant | undefined) => boolean;
     };
     get events(): {
         on: (event: FinderEventName, callback: EventCallback) => void;
