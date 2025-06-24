@@ -13,6 +13,8 @@ declare class GroupByMixin<FItem> {
     get activeRule(): GroupByRule<unknown> | undefined;
     set(identifier?: GroupByRule | string): void;
     setGroupIdSortDirection(direction?: SortDirection): void;
+    toggle(identifier: GroupByRule | string): void;
+    reset(): void;
     process(items: FItem[], meta: MetaInterface): FinderResultGroup<FItem>[];
 }
 export { GroupByMixin };

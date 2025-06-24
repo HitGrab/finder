@@ -9,12 +9,17 @@ function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
     const finder = useFinderContext();
     if (finder.state === "empty" && renderProp) {
         if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return cloneElement(renderProp, { pagination: finder.pagination, meta: finder.meta, selectedItems: finder.selectedItems });
+            return cloneElement(renderProp, {
+                pagination: finder.pagination,
+                meta: finder.meta,
+                selectedItems: finder.selectedItems,
+                layout: finder.layout,
+            });
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component pagination={finder.pagination} meta={finder.meta} selectedItems={finder.selectedItems} />;
+            return <Component pagination={finder.pagination} meta={finder.meta} selectedItems={finder.selectedItems} layout={finder.layout} />;
         }
 
         return renderProp;

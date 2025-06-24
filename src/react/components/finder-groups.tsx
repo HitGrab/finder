@@ -15,6 +15,7 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
                 selectedItems: finder.selectedItems,
                 pagination: finder.pagination,
                 meta: finder.meta,
+                layout: finder.layout,
             });
         }
 
@@ -27,6 +28,7 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
                     selectedItems={finder.selectedItems}
                     pagination={finder.pagination}
                     meta={finder.meta}
+                    layout={finder.layout}
                 />
             );
         }

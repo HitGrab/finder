@@ -1,5 +1,3 @@
-import { GroupByRule } from "../../types";
-import { getRuleFromIdentifier } from "../utils/rule-utils";
 import { GroupByMixin } from "./group-by";
 
 /**
@@ -18,19 +16,9 @@ function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
     return {
         ...readonlyGroupByInterface(mixin),
         set: mixin.set.bind(mixin),
-        toggle: (identifier: GroupByRule | string) => {
-            const rule = getRuleFromIdentifier<GroupByRule>(identifier, mixin.rules);
-            if (mixin.activeRule === rule) {
-                mixin.set(undefined);
-                return;
-            }
-            mixin.set(rule);
-        },
+        toggle: mixin.toggle.bind(mixin),
         setGroupIdSortDirection: mixin.setGroupIdSortDirection.bind(mixin),
-        reset: () => {
-            mixin.setGroupIdSortDirection(undefined);
-            mixin.set(undefined);
-        },
+        reset: mixin.reset.bind(mixin),
     };
 }
 

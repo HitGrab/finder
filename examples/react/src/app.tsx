@@ -71,7 +71,7 @@ function App() {
         }),
         filterRule({
             id: "is_best_fruit",
-            filterFn: (item, value: string) => item.label === "Guava",
+            filterFn: (item) => item.label === "Guava",
             label: "Is best fruit",
             isBoolean: true,
         }),

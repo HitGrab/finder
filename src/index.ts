@@ -16,10 +16,14 @@ export type {
     SearchRule,
     FilterRule,
     HydratedFilterRule,
+    FilterRuleUnion,
     SortByRule,
     GroupByRule,
     FinderResultGroup,
     FilterOption,
+
+    // rule helpers
+    SortDirection,
 
     // events
     FinderEvent,
@@ -28,12 +32,12 @@ export type {
     FinderFirstUserInteractionEvent,
     FinderChangeEvent,
 
+    // meta
+    LayoutVariant,
+
     // plugins
     FinderPluginFn,
     FinderPluginInterface,
-
-    // utils
-    SortDirection,
 } from "./types";
 
 /**

@@ -10,6 +10,7 @@ import { metaInterface, readonlyMetaInterface } from "./core/meta/meta-interface
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
+import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 
 export type MetaInterface = ReturnType<typeof metaInterface>;
 export interface FinderConstructorOptions<FItem> {
@@ -39,6 +40,9 @@ export interface FinderConstructorOptions<FItem> {
     requireGroup?: boolean;
 
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
+
+    layoutVariants?: LayoutVariant[];
+    initialLayout?: string;
 
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;
@@ -88,10 +92,10 @@ export interface FilterRule<FItem = any, FValue = any> {
     defaultValue?: any;
 }
 
-interface FilterRuleWithBooleanValue<FItem> extends FilterRule<FItem, boolean> {
+interface FilterRuleWithBooleanValue<FItem, FValue = boolean> extends FilterRule<FItem, FValue> {
     multiple?: false;
     isBoolean: true;
-    filterFn: (item: FItem, value: boolean, meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
     defaultValue?: boolean;
 }
 interface FilterRuleWithScalarValue<FItem, FValue> extends FilterRule<FItem, FValue> {
@@ -124,8 +128,8 @@ export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<Filt
     multiple: boolean;
 
     // filterfn
-    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean | ((item: FItem, value: FValue[], meta: MetaInterface) => boolean);
-    defaultValue?: FValue | FValue[];
+    filterFn: ((item: FItem, value: FValue, meta: MetaInterface) => boolean) | ((item: FItem, value: FValue[], meta: MetaInterface) => boolean);
+    defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
 }
 
@@ -149,6 +153,8 @@ export interface SortByRule<FItem = any> {
     label?: string;
     hidden?: boolean;
 }
+
+export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];
 
 /**
  * Select a property from the item to sort by.
@@ -200,11 +206,12 @@ export interface FinderSnapshot<FItem> {
     sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
     selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
+    layout: ReturnType<typeof readonlyLayoutInterface>;
     meta: ReturnType<typeof readonlyMetaInterface<FItem>>;
     updatedAt: number | undefined;
 }
 
-export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderReadyEvent | FinderChangeEvent;
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
 
 type FinderBaseEvent = {
     source: string;
@@ -212,10 +219,6 @@ type FinderBaseEvent = {
     snapshot: FinderSnapshot<any>;
     timestamp: number;
 };
-export type FinderOnInitCallback = (event: FinderInitEvent) => void;
-export type FinderOnReadyCallback = (event: FinderReadyEvent) => void;
-export type FinderOnFirstUserInteractCallback = (event: FinderFirstUserInteractionEvent) => void;
-
 export interface FinderInitEvent extends FinderBaseEvent {
     source: "core";
     event: "init";
@@ -229,9 +232,14 @@ export interface FinderReadyEvent extends FinderBaseEvent {
     event: "ready";
 }
 
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy";
+export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderReadyEvent | FinderChangeEvent;
 
+export type FinderOnInitCallback = (event: FinderInitEvent) => void;
+export type FinderOnReadyCallback = (event: FinderReadyEvent) => void;
+export type FinderOnFirstUserInteractCallback = (event: FinderFirstUserInteractionEvent) => void;
+export type FinderOnChangeCallback = (event: FinderChangeEvent) => void;
 export type FinderTouchCallback = (event: FinderTouchEvent) => void;
+
 /**
  * Internal communication between mixins and core
  */
@@ -256,6 +264,9 @@ export type FinderEventName =
     | "change.core.setIsLoading"
     | "change.core.setIsDisabled"
     | "change.core.setItems"
+    | "change.layout"
+    | "change.layout.set"
+    | "change.layout.reset"
     | `change.filters`
     | "change.filters.set"
     | `change.groupBy`
@@ -268,6 +279,8 @@ export type FinderEventName =
     | "change.pagination"
     | "change.pagination.setPage"
     | "change.pagination.setNumItemsPerPage"
+    | `change.plugin`
+    | `change.plugin.${string}`
     | "change.search"
     | "change.search.setSearchTerm"
     | "change.search.reset"
@@ -280,11 +293,7 @@ export type FinderEventName =
     | "change.selectedItems.reset"
     | "change.sortBy"
     | "change.sortBy.set"
-    | "change.sortBy.setSortDirection"
-    | `change.plugin`
-    | `change.plugin.${string}`;
-
-export type FinderOnChangeCallback = (event: FinderChangeEvent) => void;
+    | "change.sortBy.setSortDirection";
 
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 
@@ -294,4 +303,6 @@ export interface FinderPluginInterface<FItem = any> {
     [k: string]: any;
 }
 
-export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];
+export interface LayoutVariant {
+    id: string;
+}
