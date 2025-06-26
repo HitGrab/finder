@@ -13,13 +13,13 @@ type InitialValues = {
 class LayoutMixin {
     variants;
 
-    #activeLayout;
+    #layout;
 
     #deps;
 
     constructor({ layoutVariants = [], initialLayout }: InitialValues, mixinDeps: MixinInjectedDependencies) {
         if (initialLayout) {
-            this.#activeLayout = layoutVariants.find(({ id }) => id === initialLayout);
+            this.#layout = layoutVariants.find(({ id }) => id === initialLayout);
         }
 
         this.variants = layoutVariants;
@@ -27,47 +27,47 @@ class LayoutMixin {
     }
 
     set(identifier: string | LayoutVariant | undefined) {
-        const previousValue = this.#activeLayout;
+        const previousValue = this.#layout;
         if (typeof identifier === "string") {
-            this.#activeLayout = this.variants.find(({ id }) => id === identifier);
+            this.#layout = this.variants.find(({ id }) => id === identifier);
         } else {
-            this.#activeLayout = identifier;
+            this.#layout = identifier;
         }
 
         this.#deps.touch({
             source: "layout",
             event: "change.layout.set",
-            current: this.#activeLayout,
+            current: this.#layout,
             initial: previousValue,
         });
     }
 
     is(identifier: string | LayoutVariant | undefined) {
         if (typeof identifier === "string") {
-            return this.#activeLayout?.id === identifier;
+            return this.activeLayout?.id === identifier;
         }
         return this.activeLayout === identifier;
     }
 
     reset() {
-        const previousValue = this.#activeLayout;
-        this.#activeLayout = undefined;
+        const previousValue = this.#layout;
+        this.#layout = undefined;
 
         this.#deps.touch({
             source: "layout",
             event: "change.layout.reset",
-            current: this.#activeLayout,
+            current: this.#layout,
             initial: previousValue,
         });
     }
 
     // if no display mode is active, select the first available option
     get activeLayout() {
-        return this.#activeLayout ?? this.variants.at(0);
+        return this.#layout ?? this.variants.at(0);
     }
 
     get raw() {
-        return this.#activeLayout;
+        return this.#layout;
     }
 }
 

@@ -54,4 +54,4 @@ export { FinderNoMatches } from "./react/components/finder-no-matches";
 export { FinderContent } from "./react/components/finder-content";
 export { useFinderRef } from "./react/hooks/use-finder-ref";
 
-export type { FinderProps } from "./react/types/react-types";
+export type { FinderProps, FinderGroupsComponentProps, FinderItemsComponentProps } from "./react/types/react-types";
