@@ -402,7 +402,7 @@ describe("Filters", () => {
         const rule = filterRule({
             id: "price_is_below",
             filterFn: (item: MockObjectItem, value: number) => item.price <= value,
-            debounceDelay: 100,
+            debounceMilliseconds: 100,
         });
 
         const onChange = vitest.fn();
@@ -413,7 +413,7 @@ describe("Filters", () => {
             finder.filters.set(rule, value);
         });
 
-        await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceDelay) + 10));
+        await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceMilliseconds) + 10));
 
         // The onchange event should only have triggered once
         expect(onChange).toHaveBeenCalledTimes(1);

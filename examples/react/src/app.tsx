@@ -80,7 +80,7 @@ function App() {
             filterFn: (item, [min, max]) => item.price >= min && item.price <= max,
             label: "Price Between",
             hidden: true,
-            debounceDelay: 300,
+            debounceMilliseconds: 300,
         }),
         sortByRule({
             id: "index",

@@ -85,6 +85,13 @@ html {
     align-items: center;
     transition: all 0.3s ease-out;
 
+    .name {
+        span {
+            text-transform: uppercase;
+            color: var(--color-bright);
+        }
+    }
+
     &.armed {
         outline-color: var(--color-bright);
         outline-style: solid;

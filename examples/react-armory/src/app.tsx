@@ -32,7 +32,7 @@ function App() {
     const rules = finderRuleset<Equipment>([
         searchRule({
             searchFn: (item, searchTerm) => finderSequentialCharacterCompare(item.name, searchTerm),
-            debounceDelay: 200,
+            debounceMilliseconds: 200,
         }),
         filterRule({
             id: "has_quantity",

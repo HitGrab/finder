@@ -1,3 +1,5 @@
+import { FinderSearchTerm } from "@hitgrab/finder";
+
 interface EquipmentProps {
     item: Equipment;
     isSelected: boolean;
@@ -6,7 +8,9 @@ interface EquipmentProps {
 function EquipmentCard({ item, isSelected, onSelect }: EquipmentProps) {
     return (
         <div className={`equipmentCard ${isSelected ? "armed" : ""} ${item.quantity === 0 ? "notOwned" : ""}`}>
-            <b>{item.name}</b>
+            <div className="name">
+                <FinderSearchTerm>{item.name}</FinderSearchTerm>
+            </div>
             <img src={item.image} alt={item.name} className="equipmentImage" />
             <div className="stats">
                 Atk: <span>{item.atk}</span>

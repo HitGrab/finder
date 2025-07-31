@@ -1,5 +1,5 @@
 /**
- * Case-insensitive string comparison with line breaks and white spaces removed.
+ * Case-insensitive sequential string comparison with line breaks and white spaces removed.
  * If the method receive an optional aliases array, each of those aliases will be compared as well.
  */
 export declare function finderStringCompare(haystack: string, needle: string, aliases?: string[] | null): boolean;

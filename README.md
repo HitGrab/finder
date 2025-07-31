@@ -109,7 +109,7 @@ Only a single search rule can be defined per Finder instance. If you need to do 
 ```ts
 searchRule({
     searchFn: (item: FItem, searchTerm: string, meta?: FinderMeta) => boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
     label?: string;
     hidden?: boolean;
 })
@@ -119,7 +119,7 @@ Pro-tips:
 
 - You can use `searchRule()` to ensure your rule has a valid shape.
 - Use `finderStringCompare` to do a case-insensitive search that removes whitespace and line breaks.
-- If you have a large volume of data to process, you can add a `debounceDelay`.
+- If you have a large volume of data to process, you can add a `debounceMilliseconds`.
 
 <!--
 Buttons for linking to implimentation in the example repo and the docs, we can add these later when we're finalized with the structure!
@@ -145,22 +145,22 @@ filterRule({
     defaultValue?: FValue;
     label?: string;
     hidden?: boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
 })
 ```
 
-| Prop          | Description                                                                                                                                                                        | Default | Required |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
-| id            | Every filter rule must have a unique string id.                                                                                                                                    |         | ✓        |
-| filterFn      | A predicate that returns a boolean. Note that it receives the Meta mixin, which can contain instance-wide arbitrary data.                                                          |         | ✓        |
-| options       | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or an option generator function that returns options. `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |          |
-| multiple      | If this filter has a single value or an array of values.                                                                                                                           | false   |          |
-| required      | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                                          | false   |          |
-| isBoolean     | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
-| defaultValue  | If the filter has a preset value.                                                                                                                                                  |         |          |
-| label         | Optional label for your client to display.                                                                                                                                         |         |          |
-| hidden        | Optional display value for your client to display.                                                                                                                                 | false   |          |
-| debounceDelay | If you want to debounce value changes, enter a time in milliseconds.                                                                                                               |         |          |
+| Prop                 | Description                                                                                                                                                                        | Default | Required |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| id                   | Every filter rule must have a unique string id.                                                                                                                                    |         | ✓        |
+| filterFn             | A predicate that returns a boolean. Note that it receives the Meta mixin, which can contain instance-wide arbitrary data.                                                          |         | ✓        |
+| options              | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or an option generator function that returns options. `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |          |
+| multiple             | If this filter has a single value or an array of values.                                                                                                                           | false   |          |
+| required             | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                                          | false   |          |
+| isBoolean            | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
+| defaultValue         | If the filter has a preset value.                                                                                                                                                  |         |          |
+| label                | Optional label for your client to display.                                                                                                                                         |         |          |
+| hidden               | Optional display value for your client to display.                                                                                                                                 | false   |          |
+| debounceMilliseconds | If you want to debounce value changes, enter a time in milliseconds.                                                                                                               |         |          |
 
 Pro-tips:
 

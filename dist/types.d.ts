@@ -38,13 +38,23 @@ export interface FinderResultGroup<FItem> {
     items: FItem[];
 }
 export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRuleUnion<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
-export interface SearchRule<FItem = any> {
+export interface SearchRuleSharedProps {
     id?: string;
-    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
     label?: string;
     hidden?: boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
+    searchFn?: unknown;
+    searchTermFn?: unknown;
 }
+export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
+    searchFn?: never;
+    searchTermFn: (item: FItem, meta: MetaInterface) => string | string[];
+}
+export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
+    searchTermFn?: never;
+    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
+}
+export type SearchRule<FItem = any> = SearchRuleAdvanced<FItem> | SearchRuleSimple<FItem>;
 export interface FilterOptionGeneratorFnOptions<FItem> {
     items: FItem[];
     meta: MetaInterface;
@@ -55,7 +65,7 @@ export interface FilterRule<FItem = any, FValue = any> {
     required?: boolean;
     label?: string;
     hidden?: boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
     multiple?: boolean;
     isBoolean?: boolean;
     filterFn: CallableFunction;
@@ -161,21 +171,21 @@ export interface FinderSnapshot<FItem> {
     updatedAt: number | undefined;
 }
 export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
-type FinderBaseEvent = {
+type FinderSharedEventProps = {
     source: string;
     event: FinderEventName;
     snapshot: FinderSnapshot<any>;
     timestamp: number;
 };
-export interface FinderInitEvent extends FinderBaseEvent {
+export interface FinderInitEvent extends FinderSharedEventProps {
     source: "core";
     event: "init";
 }
-export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
+export interface FinderFirstUserInteractionEvent extends FinderSharedEventProps {
     source: "core";
     event: "firstUserInteraction";
 }
-export interface FinderReadyEvent extends FinderBaseEvent {
+export interface FinderReadyEvent extends FinderSharedEventProps {
     source: "core";
     event: "ready";
 }
@@ -197,7 +207,7 @@ export interface FinderTouchEvent {
 /**
  * External type that consumers will receive
  */
-export type FinderChangeEvent = FinderTouchEvent & FinderBaseEvent;
+export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
 export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.meta" | "change.meta.set" | "change.meta.delete" | "change.meta.reset" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.selectedItems" | "change.selectedItems.setMaxSelectedItems" | "change.selectedItems.set" | "change.selectedItems.select" | "change.selectedItems.toggle" | "change.selectedItems.delete" | "change.selectedItems.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 export interface FinderPluginInterface<FItem = any> {
