@@ -45,7 +45,7 @@ describe("Search", () => {
     test("Debounced searches trigger only once", async () => {
         const rule = searchRule({
             searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
-            debounceDelay: 15,
+            debounceMilliseconds: 15,
         });
 
         const onChange = vitest.fn();
@@ -57,10 +57,22 @@ describe("Search", () => {
         });
 
         await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceDelay) + 5));
+            await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceMilliseconds) + 5));
         });
 
         // The onchange event should only have triggered once
         expect(onChange).toHaveBeenCalledTimes(1);
+    });
+
+    test("Simple Search", () => {
+        const rules = [
+            searchRule({
+                searchTermFn: (item: MockObjectItem) => item.type,
+            }),
+        ];
+
+        const finder = new Finder(objectItems, { rules });
+        finder.search.setSearchTerm("apple");
+        expect(finder.matches.items).toStrictEqual([apple]);
     });
 });

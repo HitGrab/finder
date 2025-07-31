@@ -103,7 +103,7 @@ export function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem> {
 }
 
 export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
-    return typeof rule === "object" && rule !== null && "searchFn" in rule;
+    return typeof rule === "object" && rule !== null && ("searchFn" in rule || "searchTermFn" in rule);
 }
 
 export function isFilterUnionRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {

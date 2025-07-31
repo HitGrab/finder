@@ -3,7 +3,7 @@ export { Finder as FinderCore } from "./core/finder";
 export { FinderPlugin } from "./core/plugins/plugin-super-class";
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
 export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
-export type { FinderSnapshot, FinderRule, SearchRule, FilterRule, HydratedFilterRule, FilterRuleUnion, SortByRule, GroupByRule, FinderResultGroup, FilterOption, SortDirection, FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent, LayoutVariant, FinderPluginFn, FinderPluginInterface, } from "./types";
+export type { FinderSnapshot, FinderConstructorOptions, FinderRule, SearchRule, FilterRule, HydratedFilterRule, FilterRuleUnion, SortByRule, GroupByRule, FinderResultGroup, FilterOption, SortDirection, FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent, LayoutVariant, FinderPluginFn, FinderPluginInterface, } from "./types";
 /**
  * React hooks and components
  */
@@ -16,5 +16,6 @@ export { FinderGroups } from "./react/components/finder-groups";
 export { FinderLoading } from "./react/components/finder-loading";
 export { FinderNoMatches } from "./react/components/finder-no-matches";
 export { FinderContent } from "./react/components/finder-content";
+export { FinderSearchTerm } from "./react/components/finder-search-term";
 export { useFinderRef } from "./react/hooks/use-finder-ref";
-export type { FinderProps, FinderGroupsComponentProps, FinderItemsComponentProps } from "./react/types/react-types";
+export type { FinderProps, FinderContentComponentProps, FinderGroupsComponentProps, FinderItemsComponentProps } from "./react/types/react-types";

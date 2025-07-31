@@ -1,6 +1,7 @@
 import { MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
+import { finderSequentialCharacterCompare } from "../utils/string-compare-utils";
 
 type InitialValues = { initialSearchTerm: string | undefined };
 class SearchMixin<FItem> {
@@ -31,7 +32,7 @@ class SearchMixin<FItem> {
             throw new Error("Finder could not locate a searchRule.");
         }
         if (this.#deps.debouncer.has("_search") === false) {
-            this.#deps.debouncer.register("_search", rule?.debounceDelay);
+            this.#deps.debouncer.register("_search", rule?.debounceMilliseconds);
         }
 
         this.#deps.debouncer.call("_search", () => {
@@ -68,7 +69,26 @@ class SearchMixin<FItem> {
             return items;
         }
 
-        return items.filter((item) => this.rule?.searchFn(item, this.#searchTerm, meta));
+        return items.filter((item) => {
+            if (this.rule === undefined) {
+                return true;
+            }
+            if (this.rule.searchTermFn) {
+                const itemSearchTermOrTerms = this.rule.searchTermFn(item, meta);
+                if (typeof itemSearchTermOrTerms === "string") {
+                    return finderSequentialCharacterCompare(itemSearchTermOrTerms, this.#searchTerm);
+                }
+                const firstTerm = itemSearchTermOrTerms[0];
+                if (firstTerm === undefined) {
+                    return false;
+                }
+                return finderSequentialCharacterCompare(firstTerm, this.#searchTerm, itemSearchTermOrTerms.splice(1));
+            }
+            if (this.rule.searchFn) {
+                return this.rule.searchFn(item, this.#searchTerm, meta);
+            }
+            throw new Error("Search rule must provide a searchTermFn or searchFn");
+        });
     }
 }
 

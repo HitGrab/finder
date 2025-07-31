@@ -64,13 +64,26 @@ export interface FinderResultGroup<FItem> {
 
 export type FinderRule<FItem = any> = SearchRule<FItem> | FilterRuleUnion<FItem> | HydratedFilterRule<FItem> | SortByRule<FItem> | GroupByRule<FItem>;
 
-export interface SearchRule<FItem = any> {
+export interface SearchRuleSharedProps {
     id?: string;
-    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
     label?: string;
     hidden?: boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
+
+    // these properties will be narrowed in the SearchRule union
+    searchFn?: unknown;
+    searchTermFn?: unknown;
 }
+export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
+    searchFn?: never;
+    searchTermFn: (item: FItem, meta: MetaInterface) => string | string[];
+}
+export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
+    searchTermFn?: never;
+    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
+}
+
+export type SearchRule<FItem = any> = SearchRuleAdvanced<FItem> | SearchRuleSimple<FItem>;
 
 export interface FilterOptionGeneratorFnOptions<FItem> {
     items: FItem[];
@@ -83,7 +96,7 @@ export interface FilterRule<FItem = any, FValue = any> {
     required?: boolean;
     label?: string;
     hidden?: boolean;
-    debounceDelay?: number;
+    debounceMilliseconds?: number;
 
     // these properties will be narrowed by FilterRuleUnion
     multiple?: boolean;
@@ -213,21 +226,21 @@ export interface FinderSnapshot<FItem> {
 
 export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
 
-type FinderBaseEvent = {
+type FinderSharedEventProps = {
     source: string;
     event: FinderEventName;
     snapshot: FinderSnapshot<any>;
     timestamp: number;
 };
-export interface FinderInitEvent extends FinderBaseEvent {
+export interface FinderInitEvent extends FinderSharedEventProps {
     source: "core";
     event: "init";
 }
-export interface FinderFirstUserInteractionEvent extends FinderBaseEvent {
+export interface FinderFirstUserInteractionEvent extends FinderSharedEventProps {
     source: "core";
     event: "firstUserInteraction";
 }
-export interface FinderReadyEvent extends FinderBaseEvent {
+export interface FinderReadyEvent extends FinderSharedEventProps {
     source: "core";
     event: "ready";
 }
@@ -253,7 +266,7 @@ export interface FinderTouchEvent {
 /**
  * External type that consumers will receive
  */
-export type FinderChangeEvent = FinderTouchEvent & FinderBaseEvent;
+export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
 
 export type FinderEventName =
     | "init"

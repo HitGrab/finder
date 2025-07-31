@@ -36,7 +36,7 @@ class FiltersMixin {
         const previousValue = this.get(identifier);
 
         if (this.#deps.debouncer.has(rule.id) === false) {
-            this.#deps.debouncer.register(rule.id, rule?.debounceDelay);
+            this.#deps.debouncer.register(rule.id, rule?.debounceMilliseconds);
         }
 
         this.#deps.debouncer.call(rule.id, () => {
