@@ -1,5 +1,5 @@
 import { FinderInitEvent, FinderFirstUserInteractionEvent, FinderPluginFn, FinderPluginInterface, FinderTouchCallback } from "../../types";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { FinderPlugin } from "./plugin-super-class";
 
 export class PluginMediator<FItem> {
@@ -7,7 +7,7 @@ export class PluginMediator<FItem> {
 
     constructor(
         plugins: (FinderPluginFn<FinderPluginInterface> | FinderPluginInterface | FinderPlugin)[],
-        getInstance: () => Finder<FItem>,
+        getInstance: () => FinderCore<FItem>,
         touch: FinderTouchCallback,
     ) {
         // bind a referene to the container Finder instance to each plugin

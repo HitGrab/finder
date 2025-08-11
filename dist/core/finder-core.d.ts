@@ -1,7 +1,7 @@
 import { MatchesSnapshot, FinderConstructorOptions, FinderEventName } from "../types";
 import { PluginMediator } from "./plugins/plugin-mediator";
 import { EventCallback } from "./types/internal-types";
-declare class Finder<FItem> {
+declare class FinderCore<FItem> {
     #private;
     isReady: boolean;
     isLoading: boolean;
@@ -105,4 +105,4 @@ declare class Finder<FItem> {
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
 }
-export { Finder };
+export { FinderCore };

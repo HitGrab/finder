@@ -1,8 +1,8 @@
 import { FinderPluginInterface, FinderTouchCallback } from "../../types";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 export declare abstract class FinderPlugin implements FinderPluginInterface {
     abstract id: string;
-    instance: Finder<any> | undefined;
+    instance: FinderCore<any> | undefined;
     touch: FinderTouchCallback | undefined;
-    register(finder: Finder<any>, touch: FinderTouchCallback): void;
+    register(finder: FinderCore<any>, touch: FinderTouchCallback): void;
 }
