@@ -4,13 +4,13 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
-import { Finder as FinderCore } from "./core/finder";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { metaInterface, readonlyMetaInterface } from "./core/meta/meta-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 import { readonlyLayoutInterface } from "./core/layout/layout-interface";
+import { FinderCore } from "./core/finder-core";
 
 export type MetaInterface = ReturnType<typeof metaInterface>;
 export interface FinderConstructorOptions<FItem> {

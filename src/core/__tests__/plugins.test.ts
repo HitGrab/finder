@@ -1,4 +1,4 @@
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { finderRuleset, searchRule, filterRule } from "../utils/rule-type-enforcers";
 import { FinderPluginInterface, FinderPluginFn } from "../../types";
 import { objectItems } from "./test-constants";
@@ -62,7 +62,7 @@ describe("Plugins", () => {
         };
 
         const initializedPlugin = mockPlugin();
-        const finder = new Finder(objectItems, { rules, plugins: [initializedPlugin] });
+        const finder = new FinderCore(objectItems, { rules, plugins: [initializedPlugin] });
         expect(onInit).toHaveBeenCalledTimes(1);
         expect(onRegister).toHaveBeenCalledTimes(1);
 

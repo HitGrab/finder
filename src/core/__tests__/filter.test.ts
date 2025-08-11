@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { filterRule, finderRuleset } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -10,7 +10,7 @@ describe("Filters", () => {
             id: "price",
             filterFn: (item, value) => item.price === value,
         });
-        const finder = new Finder(objectItems, { rules: [rule] });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
 
         // hydrated rule can be retrieved
         const hydratedRule = finder.filters.getRule(rule);
@@ -44,7 +44,7 @@ describe("Filters", () => {
                 id: "price",
                 filterFn: (item, value) => item.price === value,
             });
-            const finder = new Finder(objectItems, { rules: [rule], initialFilters: { price: 5 } });
+            const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
             expect(finder.filters.isActive(rule)).toEqual(true);
             expect(finder.filters.get(rule)).toEqual(5);
         });
@@ -54,7 +54,7 @@ describe("Filters", () => {
                 id: "price",
                 filterFn: (item, value) => item.price === value,
             });
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
 
             // can be set to any value
             finder.filters.set(rule, 5);
@@ -67,7 +67,7 @@ describe("Filters", () => {
                 id: "price",
                 filterFn: (item, value) => item.price === value,
             });
-            const finder = new Finder(objectItems, { rules: [rule], initialFilters: { price: 5 } });
+            const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
             expect(finder.filters.isActive(rule)).toEqual(true);
             finder.filters.delete(rule);
             expect(finder.filters.isActive(rule)).toEqual(false);
@@ -84,7 +84,7 @@ describe("Filters", () => {
                 filterFn: (item) => item.price === 10,
                 isBoolean: true,
             });
-            const finder = new Finder(objectItems, { rules: [numericRule, booleanRule], initialFilters: { price: 5 } });
+            const finder = new FinderCore(objectItems, { rules: [numericRule, booleanRule], initialFilters: { price: 5 } });
 
             // cannot toggle non-boolean rules
             expect(() => {
@@ -119,7 +119,7 @@ describe("Filters", () => {
                 ],
             });
 
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
             finder.filters.toggleOption(rule, 3);
             finder.filters.toggleOption(rule, 5);
             expect(finder.filters.get(rule)).toEqual([3, 5]);
@@ -148,7 +148,7 @@ describe("Filters", () => {
                     });
                 },
             });
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
             const hydratedRule = finder.filters.getRule(rule);
             expect(hydratedRule.options?.length).toBe(1000);
         });
@@ -171,7 +171,7 @@ describe("Filters", () => {
                 },
             });
 
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
             const hydratedRule = finder.filters.getRule(rule);
             expect(hydratedRule.options?.length).toBe(2);
         });
@@ -196,7 +196,7 @@ describe("Filters", () => {
             const initialMeta = {
                 user_dislikes: apple,
             };
-            const finder = new Finder(objectItems, { rules, initialMeta });
+            const finder = new FinderCore(objectItems, { rules, initialMeta });
             finder.meta.set("user_dislikes", apple);
         });
 
@@ -219,7 +219,7 @@ describe("Filters", () => {
                 }),
             ]);
 
-            const finder = new Finder([apple], { rules });
+            const finder = new FinderCore([apple], { rules });
             finder.setItems(objectItems);
             expect(hydrateOptions).toHaveBeenCalledTimes(2);
         });
@@ -243,7 +243,7 @@ describe("Filters", () => {
                 }),
             ]);
 
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
             finder.meta.set("user_dislikes", orange);
             expect(hydrateOptions).toHaveBeenCalledTimes(2);
         });
@@ -257,7 +257,7 @@ describe("Filters", () => {
                 isBoolean: true,
             });
 
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
 
             // does not affect results if unset
             expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
@@ -279,7 +279,7 @@ describe("Filters", () => {
             const initialFilters = {
                 price_is_below: 5,
             };
-            const finder = new Finder(objectItems, { rules, initialFilters });
+            const finder = new FinderCore(objectItems, { rules, initialFilters });
             expect(finder.matches.items).toStrictEqual([apple, orange]);
         });
 
@@ -302,7 +302,7 @@ describe("Filters", () => {
                 tastiest_fruit_name: "Apple",
                 price_is_below: 2,
             };
-            const finder = new Finder(objectItems, { rules, initialFilters });
+            const finder = new FinderCore(objectItems, { rules, initialFilters });
             expect(finder.matches.items).toStrictEqual([apple]);
         });
 
@@ -317,7 +317,7 @@ describe("Filters", () => {
                     filterFn: (item, value: number) => item.price <= value,
                 }),
             ]);
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
             expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
         });
 
@@ -329,7 +329,7 @@ describe("Filters", () => {
                 }),
             ]);
 
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
             finder.filters.set("tastiest_fruit_name", "guava");
             expect(finder.matches.items).toStrictEqual([]);
         });
@@ -342,7 +342,7 @@ describe("Filters", () => {
                     isBoolean: true,
                     required: true,
                 });
-                const finder = new Finder(objectItems, { rules: [rule] });
+                const finder = new FinderCore(objectItems, { rules: [rule] });
                 expect(finder.filters.get(rule)).toBe(true);
                 expect(finder.matches.items).toStrictEqual([banana]);
             });
@@ -370,7 +370,7 @@ describe("Filters", () => {
                     },
                 ]);
 
-                const finder = new Finder(objectItems, { rules });
+                const finder = new FinderCore(objectItems, { rules });
                 expect(finder.matches.items).toStrictEqual([apple]);
             });
 
@@ -392,7 +392,7 @@ describe("Filters", () => {
                     },
                 ]);
 
-                const finder = new Finder(objectItems, { rules });
+                const finder = new FinderCore(objectItems, { rules });
                 expect(finder.matches.items).toStrictEqual([banana]);
             });
         });
@@ -406,7 +406,7 @@ describe("Filters", () => {
         });
 
         const onChange = vitest.fn();
-        const finder = new Finder(objectItems, { rules: [rule], onChange });
+        const finder = new FinderCore(objectItems, { rules: [rule], onChange });
 
         // Set the search term value 10 times
         range(0, 10).forEach((value) => {
@@ -426,7 +426,7 @@ describe("Filters", () => {
                 filterFn: (item: MockObjectItem, value: number) => item.price <= value,
             });
 
-            const finder = new Finder(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
 
             // test a filter without setting the state
             const testResult = finder.filters.testRule({ rule, value: 5 });
@@ -444,7 +444,7 @@ describe("Filters", () => {
                 filterFn: (item: MockObjectItem) => item.name === "Apple",
             });
 
-            const finder = new Finder(objectItems, { rules: [firstRule, secondRule] });
+            const finder = new FinderCore(objectItems, { rules: [firstRule, secondRule] });
 
             // test a filter without setting the state
             const testResult = finder.filters.testRule({ rule: secondRule, value: true, isAdditive: true });
@@ -482,7 +482,7 @@ describe("Filters", () => {
                 isBoolean: true,
             });
             const rules = [filter, booleanFilter];
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
 
             // test a filter without setting the state
             const testResult = finder.filters.testRuleOptions({ rule: filter });

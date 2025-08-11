@@ -1,4 +1,4 @@
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { objectItems } from "./test-constants";
 import { LayoutVariant } from "../../types";
 
@@ -10,7 +10,7 @@ describe("Layout", () => {
 
         const onChange = vitest.fn();
 
-        const finder = new Finder(objectItems, { rules: [], layoutVariants, onChange });
+        const finder = new FinderCore(objectItems, { rules: [], layoutVariants, onChange });
         expect(finder.layout.variants).toStrictEqual([galleryMode, tableMode]);
 
         // if no initial value is set, the mixin will fallback to the first listed mode
