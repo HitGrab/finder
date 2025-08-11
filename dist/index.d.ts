@@ -1,5 +1,4 @@
 /** Vanilla JS library */
-export { Finder as FinderCore } from "./core/finder";
 export { FinderPlugin } from "./core/plugins/plugin-super-class";
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
 export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";

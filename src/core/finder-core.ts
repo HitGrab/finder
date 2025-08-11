@@ -34,7 +34,7 @@ import { isEqual } from "lodash";
 import { LayoutMixin } from "./layout/layout";
 import { layoutInterface, readonlyLayoutInterface } from "./layout/layout-interface";
 
-class Finder<FItem> {
+class FinderCore<FItem> {
     #items: FItem[] | null | undefined;
 
     // static rule definitions
@@ -401,4 +401,4 @@ class Finder<FItem> {
     }
 }
 
-export { Finder };
+export { FinderCore };

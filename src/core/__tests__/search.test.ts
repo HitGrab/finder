@@ -1,6 +1,6 @@
 import { range } from "lodash";
 import { act } from "react";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { searchRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -11,7 +11,7 @@ describe("Search", () => {
             searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
         });
 
-        const finder = new Finder(objectItems, { rules: [rule] });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
         expect(finder.search.activeRule).toBe(rule);
 
         // empty string by default
@@ -37,7 +37,7 @@ describe("Search", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules });
+        const finder = new FinderCore(objectItems, { rules });
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toStrictEqual([apple]);
     });
@@ -49,7 +49,7 @@ describe("Search", () => {
         });
 
         const onChange = vitest.fn();
-        const finder = new Finder(objectItems, { rules: [rule], onChange });
+        const finder = new FinderCore(objectItems, { rules: [rule], onChange });
 
         // Set the search term value 1000 times
         range(0, 1000).forEach((value) => {
@@ -71,7 +71,7 @@ describe("Search", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules });
+        const finder = new FinderCore(objectItems, { rules });
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toStrictEqual([apple]);
     });

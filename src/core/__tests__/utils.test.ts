@@ -51,7 +51,7 @@ describe("Utils", () => {
         const unorderedCharacterMatches = getSearchResultSegments(calculateUnorderedCharacterIndexes, " Robert!", "bert");
         expect(unorderedCharacterMatches).toEqual([
             { start: 1, end: 2, value: "R", is_match: true, length: 1 },
-            { start: 2, end: 3, length: 1, is_match: false, value: "o" },
+            { start: 2, end: 3, value: "o", is_match: false, length: 1 },
             { start: 3, end: 7, value: "bert", is_match: true, length: 4 },
             { start: 7, end: 8, value: "!", is_match: false, length: 1 },
         ]);

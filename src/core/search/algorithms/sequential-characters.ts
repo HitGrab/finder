@@ -6,19 +6,22 @@ export function calculateSequentialCharacterIndexes(haystack: Haystack, needle: 
     let hayStackToIterateThrough = haystack.transformed;
     let numProcessedCharacters = 0;
     let hasMismatch = false;
-    needleAsCharacterArray.forEach((character) => {
+    for (let x = 0; x < needleAsCharacterArray.length; x += 1) {
+        const character = String(needleAsCharacterArray[x]);
         const indexInHaystack = hayStackToIterateThrough.indexOf(character);
         if (indexInHaystack === -1) {
             hasMismatch = true;
         }
 
-        characterMatches.push(numProcessedCharacters + indexInHaystack);
+        if (hasMismatch === false) {
+            characterMatches.push(numProcessedCharacters + indexInHaystack);
 
-        // remove processed characters from haystack
-        const numCharactersToRemove = Math.max(1, indexInHaystack);
-        numProcessedCharacters += numCharactersToRemove;
-        hayStackToIterateThrough = hayStackToIterateThrough.substring(numCharactersToRemove);
-    });
+            // remove processed characters from haystack
+            const numCharactersToRemove = indexInHaystack + 1;
+            numProcessedCharacters += numCharactersToRemove;
+            hayStackToIterateThrough = hayStackToIterateThrough.substring(numCharactersToRemove);
+        }
+    }
 
     if (hasMismatch) {
         return undefined;

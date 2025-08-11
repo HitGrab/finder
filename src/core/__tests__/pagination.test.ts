@@ -1,4 +1,4 @@
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems, banana, orange, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -16,7 +16,7 @@ describe("Pagination", () => {
         // first page
         let page = 1;
         const numItemsPerPage = 1;
-        const finder = new Finder(objectItems, { rules, initialSortDirection, page, numItemsPerPage });
+        const finder = new FinderCore(objectItems, { rules, initialSortDirection, page, numItemsPerPage });
 
         expect(finder.matches.items).toStrictEqual([banana]);
 

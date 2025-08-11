@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Finder as FinderCore } from "../../core/finder";
+import { FinderCore } from "../../core/finder-core";
 
 export function useFinderRef() {
     return useRef<FinderCore<any>>(null);

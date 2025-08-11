@@ -1,7 +1,7 @@
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { FinderOnChangeCallback } from "../../types";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { searchRule, filterRule } from "../utils/rule-type-enforcers";
 
 describe("Core", () => {
@@ -17,7 +17,7 @@ describe("Core", () => {
             },
         ];
         expect(() => {
-            new Finder(objectItems, { rules });
+            new FinderCore(objectItems, { rules });
         }).toThrowError();
     });
 
@@ -30,7 +30,7 @@ describe("Core", () => {
         ];
         expect(() => {
             // @ts-expect-error
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
         }).toThrowError();
     });
 
@@ -42,27 +42,27 @@ describe("Core", () => {
         ];
         expect(() => {
             // @ts-expect-error
-            const finder = new Finder(objectItems, { rules });
+            const finder = new FinderCore(objectItems, { rules });
         }).toThrowError();
     });
 
     describe("Events", () => {
         test("onInit", () => {
             const onInit = vitest.fn();
-            new Finder(objectItems, { rules: [], onInit });
+            new FinderCore(objectItems, { rules: [], onInit });
             expect(onInit).toHaveBeenCalledTimes(1);
         });
 
         describe("onReady", () => {
             test("Sync", () => {
                 const onReady = vitest.fn();
-                new Finder(objectItems, { rules: [], onReady });
+                new FinderCore(objectItems, { rules: [], onReady });
                 expect(onReady).toHaveBeenCalledTimes(1);
             });
 
             test("Async", () => {
                 const onReady = vitest.fn();
-                const finder = new Finder(null, { rules: [], onReady, isLoading: true });
+                const finder = new FinderCore(null, { rules: [], onReady, isLoading: true });
                 expect(onReady).toHaveBeenCalledTimes(0);
                 finder.setItems(objectItems);
                 expect(onReady).toHaveBeenCalledTimes(0);
@@ -74,7 +74,7 @@ describe("Core", () => {
         test("onFirstUserInteraction", () => {
             const onFirstUserInteraction = vitest.fn();
             const rule = searchRule<MockObjectItem>({ searchFn: (item, value) => item.name === value });
-            const finder = new Finder(objectItems, { rules: [rule], onFirstUserInteraction });
+            const finder = new FinderCore(objectItems, { rules: [rule], onFirstUserInteraction });
             finder.search.setSearchTerm("Test");
             expect(onFirstUserInteraction).toHaveBeenCalledTimes(1);
         });
@@ -95,7 +95,7 @@ describe("Core", () => {
 
             const imperativeOnChange = vitest.fn();
 
-            const finder = new Finder(objectItems, { rules, onChange: declarativeOnChange });
+            const finder = new FinderCore(objectItems, { rules, onChange: declarativeOnChange });
 
             // broadest to narrowest event
             finder.events.on("change", imperativeOnChange);

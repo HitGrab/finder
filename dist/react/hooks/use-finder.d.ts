@@ -1,5 +1,5 @@
 import { FinderConstructorOptions } from "../../types";
-import { Finder as FinderCore } from "../../core/finder";
+import { FinderCore } from "../../core/finder-core";
 /**
  * Create a finder instance with contained state and controllers.
  */

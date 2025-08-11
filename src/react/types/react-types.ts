@@ -4,11 +4,11 @@
 
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
 import { FinderConstructorOptions, FinderResultGroup, GroupByRule } from "../../types";
-import { Finder as FinderCore } from "../../core/finder";
 import { paginationInterface } from "../../core/pagination/pagination-interface";
 import { selectedItemsInterface } from "../../core/selected-items/selected-items-interface";
 import { metaInterface } from "../../core/meta/meta-interface";
 import { layoutInterface } from "../../core/layout/layout-interface";
+import { FinderCore } from "../../core/finder-core";
 
 export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
     items: FItem[] | undefined | null;

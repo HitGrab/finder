@@ -1,4 +1,4 @@
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -12,7 +12,7 @@ describe("SortBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules });
+        const finder = new FinderCore(objectItems, { rules });
         expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
     });
 
@@ -25,7 +25,7 @@ describe("SortBy", () => {
         ];
         const initialSortDirection = "desc";
 
-        const finder = new Finder(objectItems, { rules, initialSortDirection });
+        const finder = new FinderCore(objectItems, { rules, initialSortDirection });
         expect(finder.matches.items).toStrictEqual([banana, orange, apple]);
     });
 
@@ -37,7 +37,7 @@ describe("SortBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules });
+        const finder = new FinderCore(objectItems, { rules });
         finder.sortBy.cycleSortDirection();
         expect(finder.sortBy.sortDirection).toStrictEqual("asc");
     });

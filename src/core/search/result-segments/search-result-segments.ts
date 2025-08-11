@@ -61,9 +61,9 @@ function prepareResultSegments(characterMatches: number[], transformedHaystackSt
         matches.push({
             start,
             end,
-            length: value.length,
-            is_match: true,
             value,
+            is_match: true,
+            length: value.length,
             _internal: true,
         });
 
@@ -116,9 +116,9 @@ function processResultSegments(haystack: Haystack, matchesFromTransformedHaystac
             matches.push({
                 start,
                 end,
-                length: value.length,
-                is_match: false,
                 value,
+                is_match: false,
+                length: value.length,
             });
         }
     });

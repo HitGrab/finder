@@ -1,5 +1,5 @@
 import { act } from "react";
-import { Finder } from "../finder";
+import { FinderCore } from "../finder-core";
 import { groupByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -13,7 +13,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules, requireGroup: true });
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
         expect(finder.matches.groups).toStrictEqual([
             { id: "three", items: [apple] },
             { id: "five", items: [orange, banana] },
@@ -29,7 +29,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules, requireGroup: true });
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
         act(() => {
             finder.groupBy.setGroupIdSortDirection("asc");
         });
@@ -58,7 +58,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules, requireGroup: true });
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
         expect(finder.matches.groups).toStrictEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
@@ -74,7 +74,7 @@ describe("GroupBy", () => {
             }),
         ];
 
-        const finder = new Finder(objectItems, { rules, requireGroup: true });
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
         expect(finder.matches.groups).toStrictEqual([
             { id: "banana", items: [banana] },
             { id: "orange", items: [orange] },

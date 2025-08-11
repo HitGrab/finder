@@ -1,5 +1,4 @@
 /** Vanilla JS library */
-export { Finder as FinderCore } from "./core/finder";
 export { FinderPlugin } from "./core/plugins/plugin-super-class";
 
 // Utility methods for enforcing rule shape
