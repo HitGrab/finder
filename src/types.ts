@@ -73,6 +73,7 @@ export interface SearchRuleSharedProps {
     // these properties will be narrowed in the SearchRule union
     searchFn?: unknown;
     haystackFn?: unknown;
+    overrideSortByRuleWhileActive?: boolean;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;

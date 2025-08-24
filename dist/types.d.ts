@@ -45,6 +45,7 @@ export interface SearchRuleSharedProps {
     debounceMilliseconds?: number;
     searchFn?: unknown;
     haystackFn?: unknown;
+    overrideSortByRuleWhileActive?: boolean;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
@@ -218,11 +219,4 @@ export interface FinderPluginInterface<FItem = any> {
 export interface LayoutVariant {
     id: string;
 }
-export type SearchScoreItem<FItem> = {
-    item: FItem;
-    score: {
-        percentOfHaystackMatched: number;
-        longestSequentialSequence: number;
-    };
-};
 export {};

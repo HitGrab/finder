@@ -262,7 +262,14 @@ class FinderCore<FItem> {
             itemsToProcess = [...this.#items];
             itemsToProcess = this.#mixins.search.process(itemsToProcess, meta);
             itemsToProcess = this.#mixins.filters.process(itemsToProcess, meta);
-            itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
+
+            const ignoreSortByRules =
+                this.#mixins.search.hasSearchRule && this.#mixins.search.hasSearchTerm && this.#mixins.search.rule?.overrideSortByRuleWhileActive === true;
+
+            // Some search rules can override other sortBy rules
+            if (ignoreSortByRules === false) {
+                itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
+            }
 
             paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess);
 

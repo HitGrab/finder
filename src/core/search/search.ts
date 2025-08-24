@@ -9,17 +9,13 @@ import { transformStringForComparison } from "./search-string-transform";
 type InitialValues = { initialSearchTerm: string | undefined };
 type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
 class SearchMixin<FItem> {
-    #searchTerm: string;
+    searchTerm: string;
 
     #deps;
 
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
-        this.#searchTerm = initialSearchTerm || "";
+        this.searchTerm = initialSearchTerm || "";
         this.#deps = deps;
-    }
-
-    get searchTerm() {
-        return this.#searchTerm;
     }
 
     get rule() {
@@ -28,6 +24,10 @@ class SearchMixin<FItem> {
 
     get hasSearchRule() {
         return this.#deps.getRules().some(isSearchRule);
+    }
+
+    get hasSearchTerm() {
+        return this.searchTerm !== "";
     }
 
     setSearchTerm(incomingSearchTerm: string) {
@@ -43,8 +43,8 @@ class SearchMixin<FItem> {
             if (this.#deps.isDisabled()) {
                 return;
             }
-            const previousValue = this.#searchTerm;
-            this.#searchTerm = incomingSearchTerm;
+            const previousValue = this.searchTerm;
+            this.searchTerm = incomingSearchTerm;
             this.#deps.touch({
                 source: "search",
                 event: "change.search.setSearchTerm",
@@ -58,8 +58,8 @@ class SearchMixin<FItem> {
         if (this.#deps.isDisabled()) {
             return;
         }
-        const previousValue = this.#searchTerm;
-        this.#searchTerm = "";
+        const previousValue = this.searchTerm;
+        this.searchTerm = "";
         this.#deps.touch({
             source: "search",
             event: "change.search.reset",
@@ -69,7 +69,7 @@ class SearchMixin<FItem> {
     }
 
     process(items: FItem[], meta: MetaInterface) {
-        if (this.#searchTerm === "" || this.rule === undefined) {
+        if (this.searchTerm === "" || this.rule === undefined) {
             return items;
         }
 
@@ -78,11 +78,11 @@ class SearchMixin<FItem> {
                 if (this.rule?.searchFn === undefined) {
                     return false;
                 }
-                return this.rule.searchFn(item, this.#searchTerm, meta);
+                return this.rule.searchFn(item, this.searchTerm, meta);
             });
         }
 
-        const transformedNeedle = transformStringForComparison(this.#searchTerm);
+        const transformedNeedle = transformStringForComparison(this.searchTerm);
         const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
             if (this.rule?.haystackFn === undefined) {
                 return acc;
@@ -116,7 +116,12 @@ class SearchMixin<FItem> {
         }, []);
 
         // sort all results by their search score.
-        const sortedMatches = orderBy(matches, ["percentOfHaystackMatched", "longestSequentialSequence"], ["desc", "asc"]);
+        const sortedMatches = orderBy(
+            matches,
+            [(match) => match.score.percentOfHaystackMatched, (match) => match.score.longestSequentialSequence],
+            ["desc", "asc"],
+        );
+
         return sortedMatches.map((match) => match.item);
     }
 }
