@@ -1,4 +1,4 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { FinderSearchTerm, useFinderContext } from "@hitgrab/finder";
 import { range } from "lodash";
 
 interface ShoeCardProps {
@@ -21,7 +21,9 @@ function ShoeCard({ item }: ShoeCardProps) {
                 <button type="button" className="brand" onClick={() => finder.filters.set("brand", [item.brand])}>
                     {item.brand}
                 </button>
-                <div className="name">{item.name}</div>
+                <div className="name">
+                    <FinderSearchTerm>{item.name}</FinderSearchTerm>
+                </div>
                 <div className="price">${item.price}</div>
                 <div className="rating">{range(0, item.rating).map(() => "*")}</div>
                 <div className="sizes">Sizes: {item.sizes.join(", ")}</div>

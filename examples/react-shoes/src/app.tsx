@@ -13,6 +13,7 @@ import { NumMatches } from "./components/num-matches";
 import { InStockFilterControls } from "./components/controls/in-stock-filter-controls";
 import { rules } from "./rules/shoe-rules";
 import { useAsyncGetRandomlyGeneratedShoes } from "./hooks/use-random-shoe-generator";
+import { NameSearchControl } from "./components/controls/name-search-control";
 
 function App() {
     const { data, isPending } = useAsyncGetRandomlyGeneratedShoes();
@@ -22,6 +23,7 @@ function App() {
             <h1>Kicking Rad Shoe Store</h1>
             <div className="layout">
                 <aside>
+                    <NameSearchControl />
                     <Accordion>
                         <Accordion.Item label="Brand">
                             <BrandFilterControls />

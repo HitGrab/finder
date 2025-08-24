@@ -207,6 +207,11 @@ body {
     gap: 10px;
     max-width: 200px;
 
+    .name span {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
     .imagePedestal {
         background-color: #eee;
         position: relative;
