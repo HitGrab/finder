@@ -44,14 +44,14 @@ export interface SearchRuleSharedProps {
     hidden?: boolean;
     debounceMilliseconds?: number;
     searchFn?: unknown;
-    searchTermFn?: unknown;
+    haystackFn?: unknown;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
-    searchTermFn: (item: FItem, meta: MetaInterface) => string | string[];
+    haystackFn: (item: FItem, meta: MetaInterface) => string | string[];
 }
 export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
-    searchTermFn?: never;
+    haystackFn?: never;
     searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
 }
 export type SearchRule<FItem = any> = SearchRuleAdvanced<FItem> | SearchRuleSimple<FItem>;
@@ -218,4 +218,11 @@ export interface FinderPluginInterface<FItem = any> {
 export interface LayoutVariant {
     id: string;
 }
+export type SearchScoreItem<FItem> = {
+    item: FItem;
+    score: {
+        percentOfHaystackMatched: number;
+        longestSequentialSequence: number;
+    };
+};
 export {};
