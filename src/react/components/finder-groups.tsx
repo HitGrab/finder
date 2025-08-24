@@ -1,9 +1,9 @@
 import { ElementType, isValidElement, cloneElement } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderGroupsComponentProps } from "../types/react-types";
+import { FinderContentGroupProps } from "../types/react-types";
 
 interface FinderGroupsProps<FItem = any> {
-    children: ElementType<FinderGroupsComponentProps<FItem>>;
+    children: ElementType<FinderContentGroupProps<FItem>>;
 }
 function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>) {
     const finder = useFinderContext();

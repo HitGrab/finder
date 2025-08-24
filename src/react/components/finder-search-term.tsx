@@ -2,15 +2,17 @@ import { ElementType, useMemo } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
 import { getSearchResultSegments } from "../../core/search/result-segments/search-result-segments";
 import { calculateSequentialCharacterIndexes } from "../../core/search/algorithms/sequential-characters";
+import { SearchCharacterIndexFn } from "../../core/search/result-segments/result-segment-types";
 
 interface FinderSearchTermProps {
     children: string;
     Component?: ElementType;
+    algorithm?: SearchCharacterIndexFn;
 }
-function FinderSearchTerm({ Component = "span", children }: FinderSearchTermProps) {
+function FinderSearchTerm({ Component = "span", children, algorithm = calculateSequentialCharacterIndexes }: FinderSearchTermProps) {
     const finder = useFinderContext();
     const segments = useMemo(() => {
-        return getSearchResultSegments(calculateSequentialCharacterIndexes, children, finder.search.searchTerm);
+        return getSearchResultSegments(algorithm, children, finder.search.searchTerm);
     }, [finder.search.searchTerm]);
 
     if (finder.search.hasSearchTerm === false) {

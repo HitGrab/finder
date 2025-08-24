@@ -1,8 +1,7 @@
 import { range } from "lodash";
-import { Haystack } from "../haystack";
 
-export function calculateSequentialStringCharacterIndexes(haystack: Haystack, needle: string) {
-    const index = haystack.transformed.indexOf(needle);
+export function calculateSequentialStringCharacterIndexes(haystack: string, needle: string) {
+    const index = haystack.indexOf(needle);
     if (index === -1) {
         return undefined;
     }

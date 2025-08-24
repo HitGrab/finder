@@ -67,7 +67,7 @@ describe("Search", () => {
     test("Simple Search", () => {
         const rules = [
             searchRule({
-                searchTermFn: (item: MockObjectItem) => item.type,
+                haystackFn: (item: MockObjectItem) => [item.type],
             }),
         ];
 

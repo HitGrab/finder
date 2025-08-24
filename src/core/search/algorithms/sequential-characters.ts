@@ -1,9 +1,7 @@
-import { Haystack } from "../haystack";
-
-export function calculateSequentialCharacterIndexes(haystack: Haystack, needle: string) {
+export function calculateSequentialCharacterIndexes(haystack: string, needle: string) {
     const needleAsCharacterArray = Array.from(needle);
     let characterMatches: number[] = [];
-    let hayStackToIterateThrough = haystack.transformed;
+    let hayStackToIterateThrough = haystack;
     let numProcessedCharacters = 0;
     let hasMismatch = false;
     for (let x = 0; x < needleAsCharacterArray.length; x += 1) {

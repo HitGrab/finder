@@ -72,14 +72,15 @@ export interface SearchRuleSharedProps {
 
     // these properties will be narrowed in the SearchRule union
     searchFn?: unknown;
-    searchTermFn?: unknown;
+    haystackFn?: unknown;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
-    searchTermFn: (item: FItem, meta: MetaInterface) => string | string[];
+    haystackFn: (item: FItem, meta: MetaInterface) => string | string[];
 }
+
 export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
-    searchTermFn?: never;
+    haystackFn?: never;
     searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
 }
 

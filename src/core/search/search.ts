@@ -1,9 +1,13 @@
+import { orderBy } from "lodash";
 import { MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
-import { finderSequentialCharacterCompare } from "../utils/string-compare-utils";
+import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
+import { calculateSearchScore } from "./search-score";
+import { transformStringForComparison } from "./search-string-transform";
 
 type InitialValues = { initialSearchTerm: string | undefined };
+type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
 class SearchMixin<FItem> {
     #searchTerm: string;
 
@@ -69,26 +73,51 @@ class SearchMixin<FItem> {
             return items;
         }
 
-        return items.filter((item) => {
-            if (this.rule === undefined) {
-                return true;
-            }
-            if (this.rule.searchTermFn) {
-                const itemSearchTermOrTerms = this.rule.searchTermFn(item, meta);
-                if (typeof itemSearchTermOrTerms === "string") {
-                    return finderSequentialCharacterCompare(itemSearchTermOrTerms, this.#searchTerm);
-                }
-                const firstTerm = itemSearchTermOrTerms[0];
-                if (firstTerm === undefined) {
+        if (this.rule.searchFn) {
+            return items.filter((item) => {
+                if (this.rule?.searchFn === undefined) {
                     return false;
                 }
-                return finderSequentialCharacterCompare(firstTerm, this.#searchTerm, itemSearchTermOrTerms.splice(1));
-            }
-            if (this.rule.searchFn) {
                 return this.rule.searchFn(item, this.#searchTerm, meta);
+            });
+        }
+
+        const transformedNeedle = transformStringForComparison(this.#searchTerm);
+        const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
+            if (this.rule?.haystackFn === undefined) {
+                return acc;
             }
-            throw new Error("Search rule must provide a searchTermFn or searchFn");
-        });
+
+            // Retrieve this item's array of haystack strings to compare the search needle against
+            const itemHaystackStringOrStrings = this.rule.haystackFn(item, meta);
+            const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
+                ? itemHaystackStringOrStrings.map(transformStringForComparison)
+                : [transformStringForComparison(itemHaystackStringOrStrings)];
+
+            // an item may have multiple matches if it has multiple haystack strings.
+            const itemHaystackScores = itemHaystacks.reduce<ReturnType<typeof calculateSearchScore>[]>((scores, haystack) => {
+                const indexes = calculateSequentialCharacterIndexes(haystack, transformedNeedle);
+                if (indexes !== undefined) {
+                    scores.push(calculateSearchScore(indexes, haystack));
+                }
+                return scores;
+            }, []);
+
+            if (itemHaystackScores.length > 0) {
+                const sortedItemHaystackScores = orderBy(itemHaystackScores, ["percentOfHaystackMatched", "longestSequentialSequence"], ["desc", "asc"]);
+                const bestScore = sortedItemHaystackScores.at(0);
+
+                if (bestScore) {
+                    acc.push({ item, score: bestScore });
+                }
+            }
+
+            return acc;
+        }, []);
+
+        // sort all results by their search score.
+        const sortedMatches = orderBy(matches, ["percentOfHaystackMatched", "longestSequentialSequence"], ["desc", "asc"]);
+        return sortedMatches.map((match) => match.item);
     }
 }
 

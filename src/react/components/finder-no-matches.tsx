@@ -1,9 +1,9 @@
 import { cloneElement, isValidElement } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderBaseRenderProp } from "../types/react-types";
+import { FinderContentRenderProp } from "../types/react-types";
 
 interface FinderNoMatchesProps {
-    children: FinderBaseRenderProp;
+    children: FinderContentRenderProp;
 }
 function FinderNoMatches({ children: renderProp }: FinderNoMatchesProps) {
     const finder = useFinderContext();

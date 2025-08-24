@@ -1,9 +1,9 @@
 import { cloneElement, isValidElement } from "react";
 import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderBaseRenderProp } from "../types/react-types";
+import { FinderContentRenderProp } from "../types/react-types";
 
 interface FinderLoadingProps {
-    children: FinderBaseRenderProp;
+    children: FinderContentRenderProp;
 }
 function FinderLoading({ children: renderProp }: FinderLoadingProps) {
     const finder = useFinderContext();
