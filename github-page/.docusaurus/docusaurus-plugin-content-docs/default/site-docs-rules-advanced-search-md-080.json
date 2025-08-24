@@ -1,0 +1,28 @@
+{
+  "id": "rules/advanced-search",
+  "title": "Advanced Search",
+  "description": "",
+  "source": "@site/docs/rules/advanced-search.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/advanced-search",
+  "permalink": "/docs/rules/advanced-search",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/advanced-search.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "Advanced Search",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Search",
+    "permalink": "/docs/rules/search"
+  },
+  "next": {
+    "title": "Filter",
+    "permalink": "/docs/rules/filter"
+  }
+}

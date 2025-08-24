@@ -1,0 +1,28 @@
+{
+  "id": "mixins/layout",
+  "title": "Layout",
+  "description": "The Layout mixin can be used to inform rendering logic inside your React components.",
+  "source": "@site/docs/mixins/layout.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/layout",
+  "permalink": "/docs/mixins/layout",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mixins/layout.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "Layout",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Pagination",
+    "permalink": "/docs/mixins/pagination"
+  },
+  "next": {
+    "title": "Utils",
+    "permalink": "/docs/utils/"
+  }
+}

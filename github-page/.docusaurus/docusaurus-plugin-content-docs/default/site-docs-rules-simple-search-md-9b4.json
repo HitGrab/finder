@@ -1,0 +1,28 @@
+{
+  "id": "rules/simple-search",
+  "title": "Simple Search",
+  "description": "A Finder instance has a single string searchTerm property that can be compared against a list of haystacks extracted from the items array.",
+  "source": "@site/docs/rules/simple-search.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/simple-search",
+  "permalink": "/docs/rules/simple-search",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/simple-search.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "Simple Search",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tutorial Intro",
+    "permalink": "/docs/intro"
+  },
+  "next": {
+    "title": "Advanced Search",
+    "permalink": "/docs/rules/advanced-search"
+  }
+}

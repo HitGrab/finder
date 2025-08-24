@@ -1,0 +1,28 @@
+{
+  "id": "rules/sort",
+  "title": "Sort",
+  "description": "| Prop                 | Description                                                                                                                       | Default | Required |",
+  "source": "@site/docs/rules/sort.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/sort",
+  "permalink": "/docs/rules/sort",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/sort.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "Sort",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filter",
+    "permalink": "/docs/rules/filter"
+  },
+  "next": {
+    "title": "Group",
+    "permalink": "/docs/rules/group"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "mixins/meta",
+  "title": "Meta",
+  "description": "The Meta mixin allows you to inject additional context that doesn't belong to the items array or a static rule. For example, a filter might be dependent on a user's purchase history, or their browser preferences.",
+  "source": "@site/docs/mixins/meta.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/meta",
+  "permalink": "/docs/mixins/meta",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mixins/meta.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "Meta",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Mixins",
+    "permalink": "/docs/mixins/"
+  },
+  "next": {
+    "title": "Pagination",
+    "permalink": "/docs/mixins/pagination"
+  }
+}
