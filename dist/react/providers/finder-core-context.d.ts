@@ -1,3 +1,4 @@
 import { FinderCore } from "../../core/finder-core";
-declare const FinderCoreContext: import("react").Context<[FinderCore<any, undefined>, number | undefined] | null>;
+import { InjectedContext } from "../../types";
+declare const FinderCoreContext: import("react").Context<[FinderCore<any, InjectedContext | undefined>, number | undefined] | null>;
 export { FinderCoreContext };

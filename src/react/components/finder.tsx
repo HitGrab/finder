@@ -2,8 +2,9 @@ import { useEffect, useImperativeHandle, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
 import { FinderCore } from "../../core/finder-core";
+import { InjectedContext } from "../../types";
 
-function Finder<FItem = any>({
+function Finder<FItem = any, FContext extends InjectedContext | undefined = undefined>({
     items,
     rules,
     initialSearchTerm,
@@ -24,10 +25,10 @@ function Finder<FItem = any>({
     onChange,
     controllerRef,
     children,
-}: FinderProps<FItem>) {
-    const [instance] = useState(
+}: FinderProps<FItem, FContext>) {
+    const [instance] = useState<FinderCore<FItem, FContext>>(
         () =>
-            new FinderCore(items, {
+            new FinderCore<FItem, FContext>(items, {
                 rules,
                 initialSearchTerm,
                 initialSortBy,

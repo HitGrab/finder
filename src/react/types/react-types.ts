@@ -7,9 +7,9 @@ import { FinderConstructorOptions, FinderResultGroup, GroupByRule, InjectedConte
 import { paginationInterface } from "../../core/pagination/pagination-interface";
 import { FinderCore } from "../../core/finder-core";
 
-export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
+export interface FinderProps<FItem, FContext extends InjectedContext | undefined> extends FinderConstructorOptions<FItem, FContext>, PropsWithChildren {
     items: FItem[] | undefined | null;
-    controllerRef?: RefObject<FinderCore<FItem> | null>;
+    controllerRef?: RefObject<FinderCore<FItem, FContext> | null>;
 }
 
 export interface FinderContentProps {
