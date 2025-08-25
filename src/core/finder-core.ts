@@ -10,7 +10,6 @@ import {
     FinderInitEvent,
     FinderFirstUserInteractionEvent,
     FinderReadyEvent,
-    InjectedContext,
 } from "../types";
 import { isValidRuleset } from "./utils/rule-utils";
 import { FiltersMixin } from "./filters/filters";
@@ -29,7 +28,7 @@ import { EventCallback } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
 
-class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined> {
+class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
     // static rule definitions
@@ -57,11 +56,11 @@ class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined
         search: SearchMixin<FItem>;
         filters: FiltersMixin;
         sortBy: SortByMixin<FItem>;
-        groupBy: GroupByMixin<FItem>;
+        groupBy: GroupByMixin<FItem, FContext>;
         pagination: PaginationMixin<FItem>;
     };
 
-    context: FContext | undefined;
+    context: FContext;
 
     // plugins: PluginMediator<FItem>;
 
@@ -120,7 +119,8 @@ class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined
         //     (event: FinderTouchEvent) => this.#touch(event),
         // );
 
-        this.context = context;
+        // hack: revise this later
+        this.context = context as FContext;
 
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
@@ -368,7 +368,7 @@ class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined
         }
     }
 
-    setContext(context?: FContext) {
+    setContext(context: FContext) {
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;

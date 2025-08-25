@@ -15,12 +15,13 @@ import { rules } from "./rules/shoe-rules";
 import { useAsyncGetRandomlyGeneratedShoes } from "./hooks/use-random-shoe-generator";
 import { NameSearchControl } from "./components/controls/name-search-control";
 import { useMemo, useState } from "react";
+import { Shoe, ShoeSelectorContextProps } from "./types";
 
 function App() {
     const { data, isPending } = useAsyncGetRandomlyGeneratedShoes();
     const [selectedItems, setSelectedItems] = useState<Shoe[]>([]);
 
-    const context = useMemo(() => {
+    const context: ShoeSelectorContextProps = useMemo(() => {
         return {
             isSelected(item: Shoe) {
                 return selectedItems.includes(item);

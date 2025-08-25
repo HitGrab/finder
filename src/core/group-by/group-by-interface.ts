@@ -4,7 +4,7 @@ import { GroupByMixin } from "./group-by";
  * Public surface for the Group By mixin
  */
 
-function readonlyGroupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
+function readonlyGroupByInterface<FItem, FContext>(mixin: GroupByMixin<FItem, FContext>) {
     return {
         activeRule: mixin.activeRule,
         requireGroup: mixin.requireGroup,
@@ -12,7 +12,7 @@ function readonlyGroupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
         groupIdSortDirection: mixin.groupIdSortDirection,
     };
 }
-function groupByInterface<FItem>(mixin: GroupByMixin<FItem>) {
+function groupByInterface<FItem, FContext>(mixin: GroupByMixin<FItem, FContext>) {
     return {
         ...readonlyGroupByInterface(mixin),
         set: mixin.set.bind(mixin),

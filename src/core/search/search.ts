@@ -4,11 +4,10 @@ import { isSearchRule } from "../utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
-import { InjectedContext } from "../../types";
 
 type InitialValues = { initialSearchTerm: string | undefined };
 type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
-class SearchMixin<FItem> {
+class SearchMixin<FItem, FContext = any> {
     searchTerm: string;
 
     #deps;
@@ -68,7 +67,7 @@ class SearchMixin<FItem> {
         });
     }
 
-    process(items: FItem[], context?: InjectedContext) {
+    process(items: FItem[], context?: FContext) {
         if (this.searchTerm === "" || this.rule === undefined) {
             return items;
         }

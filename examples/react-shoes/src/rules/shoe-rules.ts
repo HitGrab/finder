@@ -1,4 +1,5 @@
 import { brands } from "@/hooks/shoe-constants";
+import { Shoe } from "@/types";
 import { finderRuleset, filterRule, sortByRule, searchRule } from "@hitgrab/finder";
 import { intersection, sortBy, capitalize } from "lodash";
 

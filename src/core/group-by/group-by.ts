@@ -1,4 +1,4 @@
-import { GroupByRule, FinderResultGroup, SortDirection, InjectedContext } from "../../types";
+import { GroupByRule, FinderResultGroup, SortDirection } from "../../types";
 import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { groupBy, orderBy } from "lodash";
@@ -7,7 +7,7 @@ type InitialValues = {
     initialGroupBy: string | undefined;
     requireGroup: boolean;
 };
-class GroupByMixin<FItem> {
+class GroupByMixin<FItem, FContext> {
     #groupBy;
 
     requireGroup;
@@ -88,7 +88,7 @@ class GroupByMixin<FItem> {
         this.set(undefined);
     }
 
-    process(items: FItem[], context?: InjectedContext) {
+    process(items: FItem[], context?: FContext) {
         if (this.activeRule === undefined) {
             return [];
         }

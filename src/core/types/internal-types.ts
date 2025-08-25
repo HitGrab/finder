@@ -2,7 +2,7 @@
  * These internal types are not intended for public consumption.
  */
 
-import { FinderRule, FinderTouchCallback, InjectedContext } from "../../types";
+import { FinderRule, FinderTouchCallback } from "../../types";
 import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
 
 export interface MixinInjectedDependencies<FItem = any> {
@@ -10,7 +10,7 @@ export interface MixinInjectedDependencies<FItem = any> {
     isDisabled: () => boolean;
     getRules: () => FinderRule[];
     touch: FinderTouchCallback;
-    getContext: () => InjectedContext | undefined;
+    getContext: () => any;
     getItems: () => FItem[];
     debouncer: DebounceCallbackRegistry;
 }

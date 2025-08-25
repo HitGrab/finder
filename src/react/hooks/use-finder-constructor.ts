@@ -1,33 +1,35 @@
-import { useEffect, useImperativeHandle, useState } from "react";
-import { FinderCoreContext } from "../providers/finder-core-context";
-import { FinderProps } from "../types/react-types";
+import { useEffect, useState } from "react";
+import { FinderConstructorOptions } from "../../types";
 import { FinderCore } from "../../core/finder-core";
 
-function Finder<FItem = any, FContext = any>({
-    items,
-    rules,
-    initialSearchTerm,
-    initialSortBy,
-    initialSortDirection,
-    initialGroupBy,
-    initialFilters,
-    context,
-    isLoading,
-    disabled,
-    page,
-    numItemsPerPage,
-    plugins,
-    requireGroup,
-    onInit,
-    onReady,
-    onFirstUserInteraction,
-    onChange,
-    controllerRef,
-    children,
-}: FinderProps<FItem, FContext>) {
-    const [instance] = useState<FinderCore<FItem, FContext>>(
+/**
+ * Create a finder instance with contained state and controllers.
+ */
+function useFinderConstructor<FItem>(
+    items: FItem[] | null | undefined,
+    {
+        rules,
+        initialSearchTerm,
+        initialSortBy,
+        initialSortDirection,
+        initialGroupBy,
+        initialFilters,
+        context,
+        page,
+        numItemsPerPage,
+        plugins,
+        isLoading,
+        disabled,
+        requireGroup,
+        onInit,
+        onReady,
+        onFirstUserInteraction,
+        onChange,
+    }: FinderConstructorOptions<FItem>,
+): FinderCore<FItem> {
+    const [instance] = useState(
         () =>
-            new FinderCore<FItem, FContext>(items, {
+            new FinderCore(items, {
                 rules,
                 initialSearchTerm,
                 initialSortBy,
@@ -48,7 +50,7 @@ function Finder<FItem = any, FContext = any>({
             }),
     );
 
-    // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
+    // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
     useEffect(() => {
         instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
@@ -58,9 +60,7 @@ function Finder<FItem = any, FContext = any>({
     instance.setItems(items);
     instance.setIsLoading(isLoading);
     instance.setIsDisabled(disabled);
-    if (context !== undefined) {
-        instance.setContext(context);
-    }
+    instance.setContext(context);
 
     if (page !== undefined) {
         instance.pagination.setPage(page);
@@ -69,8 +69,7 @@ function Finder<FItem = any, FContext = any>({
         instance.pagination.setNumItemsPerPage(numItemsPerPage);
     }
 
-    useImperativeHandle(controllerRef, () => instance, [instance]);
-
-    return <FinderCoreContext value={[instance, instance.updatedAt]}>{children}</FinderCoreContext>;
+    return instance;
 }
-export { Finder };
+
+export { useFinderConstructor };

@@ -1,12 +1,4 @@
-import {
-    HydratedFilterRule,
-    FilterOption,
-    FilterTestOptions,
-    FilterTestRuleOptions,
-    FilterTestRuleOptionsOptions,
-    FilterRuleUnion,
-    InjectedContext,
-} from "../../types";
+import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, FilterRuleUnion } from "../../types";
 import { getRuleFromIdentifier, isFilterUnionRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { simpleUniqBy } from "../utils/finder-utils";
@@ -90,7 +82,7 @@ class FiltersMixin {
     }
 
     // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: any[], context?: InjectedContext) {
+    #takeHydratedRulesSnapshot(items: any[], context?: any) {
         const filterRules = this.#deps.getRules().filter(isFilterUnionRule);
         return filterRules.map((rule) => {
             // trigger option generator if found
@@ -319,11 +311,11 @@ class FiltersMixin {
         );
     }
 
-    process(items: any[], context?: InjectedContext) {
+    process(items: any[], context?: any) {
         return FiltersMixin.process(items, this.rules, this.getFilters(), context);
     }
 
-    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: InjectedContext) {
+    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: any) {
         const activeRules = rules.filter((rule) => {
             return FiltersMixin.isActive(rule, values?.[rule.id]);
         });

@@ -1,9 +1,8 @@
 import { MixinInjectedDependencies } from "../types/internal-types";
-import { InjectedContext } from "../../types";
 type InitialValues = {
     initialSearchTerm: string | undefined;
 };
-declare class SearchMixin<FItem> {
+declare class SearchMixin<FItem, FContext = any> {
     #private;
     searchTerm: string;
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>);
@@ -12,6 +11,6 @@ declare class SearchMixin<FItem> {
     get hasSearchTerm(): boolean;
     setSearchTerm(incomingSearchTerm: string): void;
     reset(): void;
-    process(items: FItem[], context?: InjectedContext): FItem[];
+    process(items: FItem[], context?: FContext): FItem[];
 }
 export { SearchMixin };

@@ -1,4 +1,4 @@
-import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, FilterRuleUnion, InjectedContext } from "../../types";
+import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, FilterRuleUnion } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -47,11 +47,11 @@ export function getRuleFromIdentifier<T extends FinderRule>(identifier: FinderRu
     throw new Error("Finder received an invalid rule request format.");
 }
 
-export function getFilterOptionFromIdentifier<FItem>(
+export function getFilterOptionFromIdentifier<FItem, FContext>(
     optionOrOptionValue: FilterOption | any,
-    options: FilterOption[] | ((items: FItem[], context?: InjectedContext) => FilterOption[]) | undefined,
+    options: FilterOption[] | ((items: FItem[], context?: FContext) => FilterOption[]) | undefined,
     items: FItem[],
-    context?: InjectedContext,
+    context?: FContext,
 ) {
     let option: FilterOption | any;
 
