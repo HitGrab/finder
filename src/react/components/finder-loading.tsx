@@ -8,10 +8,6 @@ interface FinderLoadingProps {
 function FinderLoading({ children: renderProp }: FinderLoadingProps) {
     const finder = useFinder();
     if (finder.state === "loading" && renderProp) {
-        if (typeof renderProp === "object" && renderProp !== null && isValidElement(renderProp)) {
-            return renderProp;
-        }
-
         if (typeof renderProp === "function") {
             const Component = renderProp;
             return <Component pagination={finder.pagination} context={finder.context} />;

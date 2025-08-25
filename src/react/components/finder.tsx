@@ -1,5 +1,5 @@
 import { useEffect, useImperativeHandle, useState } from "react";
-import { FinderContext } from "../providers/finder-context";
+import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
 import { FinderCore } from "../../core/finder-core";
 
@@ -48,7 +48,7 @@ function Finder<FItem = any>({
             }),
     );
 
-    // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
+    // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
     useEffect(() => {
         instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
@@ -69,6 +69,6 @@ function Finder<FItem = any>({
 
     useImperativeHandle(controllerRef, () => instance, [instance]);
 
-    return <FinderContext value={[instance, instance.updatedAt]}>{children}</FinderContext>;
+    return <FinderCoreContext value={[instance, instance.updatedAt]}>{children}</FinderCoreContext>;
 }
 export { Finder };
