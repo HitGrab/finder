@@ -2,10 +2,9 @@
  * React-specific types for creating consumer components.
  */
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
-import { FinderConstructorOptions, FinderResultGroup, GroupByRule } from "../../types";
+import { FinderConstructorOptions, FinderResultGroup, GroupByRule, InjectedContext } from "../../types";
 import { paginationInterface } from "../../core/pagination/pagination-interface";
 import { selectedItemsInterface } from "../../core/selected-items/selected-items-interface";
-import { metaInterface } from "../../core/meta/meta-interface";
 import { layoutInterface } from "../../core/layout/layout-interface";
 import { FinderCore } from "../../core/finder-core";
 export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, PropsWithChildren {
@@ -14,7 +13,7 @@ export interface FinderProps<FItem> extends FinderConstructorOptions<FItem>, Pro
 }
 export interface FinderContentProps {
     pagination: ReturnType<typeof paginationInterface>;
-    meta: ReturnType<typeof metaInterface>;
+    context?: InjectedContext;
     selectedItems: ReturnType<typeof selectedItemsInterface>;
     layout: ReturnType<typeof layoutInterface>;
 }

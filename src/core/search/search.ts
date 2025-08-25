@@ -1,10 +1,10 @@
 import { orderBy } from "lodash";
-import { MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
+import { InjectedContext } from "../../types";
 
 type InitialValues = { initialSearchTerm: string | undefined };
 type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
@@ -68,7 +68,7 @@ class SearchMixin<FItem> {
         });
     }
 
-    process(items: FItem[], meta: MetaInterface) {
+    process(items: FItem[], context?: InjectedContext) {
         if (this.searchTerm === "" || this.rule === undefined) {
             return items;
         }
@@ -78,7 +78,7 @@ class SearchMixin<FItem> {
                 if (this.rule?.searchFn === undefined) {
                     return false;
                 }
-                return this.rule.searchFn(item, this.searchTerm, meta);
+                return this.rule.searchFn(item, this.searchTerm, context);
             });
         }
 
@@ -89,7 +89,7 @@ class SearchMixin<FItem> {
             }
 
             // Retrieve this item's array of haystack strings to compare the search needle against
-            const itemHaystackStringOrStrings = this.rule.haystackFn(item, meta);
+            const itemHaystackStringOrStrings = this.rule.haystackFn(item, context);
             const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
                 ? itemHaystackStringOrStrings.map(transformStringForComparison)
                 : [transformStringForComparison(itemHaystackStringOrStrings)];

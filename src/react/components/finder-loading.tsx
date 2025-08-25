@@ -1,25 +1,20 @@
-import { cloneElement, isValidElement } from "react";
-import { useFinderContext } from "../hooks/use-finder-context";
+import { isValidElement } from "react";
 import { FinderContentRenderProp } from "../types/react-types";
+import { useFinder } from "../hooks/use-finder";
 
 interface FinderLoadingProps {
     children: FinderContentRenderProp;
 }
 function FinderLoading({ children: renderProp }: FinderLoadingProps) {
-    const finder = useFinderContext();
+    const finder = useFinder();
     if (finder.state === "loading" && renderProp) {
         if (typeof renderProp === "object" && renderProp !== null && isValidElement(renderProp)) {
-            return cloneElement(renderProp, {
-                pagination: finder.pagination,
-                meta: finder.meta,
-                selectedItems: finder.selectedItems,
-                layout: finder.layout,
-            });
+            return renderProp;
         }
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component pagination={finder.pagination} meta={finder.meta} selectedItems={finder.selectedItems} layout={finder.layout} />;
+            return <Component pagination={finder.pagination} context={finder.context} selectedItems={finder.selectedItems} layout={finder.layout} />;
         }
 
         return renderProp;

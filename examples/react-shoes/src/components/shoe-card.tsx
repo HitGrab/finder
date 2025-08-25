@@ -1,11 +1,12 @@
-import { FinderSearchTerm, useFinderContext } from "@hitgrab/finder";
+import { FinderSearchTerm, useFinder } from "@hitgrab/finder";
 import { range } from "lodash";
 
 interface ShoeCardProps {
     item: Shoe;
 }
 function ShoeCard({ item }: ShoeCardProps) {
-    const finder = useFinderContext();
+    const finder = useFinder();
+    console.log(finder.context);
     return (
         <div className="shoe" data-in-stock={item.in_stock}>
             <div className="imagePedestal">
@@ -16,6 +17,10 @@ function ShoeCard({ item }: ShoeCardProps) {
                     ))}
                 </div>
             </div>
+            {finder.context?.isSelected(item) ? "YES" : "NO"}
+            <button type="button" onClick={() => finder.context?.toggle(item)}>
+                Toggle
+            </button>
 
             <div className="details">
                 <button type="button" className="brand" onClick={() => finder.filters.set("brand", [item.brand])}>

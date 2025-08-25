@@ -1,21 +1,15 @@
-import { ElementType, isValidElement, cloneElement } from "react";
-import { useFinderContext } from "../hooks/use-finder-context";
+import { ElementType, isValidElement } from "react";
 import { FinderContentItemProps } from "../types/react-types";
+import { useFinder } from "../hooks/use-finder";
 
 interface FinderItemsProps<FItem = any> {
     children: ElementType<FinderContentItemProps<FItem>>;
 }
 function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
-    const finder = useFinderContext();
+    const finder = useFinder();
     if (finder.state === "items" && finder.matches.items && renderProp) {
-        if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return cloneElement(renderProp, {
-                items: finder.matches.items,
-                selectedItems: finder.selectedItems,
-                pagination: finder.pagination,
-                meta: finder.meta,
-                layout: finder.layout,
-            });
+        if (typeof renderProp === "object" && renderProp !== null && isValidElement(renderProp)) {
+            return renderProp;
         }
 
         if (typeof renderProp === "function") {
@@ -25,7 +19,7 @@ function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
                     items={finder.matches.items}
                     selectedItems={finder.selectedItems}
                     pagination={finder.pagination}
-                    meta={finder.meta}
+                    context={finder.context}
                     layout={finder.layout}
                 />
             );

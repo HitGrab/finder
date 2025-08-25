@@ -1,4 +1,4 @@
-import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, MetaInterface, FilterRuleUnion } from "../../types";
+import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, FilterRuleUnion, InjectedContext } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
@@ -22,8 +22,8 @@ declare class FiltersMixin {
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): any[];
     testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<any, any>;
     getFilters(): Record<string, any>;
-    process(items: any[], meta: MetaInterface): any[];
-    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta: MetaInterface): FItem[];
+    process(items: any[], context?: InjectedContext): any[];
+    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: InjectedContext): FItem[];
     static isActive(rule: FilterRuleUnion | HydratedFilterRule, value: any): boolean;
 }
 export { FiltersMixin };

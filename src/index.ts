@@ -46,7 +46,7 @@ export type {
  * React hooks and components
  */
 export { useFinder } from "./react/hooks/use-finder";
-export { useFinderContext } from "./react/hooks/use-finder-context";
+export { useFinderCore } from "./react/hooks/use-finder-core";
 export { Finder } from "./react/components/finder";
 export { FinderContent } from "./react/components/finder-content";
 export { FinderSearchTerm } from "./react/components/finder-search-term";

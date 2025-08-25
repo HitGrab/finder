@@ -1,4 +1,4 @@
-import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, MetaInterface, FilterRuleUnion } from "../../types";
+import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, FilterRuleUnion, InjectedContext } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -49,15 +49,15 @@ export function getRuleFromIdentifier<T extends FinderRule>(identifier: FinderRu
 
 export function getFilterOptionFromIdentifier<FItem>(
     optionOrOptionValue: FilterOption | any,
-    options: FilterOption[] | ((items: FItem[], meta: MetaInterface) => FilterOption[]) | undefined,
+    options: FilterOption[] | ((items: FItem[], context?: InjectedContext) => FilterOption[]) | undefined,
     items: FItem[],
-    meta: MetaInterface,
+    context?: InjectedContext,
 ) {
     let option: FilterOption | any;
 
     let composedOptions: FilterOption[] = [];
     if (typeof options === "function") {
-        composedOptions = options(items, meta);
+        composedOptions = options(items, context);
     }
     if (Array.isArray(options)) {
         composedOptions = options;

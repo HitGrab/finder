@@ -1,7 +1,7 @@
-import { SortDirection, useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 function SortByControls() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     return (
         <div className="checkboxFilterList">
             {finder.sortBy.rules?.map((rule) => {

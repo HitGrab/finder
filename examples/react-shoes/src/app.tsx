@@ -14,12 +14,31 @@ import { InStockFilterControls } from "./components/controls/in-stock-filter-con
 import { rules } from "./rules/shoe-rules";
 import { useAsyncGetRandomlyGeneratedShoes } from "./hooks/use-random-shoe-generator";
 import { NameSearchControl } from "./components/controls/name-search-control";
+import { useMemo, useState } from "react";
 
 function App() {
     const { data, isPending } = useAsyncGetRandomlyGeneratedShoes();
+    const [selectedItems, setSelectedItems] = useState<Shoe[]>([]);
+
+    const context = useMemo(() => {
+        return {
+            isSelected(item: Shoe) {
+                return selectedItems.includes(item);
+            },
+            toggle(item: Shoe) {
+                if (selectedItems.includes(item)) {
+                    return setSelectedItems((initialValue) => initialValue.filter((row) => row !== item));
+                }
+                return setSelectedItems((initialValue) => {
+                    const uniqueSet = new Set(initialValue).add(item);
+                    return Array.from(uniqueSet);
+                });
+            },
+        };
+    }, [selectedItems, setSelectedItems]);
 
     return (
-        <Finder items={data} rules={rules} isLoading={isPending}>
+        <Finder items={data} rules={rules} isLoading={isPending} context={context}>
             <h1>Kicking Rad Shoe Store</h1>
             <div className="layout">
                 <aside>

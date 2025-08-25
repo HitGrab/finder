@@ -1,5 +1,5 @@
-import { MetaInterface } from "../../types";
 import { MixinInjectedDependencies } from "../types/internal-types";
+import { InjectedContext } from "../../types";
 type InitialValues = {
     initialSearchTerm: string | undefined;
 };
@@ -12,6 +12,6 @@ declare class SearchMixin<FItem> {
     get hasSearchTerm(): boolean;
     setSearchTerm(incomingSearchTerm: string): void;
     reset(): void;
-    process(items: FItem[], meta: MetaInterface): FItem[];
+    process(items: FItem[], context?: InjectedContext): FItem[];
 }
 export { SearchMixin };

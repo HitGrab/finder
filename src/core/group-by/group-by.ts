@@ -1,4 +1,4 @@
-import { GroupByRule, FinderResultGroup, SortDirection, MetaInterface } from "../../types";
+import { GroupByRule, FinderResultGroup, SortDirection, InjectedContext } from "../../types";
 import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { groupBy, orderBy } from "lodash";
@@ -88,13 +88,13 @@ class GroupByMixin<FItem> {
         this.set(undefined);
     }
 
-    process(items: FItem[], meta: MetaInterface) {
+    process(items: FItem[], context?: InjectedContext) {
         if (this.activeRule === undefined) {
             return [];
         }
 
         const groupObject = groupBy(items, (item) => {
-            const value = this.activeRule?.groupFn(item, meta);
+            const value = this.activeRule?.groupFn(item, context);
             if (value === undefined) {
                 throw new Error("groupFn did not return a value.");
             }

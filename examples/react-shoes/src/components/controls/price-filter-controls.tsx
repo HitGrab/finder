@@ -1,8 +1,8 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 import { useCallback, useState } from "react";
 
 export function PriceFilterControls() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     const rule = finder.filters.getRule("price_between");
     const [min, setMin] = useState<number | undefined>(undefined);
     const [max, setMax] = useState<number | undefined>(undefined);

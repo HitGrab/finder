@@ -77,7 +77,7 @@ class SortByMixin<FItem> {
         }
 
         const direction = this.#sortDirection ?? activeSortByRule.defaultSortDirection;
-        return orderBy(items, activeSortByRule.sortFn, direction) as FItem[];
+        return orderBy(items, (item) => activeSortByRule.sortFn(item, this.#deps.getContext()), direction) as FItem[];
     }
 }
 

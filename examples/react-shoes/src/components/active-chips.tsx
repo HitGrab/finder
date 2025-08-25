@@ -1,9 +1,9 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 import { composeColorFromString } from "../utils/color-from-string";
 import { PropsWithChildren } from "react";
 
 function ActiveChips() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     return (
         <div className="chipList">
             {finder.filters.activeRules.map((rule) => {

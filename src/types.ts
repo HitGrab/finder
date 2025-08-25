@@ -5,14 +5,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
-import { metaInterface, readonlyMetaInterface } from "./core/meta/meta-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 import { FinderCore } from "./core/finder-core";
 
-export type MetaInterface = ReturnType<typeof metaInterface>;
+export type InjectedContext = Record<string, any>;
+
 export interface FinderConstructorOptions<FItem> {
     // Stateless rules
     rules?: FinderRule<FItem>[];
@@ -23,7 +23,7 @@ export interface FinderConstructorOptions<FItem> {
 
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    initialMeta?: Record<string, any>;
+    context?: InjectedContext;
     initialSelectedItems?: FItem[];
 
     // determine how many items can be selected
@@ -77,19 +77,19 @@ export interface SearchRuleSharedProps {
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
-    haystackFn: (item: FItem, meta: MetaInterface) => string | string[];
+    haystackFn: (item: FItem, context?: InjectedContext) => string | string[];
 }
 
 export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
     haystackFn?: never;
-    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
+    searchFn: (item: FItem, searchTerm: string, context?: InjectedContext) => boolean;
 }
 
 export type SearchRule<FItem = any> = SearchRuleAdvanced<FItem> | SearchRuleSimple<FItem>;
 
 export interface FilterOptionGeneratorFnOptions<FItem> {
     items: FItem[];
-    meta: MetaInterface;
+    context?: InjectedContext;
 }
 
 export interface FilterRule<FItem = any, FValue = any> {
@@ -110,20 +110,20 @@ export interface FilterRule<FItem = any, FValue = any> {
 interface FilterRuleWithBooleanValue<FItem, FValue = boolean> extends FilterRule<FItem, FValue> {
     multiple?: false;
     isBoolean: true;
-    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue, context?: InjectedContext) => boolean;
     defaultValue?: boolean;
 }
 interface FilterRuleWithScalarValue<FItem, FValue> extends FilterRule<FItem, FValue> {
     multiple?: false;
     isBoolean?: false;
-    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue, context?: InjectedContext) => boolean;
     defaultValue?: FValue;
 }
 
 interface FilterRuleWithMultipleValues<FItem, FValue> extends FilterRule<FItem, FValue> {
     multiple: true;
     isBoolean?: false;
-    filterFn: (item: FItem, value: FValue[], meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue[], context?: InjectedContext) => boolean;
     defaultValue?: FValue[];
 }
 
@@ -142,8 +142,7 @@ export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<Filt
     hidden: boolean;
     multiple: boolean;
 
-    // filterfn
-    filterFn: ((item: FItem, value: FValue, meta: MetaInterface) => boolean) | ((item: FItem, value: FValue[], meta: MetaInterface) => boolean);
+    filterFn: ((item: FItem, value: FValue, context?: InjectedContext) => boolean) | ((item: FItem, value: FValue[], context?: InjectedContext) => boolean);
     defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
 }
@@ -174,7 +173,7 @@ export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];
 /**
  * Select a property from the item to sort by.
  */
-export type FinderPropertySelector<FItem> = (item: FItem, meta: MetaInterface) => string | number;
+export type FinderPropertySelector<FItem> = (item: FItem, context?: InjectedContext) => string | number;
 
 /**
  * Describes the display of a filter or sort option.
@@ -196,21 +195,21 @@ export interface MatchesSnapshot<FItem> {
 export interface FilterTestOptions {
     rules?: HydratedFilterRule[];
     values?: any;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
 }
 
 export interface FilterTestRuleOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
     value: any;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
 }
 
 // TODO: Maybe rename this
 export interface FilterTestRuleOptionsOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
 }
@@ -222,11 +221,11 @@ export interface FinderSnapshot<FItem> {
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
     selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
     layout: ReturnType<typeof readonlyLayoutInterface>;
-    meta: ReturnType<typeof readonlyMetaInterface<FItem>>;
-    updatedAt: number | undefined;
+    context?: InjectedContext;
+    updatedAt?: number;
 }
 
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
 
 type FinderSharedEventProps = {
     source: string;
@@ -279,6 +278,7 @@ export type FinderEventName =
     | "change.core.setIsLoading"
     | "change.core.setIsDisabled"
     | "change.core.setItems"
+    | "change.core.syncContext"
     | "change.layout"
     | "change.layout.set"
     | "change.layout.reset"
@@ -287,10 +287,6 @@ export type FinderEventName =
     | `change.groupBy`
     | "change.groupBy.set"
     | "change.groupBy.setGroupIdSortDirection"
-    | "change.meta"
-    | "change.meta.set"
-    | "change.meta.delete"
-    | "change.meta.reset"
     | "change.pagination"
     | "change.pagination.setPage"
     | "change.pagination.setNumItemsPerPage"

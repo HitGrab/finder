@@ -3,13 +3,12 @@
  */
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
-import { metaInterface, readonlyMetaInterface } from "./core/meta/meta-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 import { FinderCore } from "./core/finder-core";
-export type MetaInterface = ReturnType<typeof metaInterface>;
+export type InjectedContext = Record<string, any>;
 export interface FinderConstructorOptions<FItem> {
     rules?: FinderRule<FItem>[];
     initialSearchTerm?: string;
@@ -17,7 +16,7 @@ export interface FinderConstructorOptions<FItem> {
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    initialMeta?: Record<string, any>;
+    context?: InjectedContext;
     initialSelectedItems?: FItem[];
     maxSelectedItems?: number;
     isLoading?: boolean;
@@ -45,20 +44,19 @@ export interface SearchRuleSharedProps {
     debounceMilliseconds?: number;
     searchFn?: unknown;
     haystackFn?: unknown;
-    overrideSortByRuleWhileActive?: boolean;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
-    haystackFn: (item: FItem, meta: MetaInterface) => string | string[];
+    haystackFn: (item: FItem, context?: InjectedContext) => string | string[];
 }
 export interface SearchRuleAdvanced<FItem = any> extends SearchRuleSharedProps {
     haystackFn?: never;
-    searchFn: (item: FItem, searchTerm: string, meta: MetaInterface) => boolean;
+    searchFn: (item: FItem, searchTerm: string, context?: InjectedContext) => boolean;
 }
 export type SearchRule<FItem = any> = SearchRuleAdvanced<FItem> | SearchRuleSimple<FItem>;
 export interface FilterOptionGeneratorFnOptions<FItem> {
     items: FItem[];
-    meta: MetaInterface;
+    context?: InjectedContext;
 }
 export interface FilterRule<FItem = any, FValue = any> {
     id: string;
@@ -75,19 +73,19 @@ export interface FilterRule<FItem = any, FValue = any> {
 interface FilterRuleWithBooleanValue<FItem, FValue = boolean> extends FilterRule<FItem, FValue> {
     multiple?: false;
     isBoolean: true;
-    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue, context?: InjectedContext) => boolean;
     defaultValue?: boolean;
 }
 interface FilterRuleWithScalarValue<FItem, FValue> extends FilterRule<FItem, FValue> {
     multiple?: false;
     isBoolean?: false;
-    filterFn: (item: FItem, value: FValue, meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue, context?: InjectedContext) => boolean;
     defaultValue?: FValue;
 }
 interface FilterRuleWithMultipleValues<FItem, FValue> extends FilterRule<FItem, FValue> {
     multiple: true;
     isBoolean?: false;
-    filterFn: (item: FItem, value: FValue[], meta: MetaInterface) => boolean;
+    filterFn: (item: FItem, value: FValue[], context?: InjectedContext) => boolean;
     defaultValue?: FValue[];
 }
 export type FilterRuleUnion<FItem = any, FValue = any> = FilterRuleWithBooleanValue<FItem> | FilterRuleWithScalarValue<FItem, FValue> | FilterRuleWithMultipleValues<FItem, FValue>;
@@ -100,7 +98,7 @@ export interface HydratedFilterRule<FItem = any, FValue = any> extends Omit<Filt
     isBoolean: boolean;
     hidden: boolean;
     multiple: boolean;
-    filterFn: ((item: FItem, value: FValue, meta: MetaInterface) => boolean) | ((item: FItem, value: FValue[], meta: MetaInterface) => boolean);
+    filterFn: ((item: FItem, value: FValue, context?: InjectedContext) => boolean) | ((item: FItem, value: FValue[], context?: InjectedContext) => boolean);
     defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
 }
@@ -127,7 +125,7 @@ export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];
 /**
  * Select a property from the item to sort by.
  */
-export type FinderPropertySelector<FItem> = (item: FItem, meta: MetaInterface) => string | number;
+export type FinderPropertySelector<FItem> = (item: FItem, context?: InjectedContext) => string | number;
 /**
  * Describes the display of a filter or sort option.
  */
@@ -146,18 +144,18 @@ export interface MatchesSnapshot<FItem> {
 export interface FilterTestOptions {
     rules?: HydratedFilterRule[];
     values?: any;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
 }
 export interface FilterTestRuleOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
     value: any;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
 }
 export interface FilterTestRuleOptionsOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
-    meta?: MetaInterface;
+    context?: InjectedContext;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
 }
@@ -168,10 +166,10 @@ export interface FinderSnapshot<FItem> {
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
     selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
     layout: ReturnType<typeof readonlyLayoutInterface>;
-    meta: ReturnType<typeof readonlyMetaInterface<FItem>>;
-    updatedAt: number | undefined;
+    context?: InjectedContext;
+    updatedAt?: number;
 }
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "meta" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
 type FinderSharedEventProps = {
     source: string;
     event: FinderEventName;
@@ -209,7 +207,7 @@ export interface FinderTouchEvent {
  * External type that consumers will receive
  */
 export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
-export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.meta" | "change.meta.set" | "change.meta.delete" | "change.meta.reset" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.selectedItems" | "change.selectedItems.setMaxSelectedItems" | "change.selectedItems.set" | "change.selectedItems.select" | "change.selectedItems.toggle" | "change.selectedItems.delete" | "change.selectedItems.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
+export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.selectedItems" | "change.selectedItems.setMaxSelectedItems" | "change.selectedItems.set" | "change.selectedItems.select" | "change.selectedItems.toggle" | "change.selectedItems.delete" | "change.selectedItems.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 export interface FinderPluginInterface<FItem = any> {
     id: string;

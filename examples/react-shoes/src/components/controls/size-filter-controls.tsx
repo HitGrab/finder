@@ -1,7 +1,7 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 export function SizeFilterControls() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     const rule = finder.filters.getRule("size");
     if (!rule) {
         return null;

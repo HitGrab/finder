@@ -10,14 +10,13 @@ import {
     FinderInitEvent,
     FinderFirstUserInteractionEvent,
     FinderReadyEvent,
+    InjectedContext,
 } from "../types";
 import { isValidRuleset } from "./utils/rule-utils";
 import { FiltersMixin } from "./filters/filters";
 import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
 import { groupByInterface, readonlyGroupByInterface } from "./group-by/group-by-interface";
-import { MetaMixin } from "./meta/meta";
-import { metaInterface, readonlyMetaInterface } from "./meta/meta-interface";
 import { PaginationMixin } from "./pagination/pagination";
 import { paginationInterface } from "./pagination/pagination-interface";
 import { PluginMediator } from "./plugins/plugin-mediator";
@@ -63,11 +62,12 @@ class FinderCore<FItem> {
         filters: FiltersMixin;
         sortBy: SortByMixin<FItem>;
         groupBy: GroupByMixin<FItem>;
-        meta: MetaMixin<FItem>;
         selectedItems: SelectedItemsMixin<FItem>;
         pagination: PaginationMixin<FItem>;
         layout: LayoutMixin;
     };
+
+    context;
 
     plugins: PluginMediator<FItem>;
 
@@ -81,7 +81,7 @@ class FinderCore<FItem> {
             initialGroupBy,
             initialFilters,
             initialSelectedItems,
-            initialMeta,
+            context,
             page,
             numItemsPerPage,
             isLoading,
@@ -107,7 +107,7 @@ class FinderCore<FItem> {
         const mixinDeps = {
             getItems: () => this.items,
             getRules: () => this.#rules,
-            getMeta: () => metaInterface(this.#mixins.meta),
+            getContext: () => this.context,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             touch: (event: FinderTouchEvent) => this.#touch(event),
@@ -120,7 +120,6 @@ class FinderCore<FItem> {
             filters: new FiltersMixin({ initialFilters }, mixinDeps),
             sortBy: new SortByMixin({ initialSortBy, initialSortDirection }, mixinDeps),
             groupBy: new GroupByMixin({ initialGroupBy, requireGroup: !!requireGroup }, mixinDeps),
-            meta: new MetaMixin({ initialMeta }, mixinDeps),
             selectedItems: new SelectedItemsMixin({ initialSelectedItems, maxSelectedItems }, mixinDeps),
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
             layout: new LayoutMixin({ layoutVariants, initialLayout }, mixinDeps),
@@ -132,6 +131,8 @@ class FinderCore<FItem> {
             () => this,
             (event: FinderTouchEvent) => this.#touch(event),
         );
+
+        this.context = context;
 
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
@@ -188,11 +189,6 @@ class FinderCore<FItem> {
         this.#isTouched = true;
         this.#snapshot = undefined;
         this.updatedAt = Date.now();
-
-        // if a meta value changed, updated any option generators
-        if (touchEvent.source === "meta") {
-            this.#mixins.filters.clearHydratedRules();
-        }
 
         // transform the internal touch event to a public change event
         const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
@@ -257,17 +253,15 @@ class FinderCore<FItem> {
         const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
         let paginatedItemSlice: FItem[] = [];
         if (Array.isArray(this.#items)) {
-            const meta = metaInterface(this.#mixins.meta);
-
             itemsToProcess = [...this.#items];
-            itemsToProcess = this.#mixins.search.process(itemsToProcess, meta);
-            itemsToProcess = this.#mixins.filters.process(itemsToProcess, meta);
+            itemsToProcess = this.#mixins.search.process(itemsToProcess, this.context);
+            itemsToProcess = this.#mixins.filters.process(itemsToProcess, this.context);
             itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
 
             paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess);
 
             if (hasGroupByRule) {
-                groups = this.#mixins.groupBy.process(paginatedItemSlice, meta);
+                groups = this.#mixins.groupBy.process(paginatedItemSlice, this.context);
             }
         }
 
@@ -291,7 +285,7 @@ class FinderCore<FItem> {
             groupBy: readonlyGroupByInterface(this.#mixins.groupBy),
             selectedItems: readonlySelectedItemsInterface(this.#mixins.selectedItems),
             layout: readonlyLayoutInterface(this.#mixins.layout),
-            meta: readonlyMetaInterface(this.#mixins.meta),
+            context: this.context,
             updatedAt: this.updatedAt,
         };
     }
@@ -326,10 +320,6 @@ class FinderCore<FItem> {
 
     get groupBy() {
         return groupByInterface(this.#mixins.groupBy);
-    }
-
-    get meta() {
-        return metaInterface(this.#mixins.meta);
     }
 
     get pagination() {
@@ -397,6 +387,18 @@ class FinderCore<FItem> {
             const previousValue = this.disabled;
             this.disabled = !!value;
             this.#systemTouch({ source: "core", event: "change.core.setIsDisabled", current: !!value, initial: previousValue });
+        }
+    }
+
+    setContext(context?: InjectedContext) {
+        const previousValue = this.context;
+        if (isEqual(context, previousValue) === false) {
+            this.context = context;
+
+            // filter option generators will need to be recalculated
+            this.#mixins.filters.clearHydratedRules();
+
+            this.#systemTouch({ source: "core", event: "change.core.syncContext", current: context, initial: previousValue });
         }
     }
 }
