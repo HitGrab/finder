@@ -1,4 +1,3 @@
-import { isValidElement } from "react";
 import { FinderContentRenderProp } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
 

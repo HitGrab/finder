@@ -19,7 +19,7 @@ import { GroupByMixin } from "./group-by/group-by";
 import { groupByInterface, readonlyGroupByInterface } from "./group-by/group-by-interface";
 import { PaginationMixin } from "./pagination/pagination";
 import { paginationInterface } from "./pagination/pagination-interface";
-import { PluginMediator } from "./plugins/plugin-mediator";
+// import { PluginMediator } from "./plugins/plugin-mediator";
 import { SearchMixin } from "./search/search";
 import { readonlySearchInterface, searchInterface } from "./search/search-interface";
 import { SortByMixin } from "./sort-by/sort-by";
@@ -29,7 +29,7 @@ import { EventCallback } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
 
-class FinderCore<FItem> {
+class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined> {
     #items: FItem[] | null | undefined;
 
     // static rule definitions
@@ -61,9 +61,9 @@ class FinderCore<FItem> {
         pagination: PaginationMixin<FItem>;
     };
 
-    context;
+    context: FContext | undefined;
 
-    plugins: PluginMediator<FItem>;
+    // plugins: PluginMediator<FItem>;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -80,12 +80,12 @@ class FinderCore<FItem> {
             isLoading,
             disabled,
             requireGroup,
-            plugins,
+            // plugins,
             onInit,
             onReady,
             onFirstUserInteraction,
             onChange,
-        }: FinderConstructorOptions<FItem>,
+        }: FinderConstructorOptions<FItem, FContext>,
     ) {
         this.#rules = isValidRuleset(rules) ? rules : [];
         this.#items = items;
@@ -113,12 +113,12 @@ class FinderCore<FItem> {
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
         };
 
-        // The plugin mediator must be initialized after all mixins have been instantiated
-        this.plugins = new PluginMediator(
-            plugins || [],
-            () => this,
-            (event: FinderTouchEvent) => this.#touch(event),
-        );
+        // // The plugin mediator must be initialized after all mixins have been instantiated
+        // this.plugins = new PluginMediator(
+        //     plugins || [],
+        //     () => this,
+        //     (event: FinderTouchEvent) => this.#touch(event),
+        // );
 
         this.context = context;
 
@@ -132,7 +132,7 @@ class FinderCore<FItem> {
             };
 
             // init all plugins
-            this.plugins.onInit(initPayload);
+            // this.plugins.onInit(initPayload);
 
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
             if (onInit) {
@@ -368,7 +368,7 @@ class FinderCore<FItem> {
         }
     }
 
-    setContext(context?: InjectedContext) {
+    setContext(context?: FContext) {
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;

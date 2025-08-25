@@ -11,7 +11,7 @@ import { FinderCore } from "./core/finder-core";
 
 export type InjectedContext = Record<string, any>;
 
-export interface FinderConstructorOptions<FItem> {
+export interface FinderConstructorOptions<FItem, FContext extends InjectedContext | undefined = undefined> {
     // Stateless rules
     rules?: FinderRule<FItem>[];
 
@@ -21,7 +21,7 @@ export interface FinderConstructorOptions<FItem> {
 
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    context?: InjectedContext;
+    context?: FContext;
 
     isLoading?: boolean;
     disabled?: boolean;
