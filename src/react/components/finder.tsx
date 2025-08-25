@@ -1,7 +1,7 @@
-import { useImperativeHandle } from "react";
+import { useEffect, useImperativeHandle, useState } from "react";
 import { FinderContext } from "../providers/finder-context";
 import { FinderProps } from "../types/react-types";
-import { useFinderConstructor } from "../hooks/use-finder-constructor";
+import { FinderCore } from "../../core/finder-core";
 
 function Finder<FItem = any>({
     items,
@@ -16,37 +16,59 @@ function Finder<FItem = any>({
     disabled,
     page,
     numItemsPerPage,
-    requireGroup,
     plugins,
+    requireGroup,
     onInit,
     onReady,
     onFirstUserInteraction,
     onChange,
-    children,
     controllerRef,
+    children,
 }: FinderProps<FItem>) {
-    const finderInstance = useFinderConstructor<FItem>(items, {
-        rules,
-        initialSearchTerm,
-        initialSortBy,
-        initialSortDirection,
-        initialGroupBy,
-        initialFilters,
-        context,
-        isLoading,
-        disabled,
-        page,
-        numItemsPerPage,
-        requireGroup,
-        plugins,
-        onInit,
-        onReady,
-        onFirstUserInteraction,
-        onChange,
-    });
+    const [instance] = useState(
+        () =>
+            new FinderCore(items, {
+                rules,
+                initialSearchTerm,
+                initialSortBy,
+                initialSortDirection,
+                initialGroupBy,
+                initialFilters,
+                context,
+                isLoading,
+                disabled,
+                page,
+                numItemsPerPage,
+                plugins,
+                requireGroup,
+                onInit,
+                onReady,
+                onFirstUserInteraction,
+                onChange,
+            }),
+    );
 
-    useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
+    // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
+    const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
+    useEffect(() => {
+        instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+    }, []);
 
-    return <FinderContext value={[finderInstance, finderInstance.updatedAt]}>{children}</FinderContext>;
+    // Finder will only render a new snapshot if these values have changed.
+    instance.setItems(items);
+    instance.setIsLoading(isLoading);
+    instance.setIsDisabled(disabled);
+    instance.setContext(context);
+
+    if (page !== undefined) {
+        instance.pagination.setPage(page);
+    }
+    if (numItemsPerPage !== undefined) {
+        instance.pagination.setNumItemsPerPage(numItemsPerPage);
+    }
+
+    useImperativeHandle(controllerRef, () => instance, [instance]);
+
+    return <FinderContext value={[instance, instance.updatedAt]}>{children}</FinderContext>;
 }
 export { Finder };
