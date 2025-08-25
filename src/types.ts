@@ -1,7 +1,3 @@
-/**
- * Public types that are necessary to use the library.
- */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
@@ -16,7 +12,6 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
     initialSearchTerm?: string;
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
-
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
     context?: FContext;
@@ -31,6 +26,9 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
     // Force items to use a group rule.
     // If no groupBy is set, the first valid group rule will be used.
     requireGroup?: boolean;
+
+    // maybe a little verbose
+    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
 
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
 

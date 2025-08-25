@@ -18,7 +18,6 @@ import { GroupByMixin } from "./group-by/group-by";
 import { groupByInterface, readonlyGroupByInterface } from "./group-by/group-by-interface";
 import { PaginationMixin } from "./pagination/pagination";
 import { paginationInterface } from "./pagination/pagination-interface";
-// import { PluginMediator } from "./plugins/plugin-mediator";
 import { SearchMixin } from "./search/search";
 import { readonlySearchInterface, searchInterface } from "./search/search-interface";
 import { SortByMixin } from "./sort-by/sort-by";
@@ -27,6 +26,7 @@ import { EventEmitter } from "./events/event-emitter";
 import { EventCallback } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
+import { PluginMediator } from "./plugins/plugin-mediator";
 
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
@@ -46,6 +46,8 @@ class FinderCore<FItem, FContext = any> {
 
     #hasEmittedFirstUserInteraction = false;
 
+    #ignoreSortByRulesWhileSearchRuleIsActive;
+
     // If true, the next call to findMatches() will force a render.
     #isTouched = false;
 
@@ -62,7 +64,7 @@ class FinderCore<FItem, FContext = any> {
 
     context: FContext;
 
-    // plugins: PluginMediator<FItem>;
+    plugins: PluginMediator<FItem>;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -79,7 +81,8 @@ class FinderCore<FItem, FContext = any> {
             isLoading,
             disabled,
             requireGroup,
-            // plugins,
+            ignoreSortByRulesWhileSearchRuleIsActive,
+            plugins,
             onInit,
             onReady,
             onFirstUserInteraction,
@@ -113,14 +116,16 @@ class FinderCore<FItem, FContext = any> {
         };
 
         // // The plugin mediator must be initialized after all mixins have been instantiated
-        // this.plugins = new PluginMediator(
-        //     plugins || [],
-        //     () => this,
-        //     (event: FinderTouchEvent) => this.#touch(event),
-        // );
+        this.plugins = new PluginMediator(
+            plugins || [],
+            () => this,
+            (event: FinderTouchEvent) => this.#touch(event),
+        );
 
         // hack: revise this later
         this.context = context as FContext;
+
+        this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
 
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
@@ -132,7 +137,7 @@ class FinderCore<FItem, FContext = any> {
             };
 
             // init all plugins
-            // this.plugins.onInit(initPayload);
+            this.plugins.onInit(initPayload);
 
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
             if (onInit) {
@@ -244,7 +249,15 @@ class FinderCore<FItem, FContext = any> {
             itemsToProcess = [...this.#items];
             itemsToProcess = this.#mixins.search.process(itemsToProcess, this.context);
             itemsToProcess = this.#mixins.filters.process(itemsToProcess, this.context);
-            itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
+
+            const ignoreSortByRules =
+                this.#ignoreSortByRulesWhileSearchRuleIsActive === true &&
+                this.#mixins.search.hasSearchRule === true &&
+                this.#mixins.search.hasSearchTerm === true;
+
+            if (ignoreSortByRules === false) {
+                itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
+            }
 
             paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess);
 

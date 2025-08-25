@@ -1,5 +1,6 @@
 import { MatchesSnapshot, FinderConstructorOptions, FinderEventName } from "../types";
 import { EventCallback } from "./types/internal-types";
+import { PluginMediator } from "./plugins/plugin-mediator";
 declare class FinderCore<FItem, FContext = any> {
     #private;
     isReady: boolean;
@@ -7,7 +8,8 @@ declare class FinderCore<FItem, FContext = any> {
     disabled: boolean;
     updatedAt?: number;
     context: FContext;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>);
+    plugins: PluginMediator<FItem>;
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;

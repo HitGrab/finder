@@ -1,6 +1,3 @@
-/**
- * Public types that are necessary to use the library.
- */
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
@@ -19,6 +16,7 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
     page?: number;
     numItemsPerPage?: number;
     requireGroup?: boolean;
+    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
     onInit?: FinderOnInitCallback;
     onReady?: FinderOnReadyCallback;

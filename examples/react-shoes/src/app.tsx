@@ -39,7 +39,7 @@ function App() {
     }, [selectedItems, setSelectedItems]);
 
     return (
-        <Finder items={data} rules={rules} isLoading={isPending} context={context}>
+        <Finder items={data} rules={rules} isLoading={isPending} context={context} ignoreSortByRulesWhileSearchRuleIsActive={true}>
             <h1>Kicking Rad Shoe Store</h1>
             <div className="layout">
                 <aside>
