@@ -1,2 +1,4 @@
-declare function useFinder(): import("../../core/finder-core").FinderCore<any>;
+import { InjectedContext } from "../../types";
+import { FinderCore } from "../../core/finder-core";
+declare function useFinder<FItem = any, FContext extends InjectedContext | undefined = undefined>(): FinderCore<FItem, FContext>;
 export { useFinder };

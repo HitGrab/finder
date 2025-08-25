@@ -5,25 +5,22 @@ import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
-import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 import { FinderCore } from "./core/finder-core";
 export type InjectedContext = Record<string, any>;
-export interface FinderConstructorOptions<FItem> {
+export interface FinderConstructorOptions<FItem, FContext extends InjectedContext | undefined = undefined> {
     rules?: FinderRule<FItem>[];
     initialSearchTerm?: string;
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    context?: InjectedContext;
+    context?: FContext;
     isLoading?: boolean;
     disabled?: boolean;
     page?: number;
     numItemsPerPage?: number;
     requireGroup?: boolean;
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
-    layoutVariants?: LayoutVariant[];
-    initialLayout?: string;
     onInit?: FinderOnInitCallback;
     onReady?: FinderOnReadyCallback;
     onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
@@ -161,11 +158,10 @@ export interface FinderSnapshot<FItem> {
     filters: ReturnType<typeof readonlyFiltersInterface>;
     sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
-    layout: ReturnType<typeof readonlyLayoutInterface>;
     context?: InjectedContext;
     updatedAt?: number;
 }
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "plugin" | "layout";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "plugin";
 type FinderSharedEventProps = {
     source: string;
     event: FinderEventName;
@@ -203,14 +199,11 @@ export interface FinderTouchEvent {
  * External type that consumers will receive
  */
 export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
-export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
+export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 export interface FinderPluginInterface<FItem = any> {
     id: string;
     register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
     [k: string]: any;
-}
-export interface LayoutVariant {
-    id: string;
 }
 export {};

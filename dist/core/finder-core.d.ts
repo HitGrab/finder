@@ -1,15 +1,13 @@
 import { MatchesSnapshot, FinderConstructorOptions, FinderEventName, InjectedContext } from "../types";
-import { PluginMediator } from "./plugins/plugin-mediator";
 import { EventCallback } from "./types/internal-types";
-declare class FinderCore<FItem> {
+declare class FinderCore<FItem, FContext extends InjectedContext | undefined = undefined> {
     #private;
     isReady: boolean;
     isLoading: boolean;
     disabled: boolean;
     updatedAt?: number;
-    context: InjectedContext | undefined;
-    plugins: PluginMediator<FItem>;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, layoutVariants, initialLayout, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
+    context: FContext | undefined;
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;
@@ -69,14 +67,6 @@ declare class FinderCore<FItem> {
         lastPage: number | undefined;
         isPaginated: boolean;
     };
-    get layout(): {
-        set: (identifier: string | import("..").LayoutVariant | undefined) => void;
-        reset: () => void;
-        variants: import("..").LayoutVariant[];
-        activeLayout: import("..").LayoutVariant | undefined;
-        raw: import("..").LayoutVariant | undefined;
-        is: (identifier: string | import("..").LayoutVariant | undefined) => boolean;
-    };
     get events(): {
         on: (event: FinderEventName, callback: EventCallback) => void;
         off: (event: FinderEventName, callback: EventCallback) => void;
@@ -85,6 +75,6 @@ declare class FinderCore<FItem> {
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
-    setContext(context?: InjectedContext): void;
+    setContext(context?: FContext): void;
 }
 export { FinderCore };
