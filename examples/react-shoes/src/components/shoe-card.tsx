@@ -7,8 +7,9 @@ interface ShoeCardProps {
 }
 function ShoeCard({ item }: ShoeCardProps) {
     const finder = useFinder<Shoe, ShoeSelectorContextProps>();
+    const isSelected = finder.context.isSelected(item);
     return (
-        <div className="shoe" data-in-stock={item.in_stock}>
+        <div className="shoe" data-in-stock={item.in_stock} data-selected={isSelected}>
             <div className="imagePedestal">
                 <div className="image" style={{ backgroundImage: `url(${item.image})` }} />
                 <div className="colorList">
@@ -17,10 +18,6 @@ function ShoeCard({ item }: ShoeCardProps) {
                     ))}
                 </div>
             </div>
-            {finder.context.isSelected(item) ? "YES" : "NO"}
-            <button type="button" onClick={() => finder.context.toggle(item)}>
-                Toggle
-            </button>
 
             <div className="details">
                 <button type="button" className="brand" onClick={() => finder.filters.set("brand", [item.brand])}>
@@ -32,6 +29,21 @@ function ShoeCard({ item }: ShoeCardProps) {
                 <div className="price">${item.price}</div>
                 <div className="rating">{range(0, item.rating).map(() => "*")}</div>
                 <div className="sizes">Sizes: {item.sizes.join(", ")}</div>
+            </div>
+            <div className="controls">
+                {item.in_stock ? (
+                    <label
+                        onClick={() => {
+                            finder.context.toggle(item);
+                        }}
+                    >
+                        <input type="checkbox" checked={isSelected} readOnly={true} /> Selected
+                    </label>
+                ) : (
+                    <label>
+                        <input type="checkbox" checked={isSelected} readOnly={true} disabled={true} /> Out of Stock
+                    </label>
+                )}
             </div>
         </div>
     );

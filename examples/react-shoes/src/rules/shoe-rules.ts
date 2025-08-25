@@ -8,17 +8,6 @@ import { intersection, sortBy, capitalize } from "lodash";
  */
 export const rules = finderRuleset<Shoe>([
     searchRule({ haystackFn: (item) => item.name }),
-    sortByRule({
-        id: "selected",
-        label: "Selected",
-        sortFn: (item, context) => {
-            if (context?.isSelected(item)) {
-                return 1000;
-            }
-            return 0;
-        },
-        defaultSortDirection: "desc",
-    }),
     filterRule({
         id: "brand",
         label: "Brand",
