@@ -20,6 +20,7 @@ export interface FinderConstructorOptions<FItem> {
     initialSearchTerm?: string;
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
+
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
     initialMeta?: Record<string, any>;
@@ -73,7 +74,6 @@ export interface SearchRuleSharedProps {
     // these properties will be narrowed in the SearchRule union
     searchFn?: unknown;
     haystackFn?: unknown;
-    overrideSortByRuleWhileActive?: boolean;
 }
 export interface SearchRuleSimple<FItem = any> extends SearchRuleSharedProps {
     searchFn?: never;
