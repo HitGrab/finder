@@ -22,16 +22,12 @@ import { paginationInterface } from "./pagination/pagination-interface";
 import { PluginMediator } from "./plugins/plugin-mediator";
 import { SearchMixin } from "./search/search";
 import { readonlySearchInterface, searchInterface } from "./search/search-interface";
-import { SelectedItemsMixin } from "./selected-items/selected-items";
-import { readonlySelectedItemsInterface, selectedItemsInterface } from "./selected-items/selected-items-interface";
 import { SortByMixin } from "./sort-by/sort-by";
 import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
 import { EventCallback } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
-import { LayoutMixin } from "./layout/layout";
-import { layoutInterface, readonlyLayoutInterface } from "./layout/layout-interface";
 
 class FinderCore<FItem> {
     #items: FItem[] | null | undefined;
@@ -62,9 +58,7 @@ class FinderCore<FItem> {
         filters: FiltersMixin;
         sortBy: SortByMixin<FItem>;
         groupBy: GroupByMixin<FItem>;
-        selectedItems: SelectedItemsMixin<FItem>;
         pagination: PaginationMixin<FItem>;
-        layout: LayoutMixin;
     };
 
     context;
@@ -80,16 +74,12 @@ class FinderCore<FItem> {
             initialSortDirection,
             initialGroupBy,
             initialFilters,
-            initialSelectedItems,
             context,
             page,
             numItemsPerPage,
             isLoading,
             disabled,
             requireGroup,
-            maxSelectedItems,
-            layoutVariants,
-            initialLayout,
             plugins,
             onInit,
             onReady,
@@ -120,9 +110,7 @@ class FinderCore<FItem> {
             filters: new FiltersMixin({ initialFilters }, mixinDeps),
             sortBy: new SortByMixin({ initialSortBy, initialSortDirection }, mixinDeps),
             groupBy: new GroupByMixin({ initialGroupBy, requireGroup: !!requireGroup }, mixinDeps),
-            selectedItems: new SelectedItemsMixin({ initialSelectedItems, maxSelectedItems }, mixinDeps),
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
-            layout: new LayoutMixin({ layoutVariants, initialLayout }, mixinDeps),
         };
 
         // The plugin mediator must be initialized after all mixins have been instantiated
@@ -283,9 +271,7 @@ class FinderCore<FItem> {
             filters: readonlyFiltersInterface(this.#mixins.filters),
             sortBy: readonlySortByInterface(this.#mixins.sortBy),
             groupBy: readonlyGroupByInterface(this.#mixins.groupBy),
-            selectedItems: readonlySelectedItemsInterface(this.#mixins.selectedItems),
-            layout: readonlyLayoutInterface(this.#mixins.layout),
-            context: this.context,
+            context: { ...this.context },
             updatedAt: this.updatedAt,
         };
     }
@@ -324,14 +310,6 @@ class FinderCore<FItem> {
 
     get pagination() {
         return paginationInterface(this.#mixins.pagination);
-    }
-
-    get selectedItems() {
-        return selectedItemsInterface(this.#mixins.selectedItems);
-    }
-
-    get layout() {
-        return layoutInterface(this.#mixins.layout);
     }
 
     get events() {

@@ -9,7 +9,7 @@ declare class FinderCore<FItem> {
     updatedAt?: number;
     context: InjectedContext | undefined;
     plugins: PluginMediator<FItem>;
-    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, initialSelectedItems, context, page, numItemsPerPage, isLoading, disabled, requireGroup, maxSelectedItems, layoutVariants, initialLayout, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
+    constructor(items: FItem[] | null | undefined, { rules, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, layoutVariants, initialLayout, plugins, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): MatchesSnapshot<FItem>;
@@ -68,18 +68,6 @@ declare class FinderCore<FItem> {
         numTotalItems: number;
         lastPage: number | undefined;
         isPaginated: boolean;
-    };
-    get selectedItems(): {
-        setMaxSelectedItems: (value?: number) => void;
-        select: (item: FItem) => void;
-        selectOnly: (item: FItem) => void;
-        delete: (item: FItem) => void;
-        toggle: (item: FItem) => void;
-        toggleOnly: (item: FItem) => void;
-        reset: () => void;
-        items: FItem[];
-        maxSelectedItems: number | undefined;
-        isSelected: (item: FItem) => boolean;
     };
     get layout(): {
         set: (identifier: string | import("..").LayoutVariant | undefined) => void;

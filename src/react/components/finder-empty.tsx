@@ -14,7 +14,7 @@ function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return <Component pagination={finder.pagination} context={finder.context} selectedItems={finder.selectedItems} layout={finder.layout} />;
+            return <Component pagination={finder.pagination} context={finder.context} />;
         }
 
         return renderProp;

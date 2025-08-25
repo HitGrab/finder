@@ -14,16 +14,7 @@ function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>)
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return (
-                <Component
-                    groups={finder.matches.groups}
-                    rule={finder.groupBy.activeRule}
-                    selectedItems={finder.selectedItems}
-                    pagination={finder.pagination}
-                    context={finder.context}
-                    layout={finder.layout}
-                />
-            );
+            return <Component groups={finder.matches.groups} rule={finder.groupBy.activeRule} pagination={finder.pagination} context={finder.context} />;
         }
     }
 

@@ -6,7 +6,6 @@ interface ShoeCardProps {
 }
 function ShoeCard({ item }: ShoeCardProps) {
     const finder = useFinder();
-    console.log(finder.context);
     return (
         <div className="shoe" data-in-stock={item.in_stock}>
             <div className="imagePedestal">

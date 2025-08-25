@@ -14,15 +14,7 @@ function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
 
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return (
-                <Component
-                    items={finder.matches.items}
-                    selectedItems={finder.selectedItems}
-                    pagination={finder.pagination}
-                    context={finder.context}
-                    layout={finder.layout}
-                />
-            );
+            return <Component items={finder.matches.items} pagination={finder.pagination} context={finder.context} />;
         }
     }
     return null;

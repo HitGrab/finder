@@ -6,9 +6,7 @@
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
-import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
-import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 import { FinderCore } from "./core/finder-core";
 
 export type InjectedContext = Record<string, any>;
@@ -24,10 +22,6 @@ export interface FinderConstructorOptions<FItem> {
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
     context?: InjectedContext;
-    initialSelectedItems?: FItem[];
-
-    // determine how many items can be selected
-    maxSelectedItems?: number;
 
     isLoading?: boolean;
     disabled?: boolean;
@@ -41,9 +35,6 @@ export interface FinderConstructorOptions<FItem> {
     requireGroup?: boolean;
 
     plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
-
-    layoutVariants?: LayoutVariant[];
-    initialLayout?: string;
 
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;
@@ -219,13 +210,11 @@ export interface FinderSnapshot<FItem> {
     filters: ReturnType<typeof readonlyFiltersInterface>;
     sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
-    selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
-    layout: ReturnType<typeof readonlyLayoutInterface>;
     context?: InjectedContext;
     updatedAt?: number;
 }
 
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "plugin";
 
 type FinderSharedEventProps = {
     source: string;
@@ -279,9 +268,6 @@ export type FinderEventName =
     | "change.core.setIsDisabled"
     | "change.core.setItems"
     | "change.core.syncContext"
-    | "change.layout"
-    | "change.layout.set"
-    | "change.layout.reset"
     | `change.filters`
     | "change.filters.set"
     | `change.groupBy`
@@ -295,13 +281,6 @@ export type FinderEventName =
     | "change.search"
     | "change.search.setSearchTerm"
     | "change.search.reset"
-    | "change.selectedItems"
-    | "change.selectedItems.setMaxSelectedItems"
-    | "change.selectedItems.set"
-    | "change.selectedItems.select"
-    | "change.selectedItems.toggle"
-    | "change.selectedItems.delete"
-    | "change.selectedItems.reset"
     | "change.sortBy"
     | "change.sortBy.set"
     | "change.sortBy.setSortDirection";
@@ -312,8 +291,4 @@ export interface FinderPluginInterface<FItem = any> {
     id: string;
     register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
     [k: string]: any;
-}
-
-export interface LayoutVariant {
-    id: string;
 }

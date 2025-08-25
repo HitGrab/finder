@@ -5,7 +5,7 @@ import { FinderCore } from "../../core/finder-core";
 /**
  * Create a finder instance with contained state and controllers.
  */
-function useFinderCore<FItem>(
+function useFinderConstructor<FItem>(
     items: FItem[] | null | undefined,
     {
         rules,
@@ -14,17 +14,13 @@ function useFinderCore<FItem>(
         initialSortDirection,
         initialGroupBy,
         initialFilters,
-        initialSelectedItems,
         context,
         page,
         numItemsPerPage,
-        layoutVariants,
-        initialLayout,
         plugins,
         isLoading,
         disabled,
         requireGroup,
-        maxSelectedItems,
         onInit,
         onReady,
         onFirstUserInteraction,
@@ -41,14 +37,10 @@ function useFinderCore<FItem>(
                 initialGroupBy,
                 initialFilters,
                 context,
-                initialSelectedItems,
-                maxSelectedItems,
                 isLoading,
                 disabled,
                 page,
                 numItemsPerPage,
-                layoutVariants,
-                initialLayout,
                 plugins,
                 requireGroup,
                 onInit,
@@ -76,11 +68,8 @@ function useFinderCore<FItem>(
     if (numItemsPerPage !== undefined) {
         instance.pagination.setNumItemsPerPage(numItemsPerPage);
     }
-    if (maxSelectedItems !== undefined) {
-        instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
-    }
 
     return instance;
 }
 
-export { useFinderCore };
+export { useFinderConstructor };

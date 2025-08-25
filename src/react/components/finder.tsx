@@ -1,7 +1,7 @@
 import { useImperativeHandle } from "react";
 import { FinderContext } from "../providers/finder-context";
 import { FinderProps } from "../types/react-types";
-import { useFinderCore } from "../hooks/use-finder-core";
+import { useFinderConstructor } from "../hooks/use-finder-constructor";
 
 function Finder<FItem = any>({
     items,
@@ -12,15 +12,11 @@ function Finder<FItem = any>({
     initialGroupBy,
     initialFilters,
     context,
-    initialSelectedItems,
-    maxSelectedItems,
     isLoading,
     disabled,
     page,
     numItemsPerPage,
     requireGroup,
-    layoutVariants,
-    initialLayout,
     plugins,
     onInit,
     onReady,
@@ -29,7 +25,7 @@ function Finder<FItem = any>({
     children,
     controllerRef,
 }: FinderProps<FItem>) {
-    const finderInstance = useFinderCore<FItem>(items, {
+    const finderInstance = useFinderConstructor<FItem>(items, {
         rules,
         initialSearchTerm,
         initialSortBy,
@@ -37,15 +33,11 @@ function Finder<FItem = any>({
         initialGroupBy,
         initialFilters,
         context,
-        initialSelectedItems,
-        maxSelectedItems,
         isLoading,
         disabled,
         page,
         numItemsPerPage,
         requireGroup,
-        layoutVariants,
-        initialLayout,
         plugins,
         onInit,
         onReady,

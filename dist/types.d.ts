@@ -4,7 +4,6 @@
 import { readonlyFiltersInterface } from "./core/filters/filters-interface";
 import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
-import { readonlySelectedItemsInterface } from "./core/selected-items/selected-items-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 import { readonlyLayoutInterface } from "./core/layout/layout-interface";
 import { FinderCore } from "./core/finder-core";
@@ -17,8 +16,6 @@ export interface FinderConstructorOptions<FItem> {
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
     context?: InjectedContext;
-    initialSelectedItems?: FItem[];
-    maxSelectedItems?: number;
     isLoading?: boolean;
     disabled?: boolean;
     page?: number;
@@ -164,12 +161,11 @@ export interface FinderSnapshot<FItem> {
     filters: ReturnType<typeof readonlyFiltersInterface>;
     sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
     groupBy: ReturnType<typeof readonlyGroupByInterface<FItem>>;
-    selectedItems: ReturnType<typeof readonlySelectedItemsInterface<FItem>>;
     layout: ReturnType<typeof readonlyLayoutInterface>;
     context?: InjectedContext;
     updatedAt?: number;
 }
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "selectedItems" | "sortBy" | "plugin" | "layout";
+export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "plugin" | "layout";
 type FinderSharedEventProps = {
     source: string;
     event: FinderEventName;
@@ -207,7 +203,7 @@ export interface FinderTouchEvent {
  * External type that consumers will receive
  */
 export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
-export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.selectedItems" | "change.selectedItems.setMaxSelectedItems" | "change.selectedItems.set" | "change.selectedItems.select" | "change.selectedItems.toggle" | "change.selectedItems.delete" | "change.selectedItems.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
+export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | "change.layout" | "change.layout.set" | "change.layout.reset" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | `change.plugin` | `change.plugin.${string}` | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
 export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
 export interface FinderPluginInterface<FItem = any> {
     id: string;
