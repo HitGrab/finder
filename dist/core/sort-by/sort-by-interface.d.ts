@@ -4,10 +4,10 @@ import { SortByMixin } from "./sort-by";
  * Public surface for the SortBy mixin
  */
 declare function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>): {
-    activeRule: import("../..").SortByRule<unknown> | undefined;
+    activeRule: import("../..").SortByRule<unknown, any> | undefined;
     sortDirection: SortDirection;
     userHasSetSortDirection: boolean;
-    rules: import("../..").SortByRule<unknown>[];
+    rules: import("../..").SortByRule<unknown, any>[];
 };
 declare function sortByInterface<FItem>(mixin: SortByMixin<FItem>): {
     set: (identifier?: string | import("../..").SortByRule, incomingSortDirection?: SortDirection) => void;
@@ -15,9 +15,9 @@ declare function sortByInterface<FItem>(mixin: SortByMixin<FItem>): {
     cycleSortDirection: () => void;
     toggleSortDirection: () => void;
     reset(): void;
-    activeRule: import("../..").SortByRule<unknown> | undefined;
+    activeRule: import("../..").SortByRule<unknown, any> | undefined;
     sortDirection: SortDirection;
     userHasSetSortDirection: boolean;
-    rules: import("../..").SortByRule<unknown>[];
+    rules: import("../..").SortByRule<unknown, any>[];
 };
 export { readonlySortByInterface, sortByInterface };

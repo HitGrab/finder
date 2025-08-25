@@ -176,13 +176,13 @@ describe("Filters", () => {
             expect(hydratedRule.options?.length).toBe(2);
         });
 
-        test("Receives meta", () => {
+        test("Receives context", () => {
             const rules = finderRuleset<MockObjectItem>([
                 filterRule({
                     id: "price_is_below",
                     filterFn: (item, value) => item.price <= value,
-                    options: ({ meta }) => {
-                        expect(meta.get("user_dislikes")).toBe(apple);
+                    options: ({ context }) => {
+                        expect(context?.user_dislikes).toBe(apple);
                         return [
                             {
                                 label: "label",
@@ -193,11 +193,10 @@ describe("Filters", () => {
                 }),
             ]);
 
-            const initialMeta = {
+            const context = {
                 user_dislikes: apple,
             };
-            const finder = new FinderCore(objectItems, { rules, initialMeta });
-            finder.meta.set("user_dislikes", apple);
+            new FinderCore(objectItems, { rules, context });
         });
 
         test("Recalculates on items change", () => {
@@ -224,7 +223,7 @@ describe("Filters", () => {
             expect(hydrateOptions).toHaveBeenCalledTimes(2);
         });
 
-        test("Recalculates on meta change", () => {
+        test("Recalculates on context change", () => {
             const hydrateOptions = vitest.fn();
 
             const rules = finderRuleset<MockObjectItem>([
@@ -243,8 +242,12 @@ describe("Filters", () => {
                 }),
             ]);
 
-            const finder = new FinderCore(objectItems, { rules });
-            finder.meta.set("user_dislikes", orange);
+            const context = {
+                user_dislikes: apple,
+            };
+
+            const finder = new FinderCore(objectItems, { rules, context });
+            finder.setContext({ ...finder.context, ...{ user_dislikes: orange } });
             expect(hydrateOptions).toHaveBeenCalledTimes(2);
         });
     });

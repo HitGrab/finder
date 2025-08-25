@@ -7,8 +7,8 @@ type InitialValues = {
 declare class SortByMixin<FItem> {
     #private;
     constructor({ initialSortBy, initialSortDirection }: InitialValues, deps: MixinInjectedDependencies<FItem>);
-    get rules(): SortByRule<unknown>[];
-    get activeRule(): SortByRule<unknown> | undefined;
+    get rules(): SortByRule<unknown, any>[];
+    get activeRule(): SortByRule<unknown, any> | undefined;
     get sortDirection(): SortDirection;
     get userHasSetSortDirection(): boolean;
     setSortDirection(incomingSortDirection?: SortDirection): void;

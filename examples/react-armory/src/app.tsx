@@ -31,7 +31,7 @@ function App() {
 
     const rules = finderRuleset<Equipment>([
         searchRule({
-            searchFn: (item, searchTerm) => finderSequentialCharacterCompare(item.name, searchTerm),
+            haystackFn: (item) => item.name,
             debounceMilliseconds: 200,
         }),
         filterRule({

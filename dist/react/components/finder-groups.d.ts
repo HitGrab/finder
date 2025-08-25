@@ -1,7 +1,7 @@
 import { ElementType } from "react";
-import { FinderGroupsComponentProps } from "../types/react-types";
+import { FinderContentGroupProps } from "../types/react-types";
 interface FinderGroupsProps<FItem = any> {
-    children: ElementType<FinderGroupsComponentProps<FItem>>;
+    children: ElementType<FinderContentGroupProps<FItem>>;
 }
 declare function FinderGroups<FItem>({ children: renderProp }: FinderGroupsProps<FItem>): import("react/jsx-runtime").JSX.Element | null;
 export { FinderGroups };

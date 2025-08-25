@@ -1,7 +1,7 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 export function NumMatches() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     return (
         <div className="numMatches">
             {finder.isLoading ? (

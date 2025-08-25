@@ -1,11 +1,13 @@
 import { brands } from "@/hooks/shoe-constants";
-import { finderRuleset, filterRule, sortByRule } from "@hitgrab/finder";
+import { Shoe } from "@/types";
+import { finderRuleset, filterRule, sortByRule, searchRule } from "@hitgrab/finder";
 import { intersection, sortBy, capitalize } from "lodash";
 
 /**
  * An array of static rules that can be activated by Finder.
  */
 export const rules = finderRuleset<Shoe>([
+    searchRule({ haystackFn: (item) => item.name }),
     filterRule({
         id: "brand",
         label: "Brand",

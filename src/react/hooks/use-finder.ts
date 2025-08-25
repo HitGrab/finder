@@ -1,84 +1,16 @@
-import { useEffect, useState } from "react";
-import { FinderConstructorOptions } from "../../types";
+import { use } from "react";
+import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderCore } from "../../core/finder-core";
 
-/**
- * Create a finder instance with contained state and controllers.
- */
-function useFinder<FItem>(
-    items: FItem[] | null | undefined,
-    {
-        rules,
-        initialSearchTerm,
-        initialSortBy,
-        initialSortDirection,
-        initialGroupBy,
-        initialFilters,
-        initialSelectedItems,
-        initialMeta,
-        page,
-        numItemsPerPage,
-        layoutVariants,
-        initialLayout,
-        plugins,
-        isLoading,
-        disabled,
-        requireGroup,
-        maxSelectedItems,
-        onInit,
-        onReady,
-        onFirstUserInteraction,
-        onChange,
-    }: FinderConstructorOptions<FItem>,
-): FinderCore<FItem> {
-    const [instance] = useState(
-        () =>
-            new FinderCore(items, {
-                rules,
-                initialSearchTerm,
-                initialSortBy,
-                initialSortDirection,
-                initialGroupBy,
-                initialFilters,
-                initialMeta,
-                initialSelectedItems,
-                maxSelectedItems,
-                isLoading,
-                disabled,
-                page,
-                numItemsPerPage,
-                layoutVariants,
-                initialLayout,
-                plugins,
-                requireGroup,
-                onInit,
-                onReady,
-                onFirstUserInteraction,
-                onChange,
-            }),
-    );
-
-    // An extremely simple variation on useSyncExternalStore that'll trigger a React render whenever Finder changes.
-    const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
-    useEffect(() => {
-        instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
-    }, []);
-
-    // Finder will only render a new snapshot if these values have changed.
-    instance.setItems(items);
-    instance.setIsLoading(isLoading);
-    instance.setIsDisabled(disabled);
-    if (page !== undefined) {
-        instance.pagination.setPage(page);
+function useFinder<FItem = any, FContext = undefined>() {
+    const value = use(FinderCoreContext);
+    if (value === null) {
+        throw new Error("useFinder requires a FinderContext.");
     }
-    if (numItemsPerPage !== undefined) {
-        instance.pagination.setNumItemsPerPage(numItemsPerPage);
-    }
-    if (maxSelectedItems !== undefined) {
-        instance.selectedItems.setMaxSelectedItems(maxSelectedItems);
-    }
+    const [instance] = value;
 
-    return instance;
+    // Typescript can't parse types from context, so we cast 'em.
+    return instance as FinderCore<FItem, FContext>;
 }
 
 export { useFinder };

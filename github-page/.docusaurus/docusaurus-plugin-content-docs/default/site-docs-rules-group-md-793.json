@@ -1,0 +1,28 @@
+{
+  "id": "rules/group",
+  "title": "Group",
+  "description": "| Prop          | Description                                                                                                     | Default | Required |",
+  "source": "@site/docs/rules/group.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/group",
+  "permalink": "/docs/rules/group",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/group.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "title": "Group",
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "SortBy",
+    "permalink": "/docs/rules/sort-by"
+  },
+  "next": {
+    "title": "Mixins",
+    "permalink": "/docs/mixins/"
+  }
+}

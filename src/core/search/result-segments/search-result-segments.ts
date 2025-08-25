@@ -1,4 +1,5 @@
 import { Haystack } from "../haystack";
+import { transformStringForComparison } from "../search-string-transform";
 import { ResultSegment, ResultSegmentInternal, SearchCharacterIndexFn } from "./result-segment-types";
 
 /**
@@ -16,7 +17,7 @@ export function getSearchResultSegments(characterIndexFn: SearchCharacterIndexFn
         }
 
         // if no matches are found, this particular needle did not succeed.
-        const matchedCharacterIndexes = characterIndexFn(haystack, transformedNeedle);
+        const matchedCharacterIndexes = characterIndexFn(haystack.transformed, transformedNeedle);
 
         if (matchedCharacterIndexes !== undefined) {
             // build segments based on the transformed haystack
@@ -149,17 +150,6 @@ export function hasCharacterIndexMatches(characterIndexFn: SearchCharacterIndexF
     const haystacks = haystackAndAliasArray.map((hay) => new Haystack(hay));
 
     return haystacks.some((haystack) => {
-        return characterIndexFn(haystack, transformedNeedle) !== undefined;
+        return characterIndexFn(haystack.transformed, transformedNeedle) !== undefined;
     });
-}
-
-/**
- * Ensure haystacks and needles are formatted consistently.
- *
- * Transforming includes:
- * 1. Convert to lowercase.
- * 2. Strip all non-word and non-digit characters.
- */
-export function transformStringForComparison(value: string) {
-    return value.toLowerCase().replace(/[^\w\d]+/g, "");
 }

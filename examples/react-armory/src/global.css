@@ -89,6 +89,7 @@ html {
         span {
             text-transform: uppercase;
             color: var(--color-bright);
+            text-decoration: underline;
         }
     }
 

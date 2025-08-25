@@ -7,7 +7,7 @@ function readonlySearchInterface<FItem>(mixin: SearchMixin<FItem>) {
     return {
         searchTerm: mixin.searchTerm,
         activeRule: mixin.rule,
-        hasSearchTerm: mixin.searchTerm !== "",
+        hasSearchTerm: mixin.hasSearchTerm,
     };
 }
 

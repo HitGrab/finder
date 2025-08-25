@@ -1,9 +1,9 @@
-import { useImperativeHandle } from "react";
-import { useFinder } from "../hooks/use-finder";
-import { FinderContext } from "../providers/finder-context";
+import { useEffect, useImperativeHandle, useState } from "react";
+import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
+import { FinderCore } from "../../core/finder-core";
 
-function Finder<FItem = any>({
+function Finder<FItem = any, FContext = any>({
     items,
     rules,
     initialSearchTerm,
@@ -11,50 +11,68 @@ function Finder<FItem = any>({
     initialSortDirection,
     initialGroupBy,
     initialFilters,
-    initialMeta,
-    initialSelectedItems,
-    maxSelectedItems,
+    context,
     isLoading,
     disabled,
     page,
     numItemsPerPage,
-    requireGroup,
-    layoutVariants,
-    initialLayout,
     plugins,
+    requireGroup,
+    ignoreSortByRulesWhileSearchRuleIsActive,
     onInit,
     onReady,
     onFirstUserInteraction,
     onChange,
-    children,
     controllerRef,
-}: FinderProps<FItem>) {
-    const finderInstance = useFinder<FItem>(items, {
-        rules,
-        initialSearchTerm,
-        initialSortBy,
-        initialSortDirection,
-        initialGroupBy,
-        initialFilters,
-        initialMeta,
-        initialSelectedItems,
-        maxSelectedItems,
-        isLoading,
-        disabled,
-        page,
-        numItemsPerPage,
-        requireGroup,
-        layoutVariants,
-        initialLayout,
-        plugins,
-        onInit,
-        onReady,
-        onFirstUserInteraction,
-        onChange,
-    });
+    children,
+}: FinderProps<FItem, FContext>) {
+    const [instance] = useState<FinderCore<FItem, FContext>>(
+        () =>
+            new FinderCore<FItem, FContext>(items, {
+                rules,
+                initialSearchTerm,
+                initialSortBy,
+                initialSortDirection,
+                initialGroupBy,
+                initialFilters,
+                context,
+                isLoading,
+                disabled,
+                page,
+                numItemsPerPage,
+                plugins,
+                requireGroup,
+                ignoreSortByRulesWhileSearchRuleIsActive,
+                onInit,
+                onReady,
+                onFirstUserInteraction,
+                onChange,
+            }),
+    );
 
-    useImperativeHandle(controllerRef, () => finderInstance, [finderInstance]);
+    // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
+    const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
+    useEffect(() => {
+        instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+    }, []);
 
-    return <FinderContext.Provider value={[finderInstance, finderInstance.updatedAt]}>{children}</FinderContext.Provider>;
+    // Finder will only render a new snapshot if these values have changed.
+    instance.setItems(items);
+    instance.setIsLoading(isLoading);
+    instance.setIsDisabled(disabled);
+    if (context !== undefined) {
+        instance.setContext(context);
+    }
+
+    if (page !== undefined) {
+        instance.pagination.setPage(page);
+    }
+    if (numItemsPerPage !== undefined) {
+        instance.pagination.setNumItemsPerPage(numItemsPerPage);
+    }
+
+    useImperativeHandle(controllerRef, () => instance, [instance]);
+
+    return <FinderCoreContext value={[instance, instance.updatedAt]}>{children}</FinderCoreContext>;
 }
 export { Finder };

@@ -1,7 +1,7 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 export function BrandFilterControls() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     const rule = finder.filters.getRule("brand");
     if (!rule) {
         return null;

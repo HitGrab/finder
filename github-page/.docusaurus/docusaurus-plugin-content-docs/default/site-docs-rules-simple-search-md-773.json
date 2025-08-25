@@ -1,0 +1,20 @@
+{
+  "id": "Rules/simple-search",
+  "title": "simple-search",
+  "description": "There are two options for searching. For the majority of applications, simple search is the way to go.",
+  "source": "@site/docs/Rules/simple-search.md",
+  "sourceDirName": "Rules",
+  "slug": "/Rules/simple-search",
+  "permalink": "/docs/Rules/simple-search",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/Rules/simple-search.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tutorial Intro",
+    "permalink": "/docs/intro"
+  }
+}

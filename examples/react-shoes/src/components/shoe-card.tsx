@@ -1,13 +1,15 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { Shoe, ShoeSelectorContextProps } from "@/types";
+import { FinderSearchTerm, useFinder } from "@hitgrab/finder";
 import { range } from "lodash";
 
 interface ShoeCardProps {
     item: Shoe;
 }
 function ShoeCard({ item }: ShoeCardProps) {
-    const finder = useFinderContext();
+    const finder = useFinder<Shoe, ShoeSelectorContextProps>();
+    const isSelected = finder.context.isSelected(item);
     return (
-        <div className="shoe" data-in-stock={item.in_stock}>
+        <div className="shoe" data-in-stock={item.in_stock} data-selected={isSelected}>
             <div className="imagePedestal">
                 <div className="image" style={{ backgroundImage: `url(${item.image})` }} />
                 <div className="colorList">
@@ -21,10 +23,27 @@ function ShoeCard({ item }: ShoeCardProps) {
                 <button type="button" className="brand" onClick={() => finder.filters.set("brand", [item.brand])}>
                     {item.brand}
                 </button>
-                <div className="name">{item.name}</div>
+                <div className="name">
+                    <FinderSearchTerm>{item.name}</FinderSearchTerm>
+                </div>
                 <div className="price">${item.price}</div>
                 <div className="rating">{range(0, item.rating).map(() => "*")}</div>
                 <div className="sizes">Sizes: {item.sizes.join(", ")}</div>
+            </div>
+            <div className="controls">
+                {item.in_stock ? (
+                    <label
+                        onClick={() => {
+                            finder.context.toggle(item);
+                        }}
+                    >
+                        <input type="checkbox" checked={isSelected} readOnly={true} /> Selected
+                    </label>
+                ) : (
+                    <label>
+                        <input type="checkbox" checked={isSelected} readOnly={true} disabled={true} /> Out of Stock
+                    </label>
+                )}
             </div>
         </div>
     );

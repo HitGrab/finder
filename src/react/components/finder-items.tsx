@@ -1,35 +1,18 @@
-import { ElementType, isValidElement, cloneElement } from "react";
-import { useFinderContext } from "../hooks/use-finder-context";
-import { FinderItemsComponentProps } from "../types/react-types";
+import { ElementType } from "react";
+import { FinderContentItemProps } from "../types/react-types";
+import { useFinder } from "../hooks/use-finder";
 
 interface FinderItemsProps<FItem = any> {
-    children: ElementType<FinderItemsComponentProps<FItem>>;
+    children: ElementType<FinderContentItemProps<FItem>>;
 }
 function FinderItems<FItem>({ children: renderProp }: FinderItemsProps<FItem>) {
-    const finder = useFinderContext();
+    const finder = useFinder();
     if (finder.state === "items" && finder.matches.items && renderProp) {
-        if (typeof renderProp === "object" && isValidElement(renderProp)) {
-            return cloneElement(renderProp, {
-                items: finder.matches.items,
-                selectedItems: finder.selectedItems,
-                pagination: finder.pagination,
-                meta: finder.meta,
-                layout: finder.layout,
-            });
-        }
-
         if (typeof renderProp === "function") {
             const Component = renderProp;
-            return (
-                <Component
-                    items={finder.matches.items}
-                    selectedItems={finder.selectedItems}
-                    pagination={finder.pagination}
-                    meta={finder.meta}
-                    layout={finder.layout}
-                />
-            );
+            return <Component items={finder.matches.items} pagination={finder.pagination} context={finder.context} />;
         }
+        return renderProp;
     }
     return null;
 }

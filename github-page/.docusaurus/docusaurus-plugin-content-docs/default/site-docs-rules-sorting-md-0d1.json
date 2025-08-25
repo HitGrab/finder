@@ -1,0 +1,24 @@
+{
+  "id": "rules/sorting",
+  "title": "Sort",
+  "description": "This option sorts the items passed in and accepts either a simple value or a function to run on each item to determine the order of return.",
+  "source": "@site/docs/rules/sorting.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/sorting",
+  "permalink": "/docs/rules/sorting",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/sorting.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "Sort",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filter",
+    "permalink": "/docs/rules/filter"
+  }
+}

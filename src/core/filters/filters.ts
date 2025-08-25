@@ -1,12 +1,4 @@
-import {
-    HydratedFilterRule,
-    FilterOption,
-    FilterTestOptions,
-    FilterTestRuleOptions,
-    FilterTestRuleOptionsOptions,
-    MetaInterface,
-    FilterRuleUnion,
-} from "../../types";
+import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, FilterRuleUnion } from "../../types";
 import { getRuleFromIdentifier, isFilterUnionRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { simpleUniqBy } from "../utils/finder-utils";
@@ -68,7 +60,7 @@ class FiltersMixin {
 
     get rules() {
         if (this.#hydratedRules === undefined) {
-            this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getMeta());
+            this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getContext());
         }
         return this.#hydratedRules;
     }
@@ -90,11 +82,11 @@ class FiltersMixin {
     }
 
     // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: any[], meta: MetaInterface) {
+    #takeHydratedRulesSnapshot(items: any[], context?: any) {
         const filterRules = this.#deps.getRules().filter(isFilterUnionRule);
         return filterRules.map((rule) => {
             // trigger option generator if found
-            let hydratedOptions = typeof rule.options === "function" ? rule.options({ items, meta }) : rule.options;
+            let hydratedOptions = typeof rule.options === "function" ? rule.options({ items, context }) : rule.options;
             return {
                 ...rule,
 
@@ -160,7 +152,7 @@ class FiltersMixin {
             return ruleValue !== undefined;
         }
 
-        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
+        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
 
         if (rule.multiple) {
             return ruleValue.includes(option.value);
@@ -214,7 +206,7 @@ class FiltersMixin {
             );
         }
 
-        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getMeta());
+        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
 
         const previousFilterValue: any[] = this.filters?.[rule.id] ?? [];
 
@@ -232,16 +224,16 @@ class FiltersMixin {
             return [];
         }
 
-        const optionsWithDefaults = { rules: [], meta: this.#deps.getMeta(), values: {}, ...options };
+        const optionsWithDefaults = { rules: [], context: this.#deps.getContext(), values: {}, ...options };
 
         // Additive tests use the current values of the filters.
         if (options.isAdditive) {
             const ruleset = simpleUniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
             const initialValues = { ...this.getFilters(), ...optionsWithDefaults.values };
-            return FiltersMixin.process(this.#deps.getItems(), ruleset, initialValues, optionsWithDefaults.meta);
+            return FiltersMixin.process(this.#deps.getItems(), ruleset, initialValues, optionsWithDefaults.context);
         }
 
-        return FiltersMixin.process(this.#deps.getItems(), optionsWithDefaults.rules, optionsWithDefaults.values, optionsWithDefaults.meta);
+        return FiltersMixin.process(this.#deps.getItems(), optionsWithDefaults.rules, optionsWithDefaults.values, optionsWithDefaults.context);
     }
 
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
@@ -319,17 +311,17 @@ class FiltersMixin {
         );
     }
 
-    process(items: any[], meta: MetaInterface) {
-        return FiltersMixin.process(items, this.rules, this.getFilters(), meta);
+    process(items: any[], context?: any) {
+        return FiltersMixin.process(items, this.rules, this.getFilters(), context);
     }
 
-    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, meta: MetaInterface) {
+    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: any) {
         const activeRules = rules.filter((rule) => {
             return FiltersMixin.isActive(rule, values?.[rule.id]);
         });
         // An item must pass ALL active filters to match.
         return items.filter((item) => {
-            return activeRules.every((rule) => rule.filterFn(item, values?.[rule.id], meta));
+            return activeRules.every((rule) => rule.filterFn(item, values?.[rule.id], context));
         });
     }
 

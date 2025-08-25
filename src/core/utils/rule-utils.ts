@@ -1,4 +1,4 @@
-import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, MetaInterface, FilterRuleUnion } from "../../types";
+import { FilterOption, FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, FilterRuleUnion } from "../../types";
 
 /**
  * Make sure the passed ruleset contains only well-configured rules.
@@ -47,17 +47,17 @@ export function getRuleFromIdentifier<T extends FinderRule>(identifier: FinderRu
     throw new Error("Finder received an invalid rule request format.");
 }
 
-export function getFilterOptionFromIdentifier<FItem>(
+export function getFilterOptionFromIdentifier<FItem, FContext>(
     optionOrOptionValue: FilterOption | any,
-    options: FilterOption[] | ((items: FItem[], meta: MetaInterface) => FilterOption[]) | undefined,
+    options: FilterOption[] | ((items: FItem[], context?: FContext) => FilterOption[]) | undefined,
     items: FItem[],
-    meta: MetaInterface,
+    context?: FContext,
 ) {
     let option: FilterOption | any;
 
     let composedOptions: FilterOption[] = [];
     if (typeof options === "function") {
-        composedOptions = options(items, meta);
+        composedOptions = options(items, context);
     }
     if (Array.isArray(options)) {
         composedOptions = options;
@@ -103,7 +103,7 @@ export function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem> {
 }
 
 export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
-    return typeof rule === "object" && rule !== null && ("searchFn" in rule || "searchTermFn" in rule);
+    return typeof rule === "object" && rule !== null && ("searchFn" in rule || "haystackFn" in rule);
 }
 
 export function isFilterUnionRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {

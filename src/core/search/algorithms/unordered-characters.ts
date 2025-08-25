@@ -1,8 +1,6 @@
-import { Haystack } from "../haystack";
-
-export function calculateUnorderedCharacterIndexes(haystack: Haystack, needle: string) {
+export function calculateUnorderedCharacterIndexes(haystack: string, needle: string) {
     const needleAsCharacterArray = Array.from(needle);
-    let hayStackAsArray = Array.from(haystack.transformed);
+    let hayStackAsArray = Array.from(haystack);
     let hasMismatch = false;
     const uniqueNeedleCharacterSet = new Set(needleAsCharacterArray);
     let characterMatches: number[] = [];

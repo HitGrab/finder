@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { Shoe } from "@/types";
 import { brands, colorNames, shoes, sports } from "./shoe-constants";
 import { random, range } from "lodash";
 import { useEffect, useState } from "react";
