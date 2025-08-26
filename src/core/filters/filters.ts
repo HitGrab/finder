@@ -146,33 +146,24 @@ class FiltersMixin {
         return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
     }
 
-    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        if (rule.isBoolean) {
+        if (optionValue === undefined && rule.isBoolean) {
             const filterValue = this.get(rule.id);
             this.set(rule, !filterValue);
             return;
         }
 
-        throw new Error("Finder could not toggle this filter rule, as it is not boolean.");
-    }
-
-    toggleOption(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue: FilterOption | any) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
-        }
         if (rule.options === undefined) {
             throw new Error("Finder could not toggle this filter rule option, as the filter does not have any options.");
         }
-        if (!!rule?.multiple === false) {
-            throw new Error(
-                "Finder could not toggle this filter rule option, as the rule does not allow multiple values. Consider using filters.set() or filters.toggle() instead.",
-            );
+
+        if (rule.multiple === false) {
+            throw new Error("Finder could not toggle this filter rule option, as the rule does not allow multiple values.");
         }
 
         const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
@@ -198,7 +189,7 @@ class FiltersMixin {
         // Additive tests use the current values of the filters.
         if (options.isAdditive) {
             const ruleset = simpleUniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
-            const initialValues = { ...this.getFilters(), ...optionsWithDefaults.values };
+            const initialValues = { ...this.getValues(), ...optionsWithDefaults.values };
             return FiltersMixin.process(this.#deps.getItems(), ruleset, initialValues, optionsWithDefaults.context);
         }
 
@@ -270,7 +261,7 @@ class FiltersMixin {
     }
 
     // return all filter values with default options and type casts applied.
-    getFilters() {
+    getValues() {
         return this.rules.reduce(
             (acc, rule) => {
                 acc[rule.id] = this.get(rule);
@@ -281,7 +272,7 @@ class FiltersMixin {
     }
 
     process(items: any[], context?: any) {
-        return FiltersMixin.process(items, this.rules, this.getFilters(), context);
+        return FiltersMixin.process(items, this.rules, this.getValues(), context);
     }
 
     static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: any) {

@@ -14,8 +14,8 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "String Comparison",
-    "permalink": "/docs/utils/string-comparison"
+    "title": "FinderCore",
+    "permalink": "/docs/api/finder-core"
   },
   "next": {
     "title": "FinderContent",

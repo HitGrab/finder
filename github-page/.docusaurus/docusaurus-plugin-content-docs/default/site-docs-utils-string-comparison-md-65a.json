@@ -22,7 +22,7 @@
     "permalink": "/docs/utils/type-guards"
   },
   "next": {
-    "title": "Events",
-    "permalink": "/docs/events"
+    "title": "Configuration",
+    "permalink": "/docs/api/config"
   }
 }

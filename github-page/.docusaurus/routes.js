@@ -44,25 +44,31 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', 'c5c'),
+    component: ComponentCreator('/docs', '019'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', 'de9'),
+        component: ComponentCreator('/docs', 'dbc'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', 'c5d'),
+            component: ComponentCreator('/docs', '8ac'),
             routes: [
               {
-                path: '/docs/events',
-                component: ComponentCreator('/docs/events', 'b5c'),
+                path: '/docs/api/config',
+                component: ComponentCreator('/docs/api/config', '03b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/intro',
-                component: ComponentCreator('/docs/intro', '61d'),
+                path: '/docs/api/finder-core',
+                component: ComponentCreator('/docs/api/finder-core', 'c71'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/events',
+                component: ComponentCreator('/docs/events', 'b5c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
@@ -73,20 +79,20 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/mixins/layout',
-                component: ComponentCreator('/docs/mixins/layout', '63d'),
+                path: '/docs/mixins/filters-mixin',
+                component: ComponentCreator('/docs/mixins/filters-mixin', '29c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/mixins/meta',
-                component: ComponentCreator('/docs/mixins/meta', '90d'),
+                path: '/docs/mixins/pagination-mixin',
+                component: ComponentCreator('/docs/mixins/pagination-mixin', 'a68'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/mixins/pagination',
-                component: ComponentCreator('/docs/mixins/pagination', '462'),
+                path: '/docs/mixins/search-mixin',
+                component: ComponentCreator('/docs/mixins/search-mixin', '6c6'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

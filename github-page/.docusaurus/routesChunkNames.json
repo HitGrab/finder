@@ -49,42 +49,46 @@
     },
     "content": "content---markdown-page-393-028"
   },
-  "/docs-c5c": {
+  "/docs-019": {
     "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
       "plugin": "plugin---docsaba-d7c"
     }
   },
-  "/docs-de9": {
+  "/docs-dbc": {
     "__comp": "__comp---theme-doc-version-roota-7-b-5de",
     "__props": "__props---docs-005-788"
   },
-  "/docs-c5d": {
+  "/docs-8ac": {
     "__comp": "__comp---theme-doc-roota-94-67a"
+  },
+  "/docs/api/config-03b": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-configc-41-472"
+  },
+  "/docs/api/finder-core-c71": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-api-finder-core-40-d-de2"
   },
   "/docs/events-b5c": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-eventsd-70-861"
   },
-  "/docs/intro-61d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-intro-0-e-3-be1"
-  },
   "/docs/mixins/-452": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-mixins-b-68-423"
   },
-  "/docs/mixins/layout-63d": {
+  "/docs/mixins/filters-mixin-29c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-mixins-layout-088-5a5"
+    "content": "content---docs-mixins-filters-mixin-9-f-2-16e"
   },
-  "/docs/mixins/meta-90d": {
+  "/docs/mixins/pagination-mixin-a68": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-mixins-meta-1-a-5-fec"
+    "content": "content---docs-mixins-pagination-mixin-8-e-3-702"
   },
-  "/docs/mixins/pagination-462": {
+  "/docs/mixins/search-mixin-6c6": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-mixins-pagination-7-be-2aa"
+    "content": "content---docs-mixins-search-mixinacf-1b9"
   },
   "/docs/react/finder-content-860": {
     "__comp": "__comp---theme-doc-item-178-a40",

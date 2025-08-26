@@ -1,7 +1,7 @@
 {
   "id": "rules/sort-by",
   "title": "SortBy",
-  "description": "| Prop                 | Description                                                                                                                       | Default | Required |",
+  "description": "Only a single sortBy rule can be active at one time.",
   "source": "@site/docs/rules/sort-by.md",
   "sourceDirName": "rules",
   "slug": "/rules/sort-by",

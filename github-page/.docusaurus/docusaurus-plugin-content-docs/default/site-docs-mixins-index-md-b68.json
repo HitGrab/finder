@@ -22,7 +22,7 @@
     "permalink": "/docs/rules/group-by"
   },
   "next": {
-    "title": "Meta",
-    "permalink": "/docs/mixins/meta"
+    "title": "Pagination",
+    "permalink": "/docs/mixins/pagination-mixin"
   }
 }

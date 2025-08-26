@@ -1,14 +1,14 @@
 {
-  "id": "mixins/pagination",
+  "id": "mixins/pagination-mixin",
   "title": "Pagination",
   "description": "If the numItemsPerPage property is set, Finder will paginate items and groups.",
-  "source": "@site/docs/mixins/pagination.md",
+  "source": "@site/docs/mixins/pagination-mixin.md",
   "sourceDirName": "mixins",
-  "slug": "/mixins/pagination",
-  "permalink": "/docs/mixins/pagination",
+  "slug": "/mixins/pagination-mixin",
+  "permalink": "/docs/mixins/pagination-mixin",
   "draft": false,
   "unlisted": false,
-  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mixins/pagination.md",
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mixins/pagination-mixin.md",
   "tags": [],
   "version": "current",
   "sidebarPosition": 2,
@@ -23,6 +23,6 @@
   },
   "next": {
     "title": "Filters Mixin",
-    "permalink": "/docs/mixins/filters"
+    "permalink": "/docs/mixins/filters-mixin"
   }
 }

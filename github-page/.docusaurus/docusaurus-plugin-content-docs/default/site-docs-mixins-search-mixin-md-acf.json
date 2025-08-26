@@ -1,0 +1,24 @@
+{
+  "id": "mixins/search-mixin",
+  "title": "Search Mixin",
+  "description": "The Search mixin can be accessed from finder.search.",
+  "source": "@site/docs/mixins/search-mixin.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/search-mixin",
+  "permalink": "/docs/mixins/search-mixin",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/mixins/search-mixin.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filters Mixin",
+    "permalink": "/docs/mixins/filters-mixin"
+  },
+  "next": {
+    "title": "Utils",
+    "permalink": "/docs/utils/"
+  }
+}

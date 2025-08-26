@@ -5,6 +5,11 @@ sidebar_position: 4
 
 # Sort
 
+Only a single sortBy rule can be active at one time.
+If any sortBy rules are provided and no specific rule is set, the first sortBy rule in the stack will be considered active.
+
+The method uses lodash's orderBy under the hood.
+
 ```ts
 sortByRule({
     id: string;
@@ -22,8 +27,3 @@ sortByRule({
 | defaultSortDirection | 'asc' or 'desc'.                                                                                                                  | 'asc'   |          |
 | label                | Optional label for your client to display.                                                                                        |         |          |
 | hidden               | Optional display value for your client to display.                                                                                | false   |          |
-
-:::tip
-Only a single sortBy rule can be active at one time.
-If any sortBy rules are provided and no specific rule is set, the first sortBy rule in the stack will be considered active.
-:::

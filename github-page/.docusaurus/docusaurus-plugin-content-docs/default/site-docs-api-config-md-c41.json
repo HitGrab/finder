@@ -1,0 +1,24 @@
+{
+  "id": "api/config",
+  "title": "Configuration",
+  "description": "Options shape for a new FinderCore instance:",
+  "source": "@site/docs/api/config.md",
+  "sourceDirName": "api",
+  "slug": "/api/config",
+  "permalink": "/docs/api/config",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/api/config.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "String Comparison",
+    "permalink": "/docs/utils/string-comparison"
+  },
+  "next": {
+    "title": "FinderCore",
+    "permalink": "/docs/api/finder-core"
+  }
+}

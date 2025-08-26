@@ -1,4 +1,4 @@
-import { FinderRule, MatchesSnapshot, FinderConstructorOptions, FinderResultGroup, FinderSnapshot, RuleHook } from "../types";
+import { FinderRule, FinderConstructorOptions, FinderSnapshot, RuleHook } from "../types";
 import { FiltersMixin } from "./filters/filters";
 import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
@@ -16,13 +16,12 @@ import { isEqual } from "lodash";
 import { RuleBook } from "./rule-book/rule-book";
 import { FinderInitEvent, FinderChangeEvent } from "..";
 import { FinderEventName, FinderTouchEvent } from "./types/event-types";
+import { MatchesMixin } from "./matches/matches";
 
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
     #hooks: RuleHook[];
-
-    #snapshot?: MatchesSnapshot<FItem> = undefined;
 
     isReady: boolean = false;
 
@@ -36,9 +35,6 @@ class FinderCore<FItem, FContext = any> {
 
     #ignoreSortByRulesWhileSearchRuleIsActive;
 
-    // If true, the next call to findMatches() will force a render.
-    #isTouched = false;
-
     #eventEmitter: EventEmitter<FinderEventName>;
 
     // Subclasses that extend functionality
@@ -49,6 +45,8 @@ class FinderCore<FItem, FContext = any> {
         groupBy: GroupByMixin<FItem, FContext>;
         pagination: PaginationMixin<FItem>;
     };
+
+    #matches: MatchesMixin<FItem, FContext>;
 
     context: FContext;
 
@@ -104,6 +102,8 @@ class FinderCore<FItem, FContext = any> {
             groupBy: new GroupByMixin({ initialGroupBy, requireGroup: !!requireGroup }, mixinDeps),
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
         };
+
+        this.#matches = new MatchesMixin();
 
         // hack: revise this later
         this.context = context as FContext;
@@ -163,9 +163,8 @@ class FinderCore<FItem, FContext = any> {
 
         this.emitFirstUserInteraction();
 
-        this.#isTouched = true;
-        this.#snapshot = undefined;
         this.updatedAt = Date.now();
+        this.#matches.setIsStale(true);
 
         // transform the internal touch event to a public change event
         const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
@@ -197,8 +196,7 @@ class FinderCore<FItem, FContext = any> {
 
     /** Internal events not triggered by a user action  */
     #systemTouch(touchEvent: FinderTouchEvent) {
-        this.#isTouched = true;
-        this.#snapshot = undefined;
+        this.#matches.setIsStale(true);
         this.updatedAt = Date.now();
 
         // transform the internal touch event to a public change event
@@ -232,42 +230,6 @@ class FinderCore<FItem, FContext = any> {
         }
     }
 
-    #takeMatchesSnapshot() {
-        let itemsToProcess: FItem[] = [];
-        let groups: FinderResultGroup<FItem>[] = [];
-
-        const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
-        let paginatedItemSlice: FItem[] = [];
-        if (Array.isArray(this.#items)) {
-            itemsToProcess = [...this.#items];
-            itemsToProcess = this.#mixins.search.process(itemsToProcess, this.context);
-            itemsToProcess = this.#mixins.filters.process(itemsToProcess, this.context);
-
-            const ignoreSortByRules =
-                this.#ignoreSortByRulesWhileSearchRuleIsActive === true &&
-                this.#mixins.search.hasSearchRule === true &&
-                this.#mixins.search.hasSearchTerm === true;
-
-            if (ignoreSortByRules === false) {
-                itemsToProcess = this.#mixins.sortBy.process(itemsToProcess);
-            }
-
-            paginatedItemSlice = this.#mixins.pagination.process(itemsToProcess);
-
-            if (hasGroupByRule) {
-                groups = this.#mixins.groupBy.process(paginatedItemSlice, this.context);
-            }
-        }
-
-        return {
-            items: !hasGroupByRule ? paginatedItemSlice : undefined,
-            groups: hasGroupByRule ? groups : undefined,
-            numMatchedItems: itemsToProcess.length,
-            numTotalItems: this.items.length,
-            hasGroupByRule,
-        };
-    }
-
     /**
      * Return the current state values for each mixin. Only used for onChange events.
      */
@@ -287,11 +249,11 @@ class FinderCore<FItem, FContext = any> {
     }
 
     get matches() {
-        if (this.#snapshot === undefined || this.#isTouched) {
-            this.#snapshot = this.#takeMatchesSnapshot();
-            this.#isTouched = false;
+        if (this.#matches.isStale) {
+            this.#matches.takeSnapshot(this.items, this.context, this.#mixins, !!this.#ignoreSortByRulesWhileSearchRuleIsActive);
+            this.#matches.setIsStale(false);
         }
-        return this.#snapshot;
+        return this.#matches.snapshot;
     }
 
     get isEmpty() {

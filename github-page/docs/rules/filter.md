@@ -55,5 +55,5 @@ filterRule({
 }
 ```
 
-If a rule uses an option generator function, Finder will hydrate the rule with a stable options array before emitting it to the client. Options will be recalculated whenever the items array changes.
+If a rule uses an option generator function, Finder will hydrate the rule with a stable options array before emitting it to the client. Options will be recalculated whenever items or context are changed.
 :::

@@ -7,30 +7,28 @@ import { FinderCore } from "./core/finder-core";
 import { FinderOnInitCallback, FinderOnReadyCallback, FinderOnFirstUserInteractCallback, FinderOnChangeCallback } from "./core/types/event-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
-    // Stateless rules
-    rules?: FinderRule<FItem>[];
+    rules: FinderRule<FItem>[];
     hooks?: RuleHook[];
+    context?: FContext;
+    isLoading?: boolean;
+    disabled?: boolean;
 
     initialSearchTerm?: string;
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    context?: FContext;
 
-    isLoading?: boolean;
-    disabled?: boolean;
-
-    // Pagination properties
-    page?: number;
-    numItemsPerPage?: number;
+    // maybe a little verbose
+    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
 
     // Force items to use a group rule.
     // If no groupBy is set, the first valid group rule will be used.
     requireGroup?: boolean;
 
-    // maybe a little verbose
-    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
+    // Pagination properties
+    page?: number;
+    numItemsPerPage?: number;
 
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;

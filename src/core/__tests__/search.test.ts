@@ -12,7 +12,7 @@ describe("Search", () => {
         });
 
         const finder = new FinderCore(objectItems, { rules: [rule] });
-        expect(finder.search.activeRule).toBe(rule);
+        expect(finder.search.hasSearchRule).toBe(true);
 
         // empty string by default
         expect(finder.search.searchTerm).toBe("");

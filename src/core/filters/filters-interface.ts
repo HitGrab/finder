@@ -5,7 +5,7 @@ import { FiltersMixin } from "./filters";
  */
 function readonlyFiltersInterface(mixin: FiltersMixin) {
     return {
-        filters: mixin.getFilters(),
+        values: mixin.getValues(),
         raw: mixin.filters,
         activeRules: mixin.activeRules,
         rules: mixin.rules,
@@ -19,7 +19,6 @@ function filtersInterface(mixin: FiltersMixin) {
     return {
         ...readonlyFiltersInterface(mixin),
         toggle: mixin.toggle.bind(mixin),
-        toggleOption: mixin.toggleOption.bind(mixin),
         set: mixin.set.bind(mixin),
         delete: mixin.delete.bind(mixin),
         test: mixin.test.bind(mixin),

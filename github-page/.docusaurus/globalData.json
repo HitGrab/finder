@@ -8,16 +8,26 @@
           "label": "Next",
           "isLast": true,
           "path": "/docs",
-          "mainDocId": "intro",
+          "mainDocId": "rules/index",
           "docs": [
+            {
+              "id": "api/config",
+              "path": "/docs/api/config",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/finder-core",
+              "path": "/docs/api/finder-core",
+              "sidebar": "tutorialSidebar"
+            },
             {
               "id": "events",
               "path": "/docs/events",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "intro",
-              "path": "/docs/intro",
+              "id": "mixins/filters-mixin",
+              "path": "/docs/mixins/filters-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -26,18 +36,13 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "mixins/layout",
-              "path": "/docs/mixins/layout",
+              "id": "mixins/pagination-mixin",
+              "path": "/docs/mixins/pagination-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "mixins/meta",
-              "path": "/docs/mixins/meta",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "mixins/pagination",
-              "path": "/docs/mixins/pagination",
+              "id": "mixins/search-mixin",
+              "path": "/docs/mixins/search-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -95,8 +100,8 @@
           "sidebars": {
             "tutorialSidebar": {
               "link": {
-                "path": "/docs/intro",
-                "label": "intro"
+                "path": "/docs/rules/",
+                "label": "Rules"
               }
             }
           }
