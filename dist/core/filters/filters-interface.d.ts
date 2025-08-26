@@ -5,12 +5,11 @@ import { FiltersMixin } from "./filters";
 declare function readonlyFiltersInterface(mixin: FiltersMixin): {
     filters: Record<string, any>;
     raw: Record<string, any>;
-    activeRules: import("../..").HydratedFilterRule<any, any, any>[];
-    rules: import("../..").HydratedFilterRule<any, any, any>[];
+    activeRules: import("../..").HydratedFilterRule<unknown, any, any>[];
+    rules: import("../..").HydratedFilterRule<unknown, any, any>[];
     isActive: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => boolean;
     get: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => any;
     has: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
-    getRule: <FItem = any, FValue = any>(identifier: string | import("../..").FilterRuleUnion<FItem, FValue> | import("../..").HydratedFilterRule<FItem, FValue, any>) => import("../..").HydratedFilterRule<FItem, FValue, any>;
 };
 declare function filtersInterface(mixin: FiltersMixin): {
     toggle: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => void;
@@ -22,11 +21,10 @@ declare function filtersInterface(mixin: FiltersMixin): {
     testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<any, any>;
     filters: Record<string, any>;
     raw: Record<string, any>;
-    activeRules: import("../..").HydratedFilterRule<any, any, any>[];
-    rules: import("../..").HydratedFilterRule<any, any, any>[];
+    activeRules: import("../..").HydratedFilterRule<unknown, any, any>[];
+    rules: import("../..").HydratedFilterRule<unknown, any, any>[];
     isActive: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => boolean;
     get: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => any;
     has: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
-    getRule: <FItem = any, FValue = any>(identifier: string | import("../..").FilterRuleUnion<FItem, FValue> | import("../..").HydratedFilterRule<FItem, FValue, any>) => import("../..").HydratedFilterRule<FItem, FValue, any>;
 };
 export { readonlyFiltersInterface, filtersInterface };

@@ -1,5 +1,13 @@
-import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, FilterRuleUnion } from "../../types";
-import { getRuleFromIdentifier, isFilterUnionRule, getFilterOptionFromIdentifier } from "../utils/rule-utils";
+import {
+    HydratedFilterRule,
+    FilterOption,
+    FilterTestOptions,
+    FilterTestRuleOptions,
+    FilterTestRuleOptionsOptions,
+    FilterRuleUnion,
+    FilterRule,
+} from "../../types";
+import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { simpleUniqBy } from "../utils/finder-utils";
 
@@ -9,9 +17,6 @@ type InitialValues = {
 class FiltersMixin {
     filters;
 
-    // memoize rules with generated options
-    #hydratedRules?: HydratedFilterRule[];
-
     #deps;
 
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
@@ -20,7 +25,7 @@ class FiltersMixin {
     }
 
     set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -46,6 +51,7 @@ class FiltersMixin {
             }
 
             this.filters = { ...this.filters, [rule.id]: transformedFilterValue };
+
             this.#deps.touch({
                 source: "filters",
                 event: "change.filters.set",
@@ -54,58 +60,21 @@ class FiltersMixin {
                     value: incomingFilterValue,
                 },
                 initial: { rule, value: previousValue },
+                rule,
             });
         });
     }
 
     get rules() {
-        if (this.#hydratedRules === undefined) {
-            this.#hydratedRules = this.#takeHydratedRulesSnapshot(this.#deps.getItems(), this.#deps.getContext());
-        }
-        return this.#hydratedRules;
-    }
-
-    clearHydratedRules() {
-        this.#hydratedRules = undefined;
-    }
-
-    getRule<FItem = any, FValue = any>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule<FItem, FValue> | undefined;
-        if (rule === undefined) {
-            throw new Error("Finder could not locate the requested rule");
-        }
-        return rule;
+        return this.#deps.getRuleBook().rules.filter(isHydratedFilterRule);
     }
 
     get activeRules() {
         return this.rules.filter((rule) => this.isActive(rule));
     }
 
-    // hydrate and memoize generated options
-    #takeHydratedRulesSnapshot(items: any[], context?: any) {
-        const filterRules = this.#deps.getRules().filter(isFilterUnionRule);
-        return filterRules.map((rule) => {
-            // trigger option generator if found
-            let hydratedOptions = typeof rule.options === "function" ? rule.options({ items, context }) : rule.options;
-            return {
-                ...rule,
-
-                options: hydratedOptions,
-
-                // reduce uncertainty
-                multiple: !!rule.multiple,
-                required: !!rule.required,
-                isBoolean: !!rule.isBoolean,
-                hidden: !!rule.hidden,
-
-                // brand it
-                _isHydrated: true,
-            } as HydratedFilterRule;
-        });
-    }
-
     get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -141,7 +110,7 @@ class FiltersMixin {
     }
 
     has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
-        const rule = getRuleFromIdentifier(identifier, this.rules) as HydratedFilterRule | undefined;
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -162,7 +131,7 @@ class FiltersMixin {
     }
 
     delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -170,7 +139,7 @@ class FiltersMixin {
     }
 
     isActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (!rule) {
             return false;
         }
@@ -178,7 +147,7 @@ class FiltersMixin {
     }
 
     toggle(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = getRuleFromIdentifier(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -193,7 +162,7 @@ class FiltersMixin {
     }
 
     toggleOption(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue: FilterOption | any) {
-        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -242,7 +211,7 @@ class FiltersMixin {
             return [];
         }
 
-        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -260,7 +229,7 @@ class FiltersMixin {
             return new Map();
         }
 
-        const rule = getRuleFromIdentifier<HydratedFilterRule>(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -349,6 +318,23 @@ class FiltersMixin {
             return false;
         }
         return true;
+    }
+
+    static hydrateRule<FItem = any, FContext = any>(rule: FilterRule, items: FItem[], context: FContext) {
+        return {
+            ...rule,
+
+            options: typeof rule.options === "function" ? rule.options({ items, context }) : rule.options,
+
+            // reduce uncertainty
+            multiple: !!rule.multiple,
+            required: !!rule.required,
+            isBoolean: !!rule.isBoolean,
+            hidden: !!rule.hidden,
+
+            // brand it
+            _isHydrated: true,
+        } as HydratedFilterRule;
     }
 }
 

@@ -12,7 +12,6 @@ function readonlyFiltersInterface(mixin: FiltersMixin) {
         isActive: mixin.isActive.bind(mixin),
         get: mixin.get.bind(mixin),
         has: mixin.has.bind(mixin),
-        getRule: mixin.getRule.bind(mixin),
     };
 }
 

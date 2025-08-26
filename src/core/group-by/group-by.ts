@@ -1,5 +1,5 @@
 import { GroupByRule, FinderResultGroup, SortDirection } from "../../types";
-import { getRuleFromIdentifier, isGroupByRule } from "../utils/rule-utils";
+import { isGroupByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { groupBy, orderBy } from "lodash";
 
@@ -17,12 +17,14 @@ class GroupByMixin<FItem, FContext> {
 
     constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
-        this.#groupBy = getRuleFromIdentifier(initialGroupBy, this.rules);
+        if (initialGroupBy) {
+            this.#groupBy = this.#deps.getRuleBook().getRule<GroupByRule>(initialGroupBy);
+        }
         this.requireGroup = requireGroup;
     }
 
     get rules() {
-        return this.#deps.getRules().filter(isGroupByRule);
+        return this.#deps.getRuleBook().rules.filter(isGroupByRule);
     }
 
     get activeRule() {
@@ -43,7 +45,7 @@ class GroupByMixin<FItem, FContext> {
             rule = undefined;
         }
         if (isBlankString === false && identifier !== undefined) {
-            rule = getRuleFromIdentifier<GroupByRule>(identifier, this.rules);
+            rule = this.#deps.getRuleBook().getRule<GroupByRule>(identifier);
         }
 
         // early exit if nothing changed
@@ -59,6 +61,7 @@ class GroupByMixin<FItem, FContext> {
             event: "change.groupBy.set",
             current: { rule },
             initial: { rule: previousRule },
+            rule,
         });
     }
 
@@ -71,11 +74,12 @@ class GroupByMixin<FItem, FContext> {
             event: "change.groupBy.setGroupIdSortDirection",
             current: { groupIdSortDirection: direction },
             initial: { groupIdSortDirection: previousValue },
+            rule: this.activeRule,
         });
     }
 
     toggle(identifier: GroupByRule | string) {
-        const rule = getRuleFromIdentifier<GroupByRule>(identifier, this.rules);
+        const rule = this.#deps.getRuleBook().getRule<GroupByRule>(identifier);
         if (this.activeRule === rule) {
             this.set(undefined);
             return;

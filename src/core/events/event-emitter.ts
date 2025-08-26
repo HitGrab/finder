@@ -42,4 +42,8 @@ export class EventEmitter<EventNames extends string> {
         callback();
         this.#disabled = false;
     }
+
+    isSilent() {
+        return this.#disabled;
+    }
 }

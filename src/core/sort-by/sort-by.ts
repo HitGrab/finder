@@ -1,5 +1,5 @@
 import { SortByRule, SortDirection } from "../../types";
-import { getRuleFromIdentifier, isSortByRule } from "../utils/rule-utils";
+import { isSortByRule } from "../utils/rule-utils";
 import { MixinInjectedDependencies } from "../types/internal-types";
 import { orderBy } from "lodash";
 
@@ -16,12 +16,14 @@ class SortByMixin<FItem> {
 
     constructor({ initialSortBy, initialSortDirection }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
-        this.#sortBy = getRuleFromIdentifier(initialSortBy, this.rules);
+        if (initialSortBy) {
+            this.#sortBy = this.#deps.getRuleBook().getRule<SortByRule>(initialSortBy);
+        }
         this.#sortDirection = initialSortDirection;
     }
 
     get rules() {
-        return this.#deps.getRules().filter(isSortByRule);
+        return this.#deps.getRuleBook().rules.filter(isSortByRule);
     }
 
     get activeRule() {
@@ -48,6 +50,7 @@ class SortByMixin<FItem> {
             event: "change.sortBy.setSortDirection",
             current: { sortDirection: incomingSortDirection },
             initial: { sortDirection: previousValue },
+            rule: this.activeRule,
         });
     }
 
@@ -58,7 +61,7 @@ class SortByMixin<FItem> {
 
         const previousSortDirection = this.#sortDirection;
         const previousRule = this.#sortBy;
-        const rule = getRuleFromIdentifier<SortByRule>(identifier, this.rules);
+        const rule = identifier ? this.#deps.getRuleBook().getRule<SortByRule>(identifier) : undefined;
         this.#sortBy = rule;
         this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
@@ -66,6 +69,7 @@ class SortByMixin<FItem> {
             event: "change.sortBy.set",
             current: { rule, sortDirection: incomingSortDirection },
             initial: { rule: previousRule, sortDirection: previousSortDirection },
+            rule: this.activeRule,
         });
     }
 

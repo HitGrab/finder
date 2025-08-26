@@ -6,6 +6,7 @@ import { FinderCore } from "../../core/finder-core";
 function Finder<FItem = any, FContext = any>({
     items,
     rules,
+    hooks,
     initialSearchTerm,
     initialSortBy,
     initialSortDirection,
@@ -16,7 +17,6 @@ function Finder<FItem = any, FContext = any>({
     disabled,
     page,
     numItemsPerPage,
-    plugins,
     requireGroup,
     ignoreSortByRulesWhileSearchRuleIsActive,
     onInit,
@@ -30,6 +30,7 @@ function Finder<FItem = any, FContext = any>({
         () =>
             new FinderCore<FItem, FContext>(items, {
                 rules,
+                hooks,
                 initialSearchTerm,
                 initialSortBy,
                 initialSortDirection,
@@ -40,7 +41,6 @@ function Finder<FItem = any, FContext = any>({
                 disabled,
                 page,
                 numItemsPerPage,
-                plugins,
                 requireGroup,
                 ignoreSortByRulesWhileSearchRuleIsActive,
                 onInit,
