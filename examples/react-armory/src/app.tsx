@@ -41,9 +41,9 @@ function App() {
             ],
             multiple: true,
         }),
-        // sortByRule({ id: "item_name", sortFn: (item) => item.name, label: "Name" }),
-        // sortByRule({ id: "item_attack", sortFn: (item) => item.atk, label: "Attack", defaultSortDirection: "desc" }),
-        // sortByRule({ id: "item_defense", sortFn: (item) => item.def, label: "Defense", defaultSortDirection: "desc" }),
+        sortByRule({ id: "item_name", sortFn: (item) => item.name, label: "Name" }),
+        sortByRule({ id: "item_attack", sortFn: (item) => item.atk, label: "Attack", defaultSortDirection: "desc" }),
+        sortByRule({ id: "item_defense", sortFn: (item) => item.def, label: "Defense", defaultSortDirection: "desc" }),
         groupByRule({ id: "rarity_group", groupFn: (item) => item.rarity, sticky: { header: ["rare", "uncommon", "common"] } }),
     ]);
 
@@ -69,7 +69,7 @@ function App() {
             onFirstUserInteraction={handleEventStream}
             onChange={handleEventStream}
             onReady={handleEventStream}
-            // ignoreSortByRulesWhileSearchRuleIsActive={true}
+            ignoreSortByRulesWhileSearchRuleIsActive={true}
             context={context}
         >
             <div className="layout">
