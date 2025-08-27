@@ -1,0 +1,23 @@
+{
+  "id": "index",
+  "title": "...why?",
+  "description": "Do we really need a whole library for basic data manipulation? Maybe!",
+  "source": "@site/docs/index.md",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "slug": "/",
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "next": {
+    "title": "Usage",
+    "permalink": "/react/"
+  }
+}

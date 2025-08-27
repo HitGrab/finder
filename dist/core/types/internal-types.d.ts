@@ -1,12 +1,13 @@
 /**
  * These internal types are not intended for public consumption.
  */
-import { FinderRule, FinderTouchCallback } from "../../types";
 import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
-export interface MixinInjectedDependencies<FItem = any> {
+import { RuleBook } from "../rule-book/rule-book";
+import { FinderTouchCallback } from "./event-types";
+export interface MixinInjectedDependencies<FItem = any, FContext = any> {
     isLoading: () => boolean;
     isDisabled: () => boolean;
-    getRules: () => FinderRule[];
+    getRuleBook: () => RuleBook<FItem, FContext>;
     touch: FinderTouchCallback;
     getContext: () => any;
     getItems: () => FItem[];

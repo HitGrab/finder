@@ -1,0 +1,23 @@
+{
+  "id": "mixins/pagination-mixin",
+  "title": "Pagination Mixin",
+  "description": "The Pagination mixin can be accessed from finder.pagination.",
+  "source": "@site/docs/mixins/pagination-mixin.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/pagination-mixin",
+  "permalink": "/mixins/pagination-mixin",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Matches Mixin",
+    "permalink": "/mixins/matches-mixin"
+  },
+  "next": {
+    "title": "Search Mixin",
+    "permalink": "/mixins/search-mixin"
+  }
+}

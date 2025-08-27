@@ -1,0 +1,20 @@
+{
+  "id": "react/components/finder-search-term",
+  "title": "FinderSearchTerm",
+  "description": "This handy component allows you to highlight the segments in your haystack that matched your searchTerm.",
+  "source": "@site/docs/react/components/finder-search-term.md",
+  "sourceDirName": "react/components",
+  "slug": "/react/components/finder-search-term",
+  "permalink": "/docs/react/components/finder-search-term",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/react/components/finder-search-term.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "FinderContent",
+    "permalink": "/docs/react/components/finder-content"
+  }
+}

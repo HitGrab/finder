@@ -41,7 +41,7 @@ export function PriceFilterControls() {
             <div className="checkboxFilterList">
                 {rule.options?.map((option) => {
                     return (
-                        <label onChange={() => finder.filters.toggleOption(rule, option)} key={option.value}>
+                        <label onChange={() => finder.filters.toggle(rule, option)} key={option.value}>
                             <input type="checkbox" value={option.value} checked={finder.filters.has(rule, option)} readOnly /> {option.label}
                             <span>{optionMatches.get(option)?.length}</span>
                         </label>

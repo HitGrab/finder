@@ -1,0 +1,26 @@
+{
+  "id": "api/finder-core",
+  "title": "FinderCore",
+  "description": "- items The array being operated on.",
+  "source": "@site/docs/api/finder-core.md",
+  "sourceDirName": "api",
+  "slug": "/api/finder-core",
+  "permalink": "/docs/api/finder-core",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/api/finder-core.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "FinderCore"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Configuration",
+    "permalink": "/docs/api/config"
+  },
+  "next": {
+    "title": "FinderContent",
+    "permalink": "/docs/react/finder-content"
+  }
+}

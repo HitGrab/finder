@@ -1,0 +1,28 @@
+{
+  "id": "rules/sort-by",
+  "title": "SortBy",
+  "description": "Only a single sortBy rule can be active at one time.",
+  "source": "@site/docs/rules/sort-by.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/sort-by",
+  "permalink": "/docs/rules/sort-by",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/sort-by.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "SortBy",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filter",
+    "permalink": "/docs/rules/filter"
+  },
+  "next": {
+    "title": "GroupBy",
+    "permalink": "/docs/rules/group-by"
+  }
+}

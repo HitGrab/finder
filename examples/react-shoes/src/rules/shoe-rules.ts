@@ -7,7 +7,7 @@ import { intersection, sortBy, capitalize } from "lodash";
  * An array of static rules that can be activated by Finder.
  */
 export const rules = finderRuleset<Shoe>([
-    searchRule({ haystackFn: (item) => item.name }),
+    searchRule({ searchFn: (item) => item.name }),
     filterRule({
         id: "brand",
         label: "Brand",

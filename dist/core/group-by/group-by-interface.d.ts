@@ -9,7 +9,7 @@ declare function readonlyGroupByInterface<FItem, FContext>(mixin: GroupByMixin<F
     groupIdSortDirection: import("../..").SortDirection | undefined;
 };
 declare function groupByInterface<FItem, FContext>(mixin: GroupByMixin<FItem, FContext>): {
-    set: (identifier?: import("../..").GroupByRule | string) => void;
+    set: (identifier?: string | import("../..").GroupByRule) => void;
     toggle: (identifier: import("../..").GroupByRule | string) => void;
     setGroupIdSortDirection: (direction?: import("../..").SortDirection) => void;
     reset: () => void;

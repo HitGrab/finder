@@ -4,33 +4,31 @@ import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
 import { readonlySearchInterface } from "./core/search/search-interface";
 import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
 import { FinderCore } from "./core/finder-core";
+import { FinderOnInitCallback, FinderOnReadyCallback, FinderOnFirstUserInteractCallback, FinderOnChangeCallback } from "./core/types/event-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
-    // Stateless rules
-    rules?: FinderRule<FItem>[];
+    rules: FinderRule<FItem>[];
+    effects?: RuleEffect[];
+    context?: FContext;
+    isLoading?: boolean;
+    disabled?: boolean;
 
     initialSearchTerm?: string;
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
     initialFilters?: Record<string, any>;
-    context?: FContext;
 
-    isLoading?: boolean;
-    disabled?: boolean;
-
-    // Pagination properties
-    page?: number;
-    numItemsPerPage?: number;
+    // maybe a little verbose
+    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
 
     // Force items to use a group rule.
     // If no groupBy is set, the first valid group rule will be used.
     requireGroup?: boolean;
 
-    // maybe a little verbose
-    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
-
-    plugins?: (FinderPluginInterface | FinderPluginFn<FinderPluginInterface>)[];
+    // Pagination properties
+    page?: number;
+    numItemsPerPage?: number;
 
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;
@@ -54,30 +52,16 @@ export type FinderRule<FItem = any, FContext = any> =
     | SearchRule<FItem, FContext>
     | FilterRuleUnion<FItem, FContext>
     | HydratedFilterRule<FItem, FContext>
-    | SortByRule<FItem>
+    | SortByRule<FItem, FContext>
     | GroupByRule<FItem, FContext>;
 
-export interface SearchRuleSharedProps {
+export interface SearchRule<FItem = any, FContext = any> {
     id?: string;
     label?: string;
     hidden?: boolean;
     debounceMilliseconds?: number;
-
-    // these properties will be narrowed in the SearchRule union
-    searchFn?: unknown;
-    haystackFn?: unknown;
+    searchFn?: (item: FItem, context?: FContext) => string | string[];
 }
-export interface SearchRuleSimple<FItem = any, FContext = any> extends SearchRuleSharedProps {
-    searchFn?: never;
-    haystackFn: (item: FItem, context?: FContext) => string | string[];
-}
-
-export interface SearchRuleAdvanced<FItem = any, FContext = any> extends SearchRuleSharedProps {
-    haystackFn?: never;
-    searchFn: (item: FItem, searchTerm: string, context?: FContext) => boolean;
-}
-
-export type SearchRule<FItem = any, FContext = any> = SearchRuleAdvanced<FItem, FContext> | SearchRuleSimple<FItem, FContext>;
 
 export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
     items: FItem[];
@@ -125,10 +109,9 @@ export type FilterRuleUnion<FItem = any, FValue = any> =
     | FilterRuleWithMultipleValues<FItem, FValue>;
 
 /**
- * A hydrated filter has rendered any option generator functions, and narrowed uncertain properties from FilterRule.
+ * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
  */
-export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any>
-    extends Omit<FilterRule<FItem, FValue>, "options" | "required" | "isBoolean" | "hidden"> {
+export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> extends Omit<FilterRule<FItem, FValue>, "options"> {
     options?: FilterOption<FValue>[];
     required: boolean;
     isBoolean: boolean;
@@ -216,81 +199,7 @@ export interface FinderSnapshot<FItem, FContext = any> {
     updatedAt?: number;
 }
 
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "plugin";
-
-type FinderSharedEventProps = {
-    source: string;
-    event: FinderEventName;
-    snapshot: FinderSnapshot<any>;
-    timestamp: number;
-};
-export interface FinderInitEvent extends FinderSharedEventProps {
-    source: "core";
-    event: "init";
-}
-export interface FinderFirstUserInteractionEvent extends FinderSharedEventProps {
-    source: "core";
-    event: "firstUserInteraction";
-}
-export interface FinderReadyEvent extends FinderSharedEventProps {
-    source: "core";
-    event: "ready";
-}
-
-export type FinderEvent = FinderInitEvent | FinderFirstUserInteractionEvent | FinderReadyEvent | FinderChangeEvent;
-
-export type FinderOnInitCallback = (event: FinderInitEvent) => void;
-export type FinderOnReadyCallback = (event: FinderReadyEvent) => void;
-export type FinderOnFirstUserInteractCallback = (event: FinderFirstUserInteractionEvent) => void;
-export type FinderOnChangeCallback = (event: FinderChangeEvent) => void;
-export type FinderTouchCallback = (event: FinderTouchEvent) => void;
-
-/**
- * Internal communication between mixins and core
- */
-export interface FinderTouchEvent {
-    source: FinderTouchSource;
-    event: FinderEventName;
-    current: any;
-    initial: any;
-}
-
-/**
- * External type that consumers will receive
- */
-export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
-
-export type FinderEventName =
-    | "init"
-    | "firstUserInteraction"
-    | "ready"
-    | "change"
-    | "change.core"
-    | "change.core.setIsLoading"
-    | "change.core.setIsDisabled"
-    | "change.core.setItems"
-    | "change.core.syncContext"
-    | `change.filters`
-    | "change.filters.set"
-    | `change.groupBy`
-    | "change.groupBy.set"
-    | "change.groupBy.setGroupIdSortDirection"
-    | "change.pagination"
-    | "change.pagination.setPage"
-    | "change.pagination.setNumItemsPerPage"
-    | `change.plugin`
-    | `change.plugin.${string}`
-    | "change.search"
-    | "change.search.setSearchTerm"
-    | "change.search.reset"
-    | "change.sortBy"
-    | "change.sortBy.set"
-    | "change.sortBy.setSortDirection";
-
-export type FinderPluginFn<T extends FinderPluginInterface> = (...args: any[]) => T;
-
-export interface FinderPluginInterface<FItem = any> {
-    id: string;
-    register: (finder: FinderCore<FItem>, touch: FinderTouchCallback) => void;
-    [k: string]: any;
+export interface RuleEffect<FItem = any, FContext = any> {
+    rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[];
+    onChange: (instance: FinderCore<FItem, FContext>) => void;
 }

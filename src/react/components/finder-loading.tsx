@@ -4,15 +4,14 @@ import { useFinder } from "../hooks/use-finder";
 interface FinderLoadingProps {
     children: FinderContentRenderProp;
 }
-function FinderLoading({ children: renderProp }: FinderLoadingProps) {
+function FinderLoading({ children: Component }: FinderLoadingProps) {
     const finder = useFinder();
-    if (finder.state === "loading" && renderProp) {
-        if (typeof renderProp === "function") {
-            const Component = renderProp;
+    if (finder.state === "loading" && Component) {
+        if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }
 
-        return renderProp;
+        return Component;
     }
     return null;
 }

@@ -11,7 +11,7 @@ declare class GroupByMixin<FItem, FContext> {
     constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>);
     get rules(): GroupByRule<unknown, any>[];
     get activeRule(): GroupByRule<unknown, any> | undefined;
-    set(identifier?: GroupByRule | string): void;
+    set(identifier?: string | GroupByRule): void;
     setGroupIdSortDirection(direction?: SortDirection): void;
     toggle(identifier: GroupByRule | string): void;
     reset(): void;

@@ -18,11 +18,11 @@ class SearchMixin<FItem, FContext = any> {
     }
 
     get rule() {
-        return this.#deps.getRules().find(isSearchRule);
+        return this.#deps.getRuleBook().rules.find(isSearchRule);
     }
 
     get hasSearchRule() {
-        return this.#deps.getRules().some(isSearchRule);
+        return this.#deps.getRuleBook().rules.some(isSearchRule);
     }
 
     get hasSearchTerm() {
@@ -30,7 +30,7 @@ class SearchMixin<FItem, FContext = any> {
     }
 
     setSearchTerm(incomingSearchTerm: string) {
-        const rule = this.#deps.getRules().find(isSearchRule);
+        const rule = this.#deps.getRuleBook().rules.find(isSearchRule);
         if (!rule) {
             throw new Error("Finder could not locate a searchRule.");
         }
@@ -49,6 +49,7 @@ class SearchMixin<FItem, FContext = any> {
                 event: "change.search.setSearchTerm",
                 current: { searchTerm: incomingSearchTerm },
                 initial: { searchTerm: previousValue },
+                rule,
             });
         });
     }
@@ -64,6 +65,7 @@ class SearchMixin<FItem, FContext = any> {
             event: "change.search.reset",
             current: { searchTerm: "" },
             initial: { searchTerm: previousValue },
+            rule: this.rule,
         });
     }
 
@@ -72,23 +74,14 @@ class SearchMixin<FItem, FContext = any> {
             return items;
         }
 
-        if (this.rule.searchFn) {
-            return items.filter((item) => {
-                if (this.rule?.searchFn === undefined) {
-                    return false;
-                }
-                return this.rule.searchFn(item, this.searchTerm, context);
-            });
-        }
-
         const transformedNeedle = transformStringForComparison(this.searchTerm);
         const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
-            if (this.rule?.haystackFn === undefined) {
+            if (this.rule?.searchFn === undefined) {
                 return acc;
             }
 
             // Retrieve this item's array of haystack strings to compare the search needle against
-            const itemHaystackStringOrStrings = this.rule.haystackFn(item, context);
+            const itemHaystackStringOrStrings = this.rule.searchFn(item, context);
             const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
                 ? itemHaystackStringOrStrings.map(transformStringForComparison)
                 : [transformStringForComparison(itemHaystackStringOrStrings)];

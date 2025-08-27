@@ -1,0 +1,27 @@
+{
+  "id": "mixins/index",
+  "title": "Mixins",
+  "description": "",
+  "source": "@site/docs/mixins/index.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/",
+  "permalink": "/mixins/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "Mixins",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "FinderRuleset",
+    "permalink": "/rules/ruleset"
+  },
+  "next": {
+    "title": "Filters Mixin",
+    "permalink": "/mixins/filters-mixin"
+  }
+}

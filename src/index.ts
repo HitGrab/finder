@@ -1,11 +1,5 @@
-/** Vanilla JS library */
-export { FinderPlugin } from "./core/plugins/plugin-super-class";
-
 // Utility methods for enforcing rule shape
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
-
-// String comparison utilities
-export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
 
 export { getSearchResultSegments } from "./core/search/result-segments/search-result-segments";
 
@@ -26,18 +20,9 @@ export type {
 
     // rule helpers
     SortDirection,
-
-    // events
-    FinderEvent,
-    FinderInitEvent,
-    FinderReadyEvent,
-    FinderFirstUserInteractionEvent,
-    FinderChangeEvent,
-
-    // plugins
-    FinderPluginFn,
-    FinderPluginInterface,
 } from "./types";
+
+export type { FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent } from "./core/types/event-types";
 
 /**
  * React hooks and components

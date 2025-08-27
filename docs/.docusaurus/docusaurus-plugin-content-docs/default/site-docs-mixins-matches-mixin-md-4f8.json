@@ -1,0 +1,23 @@
+{
+  "id": "mixins/matches-mixin",
+  "title": "Matches Mixin",
+  "description": "The Matches mixin can be accessed from finder.matches.",
+  "source": "@site/docs/mixins/matches-mixin.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/matches-mixin",
+  "permalink": "/mixins/matches-mixin",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "GroupBy Mixin",
+    "permalink": "/mixins/group-by-mixin"
+  },
+  "next": {
+    "title": "Pagination Mixin",
+    "permalink": "/mixins/pagination-mixin"
+  }
+}

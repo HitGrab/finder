@@ -1,0 +1,27 @@
+{
+  "id": "react/components/finder",
+  "title": "Finder",
+  "description": "Type Signature",
+  "source": "@site/docs/react/components/finder.md",
+  "sourceDirName": "react/components",
+  "slug": "/react/components/finder",
+  "permalink": "/docs/react/components/finder",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/react/components/finder.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Events",
+    "permalink": "/docs/events-and-hooks/events"
+  },
+  "next": {
+    "title": "FinderContent",
+    "permalink": "/docs/react/components/finder-content"
+  }
+}

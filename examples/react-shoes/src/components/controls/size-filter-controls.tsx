@@ -14,7 +14,7 @@ export function SizeFilterControls() {
                     <button
                         type="button"
                         className={finder.filters.has(rule, option) ? "selected" : undefined}
-                        onClick={() => finder.filters.toggleOption(rule, option)}
+                        onClick={() => finder.filters.toggle(rule, option)}
                         key={option.value}
                     >
                         {option.label}

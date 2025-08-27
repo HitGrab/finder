@@ -1,0 +1,28 @@
+{
+  "id": "rules/filter",
+  "title": "Filter",
+  "description": "Define a filter predicate that will return a boolean for each item. If multiple filters are active, all filters must match for an item to be returned.",
+  "source": "@site/docs/rules/filter.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/filter",
+  "permalink": "/docs/rules/filter",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/filter.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "Filter",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Search",
+    "permalink": "/docs/rules/search"
+  },
+  "next": {
+    "title": "SortBy",
+    "permalink": "/docs/rules/sort-by-rule"
+  }
+}

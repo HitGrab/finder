@@ -3,6 +3,7 @@ import { FinderCore } from "../finder-core";
 import { filterRule, finderRuleset } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
+import { HydratedFilterRule } from "../../types";
 
 describe("Filters", () => {
     test("Accessors", () => {
@@ -13,7 +14,7 @@ describe("Filters", () => {
         const finder = new FinderCore(objectItems, { rules: [rule] });
 
         // hydrated rule can be retrieved
-        const hydratedRule = finder.filters.getRule(rule);
+        const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
         expect(finder.filters.rules).toEqual([hydratedRule]);
 
         // rule has no value while inactive
@@ -22,7 +23,7 @@ describe("Filters", () => {
         expect(finder.filters.get(rule)).toEqual(undefined);
         expect(finder.filters.get(rule.id)).toEqual(undefined);
         expect(finder.filters.get(hydratedRule)).toEqual(undefined);
-        expect(finder.filters.filters[rule.id]).toEqual(undefined);
+        expect(finder.filters.values[rule.id]).toEqual(undefined);
         expect(finder.filters.raw[rule.id]).toEqual(undefined);
         expect(finder.filters.activeRules).toEqual([]);
 
@@ -33,7 +34,7 @@ describe("Filters", () => {
         expect(finder.filters.get(rule)).toEqual(5);
         expect(finder.filters.get(rule.id)).toEqual(5);
         expect(finder.filters.get(hydratedRule)).toEqual(5);
-        expect(finder.filters.filters[rule.id]).toEqual(5);
+        expect(finder.filters.values[rule.id]).toEqual(5);
         expect(finder.filters.raw[rule.id]).toEqual(5);
         expect(finder.filters.activeRules).toEqual([hydratedRule]);
     });
@@ -120,14 +121,14 @@ describe("Filters", () => {
             });
 
             const finder = new FinderCore(objectItems, { rules: [rule] });
-            finder.filters.toggleOption(rule, 3);
-            finder.filters.toggleOption(rule, 5);
+            finder.filters.toggle(rule, 3);
+            finder.filters.toggle(rule, 5);
             expect(finder.filters.get(rule)).toEqual([3, 5]);
             expect(finder.filters.has(rule, 3)).toEqual(true);
             expect(finder.filters.has(rule, optionThree)).toEqual(true);
 
-            finder.filters.toggleOption(rule, 3);
-            finder.filters.toggleOption(rule, 5);
+            finder.filters.toggle(rule, 3);
+            finder.filters.toggle(rule, 5);
             expect(finder.filters.get(rule)).toEqual([]);
             expect(finder.filters.has(rule, 3)).toEqual(false);
             expect(finder.filters.has(rule, optionThree)).toEqual(false);
@@ -149,7 +150,7 @@ describe("Filters", () => {
                 },
             });
             const finder = new FinderCore(objectItems, { rules: [rule] });
-            const hydratedRule = finder.filters.getRule(rule);
+            const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
             expect(hydratedRule.options?.length).toBe(1000);
         });
 
@@ -172,7 +173,7 @@ describe("Filters", () => {
             });
 
             const finder = new FinderCore(objectItems, { rules: [rule] });
-            const hydratedRule = finder.filters.getRule(rule);
+            const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
             expect(hydratedRule.options?.length).toBe(2);
         });
 

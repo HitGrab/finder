@@ -1,0 +1,23 @@
+{
+  "id": "mixins/search-mixin",
+  "title": "Search Mixin",
+  "description": "The Search mixin can be accessed from finder.search.",
+  "source": "@site/docs/mixins/search-mixin.md",
+  "sourceDirName": "mixins",
+  "slug": "/mixins/search-mixin",
+  "permalink": "/mixins/search-mixin",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Pagination Mixin",
+    "permalink": "/mixins/pagination-mixin"
+  },
+  "next": {
+    "title": "SortBy Mixin",
+    "permalink": "/mixins/sort-by-mixin"
+  }
+}

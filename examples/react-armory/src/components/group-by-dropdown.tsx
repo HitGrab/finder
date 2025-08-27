@@ -1,7 +1,7 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 function GroupByDropdown() {
-    const finder = useFinderContext();
+    const finder = useFinder();
 
     return (
         <label onChange={() => finder.groupBy.toggle("rarity_group")}>

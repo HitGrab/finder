@@ -9,10 +9,10 @@ interface FinderSearchTermProps {
     Component?: ElementType;
     algorithm?: SearchCharacterIndexFn;
 }
-function FinderSearchTerm({ Component = "span", children, algorithm = calculateSequentialCharacterIndexes }: FinderSearchTermProps) {
+function FinderSearchTerm({ Component = "span", children }: FinderSearchTermProps) {
     const finder = useFinder();
     const segments = useMemo(() => {
-        return getSearchResultSegments(algorithm, children, finder.search.searchTerm);
+        return getSearchResultSegments(calculateSequentialCharacterIndexes, children, finder.search.searchTerm);
     }, [finder.search.searchTerm]);
 
     if (finder.search.hasSearchTerm === false) {

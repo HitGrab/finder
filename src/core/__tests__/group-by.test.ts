@@ -1,4 +1,3 @@
-import { act } from "react";
 import { FinderCore } from "../finder-core";
 import { groupByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
@@ -30,18 +29,15 @@ describe("GroupBy", () => {
         ];
 
         const finder = new FinderCore(objectItems, { rules, requireGroup: true });
-        act(() => {
-            finder.groupBy.setGroupIdSortDirection("asc");
-        });
+
+        finder.groupBy.setGroupIdSortDirection("asc");
 
         expect(finder.matches.groups).toStrictEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
         ]);
 
-        act(() => {
-            finder.groupBy.setGroupIdSortDirection("desc");
-        });
+        finder.groupBy.setGroupIdSortDirection("desc");
 
         expect(finder.matches.groups).toStrictEqual([
             { id: "three", items: [apple] },

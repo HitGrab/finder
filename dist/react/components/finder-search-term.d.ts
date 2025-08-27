@@ -5,5 +5,5 @@ interface FinderSearchTermProps {
     Component?: ElementType;
     algorithm?: SearchCharacterIndexFn;
 }
-declare function FinderSearchTerm({ Component, children, algorithm }: FinderSearchTermProps): string | import("react/jsx-runtime").JSX.Element;
+declare function FinderSearchTerm({ Component, children }: FinderSearchTermProps): string | import("react/jsx-runtime").JSX.Element;
 export { FinderSearchTerm };

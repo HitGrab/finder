@@ -6,8 +6,8 @@ import { SearchMixin } from "./search";
 function readonlySearchInterface<FItem>(mixin: SearchMixin<FItem>) {
     return {
         searchTerm: mixin.searchTerm,
-        activeRule: mixin.rule,
         hasSearchTerm: mixin.hasSearchTerm,
+        hasSearchRule: mixin.hasSearchRule,
     };
 }
 
