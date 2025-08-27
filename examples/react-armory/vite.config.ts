@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+    base: "./",
     plugins: [
         react(),
         checker({
@@ -14,4 +15,5 @@ export default defineConfig({
     optimizeDeps: {
         force: true,
     },
+    build: { assetsInlineLimit: 4096 * 10 },
 });

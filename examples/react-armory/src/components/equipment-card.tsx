@@ -1,4 +1,4 @@
-import { FinderSearchTerm } from "@hitgrab/finder";
+import { FinderSearchTerm, useFinder } from "@hitgrab/finder";
 
 interface EquipmentProps {
     item: Equipment;

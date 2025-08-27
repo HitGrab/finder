@@ -1,7 +1,7 @@
-import { SortDirection, useFinderContext } from "@hitgrab/finder";
+import { SortDirection, useFinder } from "@hitgrab/finder";
 
 function SortByDropdown() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     return (
         <label>
             Sort by:

@@ -34,6 +34,7 @@ declare class FinderCore<FItem, FContext = any> {
         isActive: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => boolean;
         get: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => any;
         has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => any;
+        getRule: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => import("..").HydratedFilterRule<any, any, any> | undefined;
     };
     get sortBy(): {
         set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;

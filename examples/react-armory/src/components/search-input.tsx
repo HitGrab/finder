@@ -1,8 +1,8 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 import { useCallback, useRef } from "react";
 
 function SearchInput() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     const ref = useRef<HTMLInputElement | null>(null);
 
     const handleReset = useCallback(() => {

@@ -130,6 +130,10 @@ class FiltersMixin {
         return ruleValue === option.value;
     }
 
+    getRule(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+        return this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
+    }
+
     delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {

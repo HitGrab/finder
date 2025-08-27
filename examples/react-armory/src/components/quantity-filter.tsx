@@ -1,7 +1,7 @@
-import { useFinderContext } from "@hitgrab/finder";
+import { useFinder } from "@hitgrab/finder";
 
 function QuantityFilter() {
-    const finder = useFinderContext();
+    const finder = useFinder();
     const ruleValue = finder.filters.get("has_quantity");
 
     return (

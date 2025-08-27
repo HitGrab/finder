@@ -36,7 +36,7 @@ class SortByMixin<FItem> {
     }
 
     get userHasSetSortDirection() {
-        return this.#sortDirection !== null;
+        return this.#sortDirection !== undefined;
     }
 
     setSortDirection(incomingSortDirection?: SortDirection) {

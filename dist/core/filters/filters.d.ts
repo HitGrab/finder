@@ -12,6 +12,7 @@ declare class FiltersMixin {
     get activeRules(): HydratedFilterRule<unknown, any, any>[];
     get(identifier: string | FilterRuleUnion | HydratedFilterRule): any;
     has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any): any;
+    getRule(identifier: string | FilterRuleUnion | HydratedFilterRule): HydratedFilterRule<any, any, any> | undefined;
     delete(identifier: string | FilterRuleUnion | HydratedFilterRule): void;
     isActive(identifier: string | FilterRuleUnion | HydratedFilterRule): boolean;
     toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any): void;

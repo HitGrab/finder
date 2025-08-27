@@ -10,6 +10,7 @@ declare function readonlyFiltersInterface(mixin: FiltersMixin): {
     isActive: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => boolean;
     get: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => any;
     has: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
+    getRule: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => import("../..").HydratedFilterRule<any, any, any> | undefined;
 };
 declare function filtersInterface(mixin: FiltersMixin): {
     toggle: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => void;
@@ -25,5 +26,6 @@ declare function filtersInterface(mixin: FiltersMixin): {
     isActive: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => boolean;
     get: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => any;
     has: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => any;
+    getRule: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => import("../..").HydratedFilterRule<any, any, any> | undefined;
 };
 export { readonlyFiltersInterface, filtersInterface };

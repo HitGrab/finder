@@ -5,4 +5,5 @@ interface Equipment {
     image: string;
     quantity: number;
     rarity: string;
+    key: string;
 }

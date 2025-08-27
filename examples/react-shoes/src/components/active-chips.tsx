@@ -17,7 +17,7 @@ function ActiveChips() {
                                 return null;
                             }
                             return (
-                                <Chip ruleId={rule.id} onReset={() => finder.filters.toggleOption(rule, option)} key={[rule.id, option.value].join()}>
+                                <Chip ruleId={rule.id} onReset={() => finder.filters.toggle(rule, option)} key={[rule.id, option.value].join()}>
                                     {option.label}
                                 </Chip>
                             );
@@ -52,7 +52,7 @@ function ActiveChips() {
                     return ruleValue.map((value) => (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={[rule.id, value].join()}>
                             <span>Size {String(value)}</span>
-                            <button type="button" onClick={() => finder.filters.toggleOption(rule, value)}>
+                            <button type="button" onClick={() => finder.filters.toggle(rule, value)}>
                                 x
                             </button>
                         </div>
@@ -63,7 +63,7 @@ function ActiveChips() {
                     return ruleValue.map((value) => (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={[rule.id, value].join()}>
                             <span>{String(value)}</span>
-                            <button type="button" onClick={() => finder.filters.toggleOption(rule, value)}>
+                            <button type="button" onClick={() => finder.filters.toggle(rule, value)}>
                                 x
                             </button>
                         </div>

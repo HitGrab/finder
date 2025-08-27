@@ -1,11 +1,12 @@
 /// <reference types="vite/client" />
 
-const gallery = Object.values(import.meta.glob("/assets/*.{png,jpg,jpeg,PNG,JPEG}", { eager: true, as: "url" }));
+const GALLERY = Object.values(import.meta.glob("/assets/*.{png,jpg,jpeg,PNG,JPEG}", { eager: true, as: "url" }));
+const NUM_ITEMS = 60;
 
-import { random, startCase } from "lodash";
+import { random, range, startCase } from "lodash";
 import { useEffect, useState } from "react";
 
-export function useGetItems() {
+export function useGetEquipment() {
     const [isPending, setIsPending] = useState(true);
     const [data, setData] = useState<Equipment[] | undefined>(undefined);
     useEffect(() => {
@@ -20,13 +21,13 @@ export function useGetItems() {
 function mockAsyncQuery(): Promise<Equipment[]> {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve(gallery.map(randomItem));
+            resolve(range(0, NUM_ITEMS).map(randomItem));
         }, 1000);
     });
 }
 
-function randomItem(image: string): Equipment {
-    const name = image.substring(image.lastIndexOf("Roman") + 6, image.indexOf(".")).replaceAll("_", " ");
+function randomItem(index: number): Equipment {
+    const name = [adjectives[random(0, adjectives.length - 1)], nouns[random(0, nouns.length - 1)]].join(" ");
     const rarityIndex = random(1, 35);
     let rarity = "common";
     if (rarityIndex < 5) {
@@ -35,12 +36,18 @@ function randomItem(image: string): Equipment {
         rarity = "uncommon";
     }
 
+    const image = GALLERY[random(0, GALLERY.length - 1)];
+
     return {
         name: startCase(name),
         image,
         atk: random(1, 30),
         def: random(1, 30),
         quantity: random(0, 5) % 5 === 0 ? 1 : 0,
+        key: [name, index].join(),
         rarity,
     };
 }
+
+const adjectives = ["Hellforged", "Bronze", "Silver", "Gold", "Mithril", "Cherry", "Cotton", "Emerald", "Cardboard", "Salamander", "Dark", "Light"];
+const nouns = ["Uniform", "Suit", "Gown", "Plate", "Scales", "Mail", "Cloth", "Tribune", "Leisure Suit", "Scrubs", "Outfit", "Bathrobe"];

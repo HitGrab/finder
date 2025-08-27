@@ -26,8 +26,7 @@ describe("Core", () => {
             },
         ];
         expect(() => {
-            // @ts-expect-error
-            const finder = new FinderCore(objectItems, { rules });
+            new FinderCore(objectItems, { rules });
         }).toThrowError();
     });
 
