@@ -3,151 +3,151 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/markdown-page',
-    component: ComponentCreator('/markdown-page', '3d7'),
+    path: '/finder/markdown-page',
+    component: ComponentCreator('/finder/markdown-page', 'c0b'),
     exact: true
   },
   {
-    path: '/',
-    component: ComponentCreator('/', 'f4d'),
+    path: '/finder/',
+    component: ComponentCreator('/finder/', 'bcd'),
     routes: [
       {
-        path: '/',
-        component: ComponentCreator('/', 'f4a'),
+        path: '/finder/',
+        component: ComponentCreator('/finder/', 'fce'),
         routes: [
           {
-            path: '/',
-            component: ComponentCreator('/', 'a31'),
+            path: '/finder/',
+            component: ComponentCreator('/finder/', 'b6e'),
             routes: [
               {
-                path: '/events-and-effects/',
-                component: ComponentCreator('/events-and-effects/', '939'),
+                path: '/finder/events-and-effects/',
+                component: ComponentCreator('/finder/events-and-effects/', 'f98'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/events-and-effects/effects',
-                component: ComponentCreator('/events-and-effects/effects', 'baf'),
+                path: '/finder/events-and-effects/effects',
+                component: ComponentCreator('/finder/events-and-effects/effects', 'e81'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/events-and-effects/events',
-                component: ComponentCreator('/events-and-effects/events', '4ae'),
+                path: '/finder/events-and-effects/events',
+                component: ComponentCreator('/finder/events-and-effects/events', '458'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/',
-                component: ComponentCreator('/mixins/', '9a3'),
+                path: '/finder/mixins/',
+                component: ComponentCreator('/finder/mixins/', '546'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/filters-mixin',
-                component: ComponentCreator('/mixins/filters-mixin', '0bf'),
+                path: '/finder/mixins/filters-mixin',
+                component: ComponentCreator('/finder/mixins/filters-mixin', 'ccb'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/group-by-mixin',
-                component: ComponentCreator('/mixins/group-by-mixin', '874'),
+                path: '/finder/mixins/group-by-mixin',
+                component: ComponentCreator('/finder/mixins/group-by-mixin', '8b6'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/matches-mixin',
-                component: ComponentCreator('/mixins/matches-mixin', 'a56'),
+                path: '/finder/mixins/matches-mixin',
+                component: ComponentCreator('/finder/mixins/matches-mixin', '032'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/pagination-mixin',
-                component: ComponentCreator('/mixins/pagination-mixin', '69a'),
+                path: '/finder/mixins/pagination-mixin',
+                component: ComponentCreator('/finder/mixins/pagination-mixin', '674'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/search-mixin',
-                component: ComponentCreator('/mixins/search-mixin', '604'),
+                path: '/finder/mixins/search-mixin',
+                component: ComponentCreator('/finder/mixins/search-mixin', 'c76'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/mixins/sort-by-mixin',
-                component: ComponentCreator('/mixins/sort-by-mixin', '9dc'),
+                path: '/finder/mixins/sort-by-mixin',
+                component: ComponentCreator('/finder/mixins/sort-by-mixin', 'b66'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/react/',
-                component: ComponentCreator('/react/', '023'),
+                path: '/finder/react/',
+                component: ComponentCreator('/finder/react/', '314'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/react/finder',
-                component: ComponentCreator('/react/finder', 'e7c'),
+                path: '/finder/react/finder',
+                component: ComponentCreator('/finder/react/finder', 'f8a'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/react/finder-content',
-                component: ComponentCreator('/react/finder-content', '67e'),
+                path: '/finder/react/finder-content',
+                component: ComponentCreator('/finder/react/finder-content', 'a4b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/react/finder-search-term',
-                component: ComponentCreator('/react/finder-search-term', '166'),
+                path: '/finder/react/finder-search-term',
+                component: ComponentCreator('/finder/react/finder-search-term', 'd6e'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/react/use-finder',
-                component: ComponentCreator('/react/use-finder', 'c5c'),
+                path: '/finder/react/use-finder',
+                component: ComponentCreator('/finder/react/use-finder', 'fcc'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/',
-                component: ComponentCreator('/rules/', '1a2'),
+                path: '/finder/rules/',
+                component: ComponentCreator('/finder/rules/', '280'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/filter-rule',
-                component: ComponentCreator('/rules/filter-rule', '7ec'),
+                path: '/finder/rules/filter-rule',
+                component: ComponentCreator('/finder/rules/filter-rule', '171'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/group-by-rule',
-                component: ComponentCreator('/rules/group-by-rule', 'd59'),
+                path: '/finder/rules/group-by-rule',
+                component: ComponentCreator('/finder/rules/group-by-rule', 'ac9'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/ruleset',
-                component: ComponentCreator('/rules/ruleset', '8e9'),
+                path: '/finder/rules/ruleset',
+                component: ComponentCreator('/finder/rules/ruleset', '89a'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/search-rule',
-                component: ComponentCreator('/rules/search-rule', 'c44'),
+                path: '/finder/rules/search-rule',
+                component: ComponentCreator('/finder/rules/search-rule', 'ef7'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/rules/sort-by-rule',
-                component: ComponentCreator('/rules/sort-by-rule', 'b2d'),
+                path: '/finder/rules/sort-by-rule',
+                component: ComponentCreator('/finder/rules/sort-by-rule', '614'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/',
-                component: ComponentCreator('/', 'efb'),
+                path: '/finder/',
+                component: ComponentCreator('/finder/', '8bd'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               }

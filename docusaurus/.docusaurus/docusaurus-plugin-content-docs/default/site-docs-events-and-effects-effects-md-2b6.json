@@ -5,7 +5,7 @@
   "source": "@site/docs/events-and-effects/effects.md",
   "sourceDirName": "events-and-effects",
   "slug": "/events-and-effects/effects",
-  "permalink": "/events-and-effects/effects",
+  "permalink": "/finder/events-and-effects/effects",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -14,10 +14,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Effects & Events",
-    "permalink": "/events-and-effects/"
+    "permalink": "/finder/events-and-effects/"
   },
   "next": {
     "title": "Events",
-    "permalink": "/events-and-effects/events"
+    "permalink": "/finder/events-and-effects/events"
   }
 }

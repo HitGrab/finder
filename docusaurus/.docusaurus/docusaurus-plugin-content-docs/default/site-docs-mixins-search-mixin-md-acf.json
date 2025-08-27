@@ -5,7 +5,7 @@
   "source": "@site/docs/mixins/search-mixin.md",
   "sourceDirName": "mixins",
   "slug": "/mixins/search-mixin",
-  "permalink": "/mixins/search-mixin",
+  "permalink": "/finder/mixins/search-mixin",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -14,10 +14,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Pagination Mixin",
-    "permalink": "/mixins/pagination-mixin"
+    "permalink": "/finder/mixins/pagination-mixin"
   },
   "next": {
     "title": "SortBy Mixin",
-    "permalink": "/mixins/sort-by-mixin"
+    "permalink": "/finder/mixins/sort-by-mixin"
   }
 }

@@ -29,7 +29,7 @@ export default {
     "experimental_router": "browser"
   },
   "url": "https://hitgrab.github.io",
-  "baseUrl": "/",
+  "baseUrl": "/finder/",
   "organizationName": "HitGrab",
   "projectName": "finder",
   "onBrokenLinks": "throw",

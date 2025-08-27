@@ -1,123 +1,123 @@
 {
   "docusaurus-plugin-content-docs": {
     "default": {
-      "path": "/",
+      "path": "/finder/",
       "versions": [
         {
           "name": "current",
           "label": "Next",
           "isLast": true,
-          "path": "/",
+          "path": "/finder/",
           "mainDocId": "index",
           "docs": [
             {
               "id": "events-and-effects/effects",
-              "path": "/events-and-effects/effects",
+              "path": "/finder/events-and-effects/effects",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "events-and-effects/events",
-              "path": "/events-and-effects/events",
+              "path": "/finder/events-and-effects/events",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "events-and-effects/index",
-              "path": "/events-and-effects/",
+              "path": "/finder/events-and-effects/",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "index",
-              "path": "/",
+              "path": "/finder/",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/filters-mixin",
-              "path": "/mixins/filters-mixin",
+              "path": "/finder/mixins/filters-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/group-by-mixin",
-              "path": "/mixins/group-by-mixin",
+              "path": "/finder/mixins/group-by-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/index",
-              "path": "/mixins/",
+              "path": "/finder/mixins/",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/matches-mixin",
-              "path": "/mixins/matches-mixin",
+              "path": "/finder/mixins/matches-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/pagination-mixin",
-              "path": "/mixins/pagination-mixin",
+              "path": "/finder/mixins/pagination-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/search-mixin",
-              "path": "/mixins/search-mixin",
+              "path": "/finder/mixins/search-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "mixins/sort-by-mixin",
-              "path": "/mixins/sort-by-mixin",
+              "path": "/finder/mixins/sort-by-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "react/finder",
-              "path": "/react/finder",
+              "path": "/finder/react/finder",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "react/finder-content",
-              "path": "/react/finder-content",
+              "path": "/finder/react/finder-content",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "react/finder-search-term",
-              "path": "/react/finder-search-term",
+              "path": "/finder/react/finder-search-term",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "react/index",
-              "path": "/react/",
+              "path": "/finder/react/",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "react/use-finder",
-              "path": "/react/use-finder",
+              "path": "/finder/react/use-finder",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/filter-rule",
-              "path": "/rules/filter-rule",
+              "path": "/finder/rules/filter-rule",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/group-by-rule",
-              "path": "/rules/group-by-rule",
+              "path": "/finder/rules/group-by-rule",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/index",
-              "path": "/rules/",
+              "path": "/finder/rules/",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/ruleset",
-              "path": "/rules/ruleset",
+              "path": "/finder/rules/ruleset",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/search-rule",
-              "path": "/rules/search-rule",
+              "path": "/finder/rules/search-rule",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "rules/sort-by-rule",
-              "path": "/rules/sort-by-rule",
+              "path": "/finder/rules/sort-by-rule",
               "sidebar": "tutorialSidebar"
             }
           ],
@@ -125,7 +125,7 @@
           "sidebars": {
             "tutorialSidebar": {
               "link": {
-                "path": "/",
+                "path": "/finder/",
                 "label": "index"
               }
             }

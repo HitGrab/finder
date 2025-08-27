@@ -5,7 +5,7 @@
   "source": "@site/docs/rules/group-by-rule.md",
   "sourceDirName": "rules",
   "slug": "/rules/group-by-rule",
-  "permalink": "/rules/group-by-rule",
+  "permalink": "/finder/rules/group-by-rule",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "SortByRule",
-    "permalink": "/rules/sort-by-rule"
+    "permalink": "/finder/rules/sort-by-rule"
   },
   "next": {
     "title": "FinderRuleset",
-    "permalink": "/rules/ruleset"
+    "permalink": "/finder/rules/ruleset"
   }
 }

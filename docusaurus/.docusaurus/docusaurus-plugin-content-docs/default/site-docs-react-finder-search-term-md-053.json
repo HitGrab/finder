@@ -5,7 +5,7 @@
   "source": "@site/docs/react/finder-search-term.md",
   "sourceDirName": "react",
   "slug": "/react/finder-search-term",
-  "permalink": "/react/finder-search-term",
+  "permalink": "/finder/react/finder-search-term",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -14,10 +14,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "FinderContent",
-    "permalink": "/react/finder-content"
+    "permalink": "/finder/react/finder-content"
   },
   "next": {
     "title": "useFinder",
-    "permalink": "/react/use-finder"
+    "permalink": "/finder/react/use-finder"
   }
 }
