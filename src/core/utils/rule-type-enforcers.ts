@@ -24,7 +24,7 @@ export function groupByRule<FItem>(rule: GroupByRule<FItem>) {
     return rule;
 }
 
-export function ruleHook<FItem, FContext = any>(
+export function ruleEffect<FItem, FContext = any>(
     rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[],
     onChange: (instance: FinderCore<FItem, FContext>) => void,
 ) {

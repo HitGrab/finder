@@ -18,11 +18,11 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "GroupBy",
-    "permalink": "/docs/rules/group-by"
+    "title": "FinderRuleset",
+    "permalink": "/docs/rules/ruleset"
   },
   "next": {
-    "title": "Pagination",
-    "permalink": "/docs/mixins/pagination-mixin"
+    "title": "Filters Mixin",
+    "permalink": "/docs/mixins/filters-mixin"
   }
 }

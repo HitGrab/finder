@@ -1,7 +1,4 @@
----
-title: FinderContent
-sidebar_position: 1
----
+# FinderContent
 
 FinderContent accepts a set of renderProps, and will determine the most appropriate state to display. Only a single state can be active at a time.
 
@@ -9,30 +6,26 @@ FinderContent accepts a set of renderProps, and will determine the most appropri
 <FinderContent>
     {{
         // Displayed while Finder's isLoading property is true.
-        loading: ReactNode | ({ meta: MetaMixin, layout: LayoutMixin}) => ReactNode,
+        loading: ReactNode | ({ pagination: PaginationMixin, context: any}) => ReactNode,
 
         // Finder received an empty items array.
-        empty: ReactNode | ({ meta: MetaMixin, layout: LayoutMixin}) => ReactNode,
+        empty: ReactNode | ({ pagination: PaginationMixin, context: any}) => ReactNode,
 
         // No items were found that matched the current rules.
-        noMatches: ReactNode | ({ meta: MetaMixin, layout: LayoutMixin}) => ReactNode,
+        noMatches: ReactNode | ({ pagination: PaginationMixin, context: any}) => ReactNode,
 
         // Items were found that matched the rules.
         items: ({
             items: FItem[],
-            meta: MetaMixin,
-            pagination: FinderPagination,
-            selectedItems: FinderSelectedItems,
-            layout: LayoutMixin
+            pagination: PaginationMixin,
+            context: any,
         }) => ReactNode,
 
         // An active GroupBy rule grouped items together.
         groups: ({
             groups: FinderResultGroup<FItem>,
-            meta: MetaMixin,
-            pagination: FinderPagination,
-            selectedItems: FinderSelectedItems,
-            layout: LayoutMixin
+            pagination: PaginationMixin,
+            context: any,
         }) => ReactNode,
 
     }}

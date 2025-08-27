@@ -49,17 +49,17 @@
     },
     "content": "content---markdown-page-393-028"
   },
-  "/docs-019": {
+  "/docs-1b3": {
     "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
       "plugin": "plugin---docsaba-d7c"
     }
   },
-  "/docs-dbc": {
+  "/docs-e8c": {
     "__comp": "__comp---theme-doc-version-roota-7-b-5de",
     "__props": "__props---docs-005-788"
   },
-  "/docs-8ac": {
+  "/docs-5bb": {
     "__comp": "__comp---theme-doc-roota-94-67a"
   },
   "/docs/api/config-03b": {
@@ -70,9 +70,21 @@
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-api-finder-core-40-d-de2"
   },
-  "/docs/events-b5c": {
+  "/docs/events-and-hooks/-d24": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-eventsd-70-861"
+    "content": "content---docs-events-and-hooks-13-a-d13"
+  },
+  "/docs/events-and-hooks/effects-09c": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-events-and-hooks-effects-44-d-002"
+  },
+  "/docs/events-and-hooks/events-c06": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-events-and-hooks-events-051-b3a"
+  },
+  "/docs/events-and-hooks/events-vs-hooks-723": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-events-and-hooks-events-vs-hooks-215-a00"
   },
   "/docs/mixins/-452": {
     "__comp": "__comp---theme-doc-item-178-a40",
@@ -82,6 +94,14 @@
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-mixins-filters-mixin-9-f-2-16e"
   },
+  "/docs/mixins/group-by-mixin-1d3": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-mixins-group-by-mixin-078-7eb"
+  },
+  "/docs/mixins/matches-mixin-f8b": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-mixins-matches-mixin-4-f-8-cc9"
+  },
   "/docs/mixins/pagination-mixin-a68": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-mixins-pagination-mixin-8-e-3-702"
@@ -89,6 +109,14 @@
   "/docs/mixins/search-mixin-6c6": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-mixins-search-mixinacf-1b9"
+  },
+  "/docs/mixins/sort-by-mixin-395": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-mixins-sort-by-mixin-2-db-e5c"
+  },
+  "/docs/react/finder-201": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---docs-react-finder-3-f-1-9d0"
   },
   "/docs/react/finder-content-860": {
     "__comp": "__comp---theme-doc-item-178-a40",
@@ -102,33 +130,25 @@
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---docs-rules-eb-9-cd7"
   },
-  "/docs/rules/filter-b5a": {
+  "/docs/rules/filter-rule-33c": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-rules-filtere-5-b-dec"
+    "content": "content---docs-rules-filter-rule-799-564"
   },
-  "/docs/rules/group-by-87d": {
+  "/docs/rules/group-by-rule-bfd": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-rules-group-by-4-fe-d06"
+    "content": "content---docs-rules-group-by-rule-329-54d"
   },
-  "/docs/rules/search-f9d": {
+  "/docs/rules/ruleset-ce6": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-rules-search-918-6df"
+    "content": "content---docs-rules-rulesetf-29-15f"
   },
-  "/docs/rules/sort-by-763": {
+  "/docs/rules/search-rule-fbf": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-rules-sort-by-4-c-9-e47"
+    "content": "content---docs-rules-search-rule-1-fc-64a"
   },
-  "/docs/utils/-e1a": {
+  "/docs/rules/sort-by-rule-5a5": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-utils-754-055"
-  },
-  "/docs/utils/string-comparison-be1": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-utils-string-comparison-65-a-a6c"
-  },
-  "/docs/utils/type-guards-b9c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-utils-type-guards-3-fd-e52"
+    "content": "content---docs-rules-sort-by-rulec-7-f-b97"
   },
   "/-e5f": {
     "__comp": "__comp---site-src-pages-index-tsx-1-df-d3e",

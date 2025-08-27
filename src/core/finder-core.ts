@@ -1,4 +1,4 @@
-import { FinderRule, FinderConstructorOptions, FinderSnapshot, RuleHook } from "../types";
+import { FinderRule, FinderConstructorOptions, FinderSnapshot, RuleEffect } from "../types";
 import { FiltersMixin } from "./filters/filters";
 import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
@@ -21,7 +21,7 @@ import { MatchesMixin } from "./matches/matches";
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
-    #hooks: RuleHook[];
+    #effects: RuleEffect[];
 
     isReady: boolean = false;
 
@@ -56,7 +56,7 @@ class FinderCore<FItem, FContext = any> {
         items: FItem[] | null | undefined,
         {
             rules,
-            hooks,
+            effects,
             initialSearchTerm,
             initialSortBy,
             initialSortDirection,
@@ -75,7 +75,7 @@ class FinderCore<FItem, FContext = any> {
             onChange,
         }: FinderConstructorOptions<FItem, FContext>,
     ) {
-        this.#hooks = hooks ?? [];
+        this.#effects = effects ?? [];
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
@@ -156,7 +156,7 @@ class FinderCore<FItem, FContext = any> {
      * e.g: entering a search term or selecting a filter.
      */
     #touch(touchEvent: FinderTouchEvent) {
-        // if we're processing linked rules, don't trigger an endless touch loop.
+        // if we're processing effects, don't trigger an endless touch loop.
         if (this.#eventEmitter.isSilent()) {
             return;
         }
@@ -170,10 +170,11 @@ class FinderCore<FItem, FContext = any> {
         const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
         this.#eventEmitter.emit("change", changeEvent);
 
-        if (touchEvent.rule && this.#hooks.length > 0) {
-            this.#hooks.forEach((hook) => {
-                const hookRulesAsArray = Array.isArray(hook.rules) ? hook.rules : [hook.rules];
-                let isHookTriggered = hookRulesAsArray.some((identifier) => {
+        // trigger any hooks that may be affected by the change to this rule
+        if (touchEvent.rule && this.#effects.length > 0) {
+            this.#effects.forEach((effect) => {
+                const effectRulesAsArray = Array.isArray(effect.rules) ? effect.rules : [effect.rules];
+                let isEffectTriggered = effectRulesAsArray.some((identifier) => {
                     if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
                         return true;
                     }
@@ -185,9 +186,9 @@ class FinderCore<FItem, FContext = any> {
                     return false;
                 });
 
-                if (isHookTriggered) {
+                if (isEffectTriggered) {
                     this.#eventEmitter.silently(() => {
-                        hook.onChange(this);
+                        effect.onChange(this);
                     });
                 }
             });
@@ -284,6 +285,8 @@ class FinderCore<FItem, FContext = any> {
         return {
             on: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
             off: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
+            silently: (callback: EventCallback) => this.#eventEmitter.silently(callback),
+            isSilent: () => this.#eventEmitter.isSilent(),
         };
     }
 

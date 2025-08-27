@@ -1,0 +1,28 @@
+{
+  "id": "events-and-hooks/index",
+  "title": "Events & Hooks",
+  "description": "",
+  "source": "@site/docs/events-and-hooks/index.md",
+  "sourceDirName": "events-and-hooks",
+  "slug": "/events-and-hooks/",
+  "permalink": "/docs/events-and-hooks/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/events-and-hooks/index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "Events & Hooks",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "SortBy Mixin",
+    "permalink": "/docs/mixins/sort-by-mixin"
+  },
+  "next": {
+    "title": "Events vs Hooks",
+    "permalink": "/docs/events-and-hooks/events-vs-hooks"
+  }
+}

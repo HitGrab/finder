@@ -1,9 +1,8 @@
 ---
-title: GroupBy
-sidebar_position: 5
+sidebar_position: 4
 ---
 
-# Group
+# GroupByRule
 
 ```ts
 groupByRule({

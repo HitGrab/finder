@@ -1,9 +1,8 @@
 ---
-title: SortBy
-sidebar_position: 4
+sidebar_position: 3
 ---
 
-# Sort
+# SortByRule
 
 Only a single sortBy rule can be active at one time.
 If any sortBy rules are provided and no specific rule is set, the first sortBy rule in the stack will be considered active.

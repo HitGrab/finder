@@ -2,21 +2,7 @@
 
 Events can be attached either declaratively in React, or imperatively in vanilla JS.
 
-### Declarative events
-
-```ts
-<Finder items={[...items]} rules={[...]} onChange={(e) => myChangeListener(e)} />
-```
-
-### Imperative events
-
-```ts
-finder.events.on(eventName, listener);
-```
-
-## Primary events
-
-### onInit
+## onInit
 
 Triggered a single time when Finder is first initialized.
 
@@ -30,7 +16,7 @@ Triggered a single time when Finder is first initialized.
 }
 ```
 
-### onFirstUserInteraction
+## onFirstUserInteraction
 
 Triggered once when the user interacts with any rule.
 
@@ -44,7 +30,7 @@ Triggered once when the user interacts with any rule.
 }
 ```
 
-### onReady
+## onReady
 
 Triggered once after an items array is set and `isLoading` is false.
 
@@ -58,14 +44,14 @@ Triggered once after an items array is set and `isLoading` is false.
 }
 ```
 
-### onChange
+## onChange
 
 Triggered whenever a rule's state changes.
 
 ```ts
 // FinderChangeEvent
 {
-    source: "core" | "filters" | "groupBy" | "meta" | "pagination" | "plugin" | "search" | "selectedItems" | "sortBy" | "layout";
+    source: "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "layout";
     event: "change";
     current: any;
     initial: any;

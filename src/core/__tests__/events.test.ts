@@ -31,7 +31,7 @@ describe("Events", () => {
 
     test("onFirstUserInteraction", () => {
         const onFirstUserInteraction = vitest.fn();
-        const rule = searchRule<MockObjectItem>({ searchFn: (item, value) => item.name === value });
+        const rule = searchRule<MockObjectItem>({ searchFn: (item) => item.name });
         const finder = new FinderCore(objectItems, { rules: [rule], onFirstUserInteraction });
         finder.search.setSearchTerm("Test");
         expect(onFirstUserInteraction).toHaveBeenCalledTimes(1);

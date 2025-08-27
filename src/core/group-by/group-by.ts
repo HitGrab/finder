@@ -32,7 +32,7 @@ class GroupByMixin<FItem, FContext> {
         return this.#groupBy ?? defaultRule;
     }
 
-    set(identifier?: GroupByRule | string) {
+    set(identifier?: string | GroupByRule) {
         if (this.#deps.isDisabled()) {
             return;
         }

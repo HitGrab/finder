@@ -1,0 +1,24 @@
+{
+  "id": "rules/ruleset",
+  "title": "FinderRuleset",
+  "description": "Optional wrapper to ensures that an array of rules all have the correct shape.",
+  "source": "@site/docs/rules/ruleset.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/ruleset",
+  "permalink": "/docs/rules/ruleset",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/rules/ruleset.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "GroupByRule",
+    "permalink": "/docs/rules/group-by-rule"
+  },
+  "next": {
+    "title": "Mixins",
+    "permalink": "/docs/mixins/"
+  }
+}

@@ -1,8 +1,3 @@
----
-title: FinderSearchTerm
-sidebar_position: 1
----
-
 # FinderSearchTerm
 
 This handy component allows you to highlight the segments in your haystack that matched your searchTerm.

@@ -1,20 +1,19 @@
 ---
-title: Search
 sidebar_position: 1
 ---
 
-# Search
+# SearchRule
 
-## Search by picking haystacks from your items
+## Select strings from your items to search against
 
 A Finder instance has a single `searchTerm` string that will be compared against haystacks extracted from the items array.
 
-Use a `haystackFn` to select the string/strings from each item that will be compared against the searchTerm needle.
+Use a `searchFn` to extract the string/strings from each item that will be compared against the searchTerm needle.
 
 ```ts
 const rule = searchRule<FItem>({
     id?: string
-    haystackFn: (item: FItem, meta: MetaInterface) => string | string[];
+    searchFn: (item: FItem, context: any) => string | string[];
     debounceMilliseconds?: number;
 })
 ```
@@ -49,13 +48,6 @@ Both scores are equally weighted.
 Ranked search will be overridden if a `sortBy` rule is set. If you want to use ranked search, you'll need to enable `ignoreSortByRulesWhileSearchRuleIsActive` in your configuration objet.
 :::
 
-## Custom search
+## Custom search algorithms
 
-For more specific comparison algorithms, you can create a searchFn predicate. This does not transform the searchTerm or the item haystacks, and does not perform any sorting.
-
-```ts
-const rule = searchRule<FItem>({
-    searchFn: (item: FItem, searchTerm:string, meta: MetaInterface) => boolean
-    debounceMilliseconds?: number;
-})
-```
+If this search algorithm or sorting doesn't meet your needs, you may want to create a filter or a custom sortBy rule.

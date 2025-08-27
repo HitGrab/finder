@@ -8,7 +8,7 @@ import { FinderOnInitCallback, FinderOnReadyCallback, FinderOnFirstUserInteractC
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
     rules: FinderRule<FItem>[];
-    hooks?: RuleHook[];
+    effects?: RuleEffect[];
     context?: FContext;
     isLoading?: boolean;
     disabled?: boolean;
@@ -55,27 +55,13 @@ export type FinderRule<FItem = any, FContext = any> =
     | SortByRule<FItem, FContext>
     | GroupByRule<FItem, FContext>;
 
-export interface SearchRuleSharedProps {
+export interface SearchRule<FItem = any, FContext = any> {
     id?: string;
     label?: string;
     hidden?: boolean;
     debounceMilliseconds?: number;
-
-    // these properties will be narrowed in the SearchRule union
-    searchFn?: unknown;
-    haystackFn?: unknown;
+    searchFn?: (item: FItem, context?: FContext) => string | string[];
 }
-export interface SearchRuleSimple<FItem = any, FContext = any> extends SearchRuleSharedProps {
-    searchFn?: never;
-    haystackFn: (item: FItem, context?: FContext) => string | string[];
-}
-
-export interface SearchRuleAdvanced<FItem = any, FContext = any> extends SearchRuleSharedProps {
-    haystackFn?: never;
-    searchFn: (item: FItem, searchTerm: string, context?: FContext) => boolean;
-}
-
-export type SearchRule<FItem = any, FContext = any> = SearchRuleAdvanced<FItem, FContext> | SearchRuleSimple<FItem, FContext>;
 
 export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
     items: FItem[];
@@ -214,7 +200,7 @@ export interface FinderSnapshot<FItem, FContext = any> {
     updatedAt?: number;
 }
 
-export interface RuleHook<FItem = any, FContext = any> {
+export interface RuleEffect<FItem = any, FContext = any> {
     rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[];
     onChange: (instance: FinderCore<FItem, FContext>) => void;
 }

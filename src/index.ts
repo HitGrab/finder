@@ -1,9 +1,6 @@
 // Utility methods for enforcing rule shape
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
 
-// String comparison utilities
-export { finderStringCompare, finderCharacterCompare, finderSequentialCharacterCompare } from "./core/utils/string-compare-utils";
-
 export { getSearchResultSegments } from "./core/search/result-segments/search-result-segments";
 
 export type {

@@ -1,5 +1,9 @@
 # Filters Mixin
 
+:::info Looking for the rule?
+See [Filter Rule](../rules/filter-rule)
+:::
+
 The Filters mixin can be accessed from `finder.filters`.
 
 **Type Signature**
@@ -66,8 +70,8 @@ function FilterControlList() {
             <FilterControl
                 rule={rule}
                 value={value}
-                key={rule.id}
                 onChange((incomingValue:any) => finder.filters.set(incomingValue))
+                key={rule.id}
             />
         );
     })

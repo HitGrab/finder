@@ -1,7 +1,7 @@
 {
   "id": "mixins/filters-mixin",
   "title": "Filters Mixin",
-  "description": "The Filters mixin can be accessed from finder.filters.",
+  "description": "See Filter Rule",
   "source": "@site/docs/mixins/filters-mixin.md",
   "sourceDirName": "mixins",
   "slug": "/mixins/filters-mixin",
@@ -14,11 +14,11 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Pagination",
-    "permalink": "/docs/mixins/pagination-mixin"
+    "title": "Mixins",
+    "permalink": "/docs/mixins/"
   },
   "next": {
-    "title": "Search Mixin",
-    "permalink": "/docs/mixins/search-mixin"
+    "title": "GroupBy Mixin",
+    "permalink": "/docs/mixins/group-by-mixin"
   }
 }

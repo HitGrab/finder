@@ -1,0 +1,20 @@
+{
+  "id": "react/finder",
+  "title": "Finder",
+  "description": "",
+  "source": "@site/docs/react/finder.md",
+  "sourceDirName": "react",
+  "slug": "/react/finder",
+  "permalink": "/docs/react/finder",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/react/finder.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "FinderSearchTerm",
+    "permalink": "/docs/react/finder-search-term"
+  }
+}

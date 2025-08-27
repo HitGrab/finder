@@ -74,23 +74,14 @@ class SearchMixin<FItem, FContext = any> {
             return items;
         }
 
-        if (this.rule.searchFn) {
-            return items.filter((item) => {
-                if (this.rule?.searchFn === undefined) {
-                    return false;
-                }
-                return this.rule.searchFn(item, this.searchTerm, context);
-            });
-        }
-
         const transformedNeedle = transformStringForComparison(this.searchTerm);
         const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
-            if (this.rule?.haystackFn === undefined) {
+            if (this.rule?.searchFn === undefined) {
                 return acc;
             }
 
             // Retrieve this item's array of haystack strings to compare the search needle against
-            const itemHaystackStringOrStrings = this.rule.haystackFn(item, context);
+            const itemHaystackStringOrStrings = this.rule.searchFn(item, context);
             const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
                 ? itemHaystackStringOrStrings.map(transformStringForComparison)
                 : [transformStringForComparison(itemHaystackStringOrStrings)];

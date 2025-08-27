@@ -1,5 +1,9 @@
 # Search Mixin
 
+:::info Looking for the rule?
+See [Search Rule](../rules/search-rule)
+:::
+
 The Search mixin can be accessed from `finder.search`.
 
 **Type Signature**
@@ -10,14 +14,8 @@ finder.search {
     // String that is currently being searched for. Defaults to an empty string.
 
     search.hasSearchTerm: boolean
-    // Returns true if the search term is not an empty string.
-
     search.hasSearchRule: boolean
-    // Returns true if this Finder instance has a search rule.
-
     search.setSearchTerm(value:string): void
-    // Set dat string
-
     search.reset(): void
     // Reset searchTerm to an empty string.
 }

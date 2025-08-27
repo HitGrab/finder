@@ -18,8 +18,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Search Mixin",
-    "permalink": "/docs/mixins/search-mixin"
+    "title": "Hooks",
+    "permalink": "/docs/events-and-hooks/hooks"
   },
   "next": {
     "title": "Type Guards",

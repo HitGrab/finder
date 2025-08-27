@@ -21,8 +21,23 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "events",
-              "path": "/docs/events",
+              "id": "events-and-hooks/effects",
+              "path": "/docs/events-and-hooks/effects",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "events-and-hooks/events",
+              "path": "/docs/events-and-hooks/events",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "events-and-hooks/events-vs-hooks",
+              "path": "/docs/events-and-hooks/events-vs-hooks",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "events-and-hooks/index",
+              "path": "/docs/events-and-hooks/",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -31,8 +46,18 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "mixins/group-by-mixin",
+              "path": "/docs/mixins/group-by-mixin",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "mixins/index",
               "path": "/docs/mixins/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "mixins/matches-mixin",
+              "path": "/docs/mixins/matches-mixin",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -46,6 +71,16 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "mixins/sort-by-mixin",
+              "path": "/docs/mixins/sort-by-mixin",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "react/finder",
+              "path": "/docs/react/finder",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "react/finder-content",
               "path": "/docs/react/finder-content",
               "sidebar": "tutorialSidebar"
@@ -56,13 +91,13 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "rules/filter",
-              "path": "/docs/rules/filter",
+              "id": "rules/filter-rule",
+              "path": "/docs/rules/filter-rule",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "rules/group-by",
-              "path": "/docs/rules/group-by",
+              "id": "rules/group-by-rule",
+              "path": "/docs/rules/group-by-rule",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -71,28 +106,18 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "rules/search",
-              "path": "/docs/rules/search",
+              "id": "rules/ruleset",
+              "path": "/docs/rules/ruleset",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "rules/sort-by",
-              "path": "/docs/rules/sort-by",
+              "id": "rules/search-rule",
+              "path": "/docs/rules/search-rule",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "utils/index",
-              "path": "/docs/utils/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "utils/string-comparison",
-              "path": "/docs/utils/string-comparison",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "utils/type-guards",
-              "path": "/docs/utils/type-guards",
+              "id": "rules/sort-by-rule",
+              "path": "/docs/rules/sort-by-rule",
               "sidebar": "tutorialSidebar"
             }
           ],

@@ -1,5 +1,5 @@
 ---
-title: Utils
+title: Events & Hooks
 sidebar_position: 3
 ---
 

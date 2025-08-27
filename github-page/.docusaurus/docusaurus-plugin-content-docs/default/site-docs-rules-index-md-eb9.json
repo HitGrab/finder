@@ -18,7 +18,7 @@
   },
   "sidebar": "tutorialSidebar",
   "next": {
-    "title": "Search",
-    "permalink": "/docs/rules/search"
+    "title": "SearchRule",
+    "permalink": "/docs/rules/search-rule"
   }
 }

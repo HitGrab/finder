@@ -8,7 +8,7 @@ import { MockObjectItem } from "./test-types";
 describe("Search", () => {
     test("Accessors and Mutators", () => {
         const rule = searchRule({
-            searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+            searchFn: (item: MockObjectItem) => item.type,
         });
 
         const finder = new FinderCore(objectItems, { rules: [rule] });
@@ -33,7 +33,7 @@ describe("Search", () => {
     test("Search", () => {
         const rules = [
             searchRule({
-                haystackFn: (item: MockObjectItem) => item.type,
+                searchFn: (item: MockObjectItem) => item.type,
             }),
         ];
 
@@ -46,7 +46,7 @@ describe("Search", () => {
         const items = ["apple", "barrel of apples", "many apples"];
         const rules = [
             searchRule({
-                haystackFn: (item: string) => item,
+                searchFn: (item: string) => item,
             }),
         ];
 
@@ -58,7 +58,7 @@ describe("Search", () => {
         const items = ["apple", "barrel of apples", "many apples"];
         const rules = finderRuleset<string>([
             searchRule({
-                haystackFn: (item) => item,
+                searchFn: (item) => item,
             }),
             sortByRule({
                 id: "default",
@@ -73,7 +73,7 @@ describe("Search", () => {
 
     test("Debounced searches trigger only once", async () => {
         const rule = searchRule({
-            searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+            searchFn: (item: MockObjectItem) => item.type,
             debounceMilliseconds: 15,
         });
 
@@ -96,7 +96,7 @@ describe("Search", () => {
     test("Custom search function", () => {
         const rules = [
             searchRule({
-                searchFn: (item: MockObjectItem, searchTerm: string) => item.type === searchTerm,
+                searchFn: (item: MockObjectItem) => item.type,
             }),
         ];
 

@@ -1,9 +1,8 @@
 ---
-title: Filter
-sidebar_position: 3
+sidebar_position: 2
 ---
 
-# Filter
+# FilterRule
 
 Define a filter predicate that will return a boolean for each item. If multiple filters are active, _all_ filters must match for an item to be returned.
 
@@ -13,9 +12,9 @@ filterRule({
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
     options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
     multiple?: boolean;
-    required?: boolean;
     isBoolean?: boolean;
-    defaultValue?: FValue;
+    required?: boolean;
+    defaultValue?: FValue | FValue[];
     label?: string;
     hidden?: boolean;
     debounceMilliseconds?: number;

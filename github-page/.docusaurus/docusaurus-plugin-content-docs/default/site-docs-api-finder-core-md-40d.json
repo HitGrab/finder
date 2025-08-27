@@ -1,7 +1,7 @@
 {
   "id": "api/finder-core",
   "title": "FinderCore",
-  "description": "items: FItem[]",
+  "description": "- items The array being operated on.",
   "source": "@site/docs/api/finder-core.md",
   "sourceDirName": "api",
   "slug": "/api/finder-core",
@@ -20,7 +20,7 @@
     "permalink": "/docs/api/config"
   },
   "next": {
-    "title": "Events",
-    "permalink": "/docs/events"
+    "title": "FinderContent",
+    "permalink": "/docs/react/finder-content"
   }
 }

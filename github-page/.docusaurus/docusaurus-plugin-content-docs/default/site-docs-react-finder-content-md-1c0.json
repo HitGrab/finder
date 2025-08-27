@@ -11,15 +11,11 @@
   "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/react/finder-content.md",
   "tags": [],
   "version": "current",
-  "sidebarPosition": 1,
-  "frontMatter": {
-    "title": "FinderContent",
-    "sidebar_position": 1
-  },
+  "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Events",
-    "permalink": "/docs/events"
+    "title": "FinderCore",
+    "permalink": "/docs/api/finder-core"
   },
   "next": {
     "title": "FinderSearchTerm",

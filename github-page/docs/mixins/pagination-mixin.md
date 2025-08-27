@@ -1,45 +1,44 @@
----
-title: Pagination
-sidebar_position: 2
----
+# Pagination Mixin
 
-# Pagination
+The Pagination mixin can be accessed from `finder.pagination`.
 
-If the `numItemsPerPage` property is set, Finder will paginate items and groups.
+**Type Signature**
 
 ```ts
-function DeclarativePaginationComponent() {
-    const items = [...]
-    const rules = [...]
-
-    const page = 1;
-    const numItemsPerPage = 10;
-
-    return (
-        <Finder items={items} rules={rules} page={page} numItemsPerPage={numItemsPerPage}>
-            ...contents
-        </Finder>
-    );
+finder.pagination {
+    page: number
+    offset: number
+    numItemsPerPage?: number
+    numTotalItems: number
+    lastPage: number;
+    isPaginated: boolean
 }
+```
 
-// the values can also be changed after Finder is initialized.
-function ImperativePaginationControl() {
-    const finder = useFinderContext();
+**Example Usage**
+
+```ts
+function PaginationControl() {
+    const finder = useFinder();
 
     return (
         <>
-            // pager bar
             {finder.pagination.isPaginated && range(1, finder.pagination.lastPage).map((index) => {
-                <button type="button" oncClick={() => finder.pagination.setPage(index)}>
+                <button
+                    type="button"
+                    onClick={() => finder.pagination.setPage(index)}
+                >
                     {index}
                 </button>
             })}
 
             Results per page:
-            <select onChange((e) => finder.pagination.setNumItemsPerPage(Number(e.target.value))) >
+            <select
+                onChange((e) => finder.pagination.setNumItemsPerPage(Number(e.target.value))}
+            >
                 <option value="10">10</option>
-                <option value="100">100</option>
-                <option value="1000">1000</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
             </select>
         </>
     );
@@ -47,5 +46,5 @@ function ImperativePaginationControl() {
 ```
 
 :::warning
-Please note that pagination is not the final option considered in the functionality of the filtering / sorting process, therefore groupBy options could return unexpected results.
+`groupBy` rules are processed _after_ pagination, so a group might be split across multiple pages.
 :::

@@ -44,15 +44,15 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', '019'),
+    component: ComponentCreator('/docs', '1b3'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', 'dbc'),
+        component: ComponentCreator('/docs', 'e8c'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', '8ac'),
+            component: ComponentCreator('/docs', '5bb'),
             routes: [
               {
                 path: '/docs/api/config',
@@ -67,8 +67,26 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/events',
-                component: ComponentCreator('/docs/events', 'b5c'),
+                path: '/docs/events-and-hooks/',
+                component: ComponentCreator('/docs/events-and-hooks/', 'd24'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/events-and-hooks/effects',
+                component: ComponentCreator('/docs/events-and-hooks/effects', '09c'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/events-and-hooks/events',
+                component: ComponentCreator('/docs/events-and-hooks/events', 'c06'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/events-and-hooks/events-vs-hooks',
+                component: ComponentCreator('/docs/events-and-hooks/events-vs-hooks', '723'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
@@ -85,6 +103,18 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
+                path: '/docs/mixins/group-by-mixin',
+                component: ComponentCreator('/docs/mixins/group-by-mixin', '1d3'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/mixins/matches-mixin',
+                component: ComponentCreator('/docs/mixins/matches-mixin', 'f8b'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
                 path: '/docs/mixins/pagination-mixin',
                 component: ComponentCreator('/docs/mixins/pagination-mixin', 'a68'),
                 exact: true,
@@ -93,6 +123,18 @@ export default [
               {
                 path: '/docs/mixins/search-mixin',
                 component: ComponentCreator('/docs/mixins/search-mixin', '6c6'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/mixins/sort-by-mixin',
+                component: ComponentCreator('/docs/mixins/sort-by-mixin', '395'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/react/finder',
+                component: ComponentCreator('/docs/react/finder', '201'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
@@ -115,44 +157,32 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/rules/filter',
-                component: ComponentCreator('/docs/rules/filter', 'b5a'),
+                path: '/docs/rules/filter-rule',
+                component: ComponentCreator('/docs/rules/filter-rule', '33c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/rules/group-by',
-                component: ComponentCreator('/docs/rules/group-by', '87d'),
+                path: '/docs/rules/group-by-rule',
+                component: ComponentCreator('/docs/rules/group-by-rule', 'bfd'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/rules/search',
-                component: ComponentCreator('/docs/rules/search', 'f9d'),
+                path: '/docs/rules/ruleset',
+                component: ComponentCreator('/docs/rules/ruleset', 'ce6'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/rules/sort-by',
-                component: ComponentCreator('/docs/rules/sort-by', '763'),
+                path: '/docs/rules/search-rule',
+                component: ComponentCreator('/docs/rules/search-rule', 'fbf'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/docs/utils/',
-                component: ComponentCreator('/docs/utils/', 'e1a'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
-              {
-                path: '/docs/utils/string-comparison',
-                component: ComponentCreator('/docs/utils/string-comparison', 'be1'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
-              {
-                path: '/docs/utils/type-guards',
-                component: ComponentCreator('/docs/utils/type-guards', 'b9c'),
+                path: '/docs/rules/sort-by-rule',
+                component: ComponentCreator('/docs/rules/sort-by-rule', '5a5'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               }

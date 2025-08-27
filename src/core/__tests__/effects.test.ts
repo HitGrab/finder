@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { filterRule, finderRuleset, ruleHook, searchRule, sortByRule } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, ruleEffect, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
@@ -18,15 +18,15 @@ describe("Hooks", () => {
                 defaultValue: true,
             }),
         ]);
-        const hooks = [
-            ruleHook(["orange", "apple"], (instance) => {
+        const effects = [
+            ruleEffect(["orange", "apple"], (instance) => {
                 if (instance.filters.get("orange") === true) {
                     instance.filters.toggle("apple");
                 }
             }),
         ];
 
-        const finder = new FinderCore(objectItems, { rules, hooks });
+        const finder = new FinderCore(objectItems, { rules, effects });
         finder.filters.set("orange", true);
         expect(finder.filters.raw).toStrictEqual({ orange: true, apple: false });
     });
@@ -34,7 +34,7 @@ describe("Hooks", () => {
     test("Toggles sort", () => {
         const search = searchRule<MockObjectItem>({
             id: "search",
-            haystackFn: (item) => item.name,
+            searchFn: (item) => item.name,
         });
         const rules = finderRuleset<MockObjectItem>([
             search,
@@ -58,18 +58,18 @@ describe("Hooks", () => {
                 sortFn: (item) => item.daysUntilExpiryDate,
             }),
         ]);
-        const hooks = [
-            ruleHook(["orange", "apple"], (instance) => {
+        const effects = [
+            ruleEffect(["orange", "apple"], (instance) => {
                 if (instance.filters.get("orange") === true) {
                     instance.sortBy.set("sort_name");
                 }
             }),
-            ruleHook(search, (instance) => {
+            ruleEffect(search, (instance) => {
                 console.log(instance.search.searchTerm);
             }),
         ];
 
-        const finder = new FinderCore(objectItems, { rules, hooks, initialSortBy: "sort_expiry_date" });
+        const finder = new FinderCore(objectItems, { rules, effects, initialSortBy: "sort_expiry_date" });
         finder.filters.set("orange", true);
         finder.search.setSearchTerm("bob");
         expect(finder.sortBy.activeRule?.id).toBe("sort_name");

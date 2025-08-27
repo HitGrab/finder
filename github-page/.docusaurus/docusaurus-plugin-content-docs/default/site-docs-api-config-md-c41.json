@@ -14,8 +14,8 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "String Comparison",
-    "permalink": "/docs/utils/string-comparison"
+    "title": "Events",
+    "permalink": "/docs/events-and-hooks/events"
   },
   "next": {
     "title": "FinderCore",
