@@ -4,15 +4,14 @@ import { useFinder } from "../hooks/use-finder";
 interface FinderEmptyProps {
     children: FinderContentRenderProp;
 }
-function FinderEmpty({ children: renderProp }: FinderEmptyProps) {
+function FinderEmpty({ children: Component }: FinderEmptyProps) {
     const finder = useFinder();
-    if (finder.state === "empty" && renderProp) {
-        if (typeof renderProp === "function") {
-            const Component = renderProp;
+    if (finder.state === "empty" && Component) {
+        if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }
 
-        return renderProp;
+        return Component;
     }
     return null;
 }

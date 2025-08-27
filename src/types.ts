@@ -111,8 +111,7 @@ export type FilterRuleUnion<FItem = any, FValue = any> =
 /**
  * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
  */
-export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any>
-    extends Omit<FilterRule<FItem, FValue>, "options" | "required" | "isBoolean" | "hidden"> {
+export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> extends Omit<FilterRule<FItem, FValue>, "options"> {
     options?: FilterOption<FValue>[];
     required: boolean;
     isBoolean: boolean;

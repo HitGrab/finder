@@ -3,7 +3,7 @@ import { filterRule, finderRuleset, ruleEffect, searchRule, sortByRule } from ".
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
-describe("Hooks", () => {
+describe("Effects", () => {
     test("Toggles filters", () => {
         const rules = finderRuleset<MockObjectItem>([
             filterRule({

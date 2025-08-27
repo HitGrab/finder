@@ -170,7 +170,7 @@ class FinderCore<FItem, FContext = any> {
         const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
         this.#eventEmitter.emit("change", changeEvent);
 
-        // trigger any hooks that may be affected by the change to this rule
+        // trigger any effects that may be affected by the change to this rule
         if (touchEvent.rule && this.#effects.length > 0) {
             this.#effects.forEach((effect) => {
                 const effectRulesAsArray = Array.isArray(effect.rules) ? effect.rules : [effect.rules];
