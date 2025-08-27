@@ -1,0 +1,27 @@
+{
+  "id": "react/index",
+  "title": "Usage",
+  "description": "",
+  "source": "@site/docs/react/index.md",
+  "sourceDirName": "react",
+  "slug": "/react/",
+  "permalink": "/react/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "title": "Usage",
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "...why?",
+    "permalink": "/"
+  },
+  "next": {
+    "title": "Finder",
+    "permalink": "/react/finder"
+  }
+}

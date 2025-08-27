@@ -1,0 +1,27 @@
+{
+  "id": "events-and-effects/events-vs-effects",
+  "title": "Events vs Effects",
+  "description": "Effects are side-effects that couple rules together. They listen for changes targetting a subset of rules, and trigger a callback whenever those rules are affected.",
+  "source": "@site/docs/events-and-effects/events-vs-effects.md",
+  "sourceDirName": "events-and-effects",
+  "slug": "/events-and-effects/events-vs-effects",
+  "permalink": "/docs/events-and-effects/events-vs-effects",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/events-and-effects/events-vs-effects.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Effects & Events",
+    "permalink": "/docs/events-and-effects/"
+  },
+  "next": {
+    "title": "Effects",
+    "permalink": "/docs/events-and-effects/effects"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "react/components/finder-content",
+  "title": "FinderContent",
+  "description": "FinderContent accepts a set of renderProps, and will determine the most appropriate state to display. Only a single state can be active at a time.",
+  "source": "@site/docs/react/components/finder-content.md",
+  "sourceDirName": "react/components",
+  "slug": "/react/components/finder-content",
+  "permalink": "/docs/react/components/finder-content",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/docs/react/components/finder-content.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Finder",
+    "permalink": "/docs/react/components/finder"
+  },
+  "next": {
+    "title": "FinderSearchTerm",
+    "permalink": "/docs/react/components/finder-search-term"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "rules/ruleset",
+  "title": "FinderRuleset",
+  "description": "Optional wrapper to ensures that an array of rules all have the correct shape.",
+  "source": "@site/docs/rules/ruleset.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/ruleset",
+  "permalink": "/rules/ruleset",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "GroupByRule",
+    "permalink": "/rules/group-by-rule"
+  },
+  "next": {
+    "title": "Mixins",
+    "permalink": "/mixins/"
+  }
+}

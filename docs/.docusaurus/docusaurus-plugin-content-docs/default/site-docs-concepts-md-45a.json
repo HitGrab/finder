@@ -1,0 +1,19 @@
+{
+  "id": "concepts",
+  "title": "Concepts",
+  "description": "Rules",
+  "source": "@site/docs/concepts.md",
+  "sourceDirName": ".",
+  "slug": "/concepts",
+  "permalink": "/finder/concepts",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Events",
+    "permalink": "/finder/events-and-effects/events"
+  }
+}
