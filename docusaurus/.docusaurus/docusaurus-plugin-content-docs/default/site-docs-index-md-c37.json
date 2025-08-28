@@ -1,7 +1,7 @@
 {
   "id": "index",
-  "title": "...why?",
-  "description": "Do we really need a whole library for basic data manipulation? Maybe!",
+  "title": "Finder",
+  "description": "Effortlessly sort, filter, search, and group data.",
   "source": "@site/docs/index.md",
   "sourceDirName": ".",
   "slug": "/",
