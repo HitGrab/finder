@@ -5,7 +5,7 @@
   "source": "@site/docs/events-and-effects/index.md",
   "sourceDirName": "events-and-effects",
   "slug": "/events-and-effects/",
-  "permalink": "/events-and-effects/",
+  "permalink": "/finder/events-and-effects/",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "SortBy Mixin",
-    "permalink": "/mixins/sort-by-mixin"
+    "permalink": "/finder/mixins/sort-by-mixin"
   },
   "next": {
     "title": "Effects",
-    "permalink": "/events-and-effects/effects"
+    "permalink": "/finder/events-and-effects/effects"
   }
 }

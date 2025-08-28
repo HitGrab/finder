@@ -5,7 +5,7 @@
   "source": "@site/docs/rules/search-rule.md",
   "sourceDirName": "rules",
   "slug": "/rules/search-rule",
-  "permalink": "/rules/search-rule",
+  "permalink": "/finder/rules/search-rule",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -17,10 +17,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Rules",
-    "permalink": "/rules/"
+    "permalink": "/finder/rules/"
   },
   "next": {
     "title": "FilterRule",
-    "permalink": "/rules/filter-rule"
+    "permalink": "/finder/rules/filter-rule"
   }
 }

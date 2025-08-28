@@ -3,7 +3,11 @@ slug: "/"
 sidebar_position: 0
 ---
 
-# ...why?
+# Finder
+
+## Effortlessly sort, filter, search, and group data.
+
+**...why?**
 
 Do we _really_ need a whole library for basic data manipulation? Maybe!
 

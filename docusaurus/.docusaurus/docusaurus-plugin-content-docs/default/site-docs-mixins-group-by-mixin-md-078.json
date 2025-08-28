@@ -5,7 +5,7 @@
   "source": "@site/docs/mixins/group-by-mixin.md",
   "sourceDirName": "mixins",
   "slug": "/mixins/group-by-mixin",
-  "permalink": "/mixins/group-by-mixin",
+  "permalink": "/finder/mixins/group-by-mixin",
   "draft": false,
   "unlisted": false,
   "tags": [],
@@ -14,10 +14,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Filters Mixin",
-    "permalink": "/mixins/filters-mixin"
+    "permalink": "/finder/mixins/filters-mixin"
   },
   "next": {
     "title": "Matches Mixin",
-    "permalink": "/mixins/matches-mixin"
+    "permalink": "/finder/mixins/matches-mixin"
   }
 }
