@@ -1,4 +1,4 @@
-import { MixinInjectedDependencies } from "../types/internal-types";
+import { MixinInjectedDependencies } from "../types/core-types";
 import { clamp } from "../utils/finder-utils";
 
 type InitialValues = {

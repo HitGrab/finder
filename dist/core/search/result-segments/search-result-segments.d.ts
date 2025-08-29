@@ -6,4 +6,4 @@ export declare function getSearchResultSegments(characterIndexFn: SearchCharacte
 /**
  * Determine if a characterIndexFn would return a result for a haystack.
  */
-export declare function hasCharacterIndexMatches(characterIndexFn: SearchCharacterIndexFn, haystack: string, needle: string, aliases?: string[] | null): boolean;
+export declare function hasCharacterIndexMatches(haystack: string | string[], needle: string, exact?: boolean): boolean;

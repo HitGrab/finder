@@ -1,4 +1,4 @@
-import { SortDirection } from "../../types";
+import { SortDirection } from "../types/core-types";
 import { SortByMixin } from "./sort-by";
 /**
  * Public surface for the SortBy mixin

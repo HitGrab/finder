@@ -1,7 +1,7 @@
-import { GroupByRule, FinderResultGroup, SortDirection } from "../../types";
 import { isGroupByRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/internal-types";
 import { groupBy, orderBy } from "lodash";
+import { GroupByRule } from "../types/rule-types";
+import { FinderResultGroup, MixinInjectedDependencies, SortDirection } from "../types/core-types";
 
 type InitialValues = {
     initialGroupBy: string | undefined;
@@ -11,6 +11,7 @@ class GroupByMixin<FItem, FContext> {
     #groupBy;
 
     requireGroup;
+
     groupIdSortDirection?: SortDirection;
 
     #deps;

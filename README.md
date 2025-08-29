@@ -141,7 +141,7 @@ filterRule({
     options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
     multiple?: boolean;
     required?: boolean;
-    isBoolean?: boolean;
+    boolean?: boolean;
     defaultValue?: FValue;
     label?: string;
     hidden?: boolean;
@@ -156,7 +156,7 @@ filterRule({
 | options              | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or an option generator function that returns options. `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |          |
 | multiple             | If this filter has a single value or an array of values.                                                                                                                           | false   |          |
 | required             | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                                          | false   |          |
-| isBoolean            | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
+| boolean              | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
 | defaultValue         | If the filter has a preset value.                                                                                                                                                  |         |          |
 | label                | Optional label for your client to display.                                                                                                                                         |         |          |
 | hidden               | Optional display value for your client to display.                                                                                                                                 | false   |          |
@@ -490,7 +490,7 @@ Props:
 Pro-tips:
 
 - If pagination is enabled, the items and groups components will receive only the current page's slice.
-  </details>
+      </details>
 
 <details>
 <summary><i>&lt;FinderLoading /&gt;</i></summary>
@@ -649,8 +649,8 @@ function FilterComponent({rule} : {rule: HydratedFilterRule}}) {
             // Check if a specific filter option is active
             {finder.filters.has(rule, luckyOption) && 'Super lucky!'}
 
-            // filters with isBoolean can be toggled
-            <input type="checkbox" onChange={() => finder.filters.toggle(rule)}>
+            // boolean filters can be toggled
+            <input type="checkbox" onChange={() => finder.filters.toggle(rule)} />
 
             <select>
                 // a blank string is considered to be setting a filter value to undefined.

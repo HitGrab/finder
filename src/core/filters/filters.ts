@@ -1,15 +1,15 @@
+import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
+import { simpleUniqBy } from "../utils/finder-utils";
 import {
-    HydratedFilterRule,
     FilterOption,
+    FilterRule,
+    FilterRuleUnion,
     FilterTestOptions,
     FilterTestRuleOptions,
     FilterTestRuleOptionsOptions,
-    FilterRuleUnion,
-    FilterRule,
-} from "../../types";
-import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/internal-types";
-import { simpleUniqBy } from "../utils/finder-utils";
+    HydratedFilterRule,
+} from "../types/rule-types";
+import { MixinInjectedDependencies } from "../types/core-types";
 
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
@@ -87,7 +87,7 @@ class FiltersMixin {
             }
 
             if (rule.required) {
-                if (rule.isBoolean) {
+                if (rule.boolean) {
                     return true;
                 }
 
@@ -101,7 +101,7 @@ class FiltersMixin {
                 return [];
             }
 
-            if (rule.isBoolean) {
+            if (rule.boolean) {
                 return false;
             }
         }
@@ -156,7 +156,7 @@ class FiltersMixin {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        if (optionValue === undefined && rule.isBoolean) {
+        if (optionValue === undefined && rule.boolean) {
             const filterValue = this.get(rule.id);
             this.set(rule, !filterValue);
             return;
@@ -229,7 +229,7 @@ class FiltersMixin {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        if (rule.isBoolean === true) {
+        if (rule.boolean === true) {
             const resultMap = new Map<FilterOption | boolean, any[]>();
             resultMap.set(true, this.testRule({ rule, value: true, ...options }));
             resultMap.set(false, this.testRule({ rule, value: false, ...options }));
@@ -304,7 +304,7 @@ class FiltersMixin {
             return false;
         }
 
-        if (rule.isBoolean && value === false) {
+        if (rule.boolean && value === false) {
             return false;
         }
 
@@ -324,7 +324,7 @@ class FiltersMixin {
             // reduce uncertainty
             multiple: !!rule.multiple,
             required: !!rule.required,
-            isBoolean: !!rule.isBoolean,
+            boolean: !!rule.boolean,
             hidden: !!rule.hidden,
 
             // brand it

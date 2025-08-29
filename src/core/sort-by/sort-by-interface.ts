@@ -1,4 +1,4 @@
-import { SortDirection } from "../../types";
+import { SortDirection } from "../types/core-types";
 import { SortByMixin } from "./sort-by";
 
 const cycleOrder: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;

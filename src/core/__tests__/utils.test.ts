@@ -1,17 +1,16 @@
 import { calculateSequentialCharacterIndexes } from "../search/algorithms/sequential-characters";
-import { getSearchResultSegments } from "../search/result-segments/search-result-segments";
-import { finderSequentialCharacterCompare } from "../utils/string-compare-utils";
+import { getSearchResultSegments, hasCharacterIndexMatches } from "../search/result-segments/search-result-segments";
 
 describe("Utils", () => {
-    test("finderCharacterCompare checks that every digit or word character is sequentially present in a haystack,", () => {
+    test("Every digit or word character is sequentially present in a haystack,", () => {
         const searchTerm = "AB    C\nD\r    E";
 
         const positiveHaystack = "aabciop[cde";
-        const positiveMatch = finderSequentialCharacterCompare(positiveHaystack, searchTerm);
+        const positiveMatch = hasCharacterIndexMatches(positiveHaystack, searchTerm);
         expect(positiveMatch).toBe(true);
 
         const haystackWithReversedCharacters = "e d c b a";
-        const negativeMatch = finderSequentialCharacterCompare(haystackWithReversedCharacters, searchTerm);
+        const negativeMatch = hasCharacterIndexMatches(haystackWithReversedCharacters, searchTerm);
         expect(negativeMatch).toBe(false);
     });
 

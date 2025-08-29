@@ -70,7 +70,7 @@ function ActiveChips() {
                     ));
                 }
 
-                if (rule.isBoolean) {
+                if (rule.boolean) {
                     return (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={rule.id}>
                             <span>{rule.label}</span>
@@ -81,7 +81,7 @@ function ActiveChips() {
                     );
                 }
 
-                if (rule.isBoolean === false && rule.multiple === false) {
+                if (rule.boolean === false && rule.multiple === false) {
                     return (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={rule.id}>
                             <span>{String(ruleValue)}</span>

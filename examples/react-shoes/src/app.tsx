@@ -1,4 +1,4 @@
-import { Finder, FinderContent } from "@hitgrab/finder";
+import { Finder } from "@hitgrab/finder";
 import "./global.css";
 import { range } from "lodash";
 import { ShoeCard, ShoeCardSkeleton } from "./components/shoe-card";
@@ -71,7 +71,7 @@ function App() {
                         </div>
                     </header>
                     <section className="shoeList">
-                        <FinderContent>
+                        <Finder.Content>
                             {{
                                 loading: range(0, 12).map((index) => <ShoeCardSkeleton key={index} />),
                                 empty: "No items in list",
@@ -82,7 +82,7 @@ function App() {
                                     });
                                 },
                             }}
-                        </FinderContent>
+                        </Finder.Content>
                     </section>
                     <hr />
                     Assets from https://free-game-assets.itch.io/free-rpg-boot-icons

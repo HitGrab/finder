@@ -1,9 +1,9 @@
-import { FinderResultGroup, MatchesSnapshot } from "../../types";
 import { FiltersMixin } from "../filters/filters";
 import { GroupByMixin } from "../group-by/group-by";
 import { PaginationMixin } from "../pagination/pagination";
 import { SearchMixin } from "../search/search";
 import { SortByMixin } from "../sort-by/sort-by";
+import { FinderResultGroup, MatchesSnapshot } from "../types/core-types";
 
 type MixinList<FItem, FContext> = {
     search: SearchMixin<FItem>;
@@ -14,9 +14,8 @@ type MixinList<FItem, FContext> = {
 };
 export class MatchesMixin<FItem, FContext> {
     snapshot: MatchesSnapshot<FItem> = {} as MatchesSnapshot<FItem>;
-    isStale = true;
 
-    constructor() {}
+    isStale: boolean = true;
 
     setIsStale(value: boolean) {
         this.isStale = value;

@@ -1,4 +1,3 @@
-import { FinderRule, FinderConstructorOptions, FinderSnapshot, RuleEffect } from "../types";
 import { FiltersMixin } from "./filters/filters";
 import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
@@ -10,18 +9,21 @@ import { readonlySearchInterface, searchInterface } from "./search/search-interf
 import { SortByMixin } from "./sort-by/sort-by";
 import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
-import { EventCallback, MixinInjectedDependencies } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
 import { RuleBook } from "./rule-book/rule-book";
-import { FinderInitEvent, FinderChangeEvent } from "..";
-import { FinderEventName, FinderTouchEvent } from "./types/event-types";
+import { FinderChangeEvent, FinderEventName, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
 import { MatchesMixin } from "./matches/matches";
+import { isRuleEffect, isSearchEffect } from "./utils/rule-utils";
+import { hasCharacterIndexMatches } from "./search/result-segments/search-result-segments";
+import { RuleEffect, SearchEffect } from "./types/effect-types";
+import { FinderRule } from "./types/rule-types";
+import { EventCallback, FinderConstructorOptions, FinderSnapshot, MixinInjectedDependencies } from "./types/core-types";
 
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
-    #effects: RuleEffect[];
+    #effects: (RuleEffect | SearchEffect)[];
 
     isReady: boolean = false;
 
@@ -173,23 +175,34 @@ class FinderCore<FItem, FContext = any> {
         // trigger any effects that may be affected by the change to this rule
         if (touchEvent.rule && this.#effects.length > 0) {
             this.#effects.forEach((effect) => {
-                const effectRulesAsArray = Array.isArray(effect.rules) ? effect.rules : [effect.rules];
-                let isEffectTriggered = effectRulesAsArray.some((identifier) => {
-                    if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
-                        return true;
-                    }
+                if (isRuleEffect(effect)) {
+                    const effectRulesAsArray = Array.isArray(effect.rules) ? effect.rules : [effect.rules];
+                    const isEffectTriggered = effectRulesAsArray.some((identifier) => {
+                        if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
+                            return true;
+                        }
 
-                    if (typeof identifier === "object" && touchEvent.rule?.id === identifier.id) {
-                        return true;
-                    }
+                        if (typeof identifier === "object" && touchEvent.rule?.id === identifier.id) {
+                            return true;
+                        }
 
-                    return false;
-                });
-
-                if (isEffectTriggered) {
-                    this.#eventEmitter.silently(() => {
-                        effect.onChange(this);
+                        return false;
                     });
+
+                    if (isEffectTriggered) {
+                        this.#eventEmitter.silently(() => {
+                            effect.onChange(this);
+                        });
+                    }
+                }
+
+                if (isSearchEffect(effect)) {
+                    const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, this.search.searchTerm, effect.exact);
+                    if (isEffectTriggered) {
+                        this.#eventEmitter.silently(() => {
+                            effect.onChange(this);
+                        });
+                    }
                 }
             });
         }
@@ -321,10 +334,7 @@ class FinderCore<FItem, FContext = any> {
         if (isEqual(items, this.#items) === false) {
             const previousValue = this.#items;
             this.#items = items;
-
-            // option generators will need to be recalculated
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-
             this.#systemTouch({ source: "core", event: "change.core.setItems", current: items, initial: previousValue });
         }
     }
@@ -347,14 +357,18 @@ class FinderCore<FItem, FContext = any> {
         }
     }
 
+    setRules(definitions: FinderRule<FItem, FContext>[]) {
+        if (isEqual(definitions, this.#ruleBook.getDefinitions()) === false) {
+            this.#ruleBook.setRules(definitions);
+            this.#ruleBook.hydrateDefinitions(this.items, this.context);
+        }
+    }
+
     setContext(context: FContext) {
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;
-
-            // option generators will need to be recalculated
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-
             this.#systemTouch({ source: "core", event: "change.core.syncContext", current: context, initial: previousValue });
         }
     }

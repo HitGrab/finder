@@ -1,5 +1,5 @@
-import { HydratedFilterRule, FilterOption, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, FilterRuleUnion, FilterRule } from "../../types";
-import { MixinInjectedDependencies } from "../types/internal-types";
+import { FilterOption, FilterRule, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "../types/rule-types";
+import { MixinInjectedDependencies } from "../types/core-types";
 type InitialValues = {
     initialFilters: Record<string, any> | undefined;
 };

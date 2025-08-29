@@ -1,4 +1,4 @@
-import { EventCallback } from "../types/internal-types";
+import { EventCallback } from "../types/core-types";
 /**
  * A barebones event emitter
  */

@@ -2,10 +2,10 @@ import { ElementType } from "react";
 import { FinderContentItemProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
 
-interface FinderItemsProps<FItem = any> {
+interface FinderContentItemsProps<FItem = any> {
     children: ElementType<FinderContentItemProps<FItem>>;
 }
-function FinderItems<FItem>({ children: Component }: FinderItemsProps<FItem>) {
+function FinderContentItems<FItem>({ children: Component }: FinderContentItemsProps<FItem>) {
     const finder = useFinder();
     if (finder.state === "items" && finder.matches.items && Component) {
         if (typeof Component === "function") {
@@ -16,4 +16,4 @@ function FinderItems<FItem>({ children: Component }: FinderItemsProps<FItem>) {
     return null;
 }
 
-export { FinderItems };
+export { FinderContentItems };

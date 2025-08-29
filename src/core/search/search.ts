@@ -1,9 +1,9 @@
 import { orderBy } from "lodash";
-import { MixinInjectedDependencies } from "../types/internal-types";
 import { isSearchRule } from "../utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
+import { MixinInjectedDependencies } from "../types/core-types";
 
 type InitialValues = { initialSearchTerm: string | undefined };
 type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };

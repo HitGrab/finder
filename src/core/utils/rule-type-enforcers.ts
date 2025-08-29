@@ -1,5 +1,6 @@
-import { SearchRule, SortByRule, GroupByRule, FilterRuleUnion, FinderRule } from "../../types";
 import { FinderCore } from "../finder-core";
+import { RuleEffect, SearchEffect } from "../types/effect-types";
+import { FilterRuleUnion, FinderRule, GroupByRule, SearchRule, SortByRule } from "../types/rule-types";
 
 /**
  * Enforce structure for an array of rule of mixed types.
@@ -27,9 +28,14 @@ export function groupByRule<FItem>(rule: GroupByRule<FItem>) {
 export function ruleEffect<FItem, FContext = any>(
     rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[],
     onChange: (instance: FinderCore<FItem, FContext>) => void,
-) {
-    return {
-        rules,
-        onChange,
-    };
+): RuleEffect<FItem> {
+    return { rules, onChange };
+}
+
+export function searchEffect<FItem, FContext = any>(
+    haystack: string | string[],
+    onChange: (instance: FinderCore<FItem, FContext>) => void,
+    exact = true,
+): SearchEffect<FItem> {
+    return { haystack, onChange, exact };
 }

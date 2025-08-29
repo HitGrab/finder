@@ -1,52 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { readonlyFiltersInterface } from "./core/filters/filters-interface";
-import { readonlyGroupByInterface } from "./core/group-by/group-by-interface";
-import { readonlySearchInterface } from "./core/search/search-interface";
-import { readonlySortByInterface } from "./core/sort-by/sort-by-interface";
-import { FinderCore } from "./core/finder-core";
-import { FinderOnInitCallback, FinderOnReadyCallback, FinderOnFirstUserInteractCallback, FinderOnChangeCallback } from "./core/types/event-types";
+import { FinderResultGroup, SortDirection } from "./core-types";
 
-export interface FinderConstructorOptions<FItem, FContext = any> {
-    rules: FinderRule<FItem>[];
-    effects?: RuleEffect[];
-    context?: FContext;
-    isLoading?: boolean;
-    disabled?: boolean;
-
-    initialSearchTerm?: string;
-    initialSortBy?: string;
-    initialSortDirection?: SortDirection;
-    initialGroupBy?: string;
-    initialFilters?: Record<string, any>;
-
-    // maybe a little verbose
-    ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
-
-    // Force items to use a group rule.
-    // If no groupBy is set, the first valid group rule will be used.
-    requireGroup?: boolean;
-
-    // Pagination properties
-    page?: number;
-    numItemsPerPage?: number;
-
-    // Triggered after Finder initializes for the first time.
-    onInit?: FinderOnInitCallback;
-
-    // A valid items array was received
-    onReady?: FinderOnReadyCallback;
-
-    // Triggered the first time a user interacts with the component.
-    onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
-
-    // When values are changed, a snapshot is emitted to listeners
-    onChange?: FinderOnChangeCallback;
-}
-
-export interface FinderResultGroup<FItem> {
-    id: string;
-    items: FItem[];
-}
+/**
+ * Select a property from the item to sort by.
+ */
+export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context?: FContext) => string | number;
 
 export type FinderRule<FItem = any, FContext = any> =
     | SearchRule<FItem, FContext>
@@ -68,6 +25,15 @@ export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
     context?: FContext;
 }
 
+/**
+ * Describes the display of a filter or sort option.
+ */
+export interface FilterOption<FValue = any> {
+    label: string;
+    value: FValue;
+    disabled?: boolean;
+}
+
 export interface FilterRule<FItem = any, FValue = any, FContext = any> {
     id: string;
     options?: FilterOption<FValue>[] | ((options: FilterOptionGeneratorFnOptions<FItem, FContext>) => FilterOption<FValue>[]);
@@ -78,27 +44,27 @@ export interface FilterRule<FItem = any, FValue = any, FContext = any> {
 
     // these properties will be narrowed by FilterRuleUnion
     multiple?: boolean;
-    isBoolean?: boolean;
+    boolean?: boolean;
     filterFn: CallableFunction;
     defaultValue?: any;
 }
 
 interface FilterRuleWithBooleanValue<FItem, FValue = boolean, FContext = any> extends FilterRule<FItem, FValue> {
     multiple?: false;
-    isBoolean: true;
+    boolean: true;
     filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
     defaultValue?: boolean;
 }
 interface FilterRuleWithScalarValue<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple?: false;
-    isBoolean?: false;
+    boolean?: false;
     filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
     defaultValue?: FValue;
 }
 
 interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple: true;
-    isBoolean?: false;
+    boolean?: false;
     filterFn: (item: FItem, value: FValue[], context?: FContext) => boolean;
     defaultValue?: FValue[];
 }
@@ -114,13 +80,21 @@ export type FilterRuleUnion<FItem = any, FValue = any> =
 export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> extends Omit<FilterRule<FItem, FValue>, "options"> {
     options?: FilterOption<FValue>[];
     required: boolean;
-    isBoolean: boolean;
+    boolean: boolean;
     hidden: boolean;
     multiple: boolean;
 
     filterFn: ((item: FItem, value: FValue, context?: FContext) => boolean) | ((item: FItem, value: FValue[], context?: FContext) => boolean);
     defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
+}
+
+export interface SortByRule<FItem = any, FContext = any> {
+    id: string;
+    sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
+    defaultSortDirection?: SortDirection;
+    label?: string;
+    hidden?: boolean;
 }
 
 export interface GroupByRule<FItem = any, FContext = any> {
@@ -134,38 +108,6 @@ export interface GroupByRule<FItem = any, FContext = any> {
     };
     label?: string;
     hidden?: boolean;
-}
-
-export interface SortByRule<FItem = any, FContext = any> {
-    id: string;
-    sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
-    defaultSortDirection?: SortDirection;
-    label?: string;
-    hidden?: boolean;
-}
-
-export type SortDirection = "asc" | "desc" | ("asc" | "desc")[];
-
-/**
- * Select a property from the item to sort by.
- */
-export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context?: FContext) => string | number;
-
-/**
- * Describes the display of a filter or sort option.
- */
-export interface FilterOption<FValue = any> {
-    label: string;
-    value: FValue;
-    disabled?: boolean;
-}
-
-export interface MatchesSnapshot<FItem> {
-    items?: FItem[];
-    groups?: FinderResultGroup<FItem>[];
-    numMatchedItems: number;
-    numTotalItems: number;
-    hasGroupByRule: boolean;
 }
 
 export interface FilterTestOptions<FContext = any> {
@@ -188,18 +130,4 @@ export interface FilterTestRuleOptionsOptions<FContext = any> {
     context?: FContext;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
-}
-
-export interface FinderSnapshot<FItem, FContext = any> {
-    search: ReturnType<typeof readonlySearchInterface<FItem>>;
-    filters: ReturnType<typeof readonlyFiltersInterface>;
-    sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
-    groupBy: ReturnType<typeof readonlyGroupByInterface<FItem, FContext>>;
-    context?: FContext;
-    updatedAt?: number;
-}
-
-export interface RuleEffect<FItem = any, FContext = any> {
-    rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[];
-    onChange: (instance: FinderCore<FItem, FContext>) => void;
 }

@@ -1,5 +1,7 @@
-import { Haystack } from "../haystack";
+import { calculateSequentialCharacterIndexes } from "../algorithms/sequential-characters";
+import { calculateSequentialStringCharacterIndexes } from "../algorithms/sequential-string";
 import { transformStringForComparison } from "../search-string-transform";
+import { ResultSegmentHaystack } from "./result-segment-haystack";
 import { ResultSegment, ResultSegmentInternal, SearchCharacterIndexFn } from "./result-segment-types";
 
 /**
@@ -8,7 +10,7 @@ import { ResultSegment, ResultSegmentInternal, SearchCharacterIndexFn } from "./
 export function getSearchResultSegments(characterIndexFn: SearchCharacterIndexFn, haystack: string, needle: string, aliases?: string[] | null) {
     const transformedNeedle = transformStringForComparison(needle);
     const haystackAndAliasArray = aliases ? [haystack, ...aliases] : [haystack];
-    const haystacks = haystackAndAliasArray.map((hay) => new Haystack(hay));
+    const haystacks = haystackAndAliasArray.map((hay) => new ResultSegmentHaystack(hay));
 
     return haystacks.reduce<ResultSegment[] | undefined>((match, haystack) => {
         // stop looking once a match is found
@@ -79,7 +81,7 @@ function prepareResultSegments(characterMatches: number[], transformedHaystackSt
 /**
  * Map the transformed haystack matches back to the source string.
  */
-function processResultSegments(haystack: Haystack, matchesFromTransformedHaystack: ResultSegment[]) {
+function processResultSegments(haystack: ResultSegmentHaystack, matchesFromTransformedHaystack: ResultSegment[]) {
     let matches: ResultSegment[] = [];
 
     const firstMatch = matchesFromTransformedHaystack.at(0);
@@ -144,12 +146,12 @@ function processResultSegments(haystack: Haystack, matchesFromTransformedHaystac
 /**
  * Determine if a characterIndexFn would return a result for a haystack.
  */
-export function hasCharacterIndexMatches(characterIndexFn: SearchCharacterIndexFn, haystack: string, needle: string, aliases?: string[] | null) {
+export function hasCharacterIndexMatches(haystack: string | string[], needle: string, exact = false) {
+    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
     const transformedNeedle = transformStringForComparison(needle);
-    const haystackAndAliasArray = aliases ? [haystack, ...aliases] : [haystack];
-    const haystacks = haystackAndAliasArray.map((hay) => new Haystack(hay));
-
-    return haystacks.some((haystack) => {
-        return characterIndexFn(haystack.transformed, transformedNeedle) !== undefined;
+    const comparatorFn = exact ? calculateSequentialStringCharacterIndexes : calculateSequentialCharacterIndexes;
+    return haystackAsArray.some((hay) => {
+        const transformedHaystack = transformStringForComparison(hay);
+        return comparatorFn(transformedHaystack, transformedNeedle) !== undefined;
     });
 }

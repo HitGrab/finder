@@ -1,9 +1,9 @@
-import { MatchesSnapshot } from "../../types";
 import { FiltersMixin } from "../filters/filters";
 import { GroupByMixin } from "../group-by/group-by";
 import { PaginationMixin } from "../pagination/pagination";
 import { SearchMixin } from "../search/search";
 import { SortByMixin } from "../sort-by/sort-by";
+import { MatchesSnapshot } from "../types/core-types";
 type MixinList<FItem, FContext> = {
     search: SearchMixin<FItem>;
     filters: FiltersMixin;
@@ -14,7 +14,6 @@ type MixinList<FItem, FContext> = {
 export declare class MatchesMixin<FItem, FContext> {
     snapshot: MatchesSnapshot<FItem>;
     isStale: boolean;
-    constructor();
     setIsStale(value: boolean): void;
     takeSnapshot(items: FItem[], context: FContext, mixins: MixinList<FItem, FContext>, ignoreSortByRulesWhileSearchRuleIsActive: boolean): void;
 }

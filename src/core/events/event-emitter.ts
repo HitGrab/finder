@@ -1,4 +1,4 @@
-import { EventCallback } from "../types/internal-types";
+import { EventCallback } from "../types/core-types";
 
 type ListenerObject = Record<string, EventCallback[]>;
 

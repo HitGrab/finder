@@ -2,10 +2,10 @@ import { ElementType } from "react";
 import { FinderContentGroupProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
 
-interface FinderGroupsProps<FItem = any> {
+interface FinderContentGroupsProps<FItem = any> {
     children: ElementType<FinderContentGroupProps<FItem>>;
 }
-function FinderGroups<FItem>({ children: Component }: FinderGroupsProps<FItem>) {
+function FinderContentGroups<FItem>({ children: Component }: FinderContentGroupsProps<FItem>) {
     const finder = useFinder();
     if (finder.state === "groups" && finder.matches.groups && finder.groupBy.activeRule && Component) {
         if (typeof Component === "function") {
@@ -18,4 +18,4 @@ function FinderGroups<FItem>({ children: Component }: FinderGroupsProps<FItem>) 
     return null;
 }
 
-export { FinderGroups };
+export { FinderContentGroups };

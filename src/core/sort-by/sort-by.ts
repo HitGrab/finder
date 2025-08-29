@@ -1,7 +1,7 @@
-import { SortByRule, SortDirection } from "../../types";
 import { isSortByRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/internal-types";
 import { orderBy } from "lodash";
+import { SortByRule } from "../types/rule-types";
+import { MixinInjectedDependencies, SortDirection } from "../types/core-types";
 
 type InitialValues = {
     initialSortBy: string | undefined;

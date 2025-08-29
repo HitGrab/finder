@@ -72,7 +72,7 @@ export const rules = finderRuleset<Shoe>([
         id: "in_stock",
         label: "In Stock",
         filterFn: (item) => item.in_stock,
-        isBoolean: true,
+        boolean: true,
     }),
     filterRule({
         id: "color",

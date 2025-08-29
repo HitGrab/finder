@@ -1,5 +1,5 @@
-import { GroupByRule, FinderResultGroup, SortDirection } from "../../types";
-import { MixinInjectedDependencies } from "../types/internal-types";
+import { GroupByRule } from "../types/rule-types";
+import { FinderResultGroup, MixinInjectedDependencies, SortDirection } from "../types/core-types";
 type InitialValues = {
     initialGroupBy: string | undefined;
     requireGroup: boolean;

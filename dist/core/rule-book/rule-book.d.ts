@@ -1,4 +1,4 @@
-import { FinderRule } from "../../types";
+import { FinderRule } from "../types/rule-types";
 /**
  * Stores rule definitions and hydrated rules
  */
@@ -8,5 +8,7 @@ export declare class RuleBook<FItem, FContext> {
     constructor(definitions: FinderRule<FItem>[], items: FItem[], context: FContext);
     hydrateDefinitions<FItem, FContext>(items: FItem[], context: FContext): void;
     getRule<Rule>(identifier: string | FinderRule): Rule | undefined;
+    getDefinitions(): FinderRule<FItem>[];
+    setRules(definitions: FinderRule<FItem>[]): void;
     static validateDefinitions(definitions: FinderRule[]): boolean;
 }

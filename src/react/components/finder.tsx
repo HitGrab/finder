@@ -2,6 +2,8 @@ import { useEffect, useImperativeHandle, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
 import { FinderCore } from "../../core/finder-core";
+import { FinderContent } from "./finder-content";
+import { FinderSearchTerm } from "./finder-search-term";
 
 function Finder<FItem = any, FContext = any>({
     items,
@@ -60,6 +62,7 @@ function Finder<FItem = any, FContext = any>({
     instance.setItems(items);
     instance.setIsLoading(isLoading);
     instance.setIsDisabled(disabled);
+    instance.setRules(rules);
     if (context !== undefined) {
         instance.setContext(context);
     }
@@ -75,4 +78,9 @@ function Finder<FItem = any, FContext = any>({
 
     return <FinderCoreContext value={[instance, instance.updatedAt]}>{children}</FinderCoreContext>;
 }
+
+Finder.Content = FinderContent;
+
+Finder.SearchTerm = FinderSearchTerm;
+
 export { Finder };
