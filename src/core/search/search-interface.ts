@@ -16,6 +16,7 @@ function searchInterface<FItem>(mixin: SearchMixin<FItem>) {
         ...readonlySearchInterface(mixin),
         setSearchTerm: mixin.setSearchTerm.bind(mixin),
         reset: mixin.reset.bind(mixin),
+        test: mixin.test.bind(mixin),
     };
 }
 

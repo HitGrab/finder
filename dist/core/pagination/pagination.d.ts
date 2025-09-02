@@ -1,8 +1,8 @@
-import { MixinInjectedDependencies } from "../types/core-types";
-type InitialValues = {
+import { MixinInjectedDependencies, SerializedPaginationMixin } from "../types/core-types";
+interface InitialValues {
     page: number | undefined;
     numItemsPerPage: number | undefined;
-};
+}
 declare class PaginationMixin<FItem> {
     #private;
     numItemsPerPage?: number;
@@ -13,6 +13,7 @@ declare class PaginationMixin<FItem> {
     get numTotalItems(): number;
     get page(): number;
     get offset(): number;
-    process(items: FItem[]): FItem[];
+    serialize(): SerializedPaginationMixin;
+    static process<FItem>(options: SerializedPaginationMixin, items: FItem[]): FItem[];
 }
 export { PaginationMixin };

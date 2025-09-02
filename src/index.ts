@@ -2,7 +2,8 @@ export type { FinderSnapshot, FinderConstructorOptions, FinderResultGroup, SortD
 
 // Rules
 export type { FinderRule, SearchRule, SortByRule, GroupByRule, FilterRule, HydratedFilterRule, FilterRuleUnion, FilterOption } from "./core/types/rule-types";
-export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule } from "./core/utils/rule-type-enforcers";
+export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule, ruleEffect, searchEffect } from "./core/utils/rule-type-enforcers";
+export type { RuleEffect, SearchEffect } from "./core/types/effect-types";
 
 // Events
 export type { FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent } from "./core/types/event-types";

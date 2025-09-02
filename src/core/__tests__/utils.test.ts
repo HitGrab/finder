@@ -1,4 +1,3 @@
-import { calculateSequentialCharacterIndexes } from "../search/algorithms/sequential-characters";
 import { getSearchResultSegments, hasCharacterIndexMatches } from "../search/result-segments/search-result-segments";
 
 describe("Utils", () => {
@@ -15,7 +14,7 @@ describe("Utils", () => {
     });
 
     test("getSearchResultSegments generates correct segments", () => {
-        const sequentialCharacterMatches = getSearchResultSegments(calculateSequentialCharacterIndexes, " Robert?!", "bert");
+        const sequentialCharacterMatches = getSearchResultSegments(" Robert?!", "bert");
         expect(sequentialCharacterMatches).toEqual([
             { start: 0, end: 3, value: " Ro", is_match: false, length: 3 },
             { start: 3, end: 7, value: "bert", is_match: true, length: 4 },

@@ -1,4 +1,4 @@
-import { Finder } from "@hitgrab/finder";
+import { Finder, searchEffect } from "@hitgrab/finder";
 import "./global.css";
 import { range } from "lodash";
 import { ShoeCard, ShoeCardSkeleton } from "./components/shoe-card";

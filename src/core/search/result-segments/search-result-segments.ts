@@ -2,15 +2,17 @@ import { calculateSequentialCharacterIndexes } from "../algorithms/sequential-ch
 import { calculateSequentialStringCharacterIndexes } from "../algorithms/sequential-string";
 import { transformStringForComparison } from "../search-string-transform";
 import { ResultSegmentHaystack } from "./result-segment-haystack";
-import { ResultSegment, ResultSegmentInternal, SearchCharacterIndexFn } from "./result-segment-types";
+import { ResultSegment, ResultSegmentInternal } from "./result-segment-types";
 
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */
-export function getSearchResultSegments(characterIndexFn: SearchCharacterIndexFn, haystack: string, needle: string, aliases?: string[] | null) {
+export function getSearchResultSegments(haystack: string | string[], needle: string) {
     const transformedNeedle = transformStringForComparison(needle);
-    const haystackAndAliasArray = aliases ? [haystack, ...aliases] : [haystack];
-    const haystacks = haystackAndAliasArray.map((hay) => new ResultSegmentHaystack(hay));
+    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
+
+    // ResultSegmentHaystack will transform the haystack and build a map between source and transformed strings.
+    const haystacks = haystackAsArray.map((hay) => new ResultSegmentHaystack(hay));
 
     return haystacks.reduce<ResultSegment[] | undefined>((match, haystack) => {
         // stop looking once a match is found
@@ -19,7 +21,7 @@ export function getSearchResultSegments(characterIndexFn: SearchCharacterIndexFn
         }
 
         // if no matches are found, this particular needle did not succeed.
-        const matchedCharacterIndexes = characterIndexFn(haystack.transformed, transformedNeedle);
+        const matchedCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
 
         if (matchedCharacterIndexes !== undefined) {
             // build segments based on the transformed haystack

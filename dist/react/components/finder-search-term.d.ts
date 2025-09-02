@@ -1,9 +1,8 @@
 import { ElementType } from "react";
-import { SearchCharacterIndexFn } from "../../core/search/result-segments/result-segment-types";
 interface FinderSearchTermProps {
     children: string;
     Component?: ElementType;
-    algorithm?: SearchCharacterIndexFn;
+    searchTerm?: string;
 }
-declare function FinderSearchTerm({ Component, children }: FinderSearchTermProps): string | import("react/jsx-runtime").JSX.Element;
+declare function FinderSearchTerm({ Component, searchTerm, children }: FinderSearchTermProps): string | (string | import("react/jsx-runtime").JSX.Element)[];
 export { FinderSearchTerm };

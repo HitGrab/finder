@@ -1,8 +1,8 @@
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies, SerializedSearchMixin } from "../types/core-types";
 type InitialValues = {
     initialSearchTerm: string | undefined;
 };
-declare class SearchMixin<FItem, FContext = any> {
+declare class SearchMixin<FItem> {
     #private;
     searchTerm: string;
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>);
@@ -11,6 +11,8 @@ declare class SearchMixin<FItem, FContext = any> {
     get hasSearchTerm(): boolean;
     setSearchTerm(incomingSearchTerm: string): void;
     reset(): void;
-    process(items: FItem[], context?: FContext): FItem[];
+    serialize(): SerializedSearchMixin;
+    test(searchTerm: string, isAdditive?: boolean): FItem[];
+    static process<FItem, FContext>(options: SerializedSearchMixin, items: FItem[], context?: FContext): FItem[];
 }
 export { SearchMixin };

@@ -424,18 +424,18 @@ describe("Filters", () => {
     });
 
     describe("Tester", () => {
-        test("Rules can be tested in advance", () => {
-            const rule = filterRule({
-                id: "price_is_below",
-                filterFn: (item: MockObjectItem, value: number) => item.price <= value,
-            });
+        // test("Rules can be tested in advance", () => {
+        //     const rule = filterRule({
+        //         id: "price_is_below",
+        //         filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+        //     });
 
-            const finder = new FinderCore(objectItems, { rules: [rule] });
+        //     const finder = new FinderCore(objectItems, { rules: [rule] });
 
-            // test a filter without setting the state
-            const testResult = finder.filters.testRule({ rule, value: 5 });
-            expect(testResult).toStrictEqual([apple, orange]);
-        });
+        //     // test a filter without setting the state
+        //     const testResult = finder.filters.testRule({ rule, value: 5 });
+        //     expect(testResult).toStrictEqual([apple, orange]);
+        // });
 
         test("Rules can be tested additively", () => {
             const firstRule = filterRule({

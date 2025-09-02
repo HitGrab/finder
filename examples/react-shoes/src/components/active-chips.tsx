@@ -6,6 +6,11 @@ function ActiveChips() {
     const finder = useFinder();
     return (
         <div className="chipList">
+            {finder.search.hasSearchTerm && (
+                <Chip ruleId="search" key="search" onReset={() => finder.search.reset()}>
+                    {finder.search.searchTerm}
+                </Chip>
+            )}
             {finder.filters.activeRules.map((rule) => {
                 const ruleValue = finder.filters.get(rule);
 

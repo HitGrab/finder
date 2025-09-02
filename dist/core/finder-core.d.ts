@@ -1,6 +1,6 @@
 import { FinderEventName } from "./types/event-types";
 import { FinderRule } from "./types/rule-types";
-import { EventCallback, FinderConstructorOptions } from "./types/core-types";
+import { EventCallback, FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
 declare class FinderCore<FItem, FContext = any> {
     #private;
     isReady: boolean;
@@ -11,11 +11,13 @@ declare class FinderCore<FItem, FContext = any> {
     constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
-    get matches(): import("./types/core-types").MatchesSnapshot<FItem>;
+    get matches(): import("./types/core-types").ResultSnapshot<FItem>;
+    test(mixins: SnapshotSerializedMixins, isAdditive?: boolean): FItem[];
     get isEmpty(): boolean;
     get search(): {
         setSearchTerm: (incomingSearchTerm: string) => void;
         reset: () => void;
+        test: (searchTerm: string, isAdditive?: boolean) => FItem[];
         searchTerm: string;
         hasSearchTerm: boolean;
         hasSearchRule: boolean;

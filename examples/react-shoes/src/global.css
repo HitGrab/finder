@@ -82,12 +82,18 @@ body {
 .search {
     position: relative;
 
-    &:has(:focus-within) .searchList {
-        display: flex;
+    > input {
+        width: 100%;
+    }
+
+    .resetButton {
+        position: absolute;
+        right: 0;
+        top: 0;
     }
 
     .searchList {
-        display: none;
+        display: flex;
         position: absolute;
         left: 0;
         right: 0;
@@ -98,13 +104,18 @@ body {
 
         flex-direction: column;
 
-        button {
+        .result {
             all: unset;
             cursor: pointer;
             display: block;
             padding: 5px;
             &:hover {
                 background-color: #eee;
+            }
+
+            span {
+                font-weight: bold;
+                text-decoration: underline;
             }
         }
     }

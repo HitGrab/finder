@@ -1,8 +1,8 @@
-import { ResultSegment, SearchCharacterIndexFn } from "./result-segment-types";
+import { ResultSegment } from "./result-segment-types";
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */
-export declare function getSearchResultSegments(characterIndexFn: SearchCharacterIndexFn, haystack: string, needle: string, aliases?: string[] | null): ResultSegment[] | undefined;
+export declare function getSearchResultSegments(haystack: string | string[], needle: string): ResultSegment[] | undefined;
 /**
  * Determine if a characterIndexFn would return a result for a haystack.
  */

@@ -1,12 +1,13 @@
 import { isSortByRule } from "../utils/rule-utils";
 import { orderBy } from "lodash";
 import { SortByRule } from "../types/rule-types";
-import { MixinInjectedDependencies, SortDirection } from "../types/core-types";
+import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "../types/core-types";
 
 type InitialValues = {
     initialSortBy: string | undefined;
     initialSortDirection?: SortDirection;
 };
+
 class SortByMixin<FItem> {
     #sortBy;
 
@@ -73,23 +74,27 @@ class SortByMixin<FItem> {
         });
     }
 
-    process(items: FItem[]) {
-        const defaultSortByRule = this.rules.at(0);
-        const activeSortByRule = this.#sortBy ?? defaultSortByRule;
-        if (activeSortByRule === undefined) {
+    serialize(): SerializedSortByMixin {
+        return {
+            rule: this.activeRule,
+            sortDirection: this.sortDirection,
+        };
+    }
+
+    static process<FItem, FContext>(options: SerializedSortByMixin, items: FItem[], context: FContext) {
+        if (options.rule === undefined) {
             return items;
         }
 
-        const direction = this.#sortDirection ?? activeSortByRule.defaultSortDirection;
         return orderBy(
             items,
             (item) => {
-                if (typeof activeSortByRule.sortFn === "function") {
-                    return activeSortByRule.sortFn(item, this.#deps.getContext());
+                if (typeof options.rule?.sortFn === "function") {
+                    return options.rule.sortFn(item, context);
                 }
                 return Number.NEGATIVE_INFINITY;
             },
-            direction,
+            options.sortDirection,
         ) as FItem[];
     }
 }

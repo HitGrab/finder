@@ -86,21 +86,22 @@ export interface GroupByRule<FItem = any, FContext = any> {
     label?: string;
     hidden?: boolean;
 }
-export interface FilterTestOptions<FContext = any> {
-    rules?: HydratedFilterRule[];
-    values?: any;
-    context?: FContext;
+export interface SearchTestOptions {
+    rule: SearchRule[];
+    searchTerm: string;
+}
+export interface FilterTestOptions {
+    rules: HydratedFilterRule[];
+    values?: Record<string, any>;
     isAdditive?: boolean;
 }
-export interface FilterTestRuleOptions<FContext = any> {
+export interface FilterTestRuleOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
     value: any;
-    context?: FContext;
     isAdditive?: boolean;
 }
-export interface FilterTestRuleOptionsOptions<FContext = any> {
+export interface FilterTestRuleOptionsOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
-    context?: FContext;
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
 }

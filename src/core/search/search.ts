@@ -3,11 +3,12 @@ import { isSearchRule } from "../utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
-import { MixinInjectedDependencies } from "../types/core-types";
+import { MixinInjectedDependencies, SerializedSearchMixin } from "../types/core-types";
 
 type InitialValues = { initialSearchTerm: string | undefined };
 type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
-class SearchMixin<FItem, FContext = any> {
+
+class SearchMixin<FItem> {
     searchTerm: string;
 
     #deps;
@@ -69,19 +70,30 @@ class SearchMixin<FItem, FContext = any> {
         });
     }
 
-    process(items: FItem[], context?: FContext) {
-        if (this.searchTerm === "" || this.rule === undefined) {
+    serialize(): SerializedSearchMixin {
+        return {
+            searchTerm: this.searchTerm,
+            rule: this.rule,
+        };
+    }
+
+    test(searchTerm: string, isAdditive = false) {
+        return this.#deps.test({ search: { searchTerm, rule: this.rule } }, isAdditive);
+    }
+
+    static process<FItem, FContext>(options: SerializedSearchMixin, items: FItem[], context?: FContext) {
+        if (options.rule === undefined || options.searchTerm === "") {
             return items;
         }
 
-        const transformedNeedle = transformStringForComparison(this.searchTerm);
+        const transformedNeedle = transformStringForComparison(options.searchTerm);
         const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
-            if (this.rule?.searchFn === undefined) {
+            if (options.rule?.searchFn === undefined) {
                 return acc;
             }
 
             // Retrieve this item's array of haystack strings to compare the search needle against
-            const itemHaystackStringOrStrings = this.rule.searchFn(item, context);
+            const itemHaystackStringOrStrings = options.rule.searchFn(item, context);
             const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
                 ? itemHaystackStringOrStrings.map(transformStringForComparison)
                 : [transformStringForComparison(itemHaystackStringOrStrings)];

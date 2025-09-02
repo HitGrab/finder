@@ -26,16 +26,20 @@ export function groupByRule<FItem>(rule: GroupByRule<FItem>) {
 }
 
 export function ruleEffect<FItem, FContext = any>(
-    rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[],
+    rules:
+        | string
+        | FinderRule<FItem>
+        | (string | FinderRule<FItem>)[]
+        | ((items: FItem[], context: FContext) => string | FinderRule<FItem> | (string | FinderRule<FItem>)[]),
     onChange: (instance: FinderCore<FItem, FContext>) => void,
-): RuleEffect<FItem> {
+): RuleEffect<FItem, FContext> {
     return { rules, onChange };
 }
 
 export function searchEffect<FItem, FContext = any>(
-    haystack: string | string[],
+    haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]),
     onChange: (instance: FinderCore<FItem, FContext>) => void,
     exact = true,
-): SearchEffect<FItem> {
+): SearchEffect<FItem, FContext> {
     return { haystack, onChange, exact };
 }

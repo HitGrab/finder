@@ -6,10 +6,10 @@ import { FiltersMixin } from "./filters";
 function readonlyFiltersInterface(mixin: FiltersMixin) {
     return {
         values: mixin.getValues(),
-        raw: mixin.filters,
+        raw: mixin.getRawValues(),
         activeRules: mixin.activeRules,
         rules: mixin.rules,
-        isActive: mixin.isActive.bind(mixin),
+        isActive: mixin.isRuleActive.bind(mixin),
         get: mixin.get.bind(mixin),
         has: mixin.has.bind(mixin),
         getRule: mixin.getRule.bind(mixin),
