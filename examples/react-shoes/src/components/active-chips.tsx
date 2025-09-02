@@ -6,6 +6,11 @@ function ActiveChips() {
     const finder = useFinder();
     return (
         <div className="chipList">
+            {finder.search.hasSearchTerm && (
+                <Chip ruleId="search" key="search" onReset={() => finder.search.reset()}>
+                    {finder.search.searchTerm}
+                </Chip>
+            )}
             {finder.filters.activeRules.map((rule) => {
                 const ruleValue = finder.filters.get(rule);
 
@@ -70,7 +75,7 @@ function ActiveChips() {
                     ));
                 }
 
-                if (rule.isBoolean) {
+                if (rule.boolean) {
                     return (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={rule.id}>
                             <span>{rule.label}</span>
@@ -81,7 +86,7 @@ function ActiveChips() {
                     );
                 }
 
-                if (rule.isBoolean === false && rule.multiple === false) {
+                if (rule.boolean === false && rule.multiple === false) {
                     return (
                         <div className="chip" style={{ background: composeColorFromString(rule.id) }} key={rule.id}>
                             <span>{String(ruleValue)}</span>

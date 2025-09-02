@@ -1,6 +1,6 @@
-import { FinderRule, FinderConstructorOptions } from "../types";
-import { EventCallback } from "./types/internal-types";
 import { FinderEventName } from "./types/event-types";
+import { FinderRule } from "./types/rule-types";
+import { EventCallback, FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
 declare class FinderCore<FItem, FContext = any> {
     #private;
     isReady: boolean;
@@ -11,11 +11,13 @@ declare class FinderCore<FItem, FContext = any> {
     constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
-    get matches(): import("../types").MatchesSnapshot<FItem>;
+    get matches(): import("./types/core-types").ResultSnapshot<FItem>;
+    test(mixins: SnapshotSerializedMixins, isAdditive?: boolean): FItem[];
     get isEmpty(): boolean;
     get search(): {
         setSearchTerm: (incomingSearchTerm: string) => void;
         reset: () => void;
+        test: (searchTerm: string, isAdditive?: boolean) => FItem[];
         searchTerm: string;
         hasSearchTerm: boolean;
         hasSearchRule: boolean;
@@ -24,9 +26,9 @@ declare class FinderCore<FItem, FContext = any> {
         toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule, optionValue?: import("..").FilterOption | any) => void;
         set: <FItem_1, FValue>(identifier: string | import("..").FilterRuleUnion<FItem_1, FValue> | import("..").HydratedFilterRule<FItem_1, FValue, any>, incomingFilterValue: FValue | FValue[]) => void;
         delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule) => void;
-        test: (options: import("../types").FilterTestOptions) => any[];
-        testRule: ({ rule: identifier, value, ...options }: import("../types").FilterTestRuleOptions) => any[];
-        testRuleOptions: ({ rule: identifier, ...options }: import("../types").FilterTestRuleOptionsOptions) => Map<any, any>;
+        test: (options: import("./types/rule-types").FilterTestOptions) => any[];
+        testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
+        testRuleOptions: ({ rule: identifier, ...options }: import("./types/rule-types").FilterTestRuleOptionsOptions) => Map<any, any>;
         values: Record<string, any>;
         raw: Record<string, any>;
         activeRules: import("..").HydratedFilterRule<unknown, any, any>[];
@@ -78,6 +80,7 @@ declare class FinderCore<FItem, FContext = any> {
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
+    setRules(definitions: FinderRule<FItem, FContext>[]): void;
     setContext(context: FContext): void;
 }
 export { FinderCore };

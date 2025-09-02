@@ -12,7 +12,7 @@ filterRule({
     filterFn: (item: FItem, value: FValue, meta?: FinderMeta) => boolean;
     options?: FilterOption<FValue>[] | ((items: FItem[], meta?: FinderMeta) => FilterOption<FValue>[]);
     multiple?: boolean;
-    isBoolean?: boolean;
+    boolean?: boolean;
     required?: boolean;
     defaultValue?: FValue | FValue[];
     label?: string;
@@ -29,7 +29,7 @@ filterRule({
 | options              | Either an array of form options `[{label: 'Thing', value: 'thing'}]`, or an option generator function that returns options. `(items, meta) => [{label: 'Thing', value: 'thing'}]`. |         |          |
 | multiple             | If this filter has a single value or an array of values.                                                                                                                           | false   |          |
 | required             | Whether this filter must always have a value. If the rule provides options, the first option will be selected by default.                                                          | false   |          |
-| isBoolean            | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
+| boolean              | If this filter has a true/false value. Useful for checkboxes!                                                                                                                      | false   |          |
 | defaultValue         | If the filter has a preset value.                                                                                                                                                  |         |          |
 | label                | Optional label for your client to display.                                                                                                                                         |         |          |
 | hidden               | Optional display value for your client to display.                                                                                                                                 | false   |          |

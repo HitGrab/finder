@@ -1,4 +1,4 @@
-export class Haystack {
+export class ResultSegmentHaystack {
     source;
 
     #transformedSegments;
@@ -7,7 +7,7 @@ export class Haystack {
 
     constructor(haystack: string) {
         this.source = haystack;
-        const segments = Haystack.composeTransformedHaystackSegments(haystack);
+        const segments = ResultSegmentHaystack.composeTransformedHaystackSegments(haystack);
         this.#transformedSegments = segments;
 
         // stringified for quick testing

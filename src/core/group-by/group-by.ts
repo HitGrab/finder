@@ -1,21 +1,23 @@
-import { GroupByRule, FinderResultGroup, SortDirection } from "../../types";
 import { isGroupByRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/internal-types";
 import { groupBy, orderBy } from "lodash";
+import { GroupByRule } from "../types/rule-types";
+import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "../types/core-types";
 
-type InitialValues = {
+interface InitialValues {
     initialGroupBy: string | undefined;
     requireGroup: boolean;
-};
+}
+
 class GroupByMixin<FItem, FContext> {
     #groupBy;
 
     requireGroup;
+
     groupIdSortDirection?: SortDirection;
 
     #deps;
 
-    constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
+    constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>) {
         this.#deps = deps;
         if (initialGroupBy) {
             this.#groupBy = this.#deps.getRuleBook().getRule<GroupByRule>(initialGroupBy);
@@ -30,6 +32,10 @@ class GroupByMixin<FItem, FContext> {
     get activeRule() {
         const defaultRule = this.requireGroup ? this.rules.at(0) : undefined;
         return this.#groupBy ?? defaultRule;
+    }
+
+    get hasGroupByRule() {
+        return this.activeRule !== undefined;
     }
 
     set(identifier?: string | GroupByRule) {
@@ -92,13 +98,16 @@ class GroupByMixin<FItem, FContext> {
         this.set(undefined);
     }
 
-    process(items: FItem[], context?: FContext) {
-        if (this.activeRule === undefined) {
-            return [];
-        }
+    serialize(): SerializedGroupByMixin {
+        return {
+            rule: this.activeRule,
+            sortDirection: this.groupIdSortDirection,
+        };
+    }
 
+    static process<FItem, FContext>(options: SerializedGroupByMixin, items: FItem[], context?: FContext): FinderResultGroup<FItem>[] {
         const groupObject = groupBy(items, (item) => {
-            const value = this.activeRule?.groupFn(item, context);
+            const value = options.rule?.groupFn(item, context);
             if (value === undefined) {
                 throw new Error("groupFn did not return a value.");
             }
@@ -106,32 +115,30 @@ class GroupByMixin<FItem, FContext> {
         });
 
         // transform the object into a sortable array
-        const groups = Object.keys(groupObject).map((id) => {
-            return {
-                id: String(id),
-                items: groupObject[id] ?? [],
-            };
-        });
+        const groups = Object.entries(groupObject).map(([id, items]) => ({
+            id,
+            items,
+        }));
 
-        const hasStickyGroups = this.activeRule.sticky !== undefined;
+        const hasStickyGroups = options.rule?.sticky !== undefined;
         const orderByCallbacks = [];
         const orderSortDirection = [];
-        if (hasStickyGroups) {
-            orderByCallbacks.push(composeStickyGroupOrderCallback(this.activeRule));
+        if (hasStickyGroups && options.rule) {
+            orderByCallbacks.push(composeStickyGroupOrderCallback(options.rule));
             orderSortDirection.push("asc");
         }
 
-        if (this.activeRule?.sortGroupIdFn) {
-            orderByCallbacks.push(this.activeRule.sortGroupIdFn);
-            orderSortDirection.push(this.groupIdSortDirection ?? "asc");
+        if (options.rule?.sortGroupIdFn) {
+            orderByCallbacks.push(options.rule.sortGroupIdFn);
+            orderSortDirection.push(options.sortDirection ?? "asc");
         }
 
         if (orderByCallbacks.length > 0) {
             const direction = (orderSortDirection ?? "desc") as SortDirection;
-            return orderBy(groups, orderByCallbacks, direction) as FinderResultGroup<FItem>[];
+            return orderBy(groups, orderByCallbacks, direction);
         }
 
-        return groups as FinderResultGroup<FItem>[];
+        return groups;
     }
 }
 

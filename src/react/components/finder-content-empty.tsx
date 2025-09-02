@@ -1,12 +1,12 @@
 import { FinderContentRenderProp } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
 
-interface FinderNoMatchesProps {
+interface FinderContentEmptyProps {
     children: FinderContentRenderProp;
 }
-function FinderNoMatches({ children: Component }: FinderNoMatchesProps) {
+function FinderContentEmpty({ children: Component }: FinderContentEmptyProps) {
     const finder = useFinder();
-    if (finder.state === "noMatches" && Component) {
+    if (finder.state === "empty" && Component) {
         if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }
@@ -16,4 +16,4 @@ function FinderNoMatches({ children: Component }: FinderNoMatchesProps) {
     return null;
 }
 
-export { FinderNoMatches };
+export { FinderContentEmpty };

@@ -15,18 +15,18 @@ const rules = finderRuleset<Fruit>([
     filterRule({
         id: "is_an_orange",
         filterFn: (item) => item.type === "orange",
-        isBoolean: true,
+        boolean: true,
     }),
     filterRule({
         id: "is_an_apple",
         filterFn: (item) => item.type === "apple",
-        isBoolean: true,
+        boolean: true,
         defaultValue: true,
     }),
     filterRule({
         id: "is_fresh",
         filterFn: (item) => item.is_fresh,
-        isBoolean: true,
+        boolean: true,
     }),
 ]);
 

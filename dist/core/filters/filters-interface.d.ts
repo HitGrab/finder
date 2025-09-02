@@ -16,9 +16,9 @@ declare function filtersInterface(mixin: FiltersMixin): {
     toggle: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule, optionValue?: import("../..").FilterOption | any) => void;
     set: <FItem, FValue>(identifier: string | import("../..").FilterRuleUnion<FItem, FValue> | import("../..").HydratedFilterRule<FItem, FValue, any>, incomingFilterValue: FValue | FValue[]) => void;
     delete: (identifier: string | import("../..").FilterRuleUnion | import("../..").HydratedFilterRule) => void;
-    test: (options: import("../../types").FilterTestOptions) => any[];
-    testRule: ({ rule: identifier, value, ...options }: import("../../types").FilterTestRuleOptions) => any[];
-    testRuleOptions: ({ rule: identifier, ...options }: import("../../types").FilterTestRuleOptionsOptions) => Map<any, any>;
+    test: (options: import("../types/rule-types").FilterTestOptions) => any[];
+    testRule: ({ rule: identifier, value, ...options }: import("../types/rule-types").FilterTestRuleOptions) => any[];
+    testRuleOptions: ({ rule: identifier, ...options }: import("../types/rule-types").FilterTestRuleOptionsOptions) => Map<any, any>;
     values: Record<string, any>;
     raw: Record<string, any>;
     activeRules: import("../..").HydratedFilterRule<unknown, any, any>[];

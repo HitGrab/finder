@@ -1,25 +1,25 @@
 import { ElementType } from "react";
-import { FinderEmpty } from "./finder-empty";
-import { FinderGroups } from "./finder-groups";
-import { FinderItems } from "./finder-items";
-import { FinderLoading } from "./finder-loading";
-import { FinderNoMatches } from "./finder-no-matches";
 import { FinderContentRenderProp, FinderContentItemProps, FinderContentGroupProps } from "../types/react-types";
-interface FinderContentProps<FItem> {
+import { FinderContentLoading } from "./finder-content-loading";
+import { FinderContentEmpty } from "./finder-content-empty";
+import { FinderContentNoMatches } from "./finder-content-no-matches";
+import { FinderContentItems } from "./finder-content-items";
+import { FinderContentGroups } from "./finder-content-groups";
+interface FinderContentProps<FItem, FContext> {
     children: {
         loading?: FinderContentRenderProp;
         empty?: FinderContentRenderProp;
         noMatches?: FinderContentRenderProp;
-        items?: ElementType<FinderContentItemProps<FItem>>;
-        groups?: ElementType<FinderContentGroupProps<FItem>>;
+        items?: ElementType<FinderContentItemProps<FItem, FContext>>;
+        groups?: ElementType<FinderContentGroupProps<FItem, FContext>>;
     };
 }
-declare function FinderContent<FItem = any>({ children: renderProps }: FinderContentProps<FItem>): (import("react/jsx-runtime").JSX.Element | undefined)[];
+declare function FinderContent<FItem = any, FContext = any>({ children: renderProps }: FinderContentProps<FItem, FContext>): (import("react/jsx-runtime").JSX.Element | undefined)[];
 declare namespace FinderContent {
-    var Loading: typeof FinderLoading;
-    var Empty: typeof FinderEmpty;
-    var NoMatches: typeof FinderNoMatches;
-    var Items: typeof FinderItems;
-    var Groups: typeof FinderGroups;
+    var Loading: typeof FinderContentLoading;
+    var Empty: typeof FinderContentEmpty;
+    var NoMatches: typeof FinderContentNoMatches;
+    var Items: typeof FinderContentItems;
+    var Groups: typeof FinderContentGroups;
 }
 export { FinderContent };

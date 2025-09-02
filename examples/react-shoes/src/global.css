@@ -79,6 +79,48 @@ body {
     }
 }
 
+.search {
+    position: relative;
+
+    > input {
+        width: 100%;
+    }
+
+    .resetButton {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .searchList {
+        display: flex;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        background-color: #fff;
+        z-index: 1;
+        border: 1px solid #333;
+
+        flex-direction: column;
+
+        .result {
+            all: unset;
+            cursor: pointer;
+            display: block;
+            padding: 5px;
+            &:hover {
+                background-color: #eee;
+            }
+
+            span {
+                font-weight: bold;
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
 .shoeList {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

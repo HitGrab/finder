@@ -1,4 +1,3 @@
-import { FinderRule, FinderConstructorOptions, FinderSnapshot, RuleEffect } from "../types";
 import { FiltersMixin } from "./filters/filters";
 import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
@@ -10,18 +9,18 @@ import { readonlySearchInterface, searchInterface } from "./search/search-interf
 import { SortByMixin } from "./sort-by/sort-by";
 import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
-import { EventCallback, MixinInjectedDependencies } from "./types/internal-types";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
 import { RuleBook } from "./rule-book/rule-book";
-import { FinderInitEvent, FinderChangeEvent } from "..";
-import { FinderEventName, FinderTouchEvent } from "./types/event-types";
-import { MatchesMixin } from "./matches/matches";
+import { FinderChangeEvent, FinderEventName, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
+import { Tester } from "./tester/tester";
+import { hasCharacterIndexMatches } from "./search/result-segments/search-result-segments";
+import { FinderRule } from "./types/rule-types";
+import { EventCallback, FinderConstructorOptions, FinderSnapshot, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
+import { EffectBook } from "./effect-book/effect-book";
 
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
-
-    #effects: RuleEffect[];
 
     isReady: boolean = false;
 
@@ -46,11 +45,12 @@ class FinderCore<FItem, FContext = any> {
         pagination: PaginationMixin<FItem>;
     };
 
-    #matches: MatchesMixin<FItem, FContext>;
+    #matches: Tester<FItem, FContext>;
 
     context: FContext;
 
     #ruleBook: RuleBook<FItem, FContext>;
+    #effectBook: EffectBook<FItem, FContext>;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -75,13 +75,13 @@ class FinderCore<FItem, FContext = any> {
             onChange,
         }: FinderConstructorOptions<FItem, FContext>,
     ) {
-        this.#effects = effects ?? [];
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
         this.#eventEmitter = new EventEmitter();
 
         this.#ruleBook = new RuleBook(rules ?? [], items ?? [], context);
+        this.#effectBook = new EffectBook(effects ?? [], items ?? [], context);
 
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const mixinDeps: MixinInjectedDependencies<FItem, FContext> = {
@@ -90,6 +90,7 @@ class FinderCore<FItem, FContext = any> {
             getContext: () => this.context,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
+            test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
             touch: (event: FinderTouchEvent) => this.#touch(event),
             debouncer: new DebounceCallbackRegistry(),
         };
@@ -103,7 +104,7 @@ class FinderCore<FItem, FContext = any> {
             pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
         };
 
-        this.#matches = new MatchesMixin();
+        this.#matches = new Tester();
 
         // hack: revise this later
         this.context = context as FContext;
@@ -167,14 +168,12 @@ class FinderCore<FItem, FContext = any> {
         this.#matches.setIsStale(true);
 
         // transform the internal touch event to a public change event
-        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
-        this.#eventEmitter.emit("change", changeEvent);
+        this.#eventEmitter.emit("change", { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() });
 
         // trigger any effects that may be affected by the change to this rule
-        if (touchEvent.rule && this.#effects.length > 0) {
-            this.#effects.forEach((effect) => {
-                const effectRulesAsArray = Array.isArray(effect.rules) ? effect.rules : [effect.rules];
-                let isEffectTriggered = effectRulesAsArray.some((identifier) => {
+        if (touchEvent.rule) {
+            this.#effectBook.ruleEffects.forEach((effect) => {
+                const isEffectTriggered = effect.rules.some((identifier) => {
                     if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
                         return true;
                     }
@@ -186,6 +185,15 @@ class FinderCore<FItem, FContext = any> {
                     return false;
                 });
 
+                if (isEffectTriggered) {
+                    this.#eventEmitter.silently(() => {
+                        effect.onChange(this);
+                    });
+                }
+            });
+
+            this.#effectBook.searchEffects.forEach((effect) => {
+                const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, this.search.searchTerm, effect.exact);
                 if (isEffectTriggered) {
                     this.#eventEmitter.silently(() => {
                         effect.onChange(this);
@@ -251,10 +259,44 @@ class FinderCore<FItem, FContext = any> {
 
     get matches() {
         if (this.#matches.isStale) {
-            this.#matches.takeSnapshot(this.items, this.context, this.#mixins, !!this.#ignoreSortByRulesWhileSearchRuleIsActive);
+            this.#matches.takeSnapshot({
+                items: this.items,
+                context: this.context,
+                mixins: this.#serializeMixins(),
+            });
             this.#matches.setIsStale(false);
         }
         return this.#matches.snapshot;
+    }
+
+    test(mixins: SnapshotSerializedMixins, isAdditive = false) {
+        if (isAdditive) {
+            const serializedMixins = { ...this.#serializeMixins(), ...mixins };
+            return Tester.test({ mixins: serializedMixins, items: this.items, context: this.context });
+        }
+        return Tester.test({ mixins, items: this.items, context: this.context });
+    }
+
+    #serializeMixins() {
+        const hasActiveSearch = this.#mixins.search.hasSearchRule && this.#mixins.search.hasSearchTerm;
+        const ignoreSortByRule = hasActiveSearch && this.#ignoreSortByRulesWhileSearchRuleIsActive;
+        const serializedMixins: SnapshotSerializedMixins = {};
+        if (hasActiveSearch) {
+            serializedMixins.search = this.#mixins.search.serialize();
+        }
+        if (this.#mixins.filters.activeRules.length > 0) {
+            serializedMixins.filters = this.#mixins.filters.serialize();
+        }
+        if (this.#mixins.pagination.numItemsPerPage) {
+            serializedMixins.pagination = this.#mixins.pagination.serialize();
+        }
+        if (ignoreSortByRule === false) {
+            serializedMixins.sortBy = this.#mixins.sortBy.serialize();
+        }
+        if (this.#mixins.groupBy.activeRule !== undefined) {
+            serializedMixins.groupBy = this.#mixins.groupBy.serialize();
+        }
+        return serializedMixins;
     }
 
     get isEmpty() {
@@ -321,10 +363,8 @@ class FinderCore<FItem, FContext = any> {
         if (isEqual(items, this.#items) === false) {
             const previousValue = this.#items;
             this.#items = items;
-
-            // option generators will need to be recalculated
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-
+            this.#effectBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: "core", event: "change.core.setItems", current: items, initial: previousValue });
         }
     }
@@ -339,6 +379,7 @@ class FinderCore<FItem, FContext = any> {
             }
         }
     }
+
     setIsDisabled(value?: boolean) {
         if (!!value !== this.disabled) {
             const previousValue = this.disabled;
@@ -347,14 +388,19 @@ class FinderCore<FItem, FContext = any> {
         }
     }
 
+    setRules(definitions: FinderRule<FItem, FContext>[]) {
+        if (isEqual(definitions, this.#ruleBook.getDefinitions()) === false) {
+            this.#ruleBook.setRules(definitions);
+            this.#ruleBook.hydrateDefinitions(this.items, this.context);
+        }
+    }
+
     setContext(context: FContext) {
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;
-
-            // option generators will need to be recalculated
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-
+            this.#effectBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: "core", event: "change.core.syncContext", current: context, initial: previousValue });
         }
     }

@@ -1,11 +1,12 @@
-import { FinderRule, FinderSnapshot } from "../../types";
+import { FinderSnapshot } from "./core-types";
+import { FinderRule } from "./rule-types";
 export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy";
-type FinderSharedEventProps = {
+interface FinderSharedEventProps {
     source: string;
     event: FinderEventName;
     snapshot: FinderSnapshot<any>;
     timestamp: number;
-};
+}
 export interface FinderInitEvent extends FinderSharedEventProps {
     source: "core";
     event: "init";

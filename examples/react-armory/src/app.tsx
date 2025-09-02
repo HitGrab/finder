@@ -1,4 +1,4 @@
-import { filterRule, Finder, FinderContent, FinderEvent, finderRuleset, groupByRule, searchRule, sortByRule } from "@hitgrab/finder";
+import { filterRule, Finder, FinderEvent, finderRuleset, groupByRule, searchRule, sortByRule } from "@hitgrab/finder";
 import "./global.css";
 import { capitalize, range } from "lodash";
 import { SearchInput } from "./components/search-input";
@@ -27,7 +27,7 @@ function App() {
         filterRule({
             id: "has_quantity",
             filterFn: (item) => item.quantity > 0,
-            isBoolean: true,
+            boolean: true,
         }),
         filterRule({
             id: "rarity",
@@ -81,7 +81,7 @@ function App() {
                     <GroupByDropdown />
                 </div>
                 <div className="equipmentList">
-                    <FinderContent<Equipment>>
+                    <Finder.Content<Equipment>>
                         {{
                             loading: range(0, 12).map((index) => <EquipmentCardSkeleton key={index} />),
                             empty: "No items in list",
@@ -113,7 +113,7 @@ function App() {
                                 });
                             },
                         }}
-                    </FinderContent>
+                    </Finder.Content>
                 </div>
             </div>
             Assets from https://emblemadept.itch.io/pixel-armor-pack-3-greece-rome

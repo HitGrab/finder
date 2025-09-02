@@ -1,12 +1,11 @@
-import { FinderRule } from "../../types";
 import { FiltersMixin } from "../filters/filters";
+import { FinderRule } from "../types/rule-types";
 import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "../utils/rule-utils";
 
 /**
  * Stores rule definitions and hydrated rules
  */
 export class RuleBook<FItem, FContext> {
-    // static rule definitions
     #definitions;
 
     rules: FinderRule<FItem>[] = [];
@@ -34,6 +33,15 @@ export class RuleBook<FItem, FContext> {
 
             return rule.id === identifier;
         }) as Rule | undefined;
+    }
+
+    getDefinitions() {
+        return this.#definitions;
+    }
+
+    setRules(definitions: FinderRule<FItem>[]) {
+        RuleBook.validateDefinitions(definitions);
+        this.#definitions = definitions;
     }
 
     static validateDefinitions(definitions: FinderRule[]) {

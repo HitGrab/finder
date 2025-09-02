@@ -1,14 +1,13 @@
-import { MixinInjectedDependencies } from "../types/internal-types";
+import { MixinInjectedDependencies, SerializedPaginationMixin } from "../types/core-types";
 import { clamp } from "../utils/finder-utils";
 
-type InitialValues = {
+interface InitialValues {
     page: number | undefined;
     numItemsPerPage: number | undefined;
-};
+}
+
 class PaginationMixin<FItem> {
     #page: number;
-
-    #numDisplayedItems: number;
 
     numItemsPerPage?: number;
 
@@ -18,7 +17,6 @@ class PaginationMixin<FItem> {
         this.#page = page ?? 1;
         this.numItemsPerPage = numItemsPerPage;
         this.#deps = handlers;
-        this.#numDisplayedItems = handlers.getItems().length;
     }
 
     setPage(value: number) {
@@ -53,7 +51,7 @@ class PaginationMixin<FItem> {
             return undefined;
         }
 
-        return Math.ceil(this.#numDisplayedItems / this.numItemsPerPage);
+        return Math.ceil(this.#deps.getItems().length / this.numItemsPerPage);
     }
 
     get numTotalItems() {
@@ -76,19 +74,22 @@ class PaginationMixin<FItem> {
         return 0;
     }
 
-    process(items: FItem[]) {
-        if (this.numItemsPerPage === undefined) {
+    serialize(): SerializedPaginationMixin {
+        return {
+            page: this.#page,
+            numItemsPerPage: this.numItemsPerPage,
+        };
+    }
+
+    static process<FItem>(options: SerializedPaginationMixin, items: FItem[]) {
+        if (options.numItemsPerPage === undefined) {
             return items;
         }
 
-        let page = this.#page ?? 1;
-
-        this.#numDisplayedItems = items.length;
-
-        const lastPage = Math.ceil(items.length / this.numItemsPerPage);
-        const clampedPage = clamp(page, 1, lastPage);
-        const offset = (clampedPage - 1) * this.numItemsPerPage;
-        return items.slice(offset, offset + this.numItemsPerPage);
+        const lastPage = Math.ceil(items.length / options.numItemsPerPage);
+        const clampedPage = clamp(options.page, 1, lastPage);
+        const offset = (clampedPage - 1) * options.numItemsPerPage;
+        return items.slice(offset, offset + options.numItemsPerPage);
     }
 }
 

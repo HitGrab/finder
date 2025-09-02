@@ -1,26 +1,27 @@
+import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
+import { simpleUniqBy } from "../utils/finder-utils";
 import {
-    HydratedFilterRule,
     FilterOption,
+    FilterRule,
+    FilterRuleUnion,
     FilterTestOptions,
     FilterTestRuleOptions,
     FilterTestRuleOptionsOptions,
-    FilterRuleUnion,
-    FilterRule,
-} from "../../types";
-import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
-import { MixinInjectedDependencies } from "../types/internal-types";
-import { simpleUniqBy } from "../utils/finder-utils";
+    HydratedFilterRule,
+} from "../types/rule-types";
+import { MixinInjectedDependencies, SerializedFiltersMixin } from "../types/core-types";
 
-type InitialValues = {
+interface InitialValues {
     initialFilters: Record<string, any> | undefined;
-};
+}
+
 class FiltersMixin {
-    filters;
+    #values;
 
     #deps;
 
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
-        this.filters = initialFilters || {};
+        this.#values = initialFilters || {};
         this.#deps = deps;
     }
 
@@ -46,11 +47,11 @@ class FiltersMixin {
             let transformedFilterValue = isBlankString ? undefined : incomingFilterValue;
 
             // early exit if nothing changed
-            if (this.filters?.[rule.id] !== undefined && this.filters[rule.id] === transformedFilterValue) {
+            if (this.#values?.[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
                 return;
             }
 
-            this.filters = { ...this.filters, [rule.id]: transformedFilterValue };
+            this.#values = { ...this.#values, [rule.id]: transformedFilterValue };
 
             this.#deps.touch({
                 source: "filters",
@@ -70,7 +71,7 @@ class FiltersMixin {
     }
 
     get activeRules() {
-        return this.rules.filter((rule) => this.isActive(rule));
+        return this.rules.filter((rule) => FiltersMixin.isRuleActive(rule, this.#values?.[rule.id]));
     }
 
     get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
@@ -79,7 +80,7 @@ class FiltersMixin {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        const value = this.filters?.[rule.id];
+        const value = this.#values?.[rule.id];
 
         if (value === undefined) {
             if (rule.defaultValue) {
@@ -87,7 +88,7 @@ class FiltersMixin {
             }
 
             if (rule.required) {
-                if (rule.isBoolean) {
+                if (rule.boolean) {
                     return true;
                 }
 
@@ -101,7 +102,7 @@ class FiltersMixin {
                 return [];
             }
 
-            if (rule.isBoolean) {
+            if (rule.boolean) {
                 return false;
             }
         }
@@ -142,12 +143,12 @@ class FiltersMixin {
         return this.set(rule, undefined);
     }
 
-    isActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    isRuleActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (!rule) {
             return false;
         }
-        return FiltersMixin.isActive(rule, this.filters?.[rule.id]);
+        return FiltersMixin.isRuleActive(rule, this.#values?.[rule.id]);
     }
 
     toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
@@ -156,7 +157,7 @@ class FiltersMixin {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        if (optionValue === undefined && rule.isBoolean) {
+        if (optionValue === undefined && rule.boolean) {
             const filterValue = this.get(rule.id);
             this.set(rule, !filterValue);
             return;
@@ -172,7 +173,7 @@ class FiltersMixin {
 
         const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
 
-        const previousFilterValue: any[] = this.filters?.[rule.id] ?? [];
+        const previousFilterValue: any[] = this.#values?.[rule.id] ?? [];
 
         if (previousFilterValue.includes(option.value)) {
             this.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
@@ -188,25 +189,17 @@ class FiltersMixin {
             return [];
         }
 
-        const optionsWithDefaults = { rules: [], context: this.#deps.getContext(), values: {}, ...options };
-
-        // Additive tests use the current values of the filters.
+        // Additive tests use the current Finder state.
         if (options.isAdditive) {
-            const ruleset = simpleUniqBy([...this.rules, ...optionsWithDefaults.rules], "id");
-            const initialValues = { ...this.getValues(), ...optionsWithDefaults.values };
-            return FiltersMixin.process(this.#deps.getItems(), ruleset, initialValues, optionsWithDefaults.context);
+            const rules = simpleUniqBy([...this.rules, ...options.rules], "id");
+            const values = { ...this.getValues(), ...options.values };
+            return this.#deps.test({ filters: { rules, values } }, true);
         }
-
-        return FiltersMixin.process(this.#deps.getItems(), optionsWithDefaults.rules, optionsWithDefaults.values, optionsWithDefaults.context);
+        return this.#deps.test({ filters: { rules: options.rules, values: options.values ?? {} } });
     }
 
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
-        // If no data is available, we cannot perform any tests.
-        if (this.#deps.isLoading()) {
-            return [];
-        }
-
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
+        const rule = this.getRule(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
@@ -224,12 +217,12 @@ class FiltersMixin {
             return new Map();
         }
 
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
+        const rule = this.getRule(identifier);
         if (rule === undefined) {
             throw new Error("Finder could not locate a rule for this filter.");
         }
 
-        if (rule.isBoolean === true) {
+        if (rule.boolean === true) {
             const resultMap = new Map<FilterOption | boolean, any[]>();
             resultMap.set(true, this.testRule({ rule, value: true, ...options }));
             resultMap.set(false, this.testRule({ rule, value: false, ...options }));
@@ -243,7 +236,7 @@ class FiltersMixin {
 
                 if (options.mergeExistingValue) {
                     // use raw value, not calculated value
-                    const initialValue = this.filters?.[rule.id] ?? [];
+                    const initialValue = this.#values?.[rule.id] ?? [];
 
                     if (rule.multiple) {
                         transformedOptionValue = [...initialValue, option.value];
@@ -266,30 +259,36 @@ class FiltersMixin {
 
     // return all filter values with default options and type casts applied.
     getValues() {
-        return this.rules.reduce(
-            (acc, rule) => {
-                acc[rule.id] = this.get(rule);
-                return acc;
-            },
-            {} as Record<string, any>,
-        );
+        return this.rules.reduce<Record<string, any>>((acc, rule) => {
+            acc[rule.id] = this.get(rule);
+            return acc;
+        }, {});
     }
 
-    process(items: any[], context?: any) {
-        return FiltersMixin.process(items, this.rules, this.getValues(), context);
+    getRawValues() {
+        return this.#values;
     }
 
-    static process<FItem>(items: FItem[], rules: HydratedFilterRule[], values: Record<string, any>, context?: any) {
-        const activeRules = rules.filter((rule) => {
-            return FiltersMixin.isActive(rule, values?.[rule.id]);
+    serialize(): SerializedFiltersMixin {
+        return {
+            rules: this.rules,
+            values: this.getValues(),
+        };
+    }
+
+    static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any) {
+        const activeRules = options.rules.filter((rule) => {
+            return FiltersMixin.isRuleActive(rule, options.values?.[rule.id]);
         });
-        // An item must pass ALL active filters to match.
+        if (activeRules.length === 0) {
+            return items;
+        }
         return items.filter((item) => {
-            return activeRules.every((rule) => rule.filterFn(item, values?.[rule.id], context));
+            return activeRules.every((rule) => rule.filterFn(item, options.values?.[rule.id], context));
         });
     }
 
-    static isActive(rule: FilterRuleUnion | HydratedFilterRule, value: any) {
+    static isRuleActive(rule: FilterRuleUnion | HydratedFilterRule, value: any) {
         if (rule.required) {
             return true;
         }
@@ -304,7 +303,7 @@ class FiltersMixin {
             return false;
         }
 
-        if (rule.isBoolean && value === false) {
+        if (rule.boolean && value === false) {
             return false;
         }
 
@@ -324,7 +323,7 @@ class FiltersMixin {
             // reduce uncertainty
             multiple: !!rule.multiple,
             required: !!rule.required,
-            isBoolean: !!rule.isBoolean,
+            boolean: !!rule.boolean,
             hidden: !!rule.hidden,
 
             // brand it

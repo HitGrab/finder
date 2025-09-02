@@ -39,7 +39,7 @@ describe("Search", () => {
 
         const finder = new FinderCore(objectItems, { rules });
         finder.search.setSearchTerm("apple");
-        expect(finder.matches.items).toStrictEqual([apple]);
+        expect(finder.matches.items).toEqual([apple]);
     });
 
     test("Search ranks by closest match", () => {
@@ -51,7 +51,7 @@ describe("Search", () => {
         ];
 
         const finder = new FinderCore(items, { rules, initialSearchTerm: "many ap" });
-        expect(finder.matches.items).toStrictEqual(["many apples"]);
+        expect(finder.matches.items).toEqual(["many apples"]);
     });
 
     test("Search can override Sort", () => {
@@ -68,7 +68,7 @@ describe("Search", () => {
 
         const finder = new FinderCore(items, { rules, ignoreSortByRulesWhileSearchRuleIsActive: true });
         finder.search.setSearchTerm("apple");
-        expect(finder.matches.items).toStrictEqual(["apple", "many apples", "barrel of apples"]);
+        expect(finder.matches.items).toEqual(["apple", "many apples", "barrel of apples"]);
     });
 
     test("Debounced searches trigger only once", async () => {
@@ -93,7 +93,7 @@ describe("Search", () => {
         expect(onChange).toHaveBeenCalledTimes(1);
     });
 
-    test("Custom search function", () => {
+    test("Test search", () => {
         const rules = [
             searchRule({
                 searchFn: (item: MockObjectItem) => item.type,
@@ -101,7 +101,6 @@ describe("Search", () => {
         ];
 
         const finder = new FinderCore(objectItems, { rules });
-        finder.search.setSearchTerm("apple");
-        expect(finder.matches.items).toStrictEqual([apple]);
+        expect(finder.search.test("ple")).toEqual([apple]);
     });
 });

@@ -1,4 +1,5 @@
-import { FilterOption, GroupByRule, HydratedFilterRule, SearchRule, SortByRule, FilterRuleUnion } from "../../types";
+import { RuleEffect, SearchEffect } from "../types/effect-types";
+import { FilterOption, FilterRuleUnion, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types/rule-types";
 
 export function getFilterOptionFromIdentifier<FItem, FContext>(
     optionOrOptionValue: FilterOption | any,
@@ -54,6 +55,10 @@ export function isGroupByRule<FItem>(rule: unknown): rule is GroupByRule<FItem> 
     return typeof rule === "object" && rule !== null && "groupFn" in rule;
 }
 
-export function isLinkedRuleBundle<FItem>(rule: unknown): rule is SearchRule<FItem> {
-    return typeof rule === "object" && rule !== null && ("searchFn" in rule || "haystackFn" in rule);
+export function isRuleEffect<FItem>(data: unknown): data is RuleEffect<FItem> {
+    return typeof data === "object" && data !== null && ("rules" in data || "callback" in data);
+}
+
+export function isSearchEffect<FItem>(data: unknown): data is SearchEffect<FItem> {
+    return typeof data === "object" && data !== null && ("haystack" in data || "callback" in data);
 }

@@ -1,10 +1,10 @@
 import { FinderContentRenderProp } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
 
-interface FinderLoadingProps {
+interface FinderContentLoadingProps {
     children: FinderContentRenderProp;
 }
-function FinderLoading({ children: Component }: FinderLoadingProps) {
+function FinderContentLoading({ children: Component }: FinderContentLoadingProps) {
     const finder = useFinder();
     if (finder.state === "loading" && Component) {
         if (typeof Component === "function") {
@@ -16,4 +16,4 @@ function FinderLoading({ children: Component }: FinderLoadingProps) {
     return null;
 }
 
-export { FinderLoading };
+export { FinderContentLoading };

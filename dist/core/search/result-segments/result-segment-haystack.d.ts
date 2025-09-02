@@ -1,4 +1,4 @@
-export declare class Haystack {
+export declare class ResultSegmentHaystack {
     #private;
     source: string;
     transformed: string;

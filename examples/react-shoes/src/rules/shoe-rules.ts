@@ -7,7 +7,7 @@ import { intersection, sortBy, capitalize } from "lodash";
  * An array of static rules that can be activated by Finder.
  */
 export const rules = finderRuleset<Shoe>([
-    searchRule({ searchFn: (item) => item.name }),
+    searchRule({ id: "search", searchFn: (item) => item.name }),
     filterRule({
         id: "brand",
         label: "Brand",
@@ -72,21 +72,19 @@ export const rules = finderRuleset<Shoe>([
         id: "in_stock",
         label: "In Stock",
         filterFn: (item) => item.in_stock,
-        isBoolean: true,
+        boolean: true,
     }),
     filterRule({
         id: "color",
         label: "Color",
         filterFn: (item, value) => item.colors.includes(value),
         options: ({ items }) => {
-            const uniqueColors = items
-                .reduce((acc, item) => {
-                    item.colors.forEach((color) => {
-                        acc.add(color);
-                    });
-                    return acc;
-                }, new Set<string>())
-                .values();
+            const uniqueColors = items.reduce((acc, item) => {
+                item.colors.forEach((color) => {
+                    acc.add(color);
+                });
+                return acc;
+            }, new Set<string>());
 
             return Array.from(uniqueColors)
                 .sort()
