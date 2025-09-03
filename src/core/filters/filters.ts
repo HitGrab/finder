@@ -56,11 +56,8 @@ class FiltersMixin {
             this.#deps.touch({
                 source: "filters",
                 event: "change.filters.set",
-                current: {
-                    rule,
-                    value: incomingFilterValue,
-                },
-                initial: { rule, value: previousValue },
+                current: incomingFilterValue,
+                initial: previousValue,
                 rule,
             });
         });

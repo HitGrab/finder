@@ -16,11 +16,11 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Usage",
+    "title": "Components",
     "permalink": "/finder/react/"
   },
   "next": {
-    "title": "FinderContent",
+    "title": "Finder.Content",
     "permalink": "/finder/react/finder-content"
   }
 }

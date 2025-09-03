@@ -1,0 +1,23 @@
+{
+  "id": "api/group-by-mixin",
+  "title": "GroupBy Mixin",
+  "description": "The GroupBy mixin can be accessed from finder.groupBy.",
+  "source": "@site/docs/api/group-by-mixin.md",
+  "sourceDirName": "api",
+  "slug": "/api/group-by-mixin",
+  "permalink": "/finder/api/group-by-mixin",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filters Mixin",
+    "permalink": "/finder/api/filters-api"
+  },
+  "next": {
+    "title": "Matches Mixin",
+    "permalink": "/finder/api/matches-mixin"
+  }
+}

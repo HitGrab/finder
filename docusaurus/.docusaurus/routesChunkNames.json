@@ -6,82 +6,94 @@
     },
     "content": "393be207"
   },
-  "/finder/-bcd": {
+  "/finder/-445": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/finder/-fce": {
+  "/finder/-8fd": {
     "__comp": "a7bd4aaa",
     "__props": "1994f6cc"
   },
-  "/finder/-b6e": {
+  "/finder/-dbf": {
     "__comp": "a94703ab"
   },
-  "/finder/events-and-effects/-f98": {
+  "/finder/api/-2a4": {
     "__comp": "17896441",
-    "content": "fde38bc3"
+    "content": "5e8c322a"
   },
-  "/finder/events-and-effects/effects-e81": {
+  "/finder/api/events-api-451": {
     "__comp": "17896441",
-    "content": "2b6b4a8f"
+    "content": "53cde753"
   },
-  "/finder/events-and-effects/events-458": {
+  "/finder/api/filters-api-136": {
     "__comp": "17896441",
-    "content": "4e54647c"
+    "content": "6a32edac"
   },
-  "/finder/mixins/-546": {
+  "/finder/api/group-by-api-58c": {
     "__comp": "17896441",
-    "content": "b685de51"
+    "content": "124e02d2"
   },
-  "/finder/mixins/filters-mixin-ccb": {
+  "/finder/api/matches-api-16c": {
     "__comp": "17896441",
-    "content": "9f2d63d4"
+    "content": "7439d9b4"
   },
-  "/finder/mixins/group-by-mixin-8b6": {
+  "/finder/api/pagination-api-621": {
     "__comp": "17896441",
-    "content": "078d2362"
+    "content": "b3b4c63f"
   },
-  "/finder/mixins/matches-mixin-032": {
+  "/finder/api/search-api-1f2": {
     "__comp": "17896441",
-    "content": "4f834456"
+    "content": "41994835"
   },
-  "/finder/mixins/pagination-mixin-674": {
+  "/finder/api/sort-by-api-f2a": {
     "__comp": "17896441",
-    "content": "8e3dd97b"
+    "content": "1e6fd662"
   },
-  "/finder/mixins/search-mixin-c76": {
+  "/finder/api/test-api-f6c": {
     "__comp": "17896441",
-    "content": "acfa8ab0"
+    "content": "f9718949"
   },
-  "/finder/mixins/sort-by-mixin-b66": {
+  "/finder/basic-usage-d58": {
     "__comp": "17896441",
-    "content": "2db693a1"
+    "content": "3c154d44"
   },
-  "/finder/react/-314": {
+  "/finder/components/-6ae": {
     "__comp": "17896441",
-    "content": "49f38925"
+    "content": "bd783ed9"
   },
-  "/finder/react/finder-f8a": {
+  "/finder/components/finder-4bb": {
     "__comp": "17896441",
-    "content": "3f1dc92f"
+    "content": "05093068"
   },
-  "/finder/react/finder-content-a4b": {
+  "/finder/components/finder-content-f7d": {
     "__comp": "17896441",
-    "content": "1c0f6985"
+    "content": "fab3ce5d"
   },
-  "/finder/react/finder-search-term-d6e": {
+  "/finder/components/finder-search-term-fdb": {
     "__comp": "17896441",
-    "content": "053e3870"
+    "content": "60ade38f"
   },
-  "/finder/react/use-finder-fcc": {
+  "/finder/components/use-finder-ad4": {
     "__comp": "17896441",
-    "content": "83b5f2b9"
+    "content": "ec6b633a"
   },
   "/finder/rules/-280": {
     "__comp": "17896441",
     "content": "eb96bcc6"
+  },
+  "/finder/rules/effects/-4d6": {
+    "__comp": "17896441",
+    "content": "965f5acf"
+  },
+  "/finder/rules/effects/rule-effects-b46": {
+    "__comp": "17896441",
+    "content": "fe1c38c5"
+  },
+  "/finder/rules/effects/search-effects-133": {
+    "__comp": "17896441",
+    "content": "a7049a63"
   },
   "/finder/rules/filter-rule-171": {
     "__comp": "17896441",
@@ -102,6 +114,34 @@
   "/finder/rules/sort-by-rule-614": {
     "__comp": "17896441",
     "content": "c7f97675"
+  },
+  "/finder/tutorial/-02c": {
+    "__comp": "17896441",
+    "content": "383d31c1"
+  },
+  "/finder/tutorial/component-ca3": {
+    "__comp": "17896441",
+    "content": "abe4c3a6"
+  },
+  "/finder/tutorial/controls-932": {
+    "__comp": "17896441",
+    "content": "b7608e14"
+  },
+  "/finder/tutorial/ruleset/-35a": {
+    "__comp": "17896441",
+    "content": "5b0914b1"
+  },
+  "/finder/tutorial/ruleset/filters-a99": {
+    "__comp": "17896441",
+    "content": "816cdef5"
+  },
+  "/finder/tutorial/ruleset/search-80c": {
+    "__comp": "17896441",
+    "content": "f580874d"
+  },
+  "/finder/tutorial/ruleset/sort-by-bed": {
+    "__comp": "17896441",
+    "content": "fec3d017"
   },
   "/finder/-8bd": {
     "__comp": "17896441",

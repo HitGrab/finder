@@ -1,0 +1,23 @@
+{
+  "id": "api/pagination-ai",
+  "title": "Pagination Mixin",
+  "description": "The Pagination mixin can be accessed from finder.pagination.",
+  "source": "@site/docs/api/pagination-ai.md",
+  "sourceDirName": "api",
+  "slug": "/api/pagination-ai",
+  "permalink": "/finder/api/pagination-ai",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Matches Mixin",
+    "permalink": "/finder/api/matches-api"
+  },
+  "next": {
+    "title": "Search Mixin",
+    "permalink": "/finder/api/search-api"
+  }
+}

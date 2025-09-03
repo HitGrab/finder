@@ -1,0 +1,19 @@
+{
+  "id": "basic-usage",
+  "title": "Basic Usage",
+  "description": "Finder needs two things:",
+  "source": "@site/docs/basic-usage.md",
+  "sourceDirName": ".",
+  "slug": "/basic-usage",
+  "permalink": "/finder/basic-usage",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "useFinder",
+    "permalink": "/finder/components/use-finder"
+  }
+}

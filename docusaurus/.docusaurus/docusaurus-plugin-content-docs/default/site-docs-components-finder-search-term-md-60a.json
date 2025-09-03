@@ -1,0 +1,23 @@
+{
+  "id": "components/finder-search-term",
+  "title": "Finder.SearchTerm",
+  "description": "This handy component allows you to highlight the segments in your haystack that matched your searchTerm.",
+  "source": "@site/docs/components/finder-search-term.md",
+  "sourceDirName": "components",
+  "slug": "/components/finder-search-term",
+  "permalink": "/finder/components/finder-search-term",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Finder.Content",
+    "permalink": "/finder/components/finder-content"
+  },
+  "next": {
+    "title": "useFinder",
+    "permalink": "/finder/components/use-finder"
+  }
+}

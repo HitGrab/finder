@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # SearchRule
 
-## Select strings from your items to search against
+**Select strings from your items to search against**
 
 A Finder instance has a single `searchTerm` string that will be compared against haystacks extracted from the items array.
 

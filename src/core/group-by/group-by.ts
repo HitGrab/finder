@@ -65,8 +65,8 @@ class GroupByMixin<FItem, FContext> {
         this.#deps.touch({
             source: "groupBy",
             event: "change.groupBy.set",
-            current: { rule },
-            initial: { rule: previousRule },
+            current: rule?.id,
+            initial: previousRule?.id,
             rule,
         });
     }

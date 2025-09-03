@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/ruleset/search",
+  "title": "Search",
+  "description": "Let's start with the simplest Rule: a search.",
+  "source": "@site/docs/tutorial/ruleset/search.md",
+  "sourceDirName": "tutorial/ruleset",
+  "slug": "/tutorial/ruleset/search",
+  "permalink": "/finder/tutorial/ruleset/search",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Ruleset",
+    "permalink": "/finder/tutorial/ruleset/"
+  },
+  "next": {
+    "title": "Filters",
+    "permalink": "/finder/tutorial/ruleset/filters"
+  }
+}

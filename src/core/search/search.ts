@@ -48,8 +48,8 @@ class SearchMixin<FItem> {
             this.#deps.touch({
                 source: "search",
                 event: "change.search.setSearchTerm",
-                current: { searchTerm: incomingSearchTerm },
-                initial: { searchTerm: previousValue },
+                current: incomingSearchTerm,
+                initial: previousValue,
                 rule,
             });
         });
@@ -64,8 +64,8 @@ class SearchMixin<FItem> {
         this.#deps.touch({
             source: "search",
             event: "change.search.reset",
-            current: { searchTerm: "" },
-            initial: { searchTerm: previousValue },
+            current: "",
+            initial: previousValue,
             rule: this.rule,
         });
     }

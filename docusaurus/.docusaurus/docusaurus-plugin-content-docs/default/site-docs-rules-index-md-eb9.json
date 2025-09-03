@@ -10,14 +10,14 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
-  "sidebarPosition": 1,
+  "sidebarPosition": 2,
   "frontMatter": {
-    "sidebar_position": 1
+    "sidebar_position": 2
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "useFinder",
-    "permalink": "/finder/react/use-finder"
+    "title": "Tests",
+    "permalink": "/finder/api/test-api"
   },
   "next": {
     "title": "SearchRule",

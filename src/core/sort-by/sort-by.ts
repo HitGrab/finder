@@ -68,8 +68,8 @@ class SortByMixin<FItem> {
         this.#deps.touch({
             source: "sortBy",
             event: "change.sortBy.set",
-            current: { rule, sortDirection: incomingSortDirection },
-            initial: { rule: previousRule, sortDirection: previousSortDirection },
+            current: { rule: rule?.id, sortDirection: incomingSortDirection },
+            initial: { rule: previousRule?.id, sortDirection: previousSortDirection },
             rule: this.activeRule,
         });
     }
