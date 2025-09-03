@@ -56,11 +56,6 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "basic-usage",
-              "path": "/finder/basic-usage",
-              "sidebar": "tutorialSidebar"
-            },
-            {
               "id": "components/finder",
               "path": "/finder/components/finder",
               "sidebar": "tutorialSidebar"
@@ -83,6 +78,11 @@
             {
               "id": "components/use-finder",
               "path": "/finder/components/use-finder",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/index",
+              "path": "/finder/examples/",
               "sidebar": "tutorialSidebar"
             },
             {

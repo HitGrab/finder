@@ -40,7 +40,7 @@ function App() {
 
     return (
         <Finder items={data} rules={rules} isLoading={isPending} context={context} ignoreSortByRulesWhileSearchRuleIsActive={true}>
-            <h1>Kicking Rad Shoe Store</h1>
+            <h1>Kicking Rad Shoes</h1>
             <div className="layout">
                 <aside>
                     <NameSearchControl />

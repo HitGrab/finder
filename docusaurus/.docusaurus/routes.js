@@ -9,15 +9,15 @@ export default [
   },
   {
     path: '/finder/',
-    component: ComponentCreator('/finder/', '445'),
+    component: ComponentCreator('/finder/', 'def'),
     routes: [
       {
         path: '/finder/',
-        component: ComponentCreator('/finder/', '8fd'),
+        component: ComponentCreator('/finder/', '329'),
         routes: [
           {
             path: '/finder/',
-            component: ComponentCreator('/finder/', 'dbf'),
+            component: ComponentCreator('/finder/', '5cd'),
             routes: [
               {
                 path: '/finder/api/',
@@ -74,12 +74,6 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/basic-usage',
-                component: ComponentCreator('/finder/basic-usage', 'd58'),
-                exact: true,
-                sidebar: "tutorialSidebar"
-              },
-              {
                 path: '/finder/components/',
                 component: ComponentCreator('/finder/components/', '6ae'),
                 exact: true,
@@ -106,6 +100,12 @@ export default [
               {
                 path: '/finder/components/use-finder',
                 component: ComponentCreator('/finder/components/use-finder', 'ad4'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/examples/',
+                component: ComponentCreator('/finder/examples/', '201'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

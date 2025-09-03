@@ -6,17 +6,17 @@
     },
     "content": "393be207"
   },
-  "/finder/-445": {
+  "/finder/-def": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/finder/-8fd": {
+  "/finder/-329": {
     "__comp": "a7bd4aaa",
     "__props": "1994f6cc"
   },
-  "/finder/-dbf": {
+  "/finder/-5cd": {
     "__comp": "a94703ab"
   },
   "/finder/api/-2a4": {
@@ -55,10 +55,6 @@
     "__comp": "17896441",
     "content": "f9718949"
   },
-  "/finder/basic-usage-d58": {
-    "__comp": "17896441",
-    "content": "3c154d44"
-  },
   "/finder/components/-6ae": {
     "__comp": "17896441",
     "content": "bd783ed9"
@@ -78,6 +74,10 @@
   "/finder/components/use-finder-ad4": {
     "__comp": "17896441",
     "content": "ec6b633a"
+  },
+  "/finder/examples/-201": {
+    "__comp": "17896441",
+    "content": "bf614533"
   },
   "/finder/rules/-280": {
     "__comp": "17896441",

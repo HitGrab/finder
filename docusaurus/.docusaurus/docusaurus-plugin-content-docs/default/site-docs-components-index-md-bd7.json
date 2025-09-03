@@ -1,6 +1,6 @@
 {
   "id": "components/index",
-  "title": "Components",
+  "title": "React Components",
   "description": "",
   "source": "@site/docs/components/index.md",
   "sourceDirName": "components",
@@ -12,13 +12,13 @@
   "version": "current",
   "sidebarPosition": 3,
   "frontMatter": {
-    "title": "Components",
+    "title": "React Components",
     "sidebar_position": 3
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "FinderRuleset",
-    "permalink": "/finder/rules/ruleset"
+    "title": "Tests",
+    "permalink": "/finder/api/test-api"
   },
   "next": {
     "title": "Finder",

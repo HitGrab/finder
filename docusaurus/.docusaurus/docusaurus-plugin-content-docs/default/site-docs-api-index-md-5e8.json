@@ -10,15 +10,15 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
-  "sidebarPosition": 2,
+  "sidebarPosition": 3,
   "frontMatter": {
     "title": "API",
-    "sidebar_position": 2
+    "sidebar_position": 3
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Build Controls",
-    "permalink": "/finder/tutorial/controls"
+    "title": "FinderRuleset",
+    "permalink": "/finder/rules/ruleset"
   },
   "next": {
     "title": "Search",

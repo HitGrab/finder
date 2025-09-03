@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Tests",
-    "permalink": "/finder/api/test-api"
+    "title": "Build Controls",
+    "permalink": "/finder/tutorial/controls"
   },
   "next": {
     "title": "SearchRule",
