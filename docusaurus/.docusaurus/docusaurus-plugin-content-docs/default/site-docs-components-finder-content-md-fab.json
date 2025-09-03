@@ -1,0 +1,23 @@
+{
+  "id": "components/finder-content",
+  "title": "Finder.Content",
+  "description": "FinderContent accepts a set of renderProps, and will determine the most appropriate state to display. Only a single state can be active at a time.",
+  "source": "@site/docs/components/finder-content.md",
+  "sourceDirName": "components",
+  "slug": "/components/finder-content",
+  "permalink": "/finder/components/finder-content",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Finder",
+    "permalink": "/finder/components/finder"
+  },
+  "next": {
+    "title": "Finder.SearchTerm",
+    "permalink": "/finder/components/finder-search-term"
+  }
+}

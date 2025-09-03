@@ -13,11 +13,11 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "FinderSearchTerm",
+    "title": "Finder.SearchTerm",
     "permalink": "/finder/react/finder-search-term"
   },
   "next": {
-    "title": "Rules",
-    "permalink": "/finder/rules/"
+    "title": "Basic Usage",
+    "permalink": "/finder/basic-usage"
   }
 }

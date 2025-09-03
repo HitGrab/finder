@@ -11,18 +11,78 @@
           "mainDocId": "index",
           "docs": [
             {
-              "id": "events-and-effects/effects",
-              "path": "/finder/events-and-effects/effects",
+              "id": "api/events-api",
+              "path": "/finder/api/events-api",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "events-and-effects/events",
-              "path": "/finder/events-and-effects/events",
+              "id": "api/filters-api",
+              "path": "/finder/api/filters-api",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "events-and-effects/index",
-              "path": "/finder/events-and-effects/",
+              "id": "api/group-by-api",
+              "path": "/finder/api/group-by-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/index",
+              "path": "/finder/api/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/matches-api",
+              "path": "/finder/api/matches-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/pagination-api",
+              "path": "/finder/api/pagination-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/search-api",
+              "path": "/finder/api/search-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/sort-by-api",
+              "path": "/finder/api/sort-by-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/test-api",
+              "path": "/finder/api/test-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/finder",
+              "path": "/finder/components/finder",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/finder-content",
+              "path": "/finder/components/finder-content",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/finder-search-term",
+              "path": "/finder/components/finder-search-term",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/index",
+              "path": "/finder/components/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/use-finder",
+              "path": "/finder/components/use-finder",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "examples/index",
+              "path": "/finder/examples/",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -31,63 +91,18 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "mixins/filters-mixin",
-              "path": "/finder/mixins/filters-mixin",
+              "id": "rules/effects/index",
+              "path": "/finder/rules/effects/",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "mixins/group-by-mixin",
-              "path": "/finder/mixins/group-by-mixin",
+              "id": "rules/effects/rule-effects",
+              "path": "/finder/rules/effects/rule-effects",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "mixins/index",
-              "path": "/finder/mixins/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "mixins/matches-mixin",
-              "path": "/finder/mixins/matches-mixin",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "mixins/pagination-mixin",
-              "path": "/finder/mixins/pagination-mixin",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "mixins/search-mixin",
-              "path": "/finder/mixins/search-mixin",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "mixins/sort-by-mixin",
-              "path": "/finder/mixins/sort-by-mixin",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "react/finder",
-              "path": "/finder/react/finder",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "react/finder-content",
-              "path": "/finder/react/finder-content",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "react/finder-search-term",
-              "path": "/finder/react/finder-search-term",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "react/index",
-              "path": "/finder/react/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "react/use-finder",
-              "path": "/finder/react/use-finder",
+              "id": "rules/effects/search-effects",
+              "path": "/finder/rules/effects/search-effects",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -118,6 +133,41 @@
             {
               "id": "rules/sort-by-rule",
               "path": "/finder/rules/sort-by-rule",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/component",
+              "path": "/finder/tutorial/component",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/controls",
+              "path": "/finder/tutorial/controls",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/index",
+              "path": "/finder/tutorial/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/ruleset/filters",
+              "path": "/finder/tutorial/ruleset/filters",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/ruleset/index",
+              "path": "/finder/tutorial/ruleset/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/ruleset/search",
+              "path": "/finder/tutorial/ruleset/search",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/ruleset/sort-by",
+              "path": "/finder/tutorial/ruleset/sort-by",
               "sidebar": "tutorialSidebar"
             }
           ],

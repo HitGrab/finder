@@ -13,11 +13,11 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "GroupByRule",
-    "permalink": "/finder/rules/group-by-rule"
+    "title": "Search Effects",
+    "permalink": "/finder/rules/effects/search-effects"
   },
   "next": {
-    "title": "Mixins",
-    "permalink": "/finder/mixins/"
+    "title": "API",
+    "permalink": "/finder/api/"
   }
 }

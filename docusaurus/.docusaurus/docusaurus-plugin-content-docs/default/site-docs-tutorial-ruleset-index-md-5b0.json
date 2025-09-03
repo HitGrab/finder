@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/ruleset/index",
+  "title": "Define the Ruleset",
+  "description": "",
+  "source": "@site/docs/tutorial/ruleset/index.md",
+  "sourceDirName": "tutorial/ruleset",
+  "slug": "/tutorial/ruleset/",
+  "permalink": "/finder/tutorial/ruleset/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tutorial",
+    "permalink": "/finder/tutorial/"
+  },
+  "next": {
+    "title": "Search",
+    "permalink": "/finder/tutorial/ruleset/search"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "api/search-api",
+  "title": "Search",
+  "description": "The Search api can be accessed from finder.search.",
+  "source": "@site/docs/api/search-api.md",
+  "sourceDirName": "api",
+  "slug": "/api/search-api",
+  "permalink": "/finder/api/search-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "API",
+    "permalink": "/finder/api/"
+  },
+  "next": {
+    "title": "Filters",
+    "permalink": "/finder/api/filters-api"
+  }
+}

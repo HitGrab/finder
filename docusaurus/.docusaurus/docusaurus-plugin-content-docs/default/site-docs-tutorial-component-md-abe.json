@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/component",
+  "title": "Display Results",
+  "description": "Now that we have our ruleset, time to pass it to a Finder instance!",
+  "source": "@site/docs/tutorial/component.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/component",
+  "permalink": "/finder/tutorial/component",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Sort By",
+    "permalink": "/finder/tutorial/ruleset/sort-by"
+  },
+  "next": {
+    "title": "Build Controls",
+    "permalink": "/finder/tutorial/controls"
+  }
+}

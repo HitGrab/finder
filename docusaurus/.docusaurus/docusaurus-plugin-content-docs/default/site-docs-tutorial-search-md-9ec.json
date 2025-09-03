@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/search",
+  "title": "Search",
+  "description": "Let's start with the simplest Rule: a search.",
+  "source": "@site/docs/tutorial/search.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/search",
+  "permalink": "/finder/tutorial/search",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tutorial",
+    "permalink": "/finder/tutorial/"
+  },
+  "next": {
+    "title": "Filters",
+    "permalink": "/finder/tutorial/filters"
+  }
+}

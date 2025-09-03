@@ -1,0 +1,26 @@
+{
+  "id": "components/finder",
+  "title": "Finder",
+  "description": "The root component, Finder accepts an armada of configuration properties and provides simplified context to consuming components.",
+  "source": "@site/docs/components/finder.md",
+  "sourceDirName": "components",
+  "slug": "/components/finder",
+  "permalink": "/finder/components/finder",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "React Components",
+    "permalink": "/finder/components/"
+  },
+  "next": {
+    "title": "Finder.Content",
+    "permalink": "/finder/components/finder-content"
+  }
+}

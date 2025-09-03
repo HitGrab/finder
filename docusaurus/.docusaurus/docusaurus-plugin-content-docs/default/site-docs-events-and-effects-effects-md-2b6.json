@@ -1,7 +1,7 @@
 {
   "id": "events-and-effects/effects",
-  "title": "Effects",
-  "description": "Effects are onChange callbacks triggered when certain rules are changed.",
+  "title": "Rule Effects",
+  "description": "ruleEffects are onChange callbacks triggered when certain rules are changed. It allows you to couple rules to each other wihout adding complex onChange events.",
   "source": "@site/docs/events-and-effects/effects.md",
   "sourceDirName": "events-and-effects",
   "slug": "/events-and-effects/effects",

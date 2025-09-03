@@ -1,6 +1,6 @@
 {
   "id": "react/index",
-  "title": "Usage",
+  "title": "Components",
   "description": "",
   "source": "@site/docs/react/index.md",
   "sourceDirName": "react",
@@ -10,15 +10,15 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
-  "sidebarPosition": 0,
+  "sidebarPosition": 3,
   "frontMatter": {
-    "title": "Usage",
-    "sidebar_position": 0
+    "title": "Components",
+    "sidebar_position": 3
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Finder",
-    "permalink": "/finder/"
+    "title": "FinderRuleset",
+    "permalink": "/finder/rules/ruleset"
   },
   "next": {
     "title": "Finder",

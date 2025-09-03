@@ -1,0 +1,23 @@
+{
+  "id": "api/sort-by-mixin",
+  "title": "SortBy Mixin",
+  "description": "The Sortby mixin can be accessed from finder.sortBy.",
+  "source": "@site/docs/api/sort-by-mixin.md",
+  "sourceDirName": "api",
+  "slug": "/api/sort-by-mixin",
+  "permalink": "/finder/api/sort-by-mixin",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Search Mixin",
+    "permalink": "/finder/api/search-api"
+  },
+  "next": {
+    "title": "Effects & Events",
+    "permalink": "/finder/events-and-effects/"
+  }
+}

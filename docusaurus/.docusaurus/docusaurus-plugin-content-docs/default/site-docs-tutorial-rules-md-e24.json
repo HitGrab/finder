@@ -1,0 +1,19 @@
+{
+  "id": "tutorial/rules",
+  "title": "Filters",
+  "description": "Some likely filters are:",
+  "source": "@site/docs/tutorial/rules.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/rules",
+  "permalink": "/finder/tutorial/rules",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Apartment Rental app",
+    "permalink": "/finder/tutorial/"
+  }
+}

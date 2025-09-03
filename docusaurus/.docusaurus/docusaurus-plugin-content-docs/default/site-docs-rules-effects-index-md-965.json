@@ -1,0 +1,23 @@
+{
+  "id": "rules/effects/index",
+  "title": "Effects",
+  "description": "Effects let you trigger callbacks when certain Finder conditions change. While you could also use an onChange event to recreate the same functionality, effects can be invaluable tools for complex forms with connected rules.",
+  "source": "@site/docs/rules/effects/index.md",
+  "sourceDirName": "rules/effects",
+  "slug": "/rules/effects/",
+  "permalink": "/finder/rules/effects/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "GroupByRule",
+    "permalink": "/finder/rules/group-by-rule"
+  },
+  "next": {
+    "title": "Rule Effects",
+    "permalink": "/finder/rules/effects/rule-effects"
+  }
+}

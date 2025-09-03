@@ -1,0 +1,23 @@
+{
+  "id": "rules/effects/rule-effects",
+  "title": "Rule Effects",
+  "description": "ruleEffects are onChange callbacks triggered when certain rules are changed. It allows you to couple rules to each other wihout adding complex onChange events.",
+  "source": "@site/docs/rules/effects/rule-effects.md",
+  "sourceDirName": "rules/effects",
+  "slug": "/rules/effects/rule-effects",
+  "permalink": "/finder/rules/effects/rule-effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Effects",
+    "permalink": "/finder/rules/effects/"
+  },
+  "next": {
+    "title": "Search Effects",
+    "permalink": "/finder/rules/effects/search-effects"
+  }
+}

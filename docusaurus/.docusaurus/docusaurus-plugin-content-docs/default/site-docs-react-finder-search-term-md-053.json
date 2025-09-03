@@ -1,6 +1,6 @@
 {
   "id": "react/finder-search-term",
-  "title": "FinderSearchTerm",
+  "title": "Finder.SearchTerm",
   "description": "This handy component allows you to highlight the segments in your haystack that matched your searchTerm.",
   "source": "@site/docs/react/finder-search-term.md",
   "sourceDirName": "react",
@@ -13,7 +13,7 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "FinderContent",
+    "title": "Finder.Content",
     "permalink": "/finder/react/finder-content"
   },
   "next": {

@@ -13,7 +13,11 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Effects",
-    "permalink": "/finder/events-and-effects/effects"
+    "title": "Effects & Events",
+    "permalink": "/finder/events-and-effects/"
+  },
+  "next": {
+    "title": "Tutorial: Apartment Rental",
+    "permalink": "/finder/tutorial/"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "id": "rules/search-effects",
+  "title": "Search Effects",
+  "description": "searchEffects are triggered when the user searches for certain terms. You may want to suggest a filter, or preload data based on their search terms.",
+  "source": "@site/docs/rules/search-effects.md",
+  "sourceDirName": "rules",
+  "slug": "/rules/search-effects",
+  "permalink": "/finder/rules/search-effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "FinderRuleset",
+    "permalink": "/finder/rules/ruleset"
+  },
+  "next": {
+    "title": "API",
+    "permalink": "/finder/api/"
+  }
+}

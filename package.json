@@ -25,6 +25,9 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build && tsc --project tsconfig.production.json",
+        "build:docs": "npm --prefix docusaurus run build && rm -r docs && cp -r ./docusaurus/docs ./docs && mkdir ./docs/examples",
+        "build:armory": "npm --prefix examples/react-armory run build && cp -r ./examples/react-armory/dist ./docs/examples/armory",
+        "build:shoes": "npm --prefix examples/react-shoes run build && cp -r ./examples/react-shoes/dist ./docs/examples/shoes",
         "test": "vitest"
     },
     "repository": {

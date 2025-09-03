@@ -1,7 +1,7 @@
 {
   "id": "index",
   "title": "Finder",
-  "description": "Effortlessly sort, filter, search, and group data.",
+  "description": "Use static rules to effortlessly sort, filter, search, and group data.",
   "source": "@site/docs/index.md",
   "sourceDirName": ".",
   "slug": "/",
@@ -17,7 +17,7 @@
   },
   "sidebar": "tutorialSidebar",
   "next": {
-    "title": "Usage",
-    "permalink": "/finder/react/"
+    "title": "Tutorial",
+    "permalink": "/finder/tutorial/"
   }
 }

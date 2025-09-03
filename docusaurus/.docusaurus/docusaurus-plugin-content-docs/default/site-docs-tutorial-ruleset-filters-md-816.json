@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/ruleset/filters",
+  "title": "Filters",
+  "description": "Let's build some common filters.",
+  "source": "@site/docs/tutorial/ruleset/filters.md",
+  "sourceDirName": "tutorial/ruleset",
+  "slug": "/tutorial/ruleset/filters",
+  "permalink": "/finder/tutorial/ruleset/filters",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Search",
+    "permalink": "/finder/tutorial/ruleset/search"
+  },
+  "next": {
+    "title": "Sort By",
+    "permalink": "/finder/tutorial/ruleset/sort-by"
+  }
+}
