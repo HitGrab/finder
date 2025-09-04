@@ -1,7 +1,7 @@
 {
   "id": "rules/effects/search-effects",
   "title": "Search Effects",
-  "description": "searchEffects are triggered when the user searches for certain terms. You may want to suggest a filter, or preload data based on their search terms.",
+  "description": "searchEffects are triggered when the user searches for certain terms.",
   "source": "@site/docs/rules/effects/search-effects.md",
   "sourceDirName": "rules/effects",
   "slug": "/rules/effects/search-effects",
