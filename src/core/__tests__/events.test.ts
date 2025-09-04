@@ -47,8 +47,8 @@ describe("Events", () => {
             }),
         ];
         const declarativeOnChange: FinderOnChangeCallback = (event) => {
-            expect(event.current.rule.id).toStrictEqual("price_is_below");
-            expect(event.current.value).toStrictEqual(5);
+            expect(event.rule?.id).toBe("price_is_below");
+            expect(event.current).toBe(5);
         };
 
         const imperativeOnChange = vitest.fn();

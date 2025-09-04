@@ -28,7 +28,9 @@ export function getSearchResultSegments(haystack: string | string[], needle: str
             const transformedHaystackMatches = prepareResultSegments(matchedCharacterIndexes, haystack.transformed);
 
             // map the segments back to the source haystack
-            match = processResultSegments(haystack, transformedHaystackMatches);
+            const firstPassSegments = processResultSegments(haystack, transformedHaystackMatches);
+
+            match = prettifyResultSegments(firstPassSegments);
         }
 
         return match;
@@ -58,14 +60,13 @@ function prepareResultSegments(characterMatches: number[], transformedHaystackSt
             }
         }
 
-        const start = characterMatchIndex;
+        const index = characterMatchIndex;
         const end = characterMatchIndex + numSequentialIndexes;
-        const value = transformedHaystackString.substring(start, end + numSequentialIndexes);
+        const value = transformedHaystackString.substring(index, end);
 
         // append the positive match
         matches.push({
-            start,
-            end,
+            index,
             value,
             is_match: true,
             length: value.length,
@@ -83,44 +84,39 @@ function prepareResultSegments(characterMatches: number[], transformedHaystackSt
 /**
  * Map the transformed haystack matches back to the source string.
  */
-function processResultSegments(haystack: ResultSegmentHaystack, matchesFromTransformedHaystack: ResultSegment[]) {
-    let matches: ResultSegment[] = [];
+function processResultSegments(haystack: ResultSegmentHaystack, matches: ResultSegment[]) {
+    let segments: ResultSegment[] = [];
 
-    const firstMatch = matchesFromTransformedHaystack.at(0);
-    if (firstMatch && firstMatch.start !== 0) {
-        const end = haystack.getSourceCharacterIndex(firstMatch.start);
-        const value = haystack.source.substring(0, end);
-
-        matches.push({
-            start: 0,
-            end,
+    const firstMatch = matches.at(0);
+    if (firstMatch && firstMatch.index !== 0) {
+        const value = haystack.source.substring(0, haystack.getSourceCharacterIndex(firstMatch.index));
+        segments.push({
+            index: 0,
             value,
             is_match: false,
             length: value.length,
         });
     }
 
-    matchesFromTransformedHaystack.forEach((segment, index) => {
-        const start = haystack.getSourceCharacterIndex(segment.start);
-        const end = haystack.getSourceCharacterIndex(segment.end);
+    matches.forEach((segment, x) => {
+        const start = haystack.getSourceCharacterIndex(segment.index);
+        const end = haystack.getSourceCharacterIndex(segment.index + segment.length);
         const value = haystack.source.substring(start, end);
-        matches.push({
-            start,
-            end,
+        segments.push({
+            index: start,
             value,
-            is_match: segment.is_match,
+            is_match: true,
             length: value.length,
         });
 
         // look ahead for the next match, and add a 'missing' match for characters between here and there
-        const nextMatch = matchesFromTransformedHaystack.at(index + 1);
+        const nextMatch = matches.at(x + 1);
         if (nextMatch) {
-            const start = haystack.getSourceCharacterIndex(segment.end);
-            const end = haystack.getSourceCharacterIndex(nextMatch.start);
+            const start = haystack.getSourceCharacterIndex(segment.index + segment.length);
+            const end = haystack.getSourceCharacterIndex(nextMatch.index);
             const value = haystack.source.substring(start, end);
-            matches.push({
-                start,
-                end,
+            segments.push({
+                index: start,
                 value,
                 is_match: false,
                 length: value.length,
@@ -128,21 +124,45 @@ function processResultSegments(haystack: ResultSegmentHaystack, matchesFromTrans
         }
     });
 
-    const lastMatch = matchesFromTransformedHaystack.at(matchesFromTransformedHaystack.length - 1);
-    if (lastMatch && lastMatch.end !== haystack.source.length) {
-        const start = haystack.getSourceCharacterIndex(lastMatch.end);
+    const lastMatch = matches.at(matches.length - 1);
+    if (lastMatch && lastMatch.index + lastMatch.length !== haystack.source.length) {
+        const start = haystack.getSourceCharacterIndex(lastMatch.index + lastMatch.length);
         const value = haystack.source.substring(start);
 
-        matches.push({
-            start,
-            end: haystack.source.length,
+        segments.push({
+            index: start,
             value,
             is_match: false,
             length: value.length,
         });
     }
 
-    return matches;
+    return segments;
+}
+
+/** Adjust whitespaces around segments to tightly match positive segments. */
+function prettifyResultSegments(segments: ResultSegment[]) {
+    const regexp = /\S/;
+    const prettySegments = [...segments];
+    prettySegments.forEach((segment, index) => {
+        if (segment.is_match) {
+            const firstNonWhitespaceIndex = segment.value.search(regexp);
+            if (firstNonWhitespaceIndex !== 0) {
+                const previousSegment = prettySegments.at(index - 1);
+                if (previousSegment) {
+                    previousSegment.length += firstNonWhitespaceIndex;
+                    // append whitespace or line-breaks to previous segment
+                    previousSegment.value += segment.value.substring(0, firstNonWhitespaceIndex);
+
+                    // trim start of the current segment
+                    segment.value = segment.value.substring(firstNonWhitespaceIndex);
+                    segment.index = segment.index + firstNonWhitespaceIndex;
+                }
+            }
+        }
+    });
+
+    return prettySegments;
 }
 
 /**

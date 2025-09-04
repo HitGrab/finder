@@ -2,8 +2,7 @@
  * Internal type used to prepare the result segment. These values all point to the transformed haystack.
  */
 export interface ResultSegmentInternal {
-    start: number;
-    end: number;
+    index: number;
     length: number;
     is_match: boolean;
     value: string;

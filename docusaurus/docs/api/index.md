@@ -63,6 +63,7 @@ FinderCore<FItem, FContext> {
         // Reset searchTerm to an empty string.
         reset(): void
     };
+
     filters: {
         // Processed filter values keyed by filter rule id.
         // If the rule has a defaultValue and no local state, the default will be returned.

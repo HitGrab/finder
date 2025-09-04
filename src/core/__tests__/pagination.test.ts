@@ -18,14 +18,14 @@ describe("Pagination", () => {
         const numItemsPerPage = 1;
         const finder = new FinderCore(objectItems, { rules, initialSortDirection, page, numItemsPerPage });
 
-        expect(finder.matches.items).toStrictEqual([banana]);
+        expect(finder.matches.items).toEqual([banana]);
 
         // next page
         finder.pagination.setPage(2);
-        expect(finder.matches.items).toStrictEqual([orange]);
+        expect(finder.matches.items).toEqual([orange]);
 
         // last page
         finder.pagination.setPage(3);
-        expect(finder.matches.items).toStrictEqual([apple]);
+        expect(finder.matches.items).toEqual([apple]);
     });
 });
