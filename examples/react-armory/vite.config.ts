@@ -15,5 +15,4 @@ export default defineConfig({
     optimizeDeps: {
         force: true,
     },
-    build: { assetsInlineLimit: 4096 * 10 },
 });
