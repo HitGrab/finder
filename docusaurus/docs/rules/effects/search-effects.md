@@ -1,6 +1,13 @@
 # Search Effects
 
-searchEffects are triggered when the user searches for certain terms. You may want to suggest a filter, or preload data based on their search terms.
+searchEffects are triggered when the user searches for certain terms.
+
+:::info Use cases
+
+- Suggesting a filter if the user searches for a matching keyword.
+- Preload data based on their search.
+
+:::
 
 **Type Signature**
 
@@ -11,6 +18,13 @@ ruleEffect(
     callback: (instance:FinderCore) => void),
     exact: boolean
 ```
+
+:::tip Exact matches ( true by default )
+An exact sequential string match is required somewhere within the haystack.
+For example, the searchTerm "apple" would match "basket of APPLES" but not "happy oranges, please."
+
+If false, "apple" would match "hAPPy oranges, pLEase."
+:::
 
 **Example Usage**
 
