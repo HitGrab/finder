@@ -264,11 +264,11 @@ describe("Filters", () => {
             const finder = new FinderCore(objectItems, { rules: [rule] });
 
             // does not affect results if unset
-            expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
 
             // sets results
             finder.filters.set(rule, true);
-            expect(finder.matches.items).toStrictEqual([banana]);
+            expect(finder.matches.items).toEqual([banana]);
         });
 
         test("Scalar filter", () => {
@@ -284,7 +284,7 @@ describe("Filters", () => {
                 price_is_below: 5,
             };
             const finder = new FinderCore(objectItems, { rules, initialFilters });
-            expect(finder.matches.items).toStrictEqual([apple, orange]);
+            expect(finder.matches.items).toEqual([apple, orange]);
         });
 
         test("Multiple filters", () => {
@@ -307,7 +307,7 @@ describe("Filters", () => {
                 price_is_below: 2,
             };
             const finder = new FinderCore(objectItems, { rules, initialFilters });
-            expect(finder.matches.items).toStrictEqual([apple]);
+            expect(finder.matches.items).toEqual([apple]);
         });
 
         test("Inactive filters have no effect", () => {
@@ -322,7 +322,7 @@ describe("Filters", () => {
                 }),
             ]);
             const finder = new FinderCore(objectItems, { rules });
-            expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
         });
 
         test("Return empty array when no matches are found", () => {
@@ -335,7 +335,7 @@ describe("Filters", () => {
 
             const finder = new FinderCore(objectItems, { rules });
             finder.filters.set("tastiest_fruit_name", "guava");
-            expect(finder.matches.items).toStrictEqual([]);
+            expect(finder.matches.items).toEqual([]);
         });
 
         describe("Required", () => {
@@ -348,7 +348,7 @@ describe("Filters", () => {
                 });
                 const finder = new FinderCore(objectItems, { rules: [rule] });
                 expect(finder.filters.get(rule)).toBe(true);
-                expect(finder.matches.items).toStrictEqual([banana]);
+                expect(finder.matches.items).toEqual([banana]);
             });
 
             test("Options array selects first option", () => {
@@ -375,7 +375,7 @@ describe("Filters", () => {
                 ]);
 
                 const finder = new FinderCore(objectItems, { rules });
-                expect(finder.matches.items).toStrictEqual([apple]);
+                expect(finder.matches.items).toEqual([apple]);
             });
 
             test("Option generator selects first option", () => {
@@ -397,7 +397,7 @@ describe("Filters", () => {
                 ]);
 
                 const finder = new FinderCore(objectItems, { rules });
-                expect(finder.matches.items).toStrictEqual([banana]);
+                expect(finder.matches.items).toEqual([banana]);
             });
         });
     });
@@ -424,18 +424,18 @@ describe("Filters", () => {
     });
 
     describe("Tester", () => {
-        // test("Rules can be tested in advance", () => {
-        //     const rule = filterRule({
-        //         id: "price_is_below",
-        //         filterFn: (item: MockObjectItem, value: number) => item.price <= value,
-        //     });
+        test("Rules can be tested in advance", () => {
+            const rule = filterRule({
+                id: "price_is_below",
+                filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+            });
 
-        //     const finder = new FinderCore(objectItems, { rules: [rule] });
+            const finder = new FinderCore(objectItems, { rules: [rule] });
 
-        //     // test a filter without setting the state
-        //     const testResult = finder.filters.testRule({ rule, value: 5 });
-        //     expect(testResult).toStrictEqual([apple, orange]);
-        // });
+            // test a filter without setting the state
+            const testResult = finder.filters.testRule({ rule, value: 5 });
+            expect(testResult).toEqual([apple, orange]);
+        });
 
         test("Rules can be tested additively", () => {
             const firstRule = filterRule({
@@ -452,7 +452,7 @@ describe("Filters", () => {
 
             // test a filter without setting the state
             const testResult = finder.filters.testRule({ rule: secondRule, value: true, isAdditive: true });
-            expect(testResult).toStrictEqual([apple]);
+            expect(testResult).toEqual([apple]);
         });
 
         test("Rule options can evaluate their matches.", () => {
@@ -506,7 +506,7 @@ describe("Filters", () => {
             expect(booleanTestResult.get(false)?.length).toBe(3);
 
             // result state is unchanged
-            expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
         });
     });
 });

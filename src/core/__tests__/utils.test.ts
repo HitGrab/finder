@@ -16,9 +16,18 @@ describe("Utils", () => {
     test("getSearchResultSegments generates correct segments", () => {
         const sequentialCharacterMatches = getSearchResultSegments(" Robert?!", "bert");
         expect(sequentialCharacterMatches).toEqual([
-            { start: 0, end: 3, value: " Ro", is_match: false, length: 3 },
-            { start: 3, end: 7, value: "bert", is_match: true, length: 4 },
-            { start: 7, end: 9, value: "?!", is_match: false, length: 2 },
+            { index: 0, value: " Ro", is_match: false, length: 3 },
+            { index: 3, value: "bert", is_match: true, length: 4 },
+            { index: 7, value: "?!", is_match: false, length: 2 },
+        ]);
+    });
+
+    test("getSearchResultSegments trims whitespace", () => {
+        const sequentialCharacterMatches = getSearchResultSegments(" Totally sweet hotdog mobile", "hotdog");
+        expect(sequentialCharacterMatches).toEqual([
+            { index: 0, value: " Totally sweet ", is_match: false, length: 15 },
+            { index: 15, value: "hotdog", is_match: true, length: 7 },
+            { index: 21, value: " mobile", is_match: false, length: 7 },
         ]);
     });
 });

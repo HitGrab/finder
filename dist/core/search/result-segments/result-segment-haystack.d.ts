@@ -9,7 +9,7 @@ export declare class ResultSegmentHaystack {
      */
     static composeTransformedHaystackSegments(haystack: string): {
         value: string;
-        start: number;
-        end: number;
+        index: number;
+        length: number;
     }[];
 }

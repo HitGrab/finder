@@ -1,150 +1,193 @@
 {
-  "/finder/markdown-page-c0b": {
-    "__comp": "1f391b9e",
+  "/finder/__docusaurus/debug-801": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/__docusaurus/debug/config-b66": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/__docusaurus/debug/content-8b3": {
+    "__comp": "__comp---theme-debug-contentba-8-ce7",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
     },
-    "content": "393be207"
+    "__props": "__props---finder-docusaurus-debug-content-794-49b"
+  },
+  "/finder/__docusaurus/debug/globalData-3bb": {
+    "__comp": "__comp---theme-debug-global-dataede-0fa",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/__docusaurus/debug/metadata-18d": {
+    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/__docusaurus/debug/registry-007": {
+    "__comp": "__comp---theme-debug-registry-679-501",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/__docusaurus/debug/routes-4d0": {
+    "__comp": "__comp---theme-debug-routes-946-699",
+    "__context": {
+      "plugin": "plugin---finder-docusaurus-debugb-38-2c8"
+    }
+  },
+  "/finder/markdown-page-c0b": {
+    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
+    "__context": {
+      "plugin": "plugin---finder-markdown-pagea-74-0e8"
+    },
+    "content": "content---finder-markdown-page-393-596"
   },
   "/finder/-def": {
-    "__comp": "5e95c892",
+    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
-      "plugin": "aba21aa0"
+      "plugin": "plugin---finder-aba-774"
     }
   },
   "/finder/-329": {
-    "__comp": "a7bd4aaa",
-    "__props": "1994f6cc"
+    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
+    "__props": "__props---finder-199-9ba"
   },
   "/finder/-5cd": {
-    "__comp": "a94703ab"
+    "__comp": "__comp---theme-doc-roota-94-67a"
   },
   "/finder/api/-2a4": {
-    "__comp": "17896441",
-    "content": "5e8c322a"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-5-e-8-bc7"
   },
   "/finder/api/events-api-451": {
-    "__comp": "17896441",
-    "content": "53cde753"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-events-api-53-c-859"
   },
   "/finder/api/filters-api-136": {
-    "__comp": "17896441",
-    "content": "6a32edac"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-filters-api-6-a-3-81e"
   },
   "/finder/api/group-by-api-58c": {
-    "__comp": "17896441",
-    "content": "124e02d2"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-group-by-api-124-862"
   },
   "/finder/api/matches-api-16c": {
-    "__comp": "17896441",
-    "content": "7439d9b4"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-matches-api-743-409"
   },
   "/finder/api/pagination-api-621": {
-    "__comp": "17896441",
-    "content": "b3b4c63f"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-pagination-apib-3-b-258"
   },
   "/finder/api/search-api-1f2": {
-    "__comp": "17896441",
-    "content": "41994835"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-search-api-419-6c6"
   },
   "/finder/api/sort-by-api-f2a": {
-    "__comp": "17896441",
-    "content": "1e6fd662"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-sort-by-api-1-e-6-c03"
   },
   "/finder/api/test-api-f6c": {
-    "__comp": "17896441",
-    "content": "f9718949"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-api-test-apif-97-ae9"
   },
   "/finder/components/-6ae": {
-    "__comp": "17896441",
-    "content": "bd783ed9"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-components-bd-7-934"
   },
   "/finder/components/finder-4bb": {
-    "__comp": "17896441",
-    "content": "05093068"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-components-finder-050-f96"
   },
   "/finder/components/finder-content-f7d": {
-    "__comp": "17896441",
-    "content": "fab3ce5d"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-components-finder-contentfab-393"
   },
   "/finder/components/finder-search-term-fdb": {
-    "__comp": "17896441",
-    "content": "60ade38f"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-components-finder-search-term-60-a-5e5"
   },
   "/finder/components/use-finder-ad4": {
-    "__comp": "17896441",
-    "content": "ec6b633a"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-components-use-finderec-6-68d"
   },
   "/finder/examples/-201": {
-    "__comp": "17896441",
-    "content": "bf614533"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-examples-bf-6-268"
   },
   "/finder/rules/-280": {
-    "__comp": "17896441",
-    "content": "eb96bcc6"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-eb-9-a6a"
   },
   "/finder/rules/effects/-4d6": {
-    "__comp": "17896441",
-    "content": "965f5acf"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-effects-965-46b"
   },
   "/finder/rules/effects/rule-effects-b46": {
-    "__comp": "17896441",
-    "content": "fe1c38c5"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-effects-rule-effectsfe-1-e86"
   },
   "/finder/rules/effects/search-effects-133": {
-    "__comp": "17896441",
-    "content": "a7049a63"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-effects-search-effectsa-70-3d2"
   },
   "/finder/rules/filter-rule-171": {
-    "__comp": "17896441",
-    "content": "799322f8"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-filter-rule-799-ea1"
   },
   "/finder/rules/group-by-rule-ac9": {
-    "__comp": "17896441",
-    "content": "329c87d1"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-group-by-rule-329-137"
   },
   "/finder/rules/ruleset-89a": {
-    "__comp": "17896441",
-    "content": "f2903055"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-rulesetf-29-101"
   },
   "/finder/rules/search-rule-ef7": {
-    "__comp": "17896441",
-    "content": "1fcf4fc3"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-search-rule-1-fc-7b8"
   },
   "/finder/rules/sort-by-rule-614": {
-    "__comp": "17896441",
-    "content": "c7f97675"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-rules-sort-by-rulec-7-f-3fb"
   },
   "/finder/tutorial/-02c": {
-    "__comp": "17896441",
-    "content": "383d31c1"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-383-a79"
   },
   "/finder/tutorial/component-ca3": {
-    "__comp": "17896441",
-    "content": "abe4c3a6"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-componentabe-fa7"
   },
   "/finder/tutorial/controls-932": {
-    "__comp": "17896441",
-    "content": "b7608e14"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-controlsb-76-4ee"
   },
   "/finder/tutorial/ruleset/-35a": {
-    "__comp": "17896441",
-    "content": "5b0914b1"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-ruleset-5-b-0-e3a"
   },
   "/finder/tutorial/ruleset/filters-a99": {
-    "__comp": "17896441",
-    "content": "816cdef5"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-ruleset-filters-816-7eb"
   },
   "/finder/tutorial/ruleset/search-80c": {
-    "__comp": "17896441",
-    "content": "f580874d"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-ruleset-searchf-58-961"
   },
   "/finder/tutorial/ruleset/sort-by-bed": {
-    "__comp": "17896441",
-    "content": "fec3d017"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-tutorial-ruleset-sort-byfec-d5a"
   },
   "/finder/-8bd": {
-    "__comp": "17896441",
-    "content": "c377a04b"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-c-37-4a8"
   }
 }

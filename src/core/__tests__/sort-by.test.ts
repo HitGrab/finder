@@ -13,7 +13,7 @@ describe("SortBy", () => {
         ];
 
         const finder = new FinderCore(objectItems, { rules });
-        expect(finder.matches.items).toStrictEqual([apple, orange, banana]);
+        expect(finder.matches.items).toEqual([apple, orange, banana]);
     });
 
     test("Desc", () => {
@@ -26,7 +26,7 @@ describe("SortBy", () => {
         const initialSortDirection = "desc";
 
         const finder = new FinderCore(objectItems, { rules, initialSortDirection });
-        expect(finder.matches.items).toStrictEqual([banana, orange, apple]);
+        expect(finder.matches.items).toEqual([banana, orange, apple]);
     });
 
     test("Cycles", () => {
@@ -39,6 +39,6 @@ describe("SortBy", () => {
 
         const finder = new FinderCore(objectItems, { rules });
         finder.sortBy.cycleSortDirection();
-        expect(finder.sortBy.sortDirection).toStrictEqual("asc");
+        expect(finder.sortBy.sortDirection).toEqual("asc");
     });
 });

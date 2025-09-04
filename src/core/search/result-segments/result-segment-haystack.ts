@@ -19,16 +19,20 @@ export class ResultSegmentHaystack {
 
     getSourceCharacterIndex(transformedCharacterIndex: number) {
         let segmentStart = 0;
-        let sourceIndex: number = Infinity;
-        this.#transformedSegments.forEach((segment) => {
+        return this.#transformedSegments.reduce((sourceIndex, segment) => {
+            // stop looking once a match is found
+            if (sourceIndex !== Infinity) {
+                return sourceIndex;
+            }
             const segmentEnd = segmentStart + segment.value.length;
+
             if (transformedCharacterIndex >= segmentStart && transformedCharacterIndex <= segmentEnd) {
                 const relativeIndex = transformedCharacterIndex - segmentStart;
-                sourceIndex = segment.start + relativeIndex;
+                sourceIndex = segment.index + relativeIndex;
             }
             segmentStart += segment.value.length;
-        });
-        return sourceIndex;
+            return sourceIndex;
+        }, Infinity);
     }
 
     /**
@@ -38,7 +42,7 @@ export class ResultSegmentHaystack {
         const safeCharacters = haystack.matchAll(/[\w\d]+/g);
         let segments = [];
         for (const match of safeCharacters) {
-            segments.push({ value: match[0], start: match.index, end: match.index + match[0].length });
+            segments.push({ value: match[0], index: match.index, length: match[0].length });
         }
         return segments;
     }
