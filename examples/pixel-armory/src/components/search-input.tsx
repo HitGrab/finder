@@ -4,7 +4,6 @@ import { useCallback, useRef } from "react";
 function SearchInput() {
     const finder = useFinder();
     const ref = useRef<HTMLInputElement | null>(null);
-    finder.filters.has("nope");
 
     const handleReset = useCallback(() => {
         finder.search.reset();
