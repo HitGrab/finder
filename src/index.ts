@@ -1,5 +1,5 @@
 // Core
-export type { FinderSnapshot, FinderConstructorOptions, FinderResultGroup, SortDirection } from "./core/types/core-types";
+export type { FinderConstructorOptions, FinderResultGroup, SortDirection } from "./core/types/core-types";
 
 // Rules
 export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule, ruleEffect, searchEffect } from "./core/utils/rule-type-enforcers";

@@ -75,6 +75,10 @@ class SortByMixin<FItem> {
         });
     }
 
+    reset() {
+        this.set(undefined, undefined);
+    }
+
     serialize(): SerializedSortByMixin {
         return {
             rule: this.activeRule,
