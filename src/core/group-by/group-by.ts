@@ -78,7 +78,7 @@ class GroupByMixin<FItem, FContext> {
 
         this.#deps.touch({
             source: EVENT_SOURCE.GROUP_BY,
-            event: EVENTS.SET_GROUP_SORT_DIRECTION,
+            event: EVENTS.SET_GROUP_SORT_BY_DIRECTION,
             current: { groupIdSortDirection: direction },
             initial: { groupIdSortDirection: previousValue },
             rule: this.activeRule,

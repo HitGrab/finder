@@ -1,26 +1,24 @@
-import { FinderEventName, FinderTouchSource } from "./types/event-types";
-
-type EventList = Record<string, FinderEventName>;
-type EventSourceList = Record<string, FinderTouchSource>;
+type EventList = Record<string, string>;
+type EventSourceList = Record<string, string>;
 
 export const EVENTS = {
     INIT: "init",
     FIRST_USER_INTERACTION: "firstUserInteraction",
     READY: "ready",
     CHANGE: "change",
-    SET_ITEMS: "change.core.setItems",
-    SET_IS_LOADING: "change.core.setIsLoading",
-    SET_IS_DISABLED: "change.core.setIsDisabled",
-    SET_CONTEXT: "change.core.syncContext",
-    SET_SEARCH_TERM: "change.search.setSearchTerm",
-    RESET_SEARCH_TERM: "change.search.reset",
-    SET_FILTER: "change.filters.set",
-    SET_SORT_BY: "change.sortBy.set",
-    SET_SORT_BY_DIRECTION: "change.sortBy.setSortDirection",
-    SET_GROUP_BY: "change.groupBy.set",
-    SET_GROUP_SORT_DIRECTION: "change.groupBy.setGroupIdSortDirection",
-    SET_PAGE: "change.pagination.setPage",
-    SET_NUM_ITEMS_PER_PAGE: "change.pagination.setNumItemsPerPage",
+    SET_ITEMS: "setItems",
+    SET_IS_LOADING: "setIsLoading",
+    SET_IS_DISABLED: "setIsDisabled",
+    SET_CONTEXT: "setContext",
+    SET_SEARCH_TERM: "setSearchTerm",
+    RESET_SEARCH_TERM: "resetSearchTerm",
+    SET_FILTER: "setFilter",
+    SET_SORT_BY: "setSortBy",
+    SET_SORT_BY_DIRECTION: "setSortDirection",
+    SET_GROUP_BY: "setGroupBy",
+    SET_GROUP_SORT_BY_DIRECTION: "setGroupBySortDirection",
+    SET_PAGE: "setPage",
+    SET_NUM_ITEMS_PER_PAGE: "setNumItemsPerPage",
 } as const satisfies EventList;
 
 export const EVENT_SOURCE = {
