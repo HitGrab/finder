@@ -15,7 +15,7 @@ const rule = searchRule<ApartmentListing>({
         // Note that searchFn can either return a single string, or an array of strings.
         if (listing.name) {
             return [
-                listing.address.lineOne, // 111 Cool St
+                listing.address, // 111 Cool St
                 listing.name, // Cool Manor
             ];
         }

@@ -10,6 +10,8 @@ A Finder instance has a single `searchTerm` string that will be compared against
 
 Use a `searchFn` to extract the string/strings from each item that will be compared against the searchTerm needle.
 
+**Type Signature**
+
 ```ts
 const rule = searchRule<FItem>({
     id?: string

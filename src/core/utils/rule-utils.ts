@@ -1,40 +1,5 @@
 import { RuleEffect, SearchEffect } from "../types/effect-types";
-import { FilterOption, FilterRuleUnion, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types/rule-types";
-
-export function getFilterOptionFromIdentifier<FItem, FContext>(
-    optionOrOptionValue: FilterOption | any,
-    options: FilterOption[] | ((items: FItem[], context?: FContext) => FilterOption[]) | undefined,
-    items: FItem[],
-    context?: FContext,
-) {
-    let option: FilterOption | any;
-
-    let composedOptions: FilterOption[] = [];
-    if (typeof options === "function") {
-        composedOptions = options(items, context);
-    }
-    if (Array.isArray(options)) {
-        composedOptions = options;
-    }
-
-    if (isFilterOption(optionOrOptionValue)) {
-        option = composedOptions?.find((row) => row === optionOrOptionValue);
-        if (option === undefined) {
-            throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
-        }
-        return option;
-    }
-
-    option = composedOptions?.find(({ value }) => value === optionOrOptionValue);
-    if (option === undefined) {
-        throw new Error(`Finder could not locate the option for ${optionOrOptionValue}.`);
-    }
-    return option;
-}
-
-export function isFilterOption(data: unknown): data is FilterOption {
-    return typeof data === "object" && data !== null && "label" in data && "value" in data;
-}
+import { FilterRuleUnion, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types/rule-types";
 
 export function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem> {
     return typeof rule === "object" && rule !== null && "sortFn" in rule;

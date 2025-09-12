@@ -1,6 +1,6 @@
 # Rule Effects
 
-ruleEffects are onChange callbacks triggered when certain rules are changed. It allows you to couple rules to each other wihout adding complex onChange events.
+ruleEffects are triggered when certain rules are changed. It allows you to couple rules to each other wihout adding complex onChange events.
 
 :::info Use cases
 
@@ -45,7 +45,7 @@ const rules = finderRuleset<Fruit>([
 // whenever these rules are changed, the callback will be triggered.
 const effects = [
     ruleEffect(["is_an_orange", "is_an_apple"], (instance) => {
-        if (instance.filters.get("is_an_orange") === true) {
+        if (instance.filters.has("is_an_orange")) {
             instance.filters.toggle("is_an_apple");
         }
     }),

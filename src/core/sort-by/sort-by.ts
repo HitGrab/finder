@@ -2,6 +2,7 @@ import { isSortByRule } from "../utils/rule-utils";
 import { orderBy } from "lodash";
 import { SortByRule } from "../types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "../types/core-types";
+import { EVENT_SOURCE, EVENTS } from "../core-constants";
 
 type InitialValues = {
     initialSortBy: string | undefined;
@@ -47,8 +48,8 @@ class SortByMixin<FItem> {
         const previousValue = this.#sortDirection;
         this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
-            source: "sortBy",
-            event: "change.sortBy.setSortDirection",
+            source: EVENT_SOURCE.SORT_BY,
+            event: EVENTS.SET_SORT_BY_DIRECTION,
             current: { sortDirection: incomingSortDirection },
             initial: { sortDirection: previousValue },
             rule: this.activeRule,
@@ -66,8 +67,8 @@ class SortByMixin<FItem> {
         this.#sortBy = rule;
         this.#sortDirection = incomingSortDirection;
         this.#deps.touch({
-            source: "sortBy",
-            event: "change.sortBy.set",
+            source: EVENT_SOURCE.SORT_BY,
+            event: EVENTS.SET_SORT_BY,
             current: { rule: rule?.id, sortDirection: incomingSortDirection },
             initial: { rule: previousRule?.id, sortDirection: previousSortDirection },
             rule: this.activeRule,

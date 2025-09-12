@@ -1,9 +1,10 @@
-import { useEffect, useImperativeHandle, useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
 import { FinderCore } from "../../core/finder-core";
 import { FinderContent } from "./finder-content";
-import { FinderSearchTerm } from "./finder-search-term";
+import { FinderChangeEvent } from "../../core/types/event-types";
+import { FinderSearchTermHaystack } from "./finder-search-term-haystack";
 
 function Finder<FItem = any, FContext = any>({
     items,
@@ -28,35 +29,37 @@ function Finder<FItem = any, FContext = any>({
     controllerRef,
     children,
 }: FinderProps<FItem, FContext>) {
-    const [instance] = useState<FinderCore<FItem, FContext>>(
-        () =>
-            new FinderCore<FItem, FContext>(items, {
-                rules,
-                effects,
-                initialSearchTerm,
-                initialSortBy,
-                initialSortDirection,
-                initialGroupBy,
-                initialFilters,
-                context,
-                isLoading,
-                disabled,
-                page,
-                numItemsPerPage,
-                requireGroup,
-                ignoreSortByRulesWhileSearchRuleIsActive,
-                onInit,
-                onReady,
-                onFirstUserInteraction,
-                onChange,
-            }),
-    );
-
     // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
-    useEffect(() => {
-        instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
-    }, []);
+    const [instance] = useState<FinderCore<FItem, FContext>>(() => {
+        const wrappedOnChange = (e: FinderChangeEvent) => {
+            instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+            if (onChange) {
+                onChange(e);
+            }
+        };
+
+        return new FinderCore<FItem, FContext>(items, {
+            rules,
+            effects,
+            initialSearchTerm,
+            initialSortBy,
+            initialSortDirection,
+            initialGroupBy,
+            initialFilters,
+            context,
+            isLoading,
+            disabled,
+            page,
+            numItemsPerPage,
+            requireGroup,
+            ignoreSortByRulesWhileSearchRuleIsActive,
+            onInit,
+            onReady,
+            onFirstUserInteraction,
+            onChange: wrappedOnChange,
+        });
+    });
 
     // Finder will only render a new snapshot if these values have changed.
     instance.setItems(items);
@@ -81,6 +84,6 @@ function Finder<FItem = any, FContext = any>({
 
 Finder.Content = FinderContent;
 
-Finder.SearchTerm = FinderSearchTerm;
+Finder.SearchTermHaystack = FinderSearchTermHaystack;
 
 export { Finder };

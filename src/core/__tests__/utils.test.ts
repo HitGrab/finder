@@ -1,4 +1,4 @@
-import { getSearchResultSegments, hasCharacterIndexMatches } from "../search/result-segments/search-result-segments";
+import { hasCharacterIndexMatches, calculateStringMatchSegments } from "../search/string-matches/calculate-string-match-segments";
 
 describe("Utils", () => {
     test("Every digit or word character is sequentially present in a haystack,", () => {
@@ -14,7 +14,7 @@ describe("Utils", () => {
     });
 
     test("getSearchResultSegments generates correct segments", () => {
-        const sequentialCharacterMatches = getSearchResultSegments(" Robert?!", "bert");
+        const sequentialCharacterMatches = calculateStringMatchSegments(" Robert?!", "bert");
         expect(sequentialCharacterMatches).toEqual([
             { index: 0, value: " Ro", is_match: false, length: 3 },
             { index: 3, value: "bert", is_match: true, length: 4 },
@@ -23,7 +23,7 @@ describe("Utils", () => {
     });
 
     test("getSearchResultSegments trims whitespace", () => {
-        const sequentialCharacterMatches = getSearchResultSegments(" Totally sweet hotdog mobile", "hotdog");
+        const sequentialCharacterMatches = calculateStringMatchSegments(" Totally sweet hotdog mobile", "hotdog");
         expect(sequentialCharacterMatches).toEqual([
             { index: 0, value: " Totally sweet ", is_match: false, length: 15 },
             { index: 15, value: "hotdog", is_match: true, length: 7 },

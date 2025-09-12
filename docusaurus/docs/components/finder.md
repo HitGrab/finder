@@ -4,7 +4,7 @@ sidebar_position: 0
 
 # Finder
 
-The root component, Finder accepts an armada of configuration properties and provides simplified context to consuming components.
+The root component, Finder accepts an armada of configuration properties and provides an API context to consuming components.
 
 **Type Signature**
 

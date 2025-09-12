@@ -52,7 +52,6 @@ export interface MixinInjectedDependencies<FItem = any, FContext = any> {
     isDisabled: () => boolean;
     getRuleBook: () => RuleBook<FItem, FContext>;
     touch: FinderTouchCallback;
-    getContext: () => any;
     getItems: () => FItem[];
     test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
     debouncer: DebounceCallbackRegistry;
@@ -89,4 +88,8 @@ export interface SerializedPaginationMixin {
 export interface SerializedGroupByMixin {
     rule?: GroupByRule;
     sortDirection?: SortDirection;
+}
+export interface SearchScore {
+    percentOfHaystackMatched: number;
+    longestSequentialSequence: number;
 }

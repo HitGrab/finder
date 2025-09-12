@@ -7,9 +7,9 @@ interface FinderContentGroupsProps<FItem = any> {
 }
 function FinderContentGroups<FItem>({ children: Component }: FinderContentGroupsProps<FItem>) {
     const finder = useFinder();
-    if (finder.state === "groups" && finder.matches.groups && finder.groupBy.activeRule && Component) {
+    if (finder.hasMatches && finder.matches.groups && Component) {
         if (typeof Component === "function") {
-            return <Component groups={finder.matches.groups} rule={finder.groupBy.activeRule} pagination={finder.pagination} context={finder.context} />;
+            return <Component groups={finder.matches.groups} pagination={finder.pagination} context={finder.context} />;
         }
 
         return Component;

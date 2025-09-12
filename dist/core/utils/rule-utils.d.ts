@@ -1,7 +1,5 @@
 import { RuleEffect, SearchEffect } from "../types/effect-types";
-import { FilterOption, FilterRuleUnion, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types/rule-types";
-export declare function getFilterOptionFromIdentifier<FItem, FContext>(optionOrOptionValue: FilterOption | any, options: FilterOption[] | ((items: FItem[], context?: FContext) => FilterOption[]) | undefined, items: FItem[], context?: FContext): any;
-export declare function isFilterOption(data: unknown): data is FilterOption;
+import { FilterRuleUnion, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "../types/rule-types";
 export declare function isSortByRule<FItem>(rule: unknown): rule is SortByRule<FItem>;
 export declare function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem>;
 export declare function isFilterUnionRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem>;

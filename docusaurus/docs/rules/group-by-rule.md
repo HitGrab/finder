@@ -4,6 +4,8 @@ sidebar_position: 4
 
 # GroupByRule
 
+**Type Signature**
+
 ```ts
 groupByRule({
     id: string;

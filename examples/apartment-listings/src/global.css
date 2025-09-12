@@ -1,0 +1,85 @@
+@font-face {
+    font-style: normal;
+    src: local("Open Sans"), url("/fonts/OpenSans-VariableFont_wdth,wght.ttf");
+    font-family: OpenSans;
+    font-display: swap;
+    font-optical-sizing: auto;
+    font-variation-settings: "wdth" 100;
+}
+
+@font-face {
+    font-style: italic;
+    src: local("Open Sans"), url("/fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf");
+    font-family: OpenSans;
+    font-display: swap;
+    font-optical-sizing: auto;
+    font-variation-settings: "wdth" 100;
+}
+
+:root {
+    font-family: OpenSans, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    --color: #21c921;
+    --color-dark: #208520;
+    --color-bright: #1cff1c;
+    --accent: #163c3e;
+    color: #000;
+    letter-spacing: 2px;
+}
+
+button {
+    all: unset;
+    cursor: pointer;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+html {
+    width: 100%;
+    min-height: 100vh;
+    font-size: 14px;
+    background: #fff;
+}
+body {
+    padding: 10px 40px;
+}
+
+.layout {
+    position: relative;
+    overflow: scroll;
+    width: 800px;
+    aspect-ratio: 2/1;
+
+    .map {
+        --dimension: 2000px;
+        --offset: calc(var(--dimension) / 2);
+        position: absolute;
+        width: var(--dimension);
+        aspect-ratio: 1/1;
+        background: linear-gradient(45deg, green, blue);
+
+        .listingPixel {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            top: calc(var(--offset) + var(--y) * 1px);
+            left: calc(var(--offset) + var(--x) * 1px);
+
+            .pointer {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                translate: -50% -50%;
+                background-color: #fff;
+                padding: 10px;
+                text-align: center;
+                text-wrap-style: balance;
+            }
+        }
+    }
+}

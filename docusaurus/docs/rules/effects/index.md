@@ -4,7 +4,7 @@ Effects let you trigger callbacks when certain Finder conditions change. While y
 
 **Rule Effects**
 
-ruleEffects are onChange callbacks triggered when certain rules are changed. It allows you to couple related rules without adding complex onChange events.
+ruleEffects are triggered when certain rules are changed. It allows you to couple related rules without adding complex onChange events.
 
 **Search Effects**
 

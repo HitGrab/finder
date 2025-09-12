@@ -1,23 +1,25 @@
 import { FiltersMixin } from "./filters/filters";
-import { filtersInterface, readonlyFiltersInterface } from "./filters/filters-interface";
+import { filtersInterface } from "./filters/filters-interface";
 import { GroupByMixin } from "./group-by/group-by";
-import { groupByInterface, readonlyGroupByInterface } from "./group-by/group-by-interface";
+import { groupByInterface } from "./group-by/group-by-interface";
 import { PaginationMixin } from "./pagination/pagination";
 import { paginationInterface } from "./pagination/pagination-interface";
 import { SearchMixin } from "./search/search";
-import { readonlySearchInterface, searchInterface } from "./search/search-interface";
+import { searchInterface } from "./search/search-interface";
 import { SortByMixin } from "./sort-by/sort-by";
-import { readonlySortByInterface, sortByInterface } from "./sort-by/sort-by-interface";
+import { sortByInterface } from "./sort-by/sort-by-interface";
 import { EventEmitter } from "./events/event-emitter";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
 import { RuleBook } from "./rule-book/rule-book";
-import { FinderChangeEvent, FinderEventName, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
+import { FinderChangeEvent, FinderEventName, FinderFirstUserInteractionEvent, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
 import { Tester } from "./tester/tester";
-import { hasCharacterIndexMatches } from "./search/result-segments/search-result-segments";
 import { FinderRule } from "./types/rule-types";
-import { EventCallback, FinderConstructorOptions, FinderSnapshot, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
+import { EventCallback, FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
 import { EffectBook } from "./effect-book/effect-book";
+import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { FinderError } from "./errors/finder-error";
 
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
@@ -87,7 +89,6 @@ class FinderCore<FItem, FContext = any> {
         const mixinDeps: MixinInjectedDependencies<FItem, FContext> = {
             getItems: () => this.items,
             getRuleBook: () => this.#ruleBook,
-            getContext: () => this.context,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
@@ -114,10 +115,10 @@ class FinderCore<FItem, FContext = any> {
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
             const initPayload: FinderInitEvent = {
-                source: "core",
-                event: "init",
-                snapshot: this.#takeStateSnapshot(),
+                source: EVENT_SOURCE.CORE,
+                event: EVENTS.INIT,
                 timestamp: Date.now(),
+                instance: this,
             };
 
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
@@ -127,11 +128,11 @@ class FinderCore<FItem, FContext = any> {
         });
 
         if (onChange) {
-            this.#eventEmitter.on("change", onChange);
+            this.#eventEmitter.on(EVENTS.CHANGE, onChange);
         }
 
         if (onFirstUserInteraction) {
-            this.#eventEmitter.on("firstUserInteraction", onFirstUserInteraction);
+            this.#eventEmitter.on(EVENTS.FIRST_USER_INTERACTION, onFirstUserInteraction);
         }
 
         this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
@@ -139,16 +140,16 @@ class FinderCore<FItem, FContext = any> {
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
             if (this.isReady) {
                 onReady({
-                    source: "core",
-                    event: "ready",
-                    snapshot: this.#takeStateSnapshot(),
+                    source: EVENT_SOURCE.CORE,
+                    event: EVENTS.READY,
                     timestamp: Date.now(),
+                    instance: this,
                 });
             }
         }
 
         if (this.isReady === false && onReady) {
-            this.#eventEmitter.on("ready", onReady);
+            this.#eventEmitter.on(EVENTS.READY, onReady);
         }
     }
 
@@ -168,7 +169,8 @@ class FinderCore<FItem, FContext = any> {
         this.#matches.setIsStale(true);
 
         // transform the internal touch event to a public change event
-        this.#eventEmitter.emit("change", { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() });
+        const payload: FinderChangeEvent = { ...touchEvent, timestamp: Date.now(), instance: this };
+        this.#eventEmitter.emit(EVENTS.CHANGE, payload);
 
         // trigger any effects that may be affected by the change to this rule
         if (touchEvent.rule) {
@@ -209,7 +211,7 @@ class FinderCore<FItem, FContext = any> {
         this.updatedAt = Date.now();
 
         // transform the internal touch event to a public change event
-        const changeEvent: FinderChangeEvent = { ...touchEvent, snapshot: this.#takeStateSnapshot(), timestamp: Date.now() };
+        const changeEvent: FinderChangeEvent = { ...touchEvent, timestamp: Date.now(), instance: this };
         this.#eventEmitter.emit(touchEvent.event, changeEvent);
     }
 
@@ -217,40 +219,26 @@ class FinderCore<FItem, FContext = any> {
         if (this.#hasEmittedFirstUserInteraction === false) {
             this.#hasEmittedFirstUserInteraction = true;
 
-            // emit the public-facing change event
-            this.#eventEmitter.emit("firstUserInteraction", {
-                source: "core",
-                event: "firstUserInteraction",
-                snapshot: this.#takeStateSnapshot(),
+            const payload: FinderFirstUserInteractionEvent = {
+                source: EVENT_SOURCE.CORE,
+                event: EVENTS.FIRST_USER_INTERACTION,
                 timestamp: Date.now(),
-            });
+                instance: this,
+            };
+            // emit the public-facing change event
+            this.#eventEmitter.emit(EVENTS.FIRST_USER_INTERACTION, payload);
         }
     }
 
     #emitReady() {
         if (this.isReady === false) {
             this.isReady = true;
-            this.#eventEmitter.emit("ready", {
-                source: "core",
-                event: "ready",
-                snapshot: this.#takeStateSnapshot(),
+            this.#eventEmitter.emit(EVENTS.READY, {
+                source: EVENT_SOURCE.CORE,
+                event: EVENTS.READY,
                 timestamp: Date.now(),
             });
         }
-    }
-
-    /**
-     * Return the current state values for each mixin. Only used for onChange events.
-     */
-    #takeStateSnapshot(): FinderSnapshot<FItem> {
-        return {
-            search: readonlySearchInterface(this.#mixins.search),
-            filters: readonlyFiltersInterface(this.#mixins.filters),
-            sortBy: readonlySortByInterface(this.#mixins.sortBy),
-            groupBy: readonlyGroupByInterface(this.#mixins.groupBy),
-            context: { ...this.context },
-            updatedAt: this.updatedAt,
-        };
     }
 
     get items() {
@@ -303,6 +291,12 @@ class FinderCore<FItem, FContext = any> {
         return this.isLoading === false && this.items.length === 0;
     }
 
+    get hasMatches() {
+        const hasItemMatches = Array.isArray(this.matches.items) && this.matches.items.length > 0;
+        const hasGroupMatches = Array.isArray(this.matches.groups) && this.matches.groups.length > 0;
+        return hasItemMatches || hasGroupMatches;
+    }
+
     get search() {
         return searchInterface(this.#mixins.search);
     }
@@ -335,7 +329,7 @@ class FinderCore<FItem, FContext = any> {
     getRule<Rule>(identifier: string | FinderRule<FItem>): Rule {
         const rule = this.#ruleBook.getRule<Rule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate rule");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
         return rule;
     }
@@ -344,7 +338,7 @@ class FinderCore<FItem, FContext = any> {
         if (this.isLoading) {
             return "loading";
         }
-        if (this.items && this.items.length === 0) {
+        if (this.isEmpty) {
             return "empty";
         }
         const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
@@ -365,7 +359,7 @@ class FinderCore<FItem, FContext = any> {
             this.#items = items;
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
             this.#effectBook.hydrateDefinitions(this.items, this.context);
-            this.#systemTouch({ source: "core", event: "change.core.setItems", current: items, initial: previousValue });
+            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_ITEMS, current: items, initial: previousValue });
         }
     }
 
@@ -373,7 +367,7 @@ class FinderCore<FItem, FContext = any> {
         if (!!value !== this.isLoading) {
             const previousValue = !!this.isLoading;
             this.isLoading = !!value;
-            this.#systemTouch({ source: "core", event: "change.core.setIsLoading", current: !!value, initial: previousValue });
+            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_IS_LOADING, current: !!value, initial: previousValue });
             if (this.isLoading === false) {
                 this.#emitReady();
             }
@@ -384,7 +378,7 @@ class FinderCore<FItem, FContext = any> {
         if (!!value !== this.disabled) {
             const previousValue = this.disabled;
             this.disabled = !!value;
-            this.#systemTouch({ source: "core", event: "change.core.setIsDisabled", current: !!value, initial: previousValue });
+            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_IS_DISABLED, current: !!value, initial: previousValue });
         }
     }
 
@@ -401,7 +395,7 @@ class FinderCore<FItem, FContext = any> {
             this.context = context;
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
             this.#effectBook.hydrateDefinitions(this.items, this.context);
-            this.#systemTouch({ source: "core", event: "change.core.syncContext", current: context, initial: previousValue });
+            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_CONTEXT, current: context, initial: previousValue });
         }
     }
 }
