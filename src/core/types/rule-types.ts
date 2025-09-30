@@ -12,6 +12,12 @@ export type FinderRule<FItem = any, FContext = any> =
     | SortByRule<FItem, FContext>
     | GroupByRule<FItem, FContext>;
 
+export type HydratedFinderRule<FItem = any, FContext = any> =
+    | SearchRule<FItem, FContext>
+    | HydratedFilterRule<FItem, FContext>
+    | SortByRule<FItem, FContext>
+    | GroupByRule<FItem, FContext>;
+
 export interface SearchRule<FItem = any, FContext = any> {
     id?: string;
     label?: string;

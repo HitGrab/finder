@@ -1,6 +1,5 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../errors/finder-error";
-import { FiltersMixin } from "../filters/filters";
 import { FinderRule } from "../types/rule-types";
 import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "../utils/rule-utils";
 
@@ -21,20 +20,37 @@ export class RuleBook<FItem, FContext> {
     hydrateDefinitions<FItem, FContext>(items: FItem[], context: FContext) {
         this.rules = this.#definitions.map((rule) => {
             if (isFilterUnionRule(rule)) {
-                return FiltersMixin.hydrateRule(rule, items, context);
+                return {
+                    ...rule,
+
+                    options: typeof rule.options === "function" ? rule.options({ items, context }) : rule.options,
+
+                    // reduce uncertainty
+                    multiple: !!rule.multiple,
+                    required: !!rule.required,
+                    boolean: !!rule.boolean,
+                    hidden: !!rule.hidden,
+
+                    // brand it
+                    _isHydrated: true,
+                };
             }
             return rule;
         });
     }
 
-    getRule<Rule>(identifier: string | FinderRule) {
-        return this.rules.find((rule) => {
+    getRule(identifier: string | FinderRule) {
+        const rule = this.rules.find((rule) => {
             if (typeof identifier === "object") {
                 return rule.id === identifier.id;
             }
 
             return rule.id === identifier;
-        }) as Rule | undefined;
+        });
+        if (rule === undefined) {
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
+        }
+        return rule;
     }
 
     getDefinitions() {

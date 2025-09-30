@@ -1,402 +1,174 @@
-import { FiltersMixin } from "./filters/filters";
-import { filtersInterface } from "./filters/filters-interface";
-import { GroupByMixin } from "./group-by/group-by";
-import { groupByInterface } from "./group-by/group-by-interface";
-import { PaginationMixin } from "./pagination/pagination";
-import { paginationInterface } from "./pagination/pagination-interface";
-import { SearchMixin } from "./search/search";
-import { searchInterface } from "./search/search-interface";
-import { SortByMixin } from "./sort-by/sort-by";
-import { sortByInterface } from "./sort-by/sort-by-interface";
-import { EventEmitter } from "./events/event-emitter";
-import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
-import { isEqual } from "lodash";
-import { RuleBook } from "./rule-book/rule-book";
-import { FinderChangeEvent, FinderEventName, FinderFirstUserInteractionEvent, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
-import { Tester } from "./tester/tester";
+import { FinderCoreImplementation } from "./finder-core-implementation";
+import { FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
 import { FinderRule } from "./types/rule-types";
-import { EventCallback, FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
-import { EffectBook } from "./effect-book/effect-book";
-import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
 
-class FinderCore<FItem, FContext = any> {
-    #items: FItem[] | null | undefined;
+/**
+ * This thin wrapper around FinderCoreImplementation defines the mixin interfaces and hides private methods.
+ */
+class FinderCore<FItem = any, FContext = any> {
+    #finder: FinderCoreImplementation<FItem, FContext>;
 
-    isReady = false;
-
-    isLoading: boolean;
-
-    disabled: boolean;
-
-    updatedAt?: number;
-
-    #hasEmittedFirstUserInteraction = false;
-
-    #ignoreSortByRulesWhileSearchRuleIsActive;
-
-    #eventEmitter: EventEmitter<FinderEventName>;
-
-    // Subclasses that extend functionality
-    #mixins: {
-        search: SearchMixin<FItem>;
-        filters: FiltersMixin;
-        sortBy: SortByMixin<FItem>;
-        groupBy: GroupByMixin<FItem, FContext>;
-        pagination: PaginationMixin<FItem>;
-    };
-
-    #matches: Tester<FItem, FContext>;
-
-    context: FContext;
-
-    #ruleBook: RuleBook<FItem, FContext>;
-    #effectBook: EffectBook<FItem, FContext>;
-
-    constructor(
-        items: FItem[] | null | undefined,
-        {
-            rules,
-            effects,
-            initialSearchTerm,
-            initialSortBy,
-            initialSortDirection,
-            initialGroupBy,
-            initialFilters,
-            context,
-            page,
-            numItemsPerPage,
-            isLoading,
-            disabled,
-            requireGroup,
-            ignoreSortByRulesWhileSearchRuleIsActive,
-            onInit,
-            onReady,
-            onFirstUserInteraction,
-            onChange,
-        }: FinderConstructorOptions<FItem, FContext>,
-    ) {
-        this.#items = items;
-        this.disabled = !!disabled;
-        this.isLoading = !!isLoading;
-        this.#eventEmitter = new EventEmitter();
-
-        this.#ruleBook = new RuleBook(rules, items ?? [], context);
-        this.#effectBook = new EffectBook(effects ?? [], items ?? [], context);
-
-        // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
-        const mixinDeps: MixinInjectedDependencies<FItem, FContext> = {
-            getItems: () => this.items,
-            getRuleBook: () => this.#ruleBook,
-            isLoading: () => this.isLoading,
-            isDisabled: () => this.disabled,
-            test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
-            touch: (event: FinderTouchEvent) => this.#touch(event),
-            debouncer: new DebounceCallbackRegistry(),
-        };
-
-        // initialize all mixins with their default values.
-        this.#mixins = {
-            search: new SearchMixin({ initialSearchTerm }, mixinDeps),
-            filters: new FiltersMixin({ initialFilters }, mixinDeps),
-            sortBy: new SortByMixin({ initialSortBy, initialSortDirection }, mixinDeps),
-            groupBy: new GroupByMixin({ initialGroupBy, requireGroup: !!requireGroup }, mixinDeps),
-            pagination: new PaginationMixin({ page, numItemsPerPage }, mixinDeps),
-        };
-
-        this.#matches = new Tester();
-
-        // hack: revise this later
-        this.context = context as FContext;
-
-        this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
-
-        // Don't trigger any events while onInit methods trigger
-        this.#eventEmitter.silently(() => {
-            const initPayload: FinderInitEvent = {
-                source: EVENT_SOURCE.CORE,
-                event: EVENTS.INIT,
-                timestamp: Date.now(),
-                instance: this,
-            };
-
-            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
-            if (onInit) {
-                onInit(initPayload);
-            }
-        });
-
-        if (onChange) {
-            this.#eventEmitter.on(EVENTS.CHANGE, onChange);
-        }
-
-        if (onFirstUserInteraction) {
-            this.#eventEmitter.on(EVENTS.FIRST_USER_INTERACTION, onFirstUserInteraction);
-        }
-
-        this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
-        if (onReady) {
-            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
-            if (this.isReady) {
-                onReady({
-                    source: EVENT_SOURCE.CORE,
-                    event: EVENTS.READY,
-                    timestamp: Date.now(),
-                    instance: this,
-                });
-            }
-        }
-
-        if (this.isReady === false && onReady) {
-            this.#eventEmitter.on(EVENTS.READY, onReady);
-        }
-    }
-
-    /**
-     * Events that reflect a user interaction.
-     * e.g: entering a search term or selecting a filter.
-     */
-    #touch(touchEvent: FinderTouchEvent) {
-        // if we're processing effects, don't trigger an endless touch loop.
-        if (this.#eventEmitter.isSilent()) {
-            return;
-        }
-
-        this.emitFirstUserInteraction();
-
-        this.updatedAt = Date.now();
-        this.#matches.setIsStale(true);
-
-        // transform the internal touch event to a public change event
-        const payload: FinderChangeEvent = { ...touchEvent, timestamp: Date.now(), instance: this };
-        this.#eventEmitter.emit(EVENTS.CHANGE, payload);
-
-        // trigger any effects that may be affected by the change to this rule
-        if (touchEvent.rule) {
-            this.#effectBook.ruleEffects.forEach((effect) => {
-                const isEffectTriggered = effect.rules.some((identifier) => {
-                    if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
-                        return true;
-                    }
-
-                    if (typeof identifier === "object" && touchEvent.rule?.id === identifier.id) {
-                        return true;
-                    }
-
-                    return false;
-                });
-
-                if (isEffectTriggered) {
-                    this.#eventEmitter.silently(() => {
-                        effect.onChange(this);
-                    });
-                }
-            });
-
-            this.#effectBook.searchEffects.forEach((effect) => {
-                const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, this.search.searchTerm, effect.exact);
-                if (isEffectTriggered) {
-                    this.#eventEmitter.silently(() => {
-                        effect.onChange(this);
-                    });
-                }
-            });
-        }
-    }
-
-    /** Internal events not triggered by a user action  */
-    #systemTouch(touchEvent: FinderTouchEvent) {
-        this.#matches.setIsStale(true);
-        this.updatedAt = Date.now();
-
-        // transform the internal touch event to a public change event
-        const changeEvent: FinderChangeEvent = { ...touchEvent, timestamp: Date.now(), instance: this };
-        this.#eventEmitter.emit(touchEvent.event, changeEvent);
-    }
-
-    emitFirstUserInteraction() {
-        if (this.#hasEmittedFirstUserInteraction === false) {
-            this.#hasEmittedFirstUserInteraction = true;
-
-            const payload: FinderFirstUserInteractionEvent = {
-                source: EVENT_SOURCE.CORE,
-                event: EVENTS.FIRST_USER_INTERACTION,
-                timestamp: Date.now(),
-                instance: this,
-            };
-            // emit the public-facing change event
-            this.#eventEmitter.emit(EVENTS.FIRST_USER_INTERACTION, payload);
-        }
-    }
-
-    #emitReady() {
-        if (this.isReady === false) {
-            this.isReady = true;
-            this.#eventEmitter.emit(EVENTS.READY, {
-                source: EVENT_SOURCE.CORE,
-                event: EVENTS.READY,
-                timestamp: Date.now(),
-            });
-        }
+    constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem>) {
+        const getInstance = () => this;
+        this.#finder = new FinderCoreImplementation(items, options, getInstance);
     }
 
     get items() {
-        return Array.isArray(this.#items) ? this.#items : [];
+        return this.#finder.items;
     }
 
-    get matches() {
-        if (this.#matches.isStale) {
-            this.#matches.takeSnapshot({
-                items: this.items,
-                context: this.context,
-                mixins: this.#serializeMixins(),
-            });
-            this.#matches.setIsStale(false);
-        }
-        return this.#matches.snapshot;
+    get context() {
+        return this.#finder.context;
     }
 
-    test(mixins: SnapshotSerializedMixins, isAdditive = false) {
-        if (isAdditive) {
-            const serializedMixins = { ...this.#serializeMixins(), ...mixins };
-            return Tester.test({ mixins: serializedMixins, items: this.items, context: this.context });
-        }
-        return Tester.test({ mixins, items: this.items, context: this.context });
-    }
-
-    #serializeMixins() {
-        const hasActiveSearch = this.#mixins.search.hasSearchRule && this.#mixins.search.hasSearchTerm;
-        const ignoreSortByRule = hasActiveSearch && this.#ignoreSortByRulesWhileSearchRuleIsActive;
-        const serializedMixins: SnapshotSerializedMixins = {};
-        if (hasActiveSearch) {
-            serializedMixins.search = this.#mixins.search.serialize();
-        }
-        if (this.#mixins.filters.activeRules.length > 0) {
-            serializedMixins.filters = this.#mixins.filters.serialize();
-        }
-        if (this.#mixins.pagination.numItemsPerPage) {
-            serializedMixins.pagination = this.#mixins.pagination.serialize();
-        }
-        if (ignoreSortByRule === false) {
-            serializedMixins.sortBy = this.#mixins.sortBy.serialize();
-        }
-        if (this.#mixins.groupBy.activeRule !== undefined) {
-            serializedMixins.groupBy = this.#mixins.groupBy.serialize();
-        }
-        return serializedMixins;
+    get isReady() {
+        return this.#finder.isReady;
     }
 
     get isEmpty() {
-        return this.isLoading === false && this.items.length === 0;
+        return this.#finder.isEmpty;
     }
 
     get hasMatches() {
-        const hasItemMatches = Array.isArray(this.matches.items) && this.matches.items.length > 0;
-        const hasGroupMatches = Array.isArray(this.matches.groups) && this.matches.groups.length > 0;
-        return hasItemMatches || hasGroupMatches;
+        return this.#finder.hasMatches;
     }
 
-    get search() {
-        return searchInterface(this.#mixins.search);
+    get isLoading() {
+        return this.#finder.isLoading;
     }
 
-    get filters() {
-        return filtersInterface(this.#mixins.filters);
-    }
-
-    get sortBy() {
-        return sortByInterface(this.#mixins.sortBy);
-    }
-
-    get groupBy() {
-        return groupByInterface(this.#mixins.groupBy);
-    }
-
-    get pagination() {
-        return paginationInterface(this.#mixins.pagination);
-    }
-
-    get events() {
-        return {
-            on: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
-            off: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
-            silently: (callback: EventCallback) => this.#eventEmitter.silently(callback),
-            isSilent: () => this.#eventEmitter.isSilent(),
-        };
-    }
-
-    getRule<Rule>(identifier: string | FinderRule<FItem>): Rule {
-        const rule = this.#ruleBook.getRule<Rule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
-        return rule;
+    get disabled() {
+        return this.#finder.disabled;
     }
 
     get state() {
-        if (this.isLoading) {
-            return "loading";
-        }
-        if (this.isEmpty) {
-            return "empty";
-        }
-        const hasGroupByRule = this.#mixins.groupBy.activeRule !== undefined;
-        if (hasGroupByRule && Array.isArray(this.matches.groups) && this.matches.groups.length > 0) {
-            return "groups";
-        }
-
-        if (hasGroupByRule === false && Array.isArray(this.matches.items) && this.matches.items.length > 0) {
-            return "items";
-        }
-
-        return "noMatches";
+        return this.#finder.state;
     }
 
+    get updatedAt() {
+        return this.#finder.updatedAt;
+    }
+
+    get events() {
+        return this.#finder.events;
+    }
+
+    /**
+     * Mixin interfaces
+     */
+    get matches() {
+        return this.#finder.matches;
+    }
+
+    get search() {
+        const mixin = this.#finder.search;
+        return {
+            searchTerm: mixin.searchTerm,
+            hasSearchTerm: mixin.hasSearchTerm,
+            hasSearchRule: mixin.hasSearchRule,
+            setSearchTerm: mixin.setSearchTerm.bind(mixin),
+            reset: mixin.reset.bind(mixin),
+            test: mixin.test.bind(mixin),
+        };
+    }
+
+    get filters() {
+        const mixin = this.#finder.filters;
+        return {
+            values: mixin.getValues(),
+            raw: mixin.getRawValues(),
+            activeRules: mixin.activeRules,
+            rules: mixin.rules,
+            isActive: mixin.isRuleActive.bind(mixin),
+            get: mixin.get.bind(mixin),
+            has: mixin.has.bind(mixin),
+            getRule: mixin.getRule.bind(mixin),
+            toggle: mixin.toggle.bind(mixin),
+            set: mixin.set.bind(mixin),
+            delete: mixin.delete.bind(mixin),
+            test: mixin.test.bind(mixin),
+            testRule: mixin.testRule.bind(mixin),
+            testRuleOptions: mixin.testRuleOptions.bind(mixin),
+        };
+    }
+
+    get sortBy() {
+        const mixin = this.#finder.sortBy;
+        return {
+            activeRule: mixin.activeRule,
+            sortDirection: mixin.sortDirection,
+            userHasSetSortDirection: mixin.userHasSetSortDirection,
+            rules: mixin.rules,
+            set: mixin.set.bind(mixin),
+            setSortDirection: mixin.setSortDirection.bind(mixin),
+            cycleSortDirection: mixin.cycleSortDirection.bind(mixin),
+            toggleSortDirection: mixin.toggleSortDirection.bind(mixin),
+            reset: mixin.reset.bind(mixin),
+        };
+    }
+
+    get groupBy() {
+        const mixin = this.#finder.groupBy;
+        return {
+            activeRule: mixin.activeRule,
+            requireGroup: mixin.requireGroup,
+            rules: mixin.rules,
+            groupIdSortDirection: mixin.groupIdSortDirection,
+            set: mixin.set.bind(mixin),
+            toggle: mixin.toggle.bind(mixin),
+            setGroupIdSortDirection: mixin.setGroupIdSortDirection.bind(mixin),
+            reset: mixin.reset.bind(mixin),
+        };
+    }
+
+    get pagination() {
+        const mixin = this.#finder.pagination;
+        return {
+            page: mixin.page,
+            offset: mixin.offset,
+            numItemsPerPage: mixin.numItemsPerPage,
+            numTotalItems: mixin.numTotalItems,
+            lastPage: mixin.lastPage,
+            isPaginated: mixin.numItemsPerPage !== undefined,
+            setPage: mixin.setPage.bind(mixin),
+            setNumItemsPerPage: mixin.setNumItemsPerPage.bind(mixin),
+        };
+    }
+
+    /**
+     * Mutators
+     */
+
     setItems(items: FItem[] | null | undefined) {
-        if (isEqual(items, this.#items) === false) {
-            const previousValue = this.#items;
-            this.#items = items;
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
-            this.#effectBook.hydrateDefinitions(this.items, this.context);
-            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_ITEMS, current: items, initial: previousValue });
-        }
+        return this.#finder.setItems(items);
     }
 
     setIsLoading(value?: boolean) {
-        if (!!value !== this.isLoading) {
-            const previousValue = this.isLoading;
-            this.isLoading = !!value;
-            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_IS_LOADING, current: !!value, initial: previousValue });
-            if (this.isLoading === false) {
-                this.#emitReady();
-            }
-        }
+        return this.#finder.setIsLoading(value);
     }
 
     setIsDisabled(value?: boolean) {
-        if (!!value !== this.disabled) {
-            const previousValue = this.disabled;
-            this.disabled = !!value;
-            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_IS_DISABLED, current: !!value, initial: previousValue });
-        }
+        return this.#finder.setIsDisabled(value);
     }
 
-    setRules(definitions: FinderRule<FItem, FContext>[]) {
-        if (isEqual(definitions, this.#ruleBook.getDefinitions()) === false) {
-            this.#ruleBook.setRules(definitions);
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
-        }
+    setRules(definitions: FinderRule<FItem>[]) {
+        return this.#finder.setRules(definitions);
     }
 
     setContext(context: FContext) {
-        const previousValue = this.context;
-        if (isEqual(context, previousValue) === false) {
-            this.context = context;
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
-            this.#effectBook.hydrateDefinitions(this.items, this.context);
-            this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_CONTEXT, current: context, initial: previousValue });
-        }
+        return this.#finder.setContext(context);
+    }
+
+    /**
+     * Utils
+     */
+
+    test(mixins: SnapshotSerializedMixins, isAdditive = false) {
+        return this.#finder.test(mixins, isAdditive);
+    }
+
+    getRule(identifier: string | FinderRule<FItem>) {
+        return this.#finder.getRule(identifier);
     }
 }
 

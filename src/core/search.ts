@@ -1,11 +1,11 @@
 import { orderBy } from "lodash";
-import { isSearchRule } from "../utils/rule-utils";
-import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
-import { calculateSearchScore } from "./search-score";
-import { transformStringForComparison } from "./search-string-transform";
-import { MixinInjectedDependencies, SearchScore, SerializedSearchMixin } from "../types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "../core-constants";
-import { FinderError } from "../errors/finder-error";
+import { isSearchRule } from "./utils/rule-utils";
+import { calculateSequentialCharacterIndexes } from "./search/algorithms/sequential-characters";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { FinderError } from "./errors/finder-error";
+import { calculateSearchScore } from "./search/search-score";
+import { transformStringForComparison } from "./search/search-string-transform";
+import { SearchScore, MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;
@@ -21,7 +21,7 @@ class SearchMixin<FItem> {
     #deps;
 
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
-        this.searchTerm = initialSearchTerm || "";
+        this.searchTerm = initialSearchTerm ?? "";
         this.#deps = deps;
     }
 

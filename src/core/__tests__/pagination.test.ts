@@ -14,7 +14,7 @@ describe("Pagination", () => {
         const initialSortDirection = "desc";
 
         // first page
-        let page = 1;
+        const page = 1;
         const numItemsPerPage = 1;
         const finder = new FinderCore(objectItems, { rules, initialSortDirection, page, numItemsPerPage });
 

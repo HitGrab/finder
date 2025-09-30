@@ -1,8 +1,9 @@
-import { isGroupByRule } from "../utils/rule-utils";
+import { isGroupByRule } from "./utils/rule-utils";
 import { groupBy, orderBy } from "lodash";
-import { GroupByRule } from "../types/rule-types";
-import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "../types/core-types";
-import { EVENT_SOURCE, EVENTS } from "../core-constants";
+import { GroupByRule } from "./types/rule-types";
+import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { FinderError } from "./errors/finder-error";
 
 interface InitialValues {
     initialGroupBy: string | undefined;
@@ -21,9 +22,17 @@ class GroupByMixin<FItem, FContext> {
     constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>) {
         this.#deps = deps;
         if (initialGroupBy) {
-            this.#groupBy = this.#deps.getRuleBook().getRule<GroupByRule>(initialGroupBy);
+            this.#groupBy = this.getRule(initialGroupBy);
         }
         this.requireGroup = requireGroup;
+    }
+
+    getRule(identifier: string | GroupByRule) {
+        const rule = this.#deps.getRuleBook().getRule(identifier);
+        if (isGroupByRule(rule) === false) {
+            throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
+        }
+        return rule;
     }
 
     get rules() {
@@ -52,7 +61,7 @@ class GroupByMixin<FItem, FContext> {
             rule = undefined;
         }
         if (isBlankString === false && identifier !== undefined) {
-            rule = this.#deps.getRuleBook().getRule<GroupByRule>(identifier);
+            rule = this.getRule(identifier);
         }
 
         // early exit if nothing changed
@@ -86,7 +95,7 @@ class GroupByMixin<FItem, FContext> {
     }
 
     toggle(identifier: GroupByRule | string) {
-        const rule = this.#deps.getRuleBook().getRule<GroupByRule>(identifier);
+        const rule = this.getRule(identifier);
         if (this.activeRule === rule) {
             this.set(undefined);
             return;

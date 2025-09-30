@@ -1,17 +1,9 @@
-import { isHydratedFilterRule } from "../utils/rule-utils";
-import { simpleUniqBy } from "../utils/finder-utils";
-import {
-    FilterOption,
-    FilterRule,
-    FilterRuleUnion,
-    FilterTestOptions,
-    FilterTestRuleOptions,
-    FilterTestRuleOptionsOptions,
-    HydratedFilterRule,
-} from "../types/rule-types";
-import { MixinInjectedDependencies, SerializedFiltersMixin } from "../types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "../core-constants";
-import { FinderError } from "../errors/finder-error";
+import { isHydratedFilterRule } from "./utils/rule-utils";
+import { simpleUniqBy } from "./utils/finder-utils";
+import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "./types/rule-types";
+import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { FinderError } from "./errors/finder-error";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -28,10 +20,7 @@ class FiltersMixin {
     }
 
     set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
+        const rule = this.getRule(identifier);
 
         const previousValue = this.get(identifier);
 
@@ -74,11 +63,7 @@ class FiltersMixin {
     }
 
     get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
-
+        const rule = this.getRule(identifier);
         const value = this.#values[rule.id];
 
         if (value === undefined) {
@@ -109,11 +94,8 @@ class FiltersMixin {
         return value;
     }
 
-    has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
+    has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any) {
+        const rule = this.getRule(identifier);
 
         const ruleValue = this.get(rule);
 
@@ -140,30 +122,25 @@ class FiltersMixin {
     }
 
     getRule(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        return this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
+        const rule = this.#deps.getRuleBook().getRule(identifier);
+        if (isHydratedFilterRule(rule) === false) {
+            throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
+        }
+        return rule;
     }
 
     delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
+        const rule = this.getRule(identifier);
         return this.set(rule, undefined);
     }
 
     isRuleActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (!rule) {
-            return false;
-        }
+        const rule = this.getRule(identifier);
         return FiltersMixin.isRuleActive(rule, this.#values[rule.id]);
     }
 
-    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
-        const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
+    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any) {
+        const rule = this.getRule(identifier);
 
         if (optionValue === undefined && rule.boolean) {
             const filterValue = this.get(rule.id);
@@ -179,7 +156,7 @@ class FiltersMixin {
             throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { identifier, optionValue });
         }
 
-        const option = rule.options?.find((option) => {
+        const option = rule.options.find((option) => {
             if (typeof optionValue === "object" && "value" in optionValue) {
                 return option.value === optionValue.value;
             }
@@ -216,10 +193,6 @@ class FiltersMixin {
 
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
         const rule = this.getRule(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
-
         return this.test({
             rules: [rule],
             values: { [rule.id]: value },
@@ -234,9 +207,6 @@ class FiltersMixin {
         }
 
         const rule = this.getRule(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
 
         if (rule.boolean === true) {
             const resultMap = new Map<FilterOption | boolean, any[]>();
@@ -328,23 +298,6 @@ class FiltersMixin {
             return false;
         }
         return true;
-    }
-
-    static hydrateRule<FItem = any, FContext = any>(rule: FilterRule, items: FItem[], context: FContext) {
-        return {
-            ...rule,
-
-            options: typeof rule.options === "function" ? rule.options({ items, context }) : rule.options,
-
-            // reduce uncertainty
-            multiple: !!rule.multiple,
-            required: !!rule.required,
-            boolean: !!rule.boolean,
-            hidden: !!rule.hidden,
-
-            // brand it
-            _isHydrated: true,
-        } as HydratedFilterRule;
     }
 }
 

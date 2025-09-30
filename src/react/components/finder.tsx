@@ -1,10 +1,10 @@
 import { useImperativeHandle, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderProps } from "../types/react-types";
-import { FinderCore } from "../../core/finder-core";
 import { FinderContent } from "./finder-content";
 import { FinderChangeEvent } from "../../core/types/event-types";
 import { FinderSearchTermHaystack } from "./finder-search-term-haystack";
+import { FinderCore } from "../../core/finder-core";
 
 function Finder<FItem = any, FContext = any>({
     items,

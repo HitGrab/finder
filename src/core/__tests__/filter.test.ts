@@ -1,9 +1,8 @@
 import { range } from "lodash";
-import { FinderCore } from "../finder-core";
 import { filterRule, finderRuleset } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
-import { HydratedFilterRule } from "../types/rule-types";
+import { FinderCore } from "../finder-core";
 
 describe("Filters", () => {
     test("Accessors", () => {
@@ -14,7 +13,7 @@ describe("Filters", () => {
         const finder = new FinderCore(objectItems, { rules: [rule] });
 
         // hydrated rule can be retrieved
-        const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
+        const hydratedRule = finder.filters.getRule(rule);
         expect(finder.filters.rules).toEqual([hydratedRule]);
 
         // rule has no value while inactive
@@ -150,7 +149,7 @@ describe("Filters", () => {
                 },
             });
             const finder = new FinderCore(objectItems, { rules: [rule] });
-            const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
+            const hydratedRule = finder.filters.getRule(rule);
             expect(hydratedRule.options?.length).toBe(1000);
         });
 
@@ -173,7 +172,7 @@ describe("Filters", () => {
             });
 
             const finder = new FinderCore(objectItems, { rules: [rule] });
-            const hydratedRule = finder.getRule<HydratedFilterRule>(rule);
+            const hydratedRule = finder.filters.getRule(rule);
             expect(hydratedRule.options?.length).toBe(2);
         });
 

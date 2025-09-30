@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { FinderCore } from "../../core/finder-core";
 import { FinderConstructorOptions } from "../../core/types/core-types";
+import { FinderCore } from "../../core/finder-core";
 
 /**
  * Create a finder instance with contained state and controllers.

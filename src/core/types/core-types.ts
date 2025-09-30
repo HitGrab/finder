@@ -110,3 +110,14 @@ export interface SearchScore {
     percentOfHaystackMatched: number;
     longestSequentialSequence: number;
 }
+
+export interface PaginationMixinInterface {
+    page: number;
+    offset: number;
+    numItemsPerPage: number | undefined;
+    numTotalItems: number;
+    lastPage: number | undefined;
+    isPaginated: boolean;
+    setPage: (value: number) => void;
+    setNumItemsPerPage: (value: number) => void;
+}
