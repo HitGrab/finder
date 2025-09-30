@@ -1,6 +1,9 @@
 import { StringMatchSegment } from "../types/string-match-types";
-import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
-import { calculateSequentialStringCharacterIndexes } from "./algorithms/sequential-string";
+import {
+    calculateCharacterMatchIndexes,
+    calculateSequentialCharacterIndexes,
+    calculateSequentialStringCharacterIndexes,
+} from "./calculate-character-match-indexes";
 import { transformStringForComparison } from "./search-string-transform";
 import { StringMatchHaystack } from "./string-match-haystack";
 
@@ -20,7 +23,7 @@ export function calculateStringMatchSegments(haystack: string | string[], needle
             return match;
         }
 
-        const matchedCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
+        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, transformedNeedle);
 
         // if no matching character indexes were found, this particular needle did not succeed.
         if (matchedCharacterIndexes === undefined) {

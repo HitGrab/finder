@@ -5,7 +5,7 @@ import { FinderError } from "./finder-error";
 import { calculateSearchScore } from "./search/search-score";
 import { transformStringForComparison } from "./search/search-string-transform";
 import { SearchScore, MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";
-import { calculateCharacterMatchIndexes } from "./search/algorithms/calculate-character-match-indexes";
+import { calculateCharacterMatchIndexes } from "./search/calculate-character-match-indexes";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;

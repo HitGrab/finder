@@ -114,7 +114,13 @@ describe("Search", () => {
 
         const finder = new FinderCore(items, { rules });
 
+        // with subquery
+        expect(finder.search.test('ipsum "amet"')).toEqual(["Lorem ipsum dolor sit amet, consectetur adipiscing elit."]);
+
+        // without subquery
         expect(finder.search.test("ipsum ame c")).toEqual(["Lorem ipsum dolor sit amet, consectetur adipiscing elit."]);
+
+        // with failed subquery
         expect(finder.search.test('ipsum "ame c"')).toEqual([]);
     });
 });
