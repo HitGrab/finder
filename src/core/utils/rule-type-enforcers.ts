@@ -39,7 +39,6 @@ export function ruleEffect<FItem, FContext = any>(
 export function searchEffect<FItem, FContext = any>(
     haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]),
     onChange: (instance: FinderCore<FItem, FContext>) => void,
-    exact = true,
 ): SearchEffect<FItem, FContext> {
-    return { haystack, onChange, exact };
+    return { haystack, onChange };
 }

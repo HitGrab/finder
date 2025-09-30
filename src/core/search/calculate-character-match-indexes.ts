@@ -11,7 +11,7 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
     let hasFailedSubquery = false;
     while ((subquery = subqueryRegex.exec(needle)) !== null && hasFailedSubquery === false) {
         const subqueryNeedle = transformStringForComparison(String(subquery[1]));
-        const subqueryCharacterIndexes = calculateSequentialStringCharacterIndexes(haystack, subqueryNeedle);
+        const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack, subqueryNeedle);
 
         // early exit if a subquery fails
         if (subqueryCharacterIndexes === undefined) {
@@ -38,7 +38,7 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
     return sortedCharacterIndexes;
 }
 
-export function calculateSequentialStringCharacterIndexes(haystack: string, needle: string) {
+function calculateExactStringCharacterIndexes(haystack: string, needle: string) {
     const index = haystack.indexOf(needle);
     if (index === -1) {
         return undefined;
@@ -46,7 +46,7 @@ export function calculateSequentialStringCharacterIndexes(haystack: string, need
     return range(index, index + needle.length).map((characterIndex) => characterIndex);
 }
 
-export function calculateSequentialCharacterIndexes(haystack: string, needle: string) {
+function calculateSequentialCharacterIndexes(haystack: string, needle: string) {
     const needleAsCharacterArray = Array.from(needle);
     const characterMatches: number[] = [];
     let hayStackToIterateThrough = haystack;

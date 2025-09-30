@@ -26,7 +26,7 @@ export class EffectBook<FItem, FContext> {
         this.searchEffects = this.#searchEffectDefinitions.map((effect) => {
             const haystack = typeof effect.haystack === "function" ? effect.haystack(items, context) : effect.haystack;
             const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
-            return { ...effect, haystack: haystackAsArray, exact: !!effect.exact, _isHydrated: true } as HydratedSearchEffect;
+            return { ...effect, haystack: haystackAsArray, _isHydrated: true } as HydratedSearchEffect;
         });
     }
 
@@ -52,7 +52,7 @@ export class EffectBook<FItem, FContext> {
 
     processSearchTerm(searchTerm: string, instance: FinderCore) {
         this.searchEffects.forEach((effect) => {
-            const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, searchTerm, effect.exact);
+            const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, searchTerm);
             if (isEffectTriggered) {
                 effect.onChange(instance);
             }
