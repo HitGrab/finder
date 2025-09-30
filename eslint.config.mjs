@@ -12,7 +12,7 @@ import reactHooks from "eslint-plugin-react-hooks";
  */
 export default defineConfig(
     // don't lint any of these paths
-    globalIgnores(["**/*.js*", "**/*config.js", "**/*config.ts", "/vendor/*", "/node_modules/*", "/examples/*", "/public/*"]),
+    globalIgnores(["**/*.js*", "**/*config.js", "**/*config.ts", "/node_modules/*", "/examples/*", "/public/*"]),
     // don't lint yourself
     { ignores: ["eslint.config.mjs"] },
     {

@@ -2,7 +2,7 @@ import { isHydratedFilterRule } from "./utils/rule-utils";
 import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
+import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
 
 interface InitialValues {

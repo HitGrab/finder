@@ -1,5 +1,5 @@
-import { HydratedRuleEffect, HydratedSearchEffect, RuleEffect, SearchEffect } from "../types/effect-types";
-import { isRuleEffect, isSearchEffect } from "../utils/rule-utils";
+import { HydratedRuleEffect, HydratedSearchEffect, RuleEffect, SearchEffect } from "./types/effect-types";
+import { isRuleEffect, isSearchEffect } from "./utils/rule-utils";
 
 export class EffectBook<FItem, FContext> {
     #ruleEffectDefinitions;

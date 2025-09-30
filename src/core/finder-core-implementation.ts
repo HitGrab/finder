@@ -1,20 +1,20 @@
 import { SearchMixin } from "./search";
-import { EventEmitter } from "./events/event-emitter";
-import { DebounceCallbackRegistry } from "./debounce-callback-registry/debounce-callback-registry";
 import { isEqual } from "lodash";
-import { RuleBook } from "./rule-book/rule-book";
-import { FinderChangeEvent, FinderEventName, FinderFirstUserInteractionEvent, FinderInitEvent, FinderTouchEvent } from "./types/event-types";
-import { Tester } from "./tester/tester";
-import { FinderRule } from "./types/rule-types";
-import { EventCallback, FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
-import { EffectBook } from "./effect-book/effect-book";
-import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
 import { EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FiltersMixin } from "./filters";
 import { SortByMixin } from "./sort-by";
 import { GroupByMixin } from "./group-by";
 import { PaginationMixin } from "./pagination";
 import { FinderCore } from "./finder-core";
+import { DebounceCallbackRegistry } from "./debounce-callback-registry";
+import { EffectBook } from "./effect-book";
+import { EventEmitter } from "./event-emitter";
+import { RuleBook } from "./rule-book";
+import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
+import { Tester } from "./tester";
+import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
+import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
+import { FinderRule } from "./types/rule-types";
 
 class FinderCoreImplementation<FItem, FContext> {
     #items: FItem[] | null | undefined;

@@ -1,7 +1,7 @@
-import { ERRORS } from "../core-constants";
-import { FinderError } from "../errors/finder-error";
-import { FinderRule } from "../types/rule-types";
-import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "../utils/rule-utils";
+import { ERRORS } from "./core-constants";
+import { FinderError } from "./finder-error";
+import { FinderRule } from "./types/rule-types";
+import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "./utils/rule-utils";
 
 /**
  * Stores rule definitions and hydrated rules

@@ -3,7 +3,7 @@ import { groupBy, orderBy } from "lodash";
 import { GroupByRule } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
+import { FinderError } from "./finder-error";
 
 interface InitialValues {
     initialGroupBy: string | undefined;

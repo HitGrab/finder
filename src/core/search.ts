@@ -2,7 +2,7 @@ import { orderBy } from "lodash";
 import { isSearchRule } from "./utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./search/algorithms/sequential-characters";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
+import { FinderError } from "./finder-error";
 import { calculateSearchScore } from "./search/search-score";
 import { transformStringForComparison } from "./search/search-string-transform";
 import { SearchScore, MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";

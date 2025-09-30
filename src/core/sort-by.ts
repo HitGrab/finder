@@ -3,7 +3,7 @@ import { orderBy } from "lodash";
 import { SortByRule } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
+import { FinderError } from "./finder-error";
 
 const SORT_CYCLE_ORDER: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;
 
