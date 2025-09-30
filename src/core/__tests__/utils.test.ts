@@ -1,4 +1,4 @@
-import { hasCharacterIndexMatches, calculateStringMatchSegments } from "../search/string-matches/calculate-string-match-segments";
+import { hasCharacterIndexMatches, calculateStringMatchSegments } from "../search/calculate-string-match-segments";
 
 describe("Utils", () => {
     test("Every digit or word character is sequentially present in a haystack,", () => {

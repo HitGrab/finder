@@ -2,16 +2,15 @@
  * React-specific types for creating consumer components.
  */
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
-import { paginationInterface } from "../../core/pagination/pagination-interface";
-import { FinderCore } from "../../core/finder-core";
-import { FinderConstructorOptions, FinderResultGroup } from "../../core/types/core-types";
+import { FinderConstructorOptions, FinderResultGroup, PaginationMixinInterface } from "../../core/types/core-types";
 import { StringMatchSegment } from "../../core/types/string-match-types";
+import { FinderCore } from "../../core/finder-core";
 export interface FinderProps<FItem, FContext> extends FinderConstructorOptions<FItem, FContext>, PropsWithChildren {
     items: FItem[] | undefined | null;
     controllerRef?: RefObject<FinderCore<FItem, FContext> | null>;
 }
 export interface FinderContentProps<FContext = any> {
-    pagination: ReturnType<typeof paginationInterface>;
+    pagination: PaginationMixinInterface;
     context?: FContext;
 }
 export interface FinderContentItemProps<FItem, FContext = any> extends FinderContentProps<FContext> {

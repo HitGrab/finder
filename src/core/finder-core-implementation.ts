@@ -10,7 +10,6 @@ import { DebounceCallbackRegistry } from "./debounce-callback-registry";
 import { EffectBook } from "./effect-book";
 import { EventEmitter } from "./event-emitter";
 import { RuleBook } from "./rule-book";
-import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
 import { Tester } from "./tester";
 import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
@@ -174,36 +173,15 @@ class FinderCoreImplementation<FItem, FContext> {
         this.#eventEmitter.emit(EVENTS.CHANGE, payload);
 
         // trigger any effects that may be affected by the change to this rule
-        if (touchEvent.rule) {
-            this.#effectBook.ruleEffects.forEach((effect) => {
-                const isEffectTriggered = effect.rules.some((identifier) => {
-                    if (typeof identifier === "string" && touchEvent.rule?.id === identifier) {
-                        return true;
-                    }
+        this.#eventEmitter.silently(() => {
+            if (touchEvent.rule) {
+                this.#effectBook.processRule(touchEvent.rule, this.getInstanceFn());
+            }
 
-                    if (typeof identifier === "object" && touchEvent.rule?.id === identifier.id) {
-                        return true;
-                    }
-
-                    return false;
-                });
-
-                if (isEffectTriggered) {
-                    this.#eventEmitter.silently(() => {
-                        effect.onChange(this.getInstanceFn());
-                    });
-                }
-            });
-
-            this.#effectBook.searchEffects.forEach((effect) => {
-                const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, this.search.searchTerm, effect.exact);
-                if (isEffectTriggered) {
-                    this.#eventEmitter.silently(() => {
-                        effect.onChange(this.getInstanceFn());
-                    });
-                }
-            });
-        }
+            if (this.search.hasSearchTerm) {
+                this.#effectBook.processSearchTerm(this.search.searchTerm, this.getInstanceFn());
+            }
+        });
     }
 
     /** Internal events not triggered by a user action  */

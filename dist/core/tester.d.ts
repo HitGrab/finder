@@ -1,4 +1,4 @@
-import { ResultSnapshot, SnapshotOptions } from "../types/core-types";
+import { ResultSnapshot, SnapshotOptions } from "./types/core-types";
 export declare class Tester<FItem, FContext> {
     snapshot: ResultSnapshot<FItem>;
     isStale: boolean;

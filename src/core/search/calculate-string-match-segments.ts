@@ -1,7 +1,7 @@
-import { StringMatchSegment } from "../../types/string-match-types";
-import { calculateSequentialCharacterIndexes } from "../algorithms/sequential-characters";
-import { calculateSequentialStringCharacterIndexes } from "../algorithms/sequential-string";
-import { transformStringForComparison } from "../search-string-transform";
+import { StringMatchSegment } from "../types/string-match-types";
+import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
+import { calculateSequentialStringCharacterIndexes } from "./algorithms/sequential-string";
+import { transformStringForComparison } from "./search-string-transform";
 import { StringMatchHaystack } from "./string-match-haystack";
 
 /**

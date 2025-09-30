@@ -1,4 +1,4 @@
-import { StringMatchSegment } from "../../types/string-match-types";
+import { StringMatchSegment } from "../types/string-match-types";
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */

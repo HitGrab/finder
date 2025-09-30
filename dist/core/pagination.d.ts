@@ -1,4 +1,4 @@
-import { MixinInjectedDependencies, SerializedPaginationMixin } from "../types/core-types";
+import { MixinInjectedDependencies, SerializedPaginationMixin } from "./types/core-types";
 interface InitialValues {
     page: number | undefined;
     numItemsPerPage: number | undefined;

@@ -1,11 +1,12 @@
+import { EVENT_SOURCE, EVENTS } from "../core-constants";
 import { FinderCore } from "../finder-core";
 import { FinderRule } from "./rule-types";
-export type FinderTouchSource = "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy";
+export type FinderTouchSource = (typeof EVENT_SOURCE)[keyof typeof EVENT_SOURCE];
 interface FinderSharedEventProps {
     source: string;
     event: FinderEventName;
     timestamp: number;
-    instance: FinderCore<any>;
+    instance: FinderCore;
 }
 export interface FinderInitEvent extends FinderSharedEventProps {
     source: "core";
@@ -39,5 +40,5 @@ export interface FinderTouchEvent {
  * External type that consumers will receive
  */
 export type FinderChangeEvent = FinderTouchEvent & FinderSharedEventProps;
-export type FinderEventName = "init" | "firstUserInteraction" | "ready" | "change" | "change.core" | "change.core.setIsLoading" | "change.core.setIsDisabled" | "change.core.setItems" | "change.core.syncContext" | `change.filters` | "change.filters.set" | `change.groupBy` | "change.groupBy.set" | "change.groupBy.setGroupIdSortDirection" | "change.pagination" | "change.pagination.setPage" | "change.pagination.setNumItemsPerPage" | "change.search" | "change.search.setSearchTerm" | "change.search.reset" | "change.sortBy" | "change.sortBy.set" | "change.sortBy.setSortDirection";
+export type FinderEventName = (typeof EVENTS)[keyof typeof EVENTS];
 export {};
