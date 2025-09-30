@@ -103,4 +103,18 @@ describe("Search", () => {
         const finder = new FinderCore(objectItems, { rules });
         expect(finder.search.test("ple")).toEqual([apple]);
     });
+
+    test("Test quoted search", () => {
+        const items = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit.", "Vestibulum nec dapibus urna.", "Proin ornare elit vitae egestas maximus."];
+        const rules = [
+            searchRule({
+                searchFn: (item: string) => item,
+            }),
+        ];
+
+        const finder = new FinderCore(items, { rules });
+
+        expect(finder.search.test("ipsum ame c")).toEqual(["Lorem ipsum dolor sit amet, consectetur adipiscing elit."]);
+        expect(finder.search.test('ipsum "ame c"')).toEqual([]);
+    });
 });

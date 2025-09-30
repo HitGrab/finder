@@ -1,11 +1,11 @@
 import { orderBy } from "lodash";
 import { isSearchRule } from "./utils/rule-utils";
-import { calculateSequentialCharacterIndexes } from "./search/algorithms/sequential-characters";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { calculateSearchScore } from "./search/search-score";
 import { transformStringForComparison } from "./search/search-string-transform";
 import { SearchScore, MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";
+import { calculateCharacterMatchIndexes } from "./search/algorithms/calculate-character-match-indexes";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;
@@ -93,7 +93,6 @@ class SearchMixin<FItem> {
             return items;
         }
 
-        const transformedNeedle = transformStringForComparison(options.searchTerm);
         const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
             if (options.rule?.searchFn === undefined) {
                 return acc;
@@ -107,7 +106,7 @@ class SearchMixin<FItem> {
 
             // an item may have multiple matches if it has multiple haystack strings.
             const itemHaystackScores = itemHaystacks.reduce<ReturnType<typeof calculateSearchScore>[]>((scores, haystack) => {
-                const indexes = calculateSequentialCharacterIndexes(haystack, transformedNeedle);
+                const indexes = calculateCharacterMatchIndexes(haystack, options.searchTerm);
                 if (indexes !== undefined) {
                     scores.push(calculateSearchScore(indexes, haystack));
                 }
