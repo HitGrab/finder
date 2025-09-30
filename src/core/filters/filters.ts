@@ -1,4 +1,4 @@
-import { getFilterOptionFromIdentifier, isHydratedFilterRule } from "../utils/rule-utils";
+import { isHydratedFilterRule } from "../utils/rule-utils";
 import { simpleUniqBy } from "../utils/finder-utils";
 import {
     FilterOption,
@@ -10,6 +10,8 @@ import {
     HydratedFilterRule,
 } from "../types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "../types/core-types";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "../core-constants";
+import { FinderError } from "../errors/finder-error";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -28,7 +30,7 @@ class FiltersMixin {
     set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         const previousValue = this.get(identifier);
@@ -54,8 +56,8 @@ class FiltersMixin {
             this.#values = { ...this.#values, [rule.id]: transformedFilterValue };
 
             this.#deps.touch({
-                source: "filters",
-                event: "change.filters.set",
+                source: EVENT_SOURCE.FILTERS,
+                event: EVENTS.SET_FILTER,
                 current: incomingFilterValue,
                 initial: previousValue,
                 rule,
@@ -74,7 +76,7 @@ class FiltersMixin {
     get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         const value = this.#values?.[rule.id];
@@ -110,7 +112,7 @@ class FiltersMixin {
     has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         const ruleValue = this.get(rule);
@@ -119,7 +121,16 @@ class FiltersMixin {
             return ruleValue !== undefined;
         }
 
-        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
+        const option = rule.options?.find((option) => {
+            if (typeof optionValue === "object" && "value" in optionValue) {
+                return option.value === optionValue.value;
+            }
+            return option.value === optionValue;
+        });
+
+        if (option === undefined) {
+            return false;
+        }
 
         if (rule.multiple) {
             return ruleValue.includes(option.value);
@@ -135,7 +146,7 @@ class FiltersMixin {
     delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
         return this.set(rule, undefined);
     }
@@ -151,7 +162,7 @@ class FiltersMixin {
     toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
         const rule = this.#deps.getRuleBook().getRule<HydratedFilterRule>(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         if (optionValue === undefined && rule.boolean) {
@@ -161,14 +172,22 @@ class FiltersMixin {
         }
 
         if (rule.options === undefined) {
-            throw new Error("Finder could not toggle this filter rule option, as the filter does not have any options.");
+            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_NO_OPTIONS, { identifier, optionValue });
         }
 
         if (rule.multiple === false) {
-            throw new Error("Finder could not toggle this filter rule option, as the rule does not allow multiple values.");
+            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { identifier, optionValue });
         }
 
-        const option = getFilterOptionFromIdentifier(optionValue, rule.options, this.#deps.getItems(), this.#deps.getContext());
+        const option = rule.options?.find((option) => {
+            if (typeof optionValue === "object" && "value" in optionValue) {
+                return option.value === optionValue.value;
+            }
+            return option.value === optionValue;
+        });
+        if (option === undefined) {
+            throw new FinderError(ERRORS.TOGGLING_OPTION_THAT_DOES_NOT_EXIST, { identifier, optionValue });
+        }
 
         const previousFilterValue: any[] = this.#values?.[rule.id] ?? [];
 
@@ -198,7 +217,7 @@ class FiltersMixin {
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {
         const rule = this.getRule(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         return this.test({
@@ -216,7 +235,7 @@ class FiltersMixin {
 
         const rule = this.getRule(identifier);
         if (rule === undefined) {
-            throw new Error("Finder could not locate a rule for this filter.");
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
         if (rule.boolean === true) {
@@ -251,7 +270,7 @@ class FiltersMixin {
         }
 
         // if the filter is not a boolean and doesn't have defined options, there's nothing to test.
-        throw new Error("Finder was unable to test the options for this filter rule. It must be a boolean or have defined options.");
+        throw new FinderError(ERRORS.TESTING_OPTIONS_ON_RULE_WITH_NO_OPTIONS, rule);
     }
 
     // return all filter values with default options and type casts applied.

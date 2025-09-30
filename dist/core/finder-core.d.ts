@@ -14,6 +14,7 @@ declare class FinderCore<FItem, FContext = any> {
     get matches(): import("./types/core-types").ResultSnapshot<FItem>;
     test(mixins: SnapshotSerializedMixins, isAdditive?: boolean): FItem[];
     get isEmpty(): boolean;
+    get hasMatches(): boolean;
     get search(): {
         setSearchTerm: (incomingSearchTerm: string) => void;
         reset: () => void;

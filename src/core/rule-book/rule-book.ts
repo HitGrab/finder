@@ -1,3 +1,5 @@
+import { ERRORS } from "../core-constants";
+import { FinderError } from "../errors/finder-error";
 import { FiltersMixin } from "../filters/filters";
 import { FinderRule } from "../types/rule-types";
 import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "../utils/rule-utils";
@@ -51,21 +53,21 @@ export class RuleBook<FItem, FContext> {
 
         const validators = [isSearchRule, isFilterUnionRule, isSortByRule, isGroupByRule];
 
-        const filterIds: string[] = [];
+        const filterIds = new Set();
         definitions.forEach((rule) => {
             if (rule.id === undefined && !isSearchRule(rule)) {
-                throw new Error("Finder is missing a unique rule id for rule.");
+                throw new FinderError(ERRORS.INVALID_RULE_WITHOUT_ID, rule);
             }
 
             if (validators.some((validator) => validator(rule)) === false) {
-                throw new Error("Malformed rule definition");
+                throw new FinderError(ERRORS.INVALID_RULE_SHAPE, rule);
             }
 
             if (rule.id) {
-                if (filterIds.includes(rule.id)) {
-                    throw new Error(`Duplicate rule id: ${rule.id}`);
+                if (filterIds.has(rule.id)) {
+                    throw new FinderError(ERRORS.INVALID_RULE_DUPLICATE, rule);
                 }
-                filterIds.push(rule.id);
+                filterIds.add(rule.id);
             }
         });
 

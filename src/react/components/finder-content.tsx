@@ -16,12 +16,10 @@ interface FinderContentProps<FItem, FContext> {
         groups?: ElementType<FinderContentGroupProps<FItem, FContext>>;
     };
 }
-
 function FinderContent<FItem = any, FContext = any>({ children: renderProps }: FinderContentProps<FItem, FContext>) {
     if (!renderProps || Object.values(renderProps).length === 0) {
         throw new Error("No render props were found.");
     }
-
     return [
         renderProps.loading && <FinderContentLoading key="loading">{renderProps.loading}</FinderContentLoading>,
         renderProps.empty && <FinderContentEmpty key="empty">{renderProps.empty}</FinderContentEmpty>,

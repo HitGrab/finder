@@ -6,18 +6,12 @@ const cycleOrder: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as 
 /**
  * Public surface for the SortBy mixin
  */
-function readonlySortByInterface<FItem>(mixin: SortByMixin<FItem>) {
+function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
     return {
         activeRule: mixin.activeRule,
         sortDirection: mixin.sortDirection,
         userHasSetSortDirection: mixin.userHasSetSortDirection,
         rules: mixin.rules,
-    };
-}
-
-function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
-    return {
-        ...readonlySortByInterface(mixin),
         set: mixin.set.bind(mixin),
         setSortDirection: mixin.setSortDirection.bind(mixin),
         // rotate between the rule default, desc, and asc.
@@ -37,10 +31,8 @@ function sortByInterface<FItem>(mixin: SortByMixin<FItem>) {
             }
             mixin.setSortDirection("desc");
         },
-        reset() {
-            mixin.set(undefined, undefined);
-        },
+        reset: mixin.reset.bind(mixin),
     };
 }
 
-export { readonlySortByInterface, sortByInterface };
+export { sortByInterface };

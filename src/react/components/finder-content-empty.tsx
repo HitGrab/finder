@@ -6,7 +6,7 @@ interface FinderContentEmptyProps {
 }
 function FinderContentEmpty({ children: Component }: FinderContentEmptyProps) {
     const finder = useFinder();
-    if (finder.state === "empty" && Component) {
+    if (finder.isEmpty && Component) {
         if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }

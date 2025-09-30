@@ -2,6 +2,7 @@ import { isGroupByRule } from "../utils/rule-utils";
 import { groupBy, orderBy } from "lodash";
 import { GroupByRule } from "../types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "../types/core-types";
+import { EVENT_SOURCE, EVENTS } from "../core-constants";
 
 interface InitialValues {
     initialGroupBy: string | undefined;
@@ -63,8 +64,8 @@ class GroupByMixin<FItem, FContext> {
         this.groupIdSortDirection = undefined;
 
         this.#deps.touch({
-            source: "groupBy",
-            event: "change.groupBy.set",
+            source: EVENT_SOURCE.GROUP_BY,
+            event: EVENTS.SET_GROUP_BY,
             current: rule?.id,
             initial: previousRule?.id,
             rule,
@@ -76,8 +77,8 @@ class GroupByMixin<FItem, FContext> {
         this.groupIdSortDirection = direction;
 
         this.#deps.touch({
-            source: "groupBy",
-            event: "change.groupBy.setGroupIdSortDirection",
+            source: EVENT_SOURCE.GROUP_BY,
+            event: EVENTS.SET_GROUP_SORT_BY_DIRECTION,
             current: { groupIdSortDirection: direction },
             initial: { groupIdSortDirection: previousValue },
             rule: this.activeRule,
@@ -106,13 +107,7 @@ class GroupByMixin<FItem, FContext> {
     }
 
     static process<FItem, FContext>(options: SerializedGroupByMixin, items: FItem[], context?: FContext): FinderResultGroup<FItem>[] {
-        const groupObject = groupBy(items, (item) => {
-            const value = options.rule?.groupFn(item, context);
-            if (value === undefined) {
-                throw new Error("groupFn did not return a value.");
-            }
-            return value;
-        });
+        const groupObject = groupBy(items, (item) => options.rule?.groupFn(item, context));
 
         // transform the object into a sortable array
         const groups = Object.entries(groupObject).map(([id, items]) => ({
@@ -128,8 +123,8 @@ class GroupByMixin<FItem, FContext> {
             orderSortDirection.push("asc");
         }
 
-        if (options.rule?.sortGroupIdFn) {
-            orderByCallbacks.push(options.rule.sortGroupIdFn);
+        if (options.rule?.sortGroupFn) {
+            orderByCallbacks.push(options.rule.sortGroupFn);
             orderSortDirection.push(options.sortDirection ?? "asc");
         }
 

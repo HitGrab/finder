@@ -1,3 +1,4 @@
+import { EVENT_SOURCE, EVENTS } from "../core-constants";
 import { MixinInjectedDependencies, SerializedPaginationMixin } from "../types/core-types";
 import { clamp } from "../utils/finder-utils";
 
@@ -24,8 +25,8 @@ class PaginationMixin<FItem> {
             const previousPage = this.#page;
             this.#page = value;
             this.#deps.touch({
-                source: "pagination",
-                event: "change.pagination.setPage",
+                source: EVENT_SOURCE.PAGINATION,
+                event: EVENTS.SET_PAGE,
                 current: { page: this.#page },
                 initial: { page: previousPage },
             });
@@ -38,8 +39,8 @@ class PaginationMixin<FItem> {
             this.numItemsPerPage = value;
 
             this.#deps.touch({
-                source: "pagination",
-                event: "change.pagination.setNumItemsPerPage",
+                source: EVENT_SOURCE.PAGINATION,
+                event: EVENTS.SET_NUM_ITEMS_PER_PAGE,
                 current: { numItemsPerPage: this.numItemsPerPage },
                 initial: { numItemsPerPage: previousValue },
             });

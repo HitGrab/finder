@@ -3,10 +3,12 @@ import { isSearchRule } from "../utils/rule-utils";
 import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
-import { MixinInjectedDependencies, SerializedSearchMixin } from "../types/core-types";
+import { MixinInjectedDependencies, SearchScore, SerializedSearchMixin } from "../types/core-types";
+import { ERRORS, EVENT_SOURCE, EVENTS } from "../core-constants";
+import { FinderError } from "../errors/finder-error";
 
 type InitialValues = { initialSearchTerm: string | undefined };
-type SearchScoreItem<FItem> = { item: FItem; score: { percentOfHaystackMatched: number; longestSequentialSequence: number } };
+type SearchScoreItem<FItem> = { item: FItem; score: SearchScore };
 
 class SearchMixin<FItem> {
     searchTerm: string;
@@ -31,12 +33,12 @@ class SearchMixin<FItem> {
     }
 
     setSearchTerm(incomingSearchTerm: string) {
-        const rule = this.#deps.getRuleBook().rules.find(isSearchRule);
+        const rule = this.rule;
         if (!rule) {
-            throw new Error("Finder could not locate a searchRule.");
+            throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
         }
         if (this.#deps.debouncer.has("_search") === false) {
-            this.#deps.debouncer.register("_search", rule?.debounceMilliseconds);
+            this.#deps.debouncer.register("_search", rule.debounceMilliseconds);
         }
 
         this.#deps.debouncer.call("_search", () => {
@@ -46,8 +48,8 @@ class SearchMixin<FItem> {
             const previousValue = this.searchTerm;
             this.searchTerm = incomingSearchTerm;
             this.#deps.touch({
-                source: "search",
-                event: "change.search.setSearchTerm",
+                source: EVENT_SOURCE.SEARCH,
+                event: EVENTS.SET_SEARCH_TERM,
                 current: incomingSearchTerm,
                 initial: previousValue,
                 rule,
@@ -62,8 +64,8 @@ class SearchMixin<FItem> {
         const previousValue = this.searchTerm;
         this.searchTerm = "";
         this.#deps.touch({
-            source: "search",
-            event: "change.search.reset",
+            source: EVENT_SOURCE.SEARCH,
+            event: EVENTS.RESET_SEARCH_TERM,
             current: "",
             initial: previousValue,
             rule: this.rule,
@@ -107,6 +109,7 @@ class SearchMixin<FItem> {
                 return scores;
             }, []);
 
+            // determine which ( if any ) of the aliases have the best score.
             if (itemHaystackScores.length > 0) {
                 const sortedItemHaystackScores = orderBy(itemHaystackScores, ["percentOfHaystackMatched", "longestSequentialSequence"], ["desc", "asc"]);
                 const bestScore = sortedItemHaystackScores.at(0);

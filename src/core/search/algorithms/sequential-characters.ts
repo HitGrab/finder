@@ -4,8 +4,7 @@ export function calculateSequentialCharacterIndexes(haystack: string, needle: st
     let hayStackToIterateThrough = haystack;
     let numProcessedCharacters = 0;
     let hasMismatch = false;
-    for (let x = 0; x < needleAsCharacterArray.length; x += 1) {
-        const character = String(needleAsCharacterArray[x]);
+    for (const character of needleAsCharacterArray) {
         const indexInHaystack = hayStackToIterateThrough.indexOf(character);
         if (indexInHaystack === -1) {
             hasMismatch = true;

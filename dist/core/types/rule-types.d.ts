@@ -77,7 +77,7 @@ export interface SortByRule<FItem = any, FContext = any> {
 export interface GroupByRule<FItem = any, FContext = any> {
     id: string;
     groupFn: FinderPropertySelector<FItem, FContext>;
-    sortGroupIdFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
+    sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
     groupIdSortDirection?: SortDirection;
     sticky?: {
         header?: string | string[];

@@ -24,7 +24,7 @@ describe("GroupBy", () => {
             groupByRule({
                 id: "expiry_date",
                 groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
-                sortGroupIdFn: (group) => group.id,
+                sortGroupFn: (group) => group.id,
             }),
         ];
 

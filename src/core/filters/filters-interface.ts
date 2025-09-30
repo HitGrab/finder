@@ -3,7 +3,7 @@ import { FiltersMixin } from "./filters";
 /**
  * Public surface for the Filters mixin
  */
-function readonlyFiltersInterface(mixin: FiltersMixin) {
+function filtersInterface(mixin: FiltersMixin) {
     return {
         values: mixin.getValues(),
         raw: mixin.getRawValues(),
@@ -13,12 +13,6 @@ function readonlyFiltersInterface(mixin: FiltersMixin) {
         get: mixin.get.bind(mixin),
         has: mixin.has.bind(mixin),
         getRule: mixin.getRule.bind(mixin),
-    };
-}
-
-function filtersInterface(mixin: FiltersMixin) {
-    return {
-        ...readonlyFiltersInterface(mixin),
         toggle: mixin.toggle.bind(mixin),
         set: mixin.set.bind(mixin),
         delete: mixin.delete.bind(mixin),
@@ -28,4 +22,4 @@ function filtersInterface(mixin: FiltersMixin) {
     };
 }
 
-export { readonlyFiltersInterface, filtersInterface };
+export { filtersInterface };

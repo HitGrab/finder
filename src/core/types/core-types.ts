@@ -1,9 +1,5 @@
 import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
-import { readonlyFiltersInterface } from "../filters/filters-interface";
-import { readonlyGroupByInterface } from "../group-by/group-by-interface";
 import { RuleBook } from "../rule-book/rule-book";
-import { readonlySearchInterface } from "../search/search-interface";
-import { readonlySortByInterface } from "../sort-by/sort-by-interface";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
 import { FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "./rule-types";
@@ -60,21 +56,11 @@ export interface ResultSnapshot<FItem> {
     hasGroupByRule: boolean;
 }
 
-export interface FinderSnapshot<FItem, FContext = any> {
-    search: ReturnType<typeof readonlySearchInterface<FItem>>;
-    filters: ReturnType<typeof readonlyFiltersInterface>;
-    sortBy: ReturnType<typeof readonlySortByInterface<FItem>>;
-    groupBy: ReturnType<typeof readonlyGroupByInterface<FItem, FContext>>;
-    context?: FContext;
-    updatedAt?: number;
-}
-
 export interface MixinInjectedDependencies<FItem = any, FContext = any> {
     isLoading: () => boolean;
     isDisabled: () => boolean;
     getRuleBook: () => RuleBook<FItem, FContext>;
     touch: FinderTouchCallback;
-    getContext: () => any;
     getItems: () => FItem[];
     test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
     debouncer: DebounceCallbackRegistry;
@@ -118,4 +104,9 @@ export interface SerializedPaginationMixin {
 export interface SerializedGroupByMixin {
     rule?: GroupByRule;
     sortDirection?: SortDirection;
+}
+
+export interface SearchScore {
+    percentOfHaystackMatched: number;
+    longestSequentialSequence: number;
 }
