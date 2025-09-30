@@ -3,18 +3,19 @@ import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
+type FilterRuleIdentifier = string | FilterRuleUnion | HydratedFilterRule;
 declare class FiltersMixin {
     #private;
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies);
-    set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]): void;
+    set<FValue>(identifier: FilterRuleIdentifier, incomingFilterValue: FValue | FValue[]): void;
     get rules(): HydratedFilterRule<unknown, any, any>[];
     get activeRules(): HydratedFilterRule<unknown, any, any>[];
-    get(identifier: string | FilterRuleUnion | HydratedFilterRule): any;
-    has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any): boolean;
-    getRule(identifier: string | FilterRuleUnion | HydratedFilterRule): HydratedFilterRule<any, any, any>;
-    delete(identifier: string | FilterRuleUnion | HydratedFilterRule): void;
-    isRuleActive(identifier: string | FilterRuleUnion | HydratedFilterRule): boolean;
-    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any): void;
+    get(identifier: FilterRuleIdentifier): any;
+    has(identifier: FilterRuleIdentifier, optionValue?: any): boolean;
+    getRule(identifier: FilterRuleIdentifier): HydratedFilterRule<any, any, any>;
+    delete(identifier: FilterRuleIdentifier): void;
+    isRuleActive(identifier: FilterRuleIdentifier): boolean;
+    toggle(identifier: FilterRuleIdentifier, optionValue?: any): void;
     test(options: FilterTestOptions): any[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): any[];
     testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<any, any>;

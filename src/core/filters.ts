@@ -9,6 +9,8 @@ interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
 
+type FilterRuleIdentifier = string | FilterRuleUnion | HydratedFilterRule;
+
 class FiltersMixin {
     #values;
 
@@ -19,7 +21,7 @@ class FiltersMixin {
         this.#deps = deps;
     }
 
-    set<FItem, FValue>(identifier: FilterRuleUnion<FItem, FValue> | HydratedFilterRule<FItem, FValue> | string, incomingFilterValue: FValue | FValue[]) {
+    set<FValue>(identifier: FilterRuleIdentifier, incomingFilterValue: FValue | FValue[]) {
         const rule = this.getRule(identifier);
 
         const previousValue = this.get(identifier);
@@ -62,7 +64,7 @@ class FiltersMixin {
         return this.rules.filter((rule) => FiltersMixin.isRuleActive(rule, this.#values[rule.id]));
     }
 
-    get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    get(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
         const value = this.#values[rule.id];
 
@@ -94,7 +96,7 @@ class FiltersMixin {
         return value;
     }
 
-    has(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any) {
+    has(identifier: FilterRuleIdentifier, optionValue?: any) {
         const rule = this.getRule(identifier);
 
         const ruleValue = this.get(rule);
@@ -121,7 +123,7 @@ class FiltersMixin {
         return ruleValue === option.value;
     }
 
-    getRule(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    getRule(identifier: FilterRuleIdentifier) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
         if (isHydratedFilterRule(rule) === false) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
@@ -129,17 +131,17 @@ class FiltersMixin {
         return rule;
     }
 
-    delete(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    delete(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
         return this.set(rule, undefined);
     }
 
-    isRuleActive(identifier: string | FilterRuleUnion | HydratedFilterRule) {
+    isRuleActive(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
         return FiltersMixin.isRuleActive(rule, this.#values[rule.id]);
     }
 
-    toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: any) {
+    toggle(identifier: FilterRuleIdentifier, optionValue?: any) {
         const rule = this.getRule(identifier);
 
         if (optionValue === undefined && rule.boolean) {

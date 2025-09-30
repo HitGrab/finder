@@ -47,28 +47,22 @@ export interface FilterRule<FItem = any, FValue = any, FContext = any> {
     label?: string;
     hidden?: boolean;
     debounceMilliseconds?: number;
-
-    // these properties will be narrowed by FilterRuleUnion
-    multiple?: boolean;
-    boolean?: boolean;
-    filterFn: CallableFunction;
-    defaultValue?: any;
 }
 
-interface FilterRuleWithBooleanValue<FItem, FValue = boolean, FContext = any> extends FilterRule<FItem, FValue> {
+export interface FilterRuleWithBooleanValue<FItem, FContext = any> extends FilterRule<FItem> {
     multiple?: false;
     boolean: true;
-    filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
+    filterFn: (item: FItem, value: boolean, context?: FContext) => boolean;
     defaultValue?: boolean;
 }
-interface FilterRuleWithScalarValue<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
+export interface FilterRuleWithSingleValue<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple?: false;
     boolean?: false;
     filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
     defaultValue?: FValue;
 }
 
-interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
+export interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple: true;
     boolean?: false;
     filterFn: (item: FItem, value: FValue[], context?: FContext) => boolean;
@@ -77,7 +71,7 @@ interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends Fi
 
 export type FilterRuleUnion<FItem = any, FValue = any> =
     | FilterRuleWithBooleanValue<FItem>
-    | FilterRuleWithScalarValue<FItem, FValue>
+    | FilterRuleWithSingleValue<FItem, FValue>
     | FilterRuleWithMultipleValues<FItem, FValue>;
 
 /**

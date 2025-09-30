@@ -1,6 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { FinderCore } from "../finder-core";
 import { RuleEffect, SearchEffect } from "../types/effect-types";
-import { FilterRuleUnion, FinderRule, GroupByRule, SearchRule, SortByRule } from "../types/rule-types";
+import {
+    FilterRuleWithBooleanValue,
+    FilterRuleWithMultipleValues,
+    FilterRuleWithSingleValue,
+    FinderRule,
+    GroupByRule,
+    SearchRule,
+    SortByRule,
+} from "../types/rule-types";
 
 /**
  * Enforce structure for an array of rule of mixed types.
@@ -13,7 +22,14 @@ export function searchRule<FItem>(rule: SearchRule<FItem>) {
     return rule;
 }
 
-export function filterRule<FItem, FValue = any>(rule: FilterRuleUnion<FItem, FValue>) {
+export function filterRule<FItem, FValue = any, T = FilterRuleWithMultipleValues<FItem, FValue>>(rule: T): FilterRuleWithMultipleValues<FItem, FValue>;
+export function filterRule<FItem, FValue = any, T = FilterRuleWithBooleanValue<FItem, FValue>>(rule: T): FilterRuleWithBooleanValue<FItem, FValue>;
+export function filterRule<FItem, FValue = any, T = FilterRuleWithSingleValue<FItem, FValue>>(rule: T): FilterRuleWithSingleValue<FItem, FValue>;
+export function filterRule<
+    FItem,
+    FValue = any,
+    T = FilterRuleWithSingleValue<FItem, FValue> | FilterRuleWithMultipleValues<FItem, FValue> | FilterRuleWithBooleanValue<FItem, FValue>,
+>(rule: T) {
     return rule;
 }
 
