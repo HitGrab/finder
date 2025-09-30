@@ -67,7 +67,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         groupIdSortDirection: import("..").SortDirection | undefined;
         set: (identifier?: string | import("..").GroupByRule) => void;
         toggle: (identifier: import("..").GroupByRule | string) => void;
-        setGroupIdSortDirection: (direction?: import("..").SortDirection) => void;
+        setGroupSortDirection: (direction?: import("..").SortDirection) => void;
         reset: () => void;
     };
     get pagination(): {
