@@ -9,7 +9,7 @@ export function isSearchRule<FItem>(rule: unknown): rule is SearchRule<FItem> {
     return typeof rule === "object" && rule !== null && ("searchFn" in rule || "haystackFn" in rule);
 }
 
-export function isFilterUnionRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {
+export function isFilterRule<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {
     return typeof rule === "object" && rule !== null && "filterFn" in rule;
 }
 export function isHydratedFilterRule<FItem>(rule: unknown): rule is HydratedFilterRule<FItem> {

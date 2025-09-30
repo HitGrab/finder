@@ -1,7 +1,7 @@
 import { ERRORS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { FinderRule } from "./types/rule-types";
-import { isFilterUnionRule, isGroupByRule, isSearchRule, isSortByRule } from "./utils/rule-utils";
+import { isFilterRule, isGroupByRule, isSearchRule, isSortByRule } from "./utils/rule-utils";
 
 /**
  * Stores rule definitions and hydrated rules
@@ -19,7 +19,7 @@ export class RuleBook<FItem, FContext> {
 
     hydrateDefinitions(items: FItem[], context: FContext) {
         this.rules = this.#definitions.map((rule) => {
-            if (isFilterUnionRule(rule)) {
+            if (isFilterRule(rule)) {
                 return {
                     ...rule,
 
@@ -67,7 +67,7 @@ export class RuleBook<FItem, FContext> {
             return false;
         }
 
-        const validators = [isSearchRule, isFilterUnionRule, isSortByRule, isGroupByRule];
+        const validators = [isSearchRule, isFilterRule, isSortByRule, isGroupByRule];
 
         const filterIds = new Set();
         definitions.forEach((rule) => {

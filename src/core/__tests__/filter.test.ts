@@ -6,7 +6,7 @@ import { FinderCore } from "../finder-core";
 
 describe("Filters", () => {
     test("Accessors", () => {
-        const rule = filterRule<MockObjectItem, number>({
+        const rule = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item, value) => item.price === value,
         });
