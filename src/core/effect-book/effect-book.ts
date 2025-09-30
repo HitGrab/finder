@@ -14,7 +14,7 @@ export class EffectBook<FItem, FContext> {
         this.hydrateDefinitions(items, context);
     }
 
-    hydrateDefinitions<FItem, FContext>(items: FItem[], context: FContext) {
+    hydrateDefinitions(items: FItem[], context: FContext) {
         this.ruleEffects = this.#ruleEffectDefinitions.map((effect) => {
             const rules = typeof effect.rules === "function" ? effect.rules(items, context) : effect.rules;
             const rulesAsArray = Array.isArray(rules) ? rules : [rules];

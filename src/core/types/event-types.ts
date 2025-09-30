@@ -8,7 +8,7 @@ interface FinderSharedEventProps {
     source: string;
     event: FinderEventName;
     timestamp: number;
-    instance: FinderCore<any>;
+    instance: FinderCore;
 }
 export interface FinderInitEvent extends FinderSharedEventProps {
     source: "core";

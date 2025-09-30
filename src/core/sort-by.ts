@@ -114,7 +114,7 @@ class SortByMixin<FItem> {
         };
     }
 
-    static process<FItem, FContext>(options: SerializedSortByMixin, items: FItem[], context: FContext) {
+    static process<FItem>(options: SerializedSortByMixin, items: FItem[], context: unknown) {
         if (options.rule === undefined) {
             return items;
         }

@@ -17,7 +17,7 @@ export class RuleBook<FItem, FContext> {
         this.hydrateDefinitions(items, context);
     }
 
-    hydrateDefinitions<FItem, FContext>(items: FItem[], context: FContext) {
+    hydrateDefinitions(items: FItem[], context: FContext) {
         this.rules = this.#definitions.map((rule) => {
             if (isFilterUnionRule(rule)) {
                 return {

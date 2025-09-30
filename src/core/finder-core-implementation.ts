@@ -9,8 +9,7 @@ import { FinderRule } from "./types/rule-types";
 import { EventCallback, FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins } from "./types/core-types";
 import { EffectBook } from "./effect-book/effect-book";
 import { hasCharacterIndexMatches } from "./search/string-matches/calculate-string-match-segments";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FinderError } from "./errors/finder-error";
+import { EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FiltersMixin } from "./filters";
 import { SortByMixin } from "./sort-by";
 import { GroupByMixin } from "./group-by";
@@ -313,11 +312,7 @@ class FinderCoreImplementation<FItem, FContext> {
     }
 
     getRule(identifier: string | FinderRule<FItem>) {
-        const rule = this.#ruleBook.getRule(identifier);
-        if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
-        }
-        return rule;
+        return this.#ruleBook.getRule(identifier);
     }
 
     get state() {

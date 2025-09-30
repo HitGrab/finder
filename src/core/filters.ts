@@ -1,9 +1,9 @@
 import { isHydratedFilterRule } from "./utils/rule-utils";
-import { simpleUniqBy } from "./utils/finder-utils";
 import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./errors/finder-error";
+import { uniqBy } from "lodash";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -184,7 +184,7 @@ class FiltersMixin {
 
         // Additive tests use the current Finder state.
         if (options.isAdditive) {
-            const rules = simpleUniqBy([...this.rules, ...options.rules], "id");
+            const rules = uniqBy([...this.rules, ...options.rules], "id");
             const values = { ...this.getValues(), ...options.values };
             return this.#deps.test({ filters: { rules, values } }, true);
         }
@@ -270,6 +270,7 @@ class FiltersMixin {
             return items;
         }
         return items.filter((item) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return activeRules.every((rule) => rule.filterFn(item, options.values[rule.id], context));
         });
     }

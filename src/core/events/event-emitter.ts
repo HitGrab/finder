@@ -41,6 +41,7 @@ export class EventEmitter<EventNames extends string> {
 
     silently(callback: CallableFunction) {
         this.#disabled = true;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         callback();
         this.#disabled = false;
     }

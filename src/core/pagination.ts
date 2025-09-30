@@ -1,6 +1,6 @@
+import { clamp } from "lodash";
 import { EVENT_SOURCE, EVENTS } from "./core-constants";
 import { MixinInjectedDependencies, SerializedPaginationMixin } from "./types/core-types";
-import { clamp } from "./utils/finder-utils";
 
 interface InitialValues {
     page: number | undefined;

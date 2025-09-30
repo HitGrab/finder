@@ -33,7 +33,7 @@ function Finder<FItem = any, FContext = any>({
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
     const [instance] = useState<FinderCore<FItem, FContext>>(() => {
         const wrappedOnChange = (e: FinderChangeEvent) => {
-            instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+            instance.events.on("change", (event: FinderChangeEvent) => setLastUpdatedAt(event.instance.updatedAt));
             if (onChange) {
                 onChange(e);
             }

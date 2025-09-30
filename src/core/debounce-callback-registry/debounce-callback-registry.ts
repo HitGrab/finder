@@ -10,7 +10,8 @@ class DebounceCallbackRegistry {
 
     register(id: string, delay?: number) {
         this.#registry[id] = {
-            debounceFn: delay ? debounce((callback) => callback(), delay) : (callback: CallableFunction) => callback(),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            debounceFn: delay ? debounce((callback: CallableFunction) => callback(), delay) : (callback: CallableFunction) => callback(),
             delay,
         };
     }

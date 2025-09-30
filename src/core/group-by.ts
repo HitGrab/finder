@@ -115,7 +115,7 @@ class GroupByMixin<FItem, FContext> {
         };
     }
 
-    static process<FItem, FContext>(options: SerializedGroupByMixin, items: FItem[], context?: FContext): FinderResultGroup<FItem>[] {
+    static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context?: unknown): FinderResultGroup<FItem>[] {
         const groupObject = groupBy(items, (item) => options.rule?.groupFn(item, context));
 
         // transform the object into a sortable array
@@ -138,7 +138,7 @@ class GroupByMixin<FItem, FContext> {
         }
 
         if (orderByCallbacks.length > 0) {
-            const direction = (orderSortDirection ?? "desc") as SortDirection;
+            const direction = orderSortDirection as SortDirection;
             return orderBy(groups, orderByCallbacks, direction);
         }
 
@@ -151,7 +151,7 @@ class GroupByMixin<FItem, FContext> {
  */
 function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRule<FItem>) {
     let stickyHeaderGroupIds: string[] = [];
-    if (groupByRule?.sticky?.header !== undefined) {
+    if (groupByRule.sticky?.header !== undefined) {
         if (Array.isArray(groupByRule.sticky.header)) {
             stickyHeaderGroupIds = groupByRule.sticky.header;
         }

@@ -88,7 +88,7 @@ class SearchMixin<FItem> {
         return this.#deps.test({ search: { searchTerm, rule: this.rule } }, isAdditive);
     }
 
-    static process<FItem, FContext>(options: SerializedSearchMixin, items: FItem[], context?: FContext) {
+    static process<FItem>(options: SerializedSearchMixin, items: FItem[], context?: unknown) {
         if (options.rule === undefined || options.searchTerm === "") {
             return items;
         }
