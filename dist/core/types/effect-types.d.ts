@@ -12,11 +12,9 @@ export interface HydratedRuleEffect<FItem = any, FContext = any> {
 export interface SearchEffect<FItem = any, FContext = any> {
     haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]);
     onChange: (instance: FinderCore<FItem, FContext>) => void;
-    exact?: boolean;
 }
 export interface HydratedSearchEffect<FItem = any, FContext = any> {
     haystack: string[];
     onChange: (instance: FinderCore<FItem, FContext>) => void;
-    exact: boolean;
     _isHydrated: true;
 }

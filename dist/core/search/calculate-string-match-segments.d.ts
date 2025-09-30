@@ -6,4 +6,4 @@ export declare function calculateStringMatchSegments(haystack: string | string[]
 /**
  * Determine if a characterIndexFn would return a result for a haystack.
  */
-export declare function hasCharacterIndexMatches(haystack: string | string[], needle: string, exact?: boolean): boolean;
+export declare function hasCharacterIndexMatches(haystack: string | string[], needle: string): boolean;

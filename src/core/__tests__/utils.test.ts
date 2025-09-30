@@ -30,4 +30,12 @@ describe("Utils", () => {
             { index: 21, value: " mobile", is_match: false, length: 7 },
         ]);
     });
+
+    test("getSearchResultSegments correctly groups subqueries", () => {
+        const sequentialCharacterMatches = calculateStringMatchSegments("Light Leisure Suit", '"suit"');
+        expect(sequentialCharacterMatches).toEqual([
+            { index: 0, value: "Light Leisure ", is_match: false, length: 14 },
+            { index: 14, value: "Suit", is_match: true, length: 5 },
+        ]);
+    });
 });

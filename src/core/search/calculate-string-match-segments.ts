@@ -1,6 +1,5 @@
 import { StringMatchSegment } from "../types/string-match-types";
-import { calculateSequentialCharacterIndexes } from "./algorithms/sequential-characters";
-import { calculateSequentialStringCharacterIndexes } from "./algorithms/sequential-string";
+import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
 import { transformStringForComparison } from "./search-string-transform";
 import { StringMatchHaystack } from "./string-match-haystack";
 
@@ -8,7 +7,6 @@ import { StringMatchHaystack } from "./string-match-haystack";
  * Helper function to determine which specfic characters are matched inside a string.
  */
 export function calculateStringMatchSegments(haystack: string | string[], needle: string) {
-    const transformedNeedle = transformStringForComparison(needle);
     const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
 
     // StringMatchHaystack will build a map between the source and transformed strings.
@@ -20,7 +18,7 @@ export function calculateStringMatchSegments(haystack: string | string[], needle
             return match;
         }
 
-        const matchedCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
+        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, needle);
 
         // if no matching character indexes were found, this particular needle did not succeed.
         if (matchedCharacterIndexes === undefined) {
@@ -165,12 +163,10 @@ function prettifyResultSegments(segments: StringMatchSegment[]) {
 /**
  * Determine if a characterIndexFn would return a result for a haystack.
  */
-export function hasCharacterIndexMatches(haystack: string | string[], needle: string, exact = false) {
+export function hasCharacterIndexMatches(haystack: string | string[], needle: string) {
     const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
-    const transformedNeedle = transformStringForComparison(needle);
-    const comparatorFn = exact ? calculateSequentialStringCharacterIndexes : calculateSequentialCharacterIndexes;
     return haystackAsArray.some((hay) => {
         const transformedHaystack = transformStringForComparison(hay);
-        return comparatorFn(transformedHaystack, transformedNeedle) !== undefined;
+        return calculateCharacterMatchIndexes(transformedHaystack, needle) !== undefined;
     });
 }
