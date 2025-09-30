@@ -15,7 +15,7 @@ class GroupByMixin<FItem, FContext> {
 
     requireGroup;
 
-    groupIdSortDirection?: SortDirection;
+    #groupSortDirection?: SortDirection;
 
     #deps;
 
@@ -48,6 +48,10 @@ class GroupByMixin<FItem, FContext> {
         return this.activeRule !== undefined;
     }
 
+    get groupSortDirection() {
+        return this.#groupSortDirection ?? this.activeRule?.defaultGroupSortDirection;
+    }
+
     set(identifier?: string | GroupByRule) {
         if (this.#deps.isDisabled()) {
             return;
@@ -70,7 +74,7 @@ class GroupByMixin<FItem, FContext> {
         }
 
         this.#groupBy = rule;
-        this.groupIdSortDirection = undefined;
+        this.#groupSortDirection = undefined;
 
         this.#deps.touch({
             source: EVENT_SOURCE.GROUP_BY,
@@ -81,15 +85,15 @@ class GroupByMixin<FItem, FContext> {
         });
     }
 
-    setGroupIdSortDirection(direction?: SortDirection) {
-        const previousValue = this.groupIdSortDirection;
-        this.groupIdSortDirection = direction;
+    setGroupSortDirection(direction?: SortDirection) {
+        const previousValue = this.#groupSortDirection;
+        this.#groupSortDirection = direction;
 
         this.#deps.touch({
             source: EVENT_SOURCE.GROUP_BY,
             event: EVENTS.SET_GROUP_SORT_BY_DIRECTION,
-            current: { groupIdSortDirection: direction },
-            initial: { groupIdSortDirection: previousValue },
+            current: direction,
+            initial: previousValue,
             rule: this.activeRule,
         });
     }
@@ -104,14 +108,14 @@ class GroupByMixin<FItem, FContext> {
     }
 
     reset() {
-        this.setGroupIdSortDirection(undefined);
+        this.setGroupSortDirection(undefined);
         this.set(undefined);
     }
 
     serialize(): SerializedGroupByMixin {
         return {
             rule: this.activeRule,
-            sortDirection: this.groupIdSortDirection,
+            sortDirection: this.#groupSortDirection,
         };
     }
 

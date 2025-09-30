@@ -30,14 +30,14 @@ describe("GroupBy", () => {
 
         const finder = new FinderCore(objectItems, { rules, requireGroup: true });
 
-        finder.groupBy.setGroupIdSortDirection("asc");
+        finder.groupBy.setGroupSortDirection("asc");
 
         expect(finder.matches.groups).toEqual([
             { id: "five", items: [orange, banana] },
             { id: "three", items: [apple] },
         ]);
 
-        finder.groupBy.setGroupIdSortDirection("desc");
+        finder.groupBy.setGroupSortDirection("desc");
 
         expect(finder.matches.groups).toEqual([
             { id: "three", items: [apple] },

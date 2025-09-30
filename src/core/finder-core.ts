@@ -113,10 +113,10 @@ class FinderCore<FItem = any, FContext = any> {
             activeRule: mixin.activeRule,
             requireGroup: mixin.requireGroup,
             rules: mixin.rules,
-            groupIdSortDirection: mixin.groupIdSortDirection,
+            groupIdSortDirection: mixin.groupSortDirection,
             set: mixin.set.bind(mixin),
             toggle: mixin.toggle.bind(mixin),
-            setGroupIdSortDirection: mixin.setGroupIdSortDirection.bind(mixin),
+            setGroupSortDirection: mixin.setGroupSortDirection.bind(mixin),
             reset: mixin.reset.bind(mixin),
         };
     }

@@ -107,7 +107,7 @@ export interface GroupByRule<FItem = any, FContext = any> {
     id: string;
     groupFn: FinderPropertySelector<FItem, FContext>;
     sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
-    groupIdSortDirection?: SortDirection;
+    defaultGroupSortDirection?: SortDirection;
     sticky?: {
         header?: string | string[];
         footer?: string | string[];
