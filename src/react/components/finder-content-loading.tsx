@@ -6,7 +6,7 @@ interface FinderContentLoadingProps {
 }
 function FinderContentLoading({ children: Component }: FinderContentLoadingProps) {
     const finder = useFinder();
-    if (finder.isLoading && Component) {
+    if (finder.isLoading) {
         if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }

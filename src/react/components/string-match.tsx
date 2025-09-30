@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { FinderSearchTermProp } from "../types/react-types";
-import { calculateStringMatchSegments } from "../../core/search/string-matches/calculate-string-match-segments";
+import { calculateStringMatchSegments } from "../../core/search/calculate-string-match-segments";
 
 interface StringMatchProps {
     needle: string;

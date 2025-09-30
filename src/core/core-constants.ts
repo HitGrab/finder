@@ -32,6 +32,7 @@ export const EVENT_SOURCE = {
 
 export const ERRORS = {
     RULE_NOT_FOUND: "Finder could not locate requested rule",
+    WRONG_RULE_TYPE_FOR_MIXIN: "The requested rule is not valid for this mixin.",
     NO_SEARCH_RULE_SET: "Unable to set search term; no SearchRule was found.",
     TOGGLING_OPTION_ON_RULE_WITH_NO_OPTIONS: "Finder could not toggle this filter rule option, as the filter does not have any options.",
     TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE: "Finder could not toggle this filter rule option, as the rule does not allow multiple values.",

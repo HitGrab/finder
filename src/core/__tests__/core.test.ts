@@ -37,8 +37,8 @@ describe("Core", () => {
             },
         ];
         expect(() => {
-            // @ts-expect-error
-            const finder = new FinderCore(objectItems, { rules });
+            // @ts-expect-error - Testing, expected to fail.
+            new FinderCore(objectItems, { rules });
         }).toThrowError();
     });
 });

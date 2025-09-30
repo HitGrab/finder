@@ -1,5 +1,5 @@
-import { DebounceCallbackRegistry } from "../debounce-callback-registry/debounce-callback-registry";
-import { RuleBook } from "../rule-book/rule-book";
+import { DebounceCallbackRegistry } from "../debounce-callback-registry";
+import { RuleBook } from "../rule-book";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
 import { FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "./rule-types";
@@ -109,4 +109,15 @@ export interface SerializedGroupByMixin {
 export interface SearchScore {
     percentOfHaystackMatched: number;
     longestSequentialSequence: number;
+}
+
+export interface PaginationMixinInterface {
+    page: number;
+    offset: number;
+    numItemsPerPage: number | undefined;
+    numTotalItems: number;
+    lastPage: number | undefined;
+    isPaginated: boolean;
+    setPage: (value: number) => void;
+    setNumItemsPerPage: (value: number) => void;
 }

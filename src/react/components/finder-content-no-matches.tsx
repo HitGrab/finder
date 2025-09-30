@@ -6,7 +6,7 @@ interface FinderContentNoMatchesProps {
 }
 function FinderContentNoMatches({ children: Component }: FinderContentNoMatchesProps) {
     const finder = useFinder();
-    if (finder.hasMatches === false && Component) {
+    if (finder.hasMatches === false) {
         if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context} />;
         }

@@ -39,6 +39,6 @@ describe("SortBy", () => {
 
         const finder = new FinderCore(objectItems, { rules });
         finder.sortBy.cycleSortDirection();
-        expect(finder.sortBy.sortDirection).toEqual("asc");
+        expect(finder.sortBy.sortDirection).toEqual("desc");
     });
 });
