@@ -10,13 +10,13 @@ export function clamp(value: number, min: number, max: number) {
 
 export function simpleUniqBy<T>(data: T[], key: string) {
     const processedKeys: string[] = [];
-    return data.reduce((acc, row) => {
+    return data.reduce<T[]>((acc, row) => {
         const rowKey = row[key as keyof typeof row];
         if (processedKeys.includes(String(rowKey)) === false) {
             acc.push(row);
         }
         return acc;
-    }, [] as T[]);
+    }, []);
 }
 
 export function range(start: number, end: number) {

@@ -29,7 +29,7 @@ export class RuleBook<FItem, FContext> {
 
     getRule<Rule>(identifier: string | FinderRule) {
         return this.rules.find((rule) => {
-            if (typeof identifier === "object" && identifier !== null) {
+            if (typeof identifier === "object") {
                 return rule.id === identifier.id;
             }
 
@@ -47,7 +47,7 @@ export class RuleBook<FItem, FContext> {
     }
 
     static validateDefinitions(definitions: FinderRule[]) {
-        if (!definitions || definitions.length === 0) {
+        if (definitions.length === 0) {
             return false;
         }
 

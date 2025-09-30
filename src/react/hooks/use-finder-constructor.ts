@@ -52,6 +52,7 @@ function useFinderConstructor<FItem>(
     const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
     useEffect(() => {
         instance.events.on("change", ({ snapshot }) => setLastUpdatedAt(snapshot.updatedAt));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // Finder will only render a new snapshot if these values have changed.

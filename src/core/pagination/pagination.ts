@@ -48,7 +48,7 @@ class PaginationMixin<FItem> {
     }
 
     get lastPage() {
-        if (this.#page === undefined || this.numItemsPerPage === undefined) {
+        if (this.numItemsPerPage === undefined) {
             return undefined;
         }
 

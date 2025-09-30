@@ -23,7 +23,7 @@ class FiltersMixin {
     #deps;
 
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
-        this.#values = initialFilters || {};
+        this.#values = initialFilters ?? {};
         this.#deps = deps;
     }
 
@@ -36,7 +36,7 @@ class FiltersMixin {
         const previousValue = this.get(identifier);
 
         if (this.#deps.debouncer.has(rule.id) === false) {
-            this.#deps.debouncer.register(rule.id, rule?.debounceMilliseconds);
+            this.#deps.debouncer.register(rule.id, rule.debounceMilliseconds);
         }
 
         this.#deps.debouncer.call(rule.id, () => {
@@ -46,10 +46,10 @@ class FiltersMixin {
 
             // empty strings are treated as if a filter is being deleted.
             const isBlankString = typeof incomingFilterValue === "string" && incomingFilterValue.trim() === "";
-            let transformedFilterValue = isBlankString ? undefined : incomingFilterValue;
+            const transformedFilterValue = isBlankString ? undefined : incomingFilterValue;
 
             // early exit if nothing changed
-            if (this.#values?.[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
+            if (this.#values[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
                 return;
             }
 
@@ -70,7 +70,7 @@ class FiltersMixin {
     }
 
     get activeRules() {
-        return this.rules.filter((rule) => FiltersMixin.isRuleActive(rule, this.#values?.[rule.id]));
+        return this.rules.filter((rule) => FiltersMixin.isRuleActive(rule, this.#values[rule.id]));
     }
 
     get(identifier: string | FilterRuleUnion | HydratedFilterRule) {
@@ -79,7 +79,7 @@ class FiltersMixin {
             throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
         }
 
-        const value = this.#values?.[rule.id];
+        const value = this.#values[rule.id];
 
         if (value === undefined) {
             if (rule.defaultValue) {
@@ -132,7 +132,7 @@ class FiltersMixin {
             return false;
         }
 
-        if (rule.multiple) {
+        if (rule.multiple && Array.isArray(ruleValue)) {
             return ruleValue.includes(option.value);
         }
 
@@ -156,7 +156,7 @@ class FiltersMixin {
         if (!rule) {
             return false;
         }
-        return FiltersMixin.isRuleActive(rule, this.#values?.[rule.id]);
+        return FiltersMixin.isRuleActive(rule, this.#values[rule.id]);
     }
 
     toggle(identifier: string | FilterRuleUnion | HydratedFilterRule, optionValue?: FilterOption | any) {
@@ -189,7 +189,7 @@ class FiltersMixin {
             throw new FinderError(ERRORS.TOGGLING_OPTION_THAT_DOES_NOT_EXIST, { identifier, optionValue });
         }
 
-        const previousFilterValue: any[] = this.#values?.[rule.id] ?? [];
+        const previousFilterValue: any[] = this.#values[rule.id] ?? [];
 
         if (previousFilterValue.includes(option.value)) {
             this.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
@@ -252,7 +252,7 @@ class FiltersMixin {
 
                 if (options.mergeExistingValue) {
                     // use raw value, not calculated value
-                    const initialValue = this.#values?.[rule.id] ?? [];
+                    const initialValue = this.#values[rule.id] ?? [];
 
                     if (rule.multiple) {
                         transformedOptionValue = [...initialValue, option.value];
@@ -294,13 +294,13 @@ class FiltersMixin {
 
     static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any) {
         const activeRules = options.rules.filter((rule) => {
-            return FiltersMixin.isRuleActive(rule, options.values?.[rule.id]);
+            return FiltersMixin.isRuleActive(rule, options.values[rule.id]);
         });
         if (activeRules.length === 0) {
             return items;
         }
         return items.filter((item) => {
-            return activeRules.every((rule) => rule.filterFn(item, options.values?.[rule.id], context));
+            return activeRules.every((rule) => rule.filterFn(item, options.values[rule.id], context));
         });
     }
 

@@ -4,10 +4,10 @@ import { SortByRule } from "../types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "../types/core-types";
 import { EVENT_SOURCE, EVENTS } from "../core-constants";
 
-type InitialValues = {
+interface InitialValues {
     initialSortBy: string | undefined;
     initialSortDirection?: SortDirection;
-};
+}
 
 class SortByMixin<FItem> {
     #sortBy;
@@ -100,7 +100,7 @@ class SortByMixin<FItem> {
                 return Number.NEGATIVE_INFINITY;
             },
             options.sortDirection,
-        ) as FItem[];
+        );
     }
 }
 

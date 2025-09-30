@@ -7,8 +7,13 @@ import { MixinInjectedDependencies, SearchScore, SerializedSearchMixin } from ".
 import { ERRORS, EVENT_SOURCE, EVENTS } from "../core-constants";
 import { FinderError } from "../errors/finder-error";
 
-type InitialValues = { initialSearchTerm: string | undefined };
-type SearchScoreItem<FItem> = { item: FItem; score: SearchScore };
+interface InitialValues {
+    initialSearchTerm: string | undefined;
+}
+interface SearchScoreItem<FItem> {
+    item: FItem;
+    score: SearchScore;
+}
 
 class SearchMixin<FItem> {
     searchTerm: string;

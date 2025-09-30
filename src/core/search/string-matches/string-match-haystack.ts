@@ -40,7 +40,7 @@ export class StringMatchHaystack {
      */
     static composeTransformedHaystackSegments(haystack: string) {
         const safeCharacters = haystack.matchAll(/[\w\d]+/g);
-        let segments = [];
+        const segments = [];
         for (const match of safeCharacters) {
             segments.push({ value: match[0], index: match.index, length: match[0].length });
         }

@@ -147,17 +147,17 @@ function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRule<FItem>)
             stickyHeaderGroupIds = groupByRule.sticky.header;
         }
         if (typeof groupByRule.sticky.header === "string") {
-            stickyHeaderGroupIds = [groupByRule?.sticky?.header];
+            stickyHeaderGroupIds = [groupByRule.sticky.header];
         }
     }
 
     let stickyFooterGroupIds: string[] = [];
-    if (groupByRule?.sticky?.footer !== undefined) {
+    if (groupByRule.sticky?.footer !== undefined) {
         if (Array.isArray(groupByRule.sticky.footer)) {
             stickyFooterGroupIds = groupByRule.sticky.footer;
         }
         if (typeof groupByRule.sticky.footer === "string") {
-            stickyFooterGroupIds = [groupByRule?.sticky?.footer];
+            stickyFooterGroupIds = [groupByRule.sticky.footer];
         }
     }
 

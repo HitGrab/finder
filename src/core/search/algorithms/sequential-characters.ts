@@ -1,6 +1,6 @@
 export function calculateSequentialCharacterIndexes(haystack: string, needle: string) {
     const needleAsCharacterArray = Array.from(needle);
-    let characterMatches: number[] = [];
+    const characterMatches: number[] = [];
     let hayStackToIterateThrough = haystack;
     let numProcessedCharacters = 0;
     let hasMismatch = false;

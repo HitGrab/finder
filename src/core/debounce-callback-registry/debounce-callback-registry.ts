@@ -1,9 +1,9 @@
 import { debounce } from "lodash";
 
-type CallbackObject = {
+interface CallbackObject {
     debounceFn: CallableFunction;
     delay?: number;
-};
+}
 
 class DebounceCallbackRegistry {
     #registry: Record<string, CallbackObject> = {};

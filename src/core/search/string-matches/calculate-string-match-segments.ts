@@ -42,7 +42,7 @@ export function calculateStringMatchSegments(haystack: string | string[], needle
  */
 function prepareResultSegments(characterMatches: number[], transformedHaystackString: string) {
     const stringToProcess = [...characterMatches];
-    let matches: StringMatchSegment[] = [];
+    const matches: StringMatchSegment[] = [];
 
     // Escape hatch to make sure we don't get caught in an infinite loop.
     let iterationCount = 0;

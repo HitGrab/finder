@@ -8,7 +8,7 @@ import { FinderResultGroup, ResultSnapshot, SnapshotOptions } from "../types/cor
 export class Tester<FItem, FContext> {
     snapshot: ResultSnapshot<FItem> = {} as ResultSnapshot<FItem>;
 
-    isStale: boolean = true;
+    isStale = true;
 
     setIsStale(value: boolean) {
         this.isStale = value;

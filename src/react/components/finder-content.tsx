@@ -17,7 +17,7 @@ interface FinderContentProps<FItem, FContext> {
     };
 }
 function FinderContent<FItem = any, FContext = any>({ children: renderProps }: FinderContentProps<FItem, FContext>) {
-    if (!renderProps || Object.values(renderProps).length === 0) {
+    if (Object.values(renderProps).length === 0) {
         throw new Error("No render props were found.");
     }
     return [

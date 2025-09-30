@@ -24,7 +24,7 @@ import { FinderError } from "./errors/finder-error";
 class FinderCore<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
-    isReady: boolean = false;
+    isReady = false;
 
     isLoading: boolean;
 
@@ -82,7 +82,7 @@ class FinderCore<FItem, FContext = any> {
         this.isLoading = !!isLoading;
         this.#eventEmitter = new EventEmitter();
 
-        this.#ruleBook = new RuleBook(rules ?? [], items ?? [], context);
+        this.#ruleBook = new RuleBook(rules, items ?? [], context);
         this.#effectBook = new EffectBook(effects ?? [], items ?? [], context);
 
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
@@ -365,7 +365,7 @@ class FinderCore<FItem, FContext = any> {
 
     setIsLoading(value?: boolean) {
         if (!!value !== this.isLoading) {
-            const previousValue = !!this.isLoading;
+            const previousValue = this.isLoading;
             this.isLoading = !!value;
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_IS_LOADING, current: !!value, initial: previousValue });
             if (this.isLoading === false) {
