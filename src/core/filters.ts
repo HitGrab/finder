@@ -101,6 +101,10 @@ class FiltersMixin {
 
         const ruleValue = this.get(rule);
 
+        if (rule.boolean) {
+            return ruleValue;
+        }
+
         if (optionValue === undefined) {
             return ruleValue !== undefined;
         }
