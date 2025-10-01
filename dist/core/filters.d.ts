@@ -11,7 +11,7 @@ declare class FiltersMixin {
     get rules(): HydratedFilterRule<unknown, any, any>[];
     get activeRules(): HydratedFilterRule<unknown, any, any>[];
     get(identifier: FilterRuleIdentifier): any;
-    has(identifier: FilterRuleIdentifier, optionValue?: any): boolean;
+    has(identifier: FilterRuleIdentifier, optionValue?: any): any;
     getRule(identifier: FilterRuleIdentifier): HydratedFilterRule<any, any, any>;
     delete(identifier: FilterRuleIdentifier): void;
     isRuleActive(identifier: FilterRuleIdentifier): boolean;

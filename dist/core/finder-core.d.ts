@@ -40,7 +40,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         rules: import("..").HydratedFilterRule<unknown, any, any>[];
         isActive: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => boolean;
         get: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => any;
-        has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => boolean;
+        has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => any;
         getRule: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => import("..").HydratedFilterRule<any, any, any>;
         toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
         set: <FValue>(identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, incomingFilterValue: FValue | FValue[]) => void;
