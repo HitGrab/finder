@@ -84,9 +84,16 @@ class FiltersMixin {
         return rule;
     }
 
-    delete(identifier: FilterRuleIdentifier) {
+    add(identifier: FilterRuleIdentifier, optionValue: any) {
         const rule = this.getRule(identifier);
-        return this.set(rule, undefined);
+        const value = this.#rawValues[rule.id];
+        this.set(rule, makeFilter(rule).add(value, optionValue));
+    }
+
+    delete(identifier: FilterRuleIdentifier, optionValue?: any) {
+        const rule = this.getRule(identifier);
+        const value = this.#rawValues[rule.id];
+        this.set(rule, makeFilter(rule).delete(value, optionValue));
     }
 
     isRuleActive(identifier: FilterRuleIdentifier) {

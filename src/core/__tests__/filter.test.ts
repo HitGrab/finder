@@ -36,6 +36,14 @@ describe("Filters", () => {
         }).toThrowError();
 
         expect(() => {
+            finder.filters.add(rule, 5);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.delete(rule, 5);
+        }).toThrowError();
+
+        expect(() => {
             finder.filters.set(rule, "string");
         }).toThrowError();
 
@@ -65,9 +73,16 @@ describe("Filters", () => {
 
         finder.filters.delete(rule);
 
-        expect(finder.filters.isActive(rule)).toBe(false);
-        expect(finder.filters.has(rule)).toBe(false);
         expect(finder.filters.get(rule)).toEqual([]);
+
+        finder.filters.add(rule, 3);
+
+        expect(finder.filters.get(rule)).toEqual([3]);
+
+        finder.filters.add(rule, 5);
+        finder.filters.delete(rule, 3);
+
+        expect(finder.filters.get(rule)).toEqual([5]);
 
         // Finder will complain if an invalid set value is passed
         expect(() => {
@@ -101,19 +116,6 @@ describe("Filters", () => {
         expect(finder.filters.isActive(rule)).toBe(true);
         expect(finder.filters.has(rule)).toBe(true);
         expect(finder.filters.get(rule)).toEqual([5]);
-
-        // Finder will complain if an invalid set value is passed
-        expect(() => {
-            finder.filters.set(rule, true);
-        }).toThrowError();
-
-        expect(() => {
-            finder.filters.set(rule, "string");
-        }).toThrowError();
-
-        expect(() => {
-            finder.filters.toggle(rule, "red");
-        }).toThrowError();
     });
 
     test("Single rule", () => {
@@ -139,6 +141,18 @@ describe("Filters", () => {
         expect(finder.filters.isActive(rule)).toBe(false);
         expect(finder.filters.has(rule)).toBe(false);
         expect(finder.filters.get(rule)).toBe(undefined);
+
+        expect(() => {
+            finder.filters.add(rule, 5);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.delete(rule, 5);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.toggle(rule, 5);
+        }).toThrowError();
     });
 
     describe("Mutators", () => {

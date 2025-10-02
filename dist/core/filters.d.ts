@@ -13,7 +13,8 @@ declare class FiltersMixin {
     get(identifier: FilterRuleIdentifier): any;
     has(identifier: FilterRuleIdentifier, optionValue?: any): boolean;
     getRule(identifier: FilterRuleIdentifier): HydratedFilterRule<any, any, any>;
-    delete(identifier: FilterRuleIdentifier): void;
+    add(identifier: FilterRuleIdentifier, optionValue: any): void;
+    delete(identifier: FilterRuleIdentifier, optionValue?: any): void;
     isRuleActive(identifier: FilterRuleIdentifier): boolean;
     toggle(identifier: FilterRuleIdentifier, optionValue?: any): void;
     test(options: FilterTestOptions): any[];

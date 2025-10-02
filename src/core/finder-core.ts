@@ -81,6 +81,7 @@ class FinderCore<FItem = any, FContext = any> {
             rules: mixin.rules,
             isActive: mixin.isRuleActive.bind(mixin),
             get: mixin.get.bind(mixin),
+            add: mixin.add.bind(mixin),
             has: mixin.has.bind(mixin),
             getRule: mixin.getRule.bind(mixin),
             toggle: mixin.toggle.bind(mixin),
