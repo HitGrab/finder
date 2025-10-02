@@ -69,6 +69,51 @@ export function MultipleFilter(rule: HydratedFilterRule) {
 
             return [...parsedValue, optionToToggle.value];
         },
+        add(value: unknown, optionValue: any) {
+            const parsedValue = this.parse(value);
+            if (optionValue === undefined) {
+                throw new FinderError(ERRORS.ADDING_OPTION_TO_MULTIPLE_FILTER_WITHOUT_OPTION_VALUE, { rule, optionValue });
+            }
+
+            // check if the passed optionValue lines up with a predefined option
+            const optionToToggle = rule.options?.find((option) => {
+                if (typeof optionValue === "object" && "value" in optionValue) {
+                    return option.value === optionValue.value;
+                }
+                return option.value === optionValue;
+            });
+
+            if (optionToToggle !== undefined) {
+                if (parsedValue.includes(optionToToggle.value) === false) {
+                    return [...parsedValue, optionToToggle.value];
+                }
+                return parsedValue;
+            }
+
+            // otherwise, add blind and hope for the best!
+            return [...parsedValue, optionValue];
+        },
+        delete(value: unknown, optionValue?: any) {
+            if (optionValue === undefined) {
+                return undefined;
+            }
+
+            const parsedValue = this.parse(value);
+
+            // check if the passed optionValue lines up with a predefined option
+            const optionToToggle = rule.options?.find((option) => {
+                if (typeof optionValue === "object" && "value" in optionValue) {
+                    return option.value === optionValue.value;
+                }
+                return option.value === optionValue;
+            });
+            if (optionToToggle !== undefined && parsedValue.includes(optionToToggle.value)) {
+                return parsedValue.filter((row) => row.value !== optionToToggle.value);
+            }
+
+            // otherwise, delete blind and hope for the best!
+            return parsedValue.filter((row) => row !== optionValue);
+        },
         isActive(value: unknown) {
             if (rule.required) {
                 return true;

@@ -40,11 +40,12 @@ declare class FinderCore<FItem = any, FContext = any> {
         rules: import("..").HydratedFilterRule<unknown, any, any>[];
         isActive: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => boolean;
         get: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => any;
+        add: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue: any) => void;
         has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => boolean;
         getRule: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => import("..").HydratedFilterRule<any, any, any>;
         toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
         set: <FValue>(identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, value: FValue | FValue[]) => void;
-        delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => void;
+        delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
         testRuleOptions: ({ rule: identifier, ...options }: import("./types/rule-types").FilterTestRuleOptionsOptions) => Map<any, any>;
