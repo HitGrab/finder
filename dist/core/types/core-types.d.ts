@@ -42,7 +42,7 @@ export interface MixinInjectedDependencies<FItem = any, FContext = any> {
     touch: FinderTouchCallback;
     getItems: () => FItem[];
     test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
-    debouncer: DebounceCallbackRegistry;
+    debouncer: ReturnType<typeof DebounceCallbackRegistry>;
 }
 export type EventCallback = (payload?: any) => void;
 export interface SnapshotOptions<FItem, FContext> {

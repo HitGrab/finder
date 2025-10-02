@@ -75,8 +75,8 @@ class FinderCore<FItem = any, FContext = any> {
     get filters() {
         const mixin = this.#finder.filters;
         return {
-            values: mixin.getValues(),
-            raw: mixin.getRawValues(),
+            values: mixin.values,
+            raw: mixin.raw,
             activeRules: mixin.activeRules,
             rules: mixin.rules,
             isActive: mixin.isRuleActive.bind(mixin),

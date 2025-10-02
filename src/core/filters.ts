@@ -4,6 +4,7 @@ import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
+import { makeFilter } from "./filter-utils/filter-factory";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -12,44 +13,42 @@ interface InitialValues {
 type FilterRuleIdentifier = string | FilterRuleUnion | HydratedFilterRule;
 
 class FiltersMixin {
-    #values;
+    #rawValues;
 
     #deps;
 
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
-        this.#values = initialFilters ?? {};
+        this.#rawValues = initialFilters ?? {};
         this.#deps = deps;
     }
 
-    set<FValue>(identifier: FilterRuleIdentifier, incomingFilterValue: FValue | FValue[]) {
-        const rule = this.getRule(identifier);
-
-        const previousValue = this.get(identifier);
-
-        if (this.#deps.debouncer.has(rule.id) === false) {
-            this.#deps.debouncer.register(rule.id, rule.debounceMilliseconds);
+    set<FValue>(identifier: FilterRuleIdentifier, value: FValue | FValue[]) {
+        // early exit
+        if (this.#deps.isDisabled()) {
+            return;
         }
 
-        this.#deps.debouncer.call(rule.id, () => {
-            if (this.#deps.isDisabled()) {
-                return;
-            }
+        const rule = this.getRule(identifier);
+        const previousValue = this.get(identifier);
 
-            // empty strings are treated as if a filter is being deleted.
-            const isBlankString = typeof incomingFilterValue === "string" && incomingFilterValue.trim() === "";
-            const transformedFilterValue = isBlankString ? undefined : incomingFilterValue;
+        // empty strings are treated as if a filter is being deleted.
+        const isBlankString = typeof value === "string" && value.trim() === "";
+        const transformedFilterValue = isBlankString ? undefined : value;
 
-            // early exit if nothing changed
-            if (this.#values[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
-                return;
-            }
+        // ensure we have valid data
+        makeFilter(rule).validate(value);
 
-            this.#values = { ...this.#values, [rule.id]: transformedFilterValue };
+        // early exit if nothing changed
+        if (this.#rawValues[rule.id] !== undefined && this.#rawValues[rule.id] === transformedFilterValue) {
+            return;
+        }
 
+        this.#deps.debouncer(rule, () => {
+            this.#rawValues = { ...this.#rawValues, [rule.id]: transformedFilterValue };
             this.#deps.touch({
                 source: EVENT_SOURCE.FILTERS,
                 event: EVENTS.SET_FILTER,
-                current: incomingFilterValue,
+                current: transformedFilterValue,
                 initial: previousValue,
                 rule,
             });
@@ -61,70 +60,20 @@ class FiltersMixin {
     }
 
     get activeRules() {
-        return this.rules.filter((rule) => FiltersMixin.isRuleActive(rule, this.#values[rule.id]));
+        return this.rules.filter((rule) => makeFilter(rule).isActive(this.#rawValues[rule.id]));
     }
 
     get(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
-        const value = this.#values[rule.id];
-
-        if (value === undefined) {
-            if (rule.defaultValue) {
-                return rule.defaultValue;
-            }
-
-            if (rule.required) {
-                if (rule.boolean) {
-                    return true;
-                }
-
-                if (Array.isArray(rule.options) && rule.options.length > 0) {
-                    return rule.options.at(0)?.value;
-                }
-            }
-
-            // cast empty values to the correct shape
-            if (rule.multiple) {
-                return [];
-            }
-
-            if (rule.boolean) {
-                return false;
-            }
-        }
-
-        return value;
+        const value = this.#rawValues[rule.id];
+        return makeFilter(rule).parse(value);
     }
 
-    has(identifier: FilterRuleIdentifier, optionValue?: any) {
+    has(identifier: FilterRuleIdentifier, optionValue?: any): boolean {
         const rule = this.getRule(identifier);
+        const value = this.#rawValues[rule.id];
 
-        const ruleValue = this.get(rule);
-
-        if (rule.boolean) {
-            return ruleValue;
-        }
-
-        if (optionValue === undefined) {
-            return ruleValue !== undefined;
-        }
-
-        const option = rule.options?.find((option) => {
-            if (typeof optionValue === "object" && "value" in optionValue) {
-                return option.value === optionValue.value;
-            }
-            return option.value === optionValue;
-        });
-
-        if (option === undefined) {
-            return false;
-        }
-
-        if (rule.multiple && Array.isArray(ruleValue)) {
-            return ruleValue.includes(option.value);
-        }
-
-        return ruleValue === option.value;
+        return makeFilter(rule).has(value, optionValue);
     }
 
     getRule(identifier: FilterRuleIdentifier) {
@@ -142,44 +91,15 @@ class FiltersMixin {
 
     isRuleActive(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
-        return FiltersMixin.isRuleActive(rule, this.#values[rule.id]);
+        const value = this.#rawValues[rule.id];
+        return makeFilter(rule).isActive(value);
     }
 
     toggle(identifier: FilterRuleIdentifier, optionValue?: any) {
         const rule = this.getRule(identifier);
-
-        if (optionValue === undefined && rule.boolean) {
-            const filterValue = this.get(rule.id);
-            this.set(rule, !filterValue);
-            return;
-        }
-
-        if (rule.options === undefined) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_NO_OPTIONS, { identifier, optionValue });
-        }
-
-        if (rule.multiple === false) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { identifier, optionValue });
-        }
-
-        const option = rule.options.find((option) => {
-            if (typeof optionValue === "object" && "value" in optionValue) {
-                return option.value === optionValue.value;
-            }
-            return option.value === optionValue;
-        });
-        if (option === undefined) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_THAT_DOES_NOT_EXIST, { identifier, optionValue });
-        }
-
-        const previousFilterValue: any[] = this.#values[rule.id] ?? [];
-
-        if (previousFilterValue.includes(option.value)) {
-            this.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
-            return;
-        }
-
-        this.set(rule, [...previousFilterValue, option.value]);
+        const value = this.#rawValues[rule.id];
+        const toggledValue = makeFilter(rule).toggle(value, optionValue);
+        this.set(rule, toggledValue);
     }
 
     test(options: FilterTestOptions) {
@@ -191,7 +111,7 @@ class FiltersMixin {
         // Additive tests use the current Finder state.
         if (options.isAdditive) {
             const rules = uniqBy([...this.rules, ...options.rules], "id");
-            const values = { ...this.getValues(), ...options.values };
+            const values = { ...this.values, ...options.values };
             return this.#deps.test({ filters: { rules, values } }, true);
         }
         return this.#deps.test({ filters: { rules: options.rules, values: options.values ?? {} } });
@@ -225,10 +145,9 @@ class FiltersMixin {
             const resultMap = new Map<FilterOption | boolean, any[]>();
             rule.options.forEach((option) => {
                 let transformedOptionValue;
-
                 if (options.mergeExistingValue) {
                     // use raw value, not calculated value
-                    const initialValue = this.#values[rule.id] ?? [];
+                    const initialValue = this.#rawValues[rule.id] ?? [];
 
                     if (rule.multiple) {
                         transformedOptionValue = [...initialValue, option.value];
@@ -250,27 +169,27 @@ class FiltersMixin {
     }
 
     // return all filter values with default options and type casts applied.
-    getValues() {
+    get values() {
         return this.rules.reduce<Record<string, any>>((acc, rule) => {
             acc[rule.id] = this.get(rule);
             return acc;
         }, {});
     }
 
-    getRawValues() {
-        return this.#values;
+    get raw() {
+        return this.#rawValues;
     }
 
     serialize(): SerializedFiltersMixin {
         return {
             rules: this.rules,
-            values: this.getValues(),
+            values: this.values,
         };
     }
 
     static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any) {
         const activeRules = options.rules.filter((rule) => {
-            return FiltersMixin.isRuleActive(rule, options.values[rule.id]);
+            return makeFilter(rule).isActive(options.values[rule.id]);
         });
         if (activeRules.length === 0) {
             return items;
@@ -279,32 +198,6 @@ class FiltersMixin {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return activeRules.every((rule) => rule.filterFn(item, options.values[rule.id], context));
         });
-    }
-
-    static isRuleActive(rule: FilterRuleUnion | HydratedFilterRule, value: any) {
-        if (rule.required) {
-            return true;
-        }
-
-        // The filter is inactive if no value is set.
-        if (value === undefined) {
-            return false;
-        }
-
-        // If the value array is empty, the filter is inactive.
-        if (rule.multiple && Array.isArray(value) && value.length === 0) {
-            return false;
-        }
-
-        if (rule.boolean && value === false) {
-            return false;
-        }
-
-        // Empty strings are considered inactive.
-        if (typeof value === "string" && value.trim() === "") {
-            return false;
-        }
-        return true;
     }
 }
 

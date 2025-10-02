@@ -1,5 +1,5 @@
 import { Shoe } from "@/types";
-import { Finder, useFinder } from "@hitgrab/finder";
+import { StringMatch, useFinder } from "@hitgrab/finder";
 import { useState } from "react";
 
 export function NameSearchControl() {
@@ -33,7 +33,7 @@ export function NameSearchControl() {
                                 className="result"
                                 key={item.sku}
                             >
-                                <Finder.SearchTerm searchTerm={query}>{item.name}</Finder.SearchTerm>
+                                <StringMatch needle={query} haystack={item.name} />
                             </button>
                         ))
                     )}

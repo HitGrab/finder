@@ -7,7 +7,7 @@ type FilterRuleIdentifier = string | FilterRuleUnion | HydratedFilterRule;
 declare class FiltersMixin {
     #private;
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies);
-    set<FValue>(identifier: FilterRuleIdentifier, incomingFilterValue: FValue | FValue[]): void;
+    set<FValue>(identifier: FilterRuleIdentifier, value: FValue | FValue[]): void;
     get rules(): HydratedFilterRule<unknown, any, any>[];
     get activeRules(): HydratedFilterRule<unknown, any, any>[];
     get(identifier: FilterRuleIdentifier): any;
@@ -19,10 +19,9 @@ declare class FiltersMixin {
     test(options: FilterTestOptions): any[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): any[];
     testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<any, any>;
-    getValues(): Record<string, any>;
-    getRawValues(): Record<string, any>;
+    get values(): Record<string, any>;
+    get raw(): Record<string, any>;
     serialize(): SerializedFiltersMixin;
     static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any): FItem[];
-    static isRuleActive(rule: FilterRuleUnion | HydratedFilterRule, value: any): boolean;
 }
 export { FiltersMixin };

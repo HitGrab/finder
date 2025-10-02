@@ -81,7 +81,7 @@ class FinderCoreImplementation<FItem, FContext> {
 
         this.#ruleBook = new RuleBook(rules, items ?? [], context);
         this.#effectBook = new EffectBook(effects ?? [], items ?? [], context);
-
+        const debouncerFn = DebounceCallbackRegistry();
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const mixinDeps: MixinInjectedDependencies<FItem, FContext> = {
             getItems: () => this.items,
@@ -90,7 +90,7 @@ class FinderCoreImplementation<FItem, FContext> {
             isDisabled: () => this.disabled,
             test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
             touch: (event: FinderTouchEvent) => this.#touch(event),
-            debouncer: new DebounceCallbackRegistry(),
+            debouncer: debouncerFn,
         };
 
         // initialize all mixins with their default values.

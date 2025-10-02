@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Shoe, ShoeSelectorContextProps } from "@/types";
 import { Finder, useFinder } from "@hitgrab/finder";
 import { range } from "lodash";
@@ -24,7 +25,7 @@ function ShoeCard({ item }: ShoeCardProps) {
                     {item.brand}
                 </button>
                 <div className="name">
-                    <Finder.SearchTerm>{item.name}</Finder.SearchTerm>
+                    <Finder.SearchTermHaystack>{item.name}</Finder.SearchTermHaystack>
                 </div>
                 <div className="price">${item.price}</div>
                 <div className="rating">{range(0, item.rating).map(() => "*")}</div>
@@ -32,7 +33,9 @@ function ShoeCard({ item }: ShoeCardProps) {
             </div>
             <div className="controls">
                 {item.in_stock ? (
+                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                     <label
+                        aria-label="Toggle"
                         onClick={() => {
                             finder.context.toggle(item);
                         }}

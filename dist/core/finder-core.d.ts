@@ -29,7 +29,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         searchTerm: string;
         hasSearchTerm: boolean;
         hasSearchRule: boolean;
-        setSearchTerm: (incomingSearchTerm: string) => void;
+        setSearchTerm: (value: string) => void;
         reset: () => void;
         test: (searchTerm: string, isAdditive?: boolean) => FItem[];
     };
@@ -43,7 +43,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => boolean;
         getRule: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => import("..").HydratedFilterRule<any, any, any>;
         toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
-        set: <FValue>(identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, incomingFilterValue: FValue | FValue[]) => void;
+        set: <FValue>(identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, value: FValue | FValue[]) => void;
         delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
