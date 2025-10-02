@@ -3,13 +3,16 @@ import { FinderResultGroup, SortDirection } from "./core-types";
  * Select a property from the item to sort by.
  */
 export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context?: FContext) => string | number;
-export type FinderRule<FItem = any, FContext = any> = SearchRule<FItem, FContext> | FilterRuleUnion<FItem, FContext> | HydratedFilterRule<FItem, FContext> | SortByRule<FItem, FContext> | GroupByRule<FItem, FContext>;
-export type HydratedFinderRule<FItem = any, FContext = any> = SearchRule<FItem, FContext> | HydratedFilterRule<FItem, FContext> | SortByRule<FItem, FContext> | GroupByRule<FItem, FContext>;
-export interface SearchRule<FItem = any, FContext = any> {
-    id?: string;
+interface RuleBase {
+    id: string;
+    debounceMilliseconds?: number;
     label?: string;
     hidden?: boolean;
-    debounceMilliseconds?: number;
+}
+export type FinderRule<FItem = any, FContext = any> = SearchRule<FItem, FContext> | FilterRuleUnion<FItem, FContext> | HydratedFilterRule<FItem, FContext> | SortByRule<FItem, FContext> | GroupByRule<FItem, FContext>;
+export type HydratedFinderRule<FItem = any, FContext = any> = SearchRule<FItem, FContext> | HydratedFilterRule<FItem, FContext> | SortByRule<FItem, FContext> | GroupByRule<FItem, FContext>;
+export interface SearchRule<FItem = any, FContext = any> extends Omit<RuleBase, "id"> {
+    id?: string;
     searchFn?: (item: FItem, context?: FContext) => string | string[];
 }
 export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
@@ -24,13 +27,9 @@ export interface FilterOption<FValue = any> {
     value: FValue;
     disabled?: boolean;
 }
-export interface FilterRule<FItem = any, FValue = any, FContext = any> {
-    id: string;
+export interface FilterRule<FItem = any, FValue = any, FContext = any> extends RuleBase {
     options?: FilterOption<FValue>[] | ((options: FilterOptionGeneratorFnOptions<FItem, FContext>) => FilterOption<FValue>[]);
     required?: boolean;
-    label?: string;
-    hidden?: boolean;
-    debounceMilliseconds?: number;
 }
 export interface FilterRuleWithBooleanValue<FItem, FContext = any> extends FilterRule<FItem> {
     multiple?: false;
@@ -64,15 +63,11 @@ export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> e
     defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
 }
-export interface SortByRule<FItem = any, FContext = any> {
-    id: string;
+export interface SortByRule<FItem = any, FContext = any> extends RuleBase {
     sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
     defaultSortDirection?: SortDirection;
-    label?: string;
-    hidden?: boolean;
 }
-export interface GroupByRule<FItem = any, FContext = any> {
-    id: string;
+export interface GroupByRule<FItem = any, FContext = any> extends RuleBase {
     groupFn: FinderPropertySelector<FItem, FContext>;
     sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
     defaultGroupSortDirection?: SortDirection;
@@ -80,8 +75,6 @@ export interface GroupByRule<FItem = any, FContext = any> {
         header?: string | string[];
         footer?: string | string[];
     };
-    label?: string;
-    hidden?: boolean;
 }
 export interface SearchTestOptions {
     rule: SearchRule[];
@@ -102,3 +95,4 @@ export interface FilterTestRuleOptionsOptions {
     isAdditive?: boolean;
     mergeExistingValue?: boolean;
 }
+export {};

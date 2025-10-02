@@ -5,7 +5,7 @@ import { HydratedFilterRule } from "../types/rule-types";
 export function MultipleFilter(rule: HydratedFilterRule) {
     return {
         validate(value: unknown) {
-            if (Array.isArray(value) === false) {
+            if (value !== undefined && Array.isArray(value) === false) {
                 throw new FinderError(ERRORS.SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY, { rule, value });
             }
             return true;
@@ -17,7 +17,10 @@ export function MultipleFilter(rule: HydratedFilterRule) {
                 }
                 return [];
             }
-            return value;
+            if (Array.isArray(value)) {
+                return value;
+            }
+            throw new FinderError(ERRORS.SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY, { rule, value });
         },
         has(value: unknown, optionValue?: any): boolean {
             if (optionValue === undefined) {
@@ -38,8 +41,10 @@ export function MultipleFilter(rule: HydratedFilterRule) {
             return Array.isArray(value) && optionToTest !== undefined && value.includes(optionToTest.value);
         },
         toggle(value: unknown, optionValue?: any) {
-            if (Array.isArray(value) === false) {
-                throw new FinderError(ERRORS.SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY, { rule, value });
+            const parsedValue = this.parse(value);
+
+            if (Array.isArray(parsedValue) === false) {
+                throw new FinderError(ERRORS.SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY, { rule, value: parsedValue });
             }
             if (optionValue === undefined) {
                 throw new FinderError(ERRORS.TOGGLING_OPTION_WITHOUT_PASSING_OPTION, { rule });
@@ -58,11 +63,18 @@ export function MultipleFilter(rule: HydratedFilterRule) {
                 throw new FinderError(ERRORS.TOGGLING_OPTION_THAT_DOES_NOT_EXIST, { rule, optionValue });
             }
 
-            if (value.includes(optionToToggle.value)) {
-                return [...value.filter((row) => row !== optionToToggle.value)];
+            if (parsedValue.includes(optionToToggle.value)) {
+                return [...parsedValue.filter((row) => row !== optionToToggle.value)];
             }
 
-            return [...value, optionToToggle.value];
+            return [...parsedValue, optionToToggle.value];
+        },
+        isActive(value: unknown) {
+            if (rule.required) {
+                return true;
+            }
+
+            return this.parse(value).length > 0;
         },
     };
 }

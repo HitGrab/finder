@@ -9,7 +9,7 @@ declare class SearchMixin<FItem> {
     get rule(): import("..").SearchRule<unknown, any> | undefined;
     get hasSearchRule(): boolean;
     get hasSearchTerm(): boolean;
-    setSearchTerm(incomingSearchTerm: string): void;
+    setSearchTerm(value: string): void;
     reset(): void;
     serialize(): SerializedSearchMixin;
     test(searchTerm: string, isAdditive?: boolean): FItem[];

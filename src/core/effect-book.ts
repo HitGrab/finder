@@ -45,7 +45,7 @@ export class EffectBook<FItem, FContext> {
             });
 
             if (isEffectTriggered) {
-                effect.onChange(instance);
+                effect.onChange(instance, rule);
             }
         });
     }
@@ -54,7 +54,7 @@ export class EffectBook<FItem, FContext> {
         this.searchEffects.forEach((effect) => {
             const isEffectTriggered = hasCharacterIndexMatches(effect.haystack, searchTerm);
             if (isEffectTriggered) {
-                effect.onChange(instance);
+                effect.onChange(instance, searchTerm);
             }
         });
     }

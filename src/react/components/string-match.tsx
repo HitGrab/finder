@@ -12,7 +12,7 @@ interface StringMatchProps {
 /**
  * Split a string into result segment components .
  */
-function StringMatch({ needle, haystack, Match, Miss }: StringMatchProps) {
+function StringMatch({ needle, haystack, Match = "span", Miss }: StringMatchProps) {
     const segments = useMemo(() => calculateStringMatchSegments(haystack, needle), [haystack, needle]);
 
     if (segments === undefined) {
@@ -21,7 +21,7 @@ function StringMatch({ needle, haystack, Match, Miss }: StringMatchProps) {
 
     return segments.map((segment, index) => {
         const key = [segment.value, index].join();
-        if (Match !== undefined && segment.is_match) {
+        if (segment.is_match) {
             if (typeof Match === "string") {
                 return (
                     <Match data-is-match={segment.is_match} key={key}>

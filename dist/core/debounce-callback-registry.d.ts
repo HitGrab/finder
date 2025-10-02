@@ -1,7 +1,3 @@
-declare class DebounceCallbackRegistry {
-    #private;
-    register(id: string, delay?: number): void;
-    has(id: string): boolean;
-    call(id: string, callback: CallableFunction): void;
-}
+import { FinderRule } from "./types/rule-types";
+declare function DebounceCallbackRegistry(): (rule: FinderRule, callback: () => void) => any;
 export { DebounceCallbackRegistry };

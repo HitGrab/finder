@@ -25,11 +25,21 @@ export function BooleanFilter(rule: HydratedFilterRule) {
         has(value: unknown) {
             return this.parse(value);
         },
-        toggle(value: unknown): boolean {
-            if (typeof value !== "boolean") {
-                throw new FinderError(ERRORS.SETTING_BOOLEAN_FILTER_WITHOUT_BOOLEAN_VALUE, { rule, value });
+        toggle(value: unknown, optionValue?: any) {
+            const parsedValue = this.parse(value);
+
+            if (typeof parsedValue !== "boolean") {
+                throw new FinderError(ERRORS.SETTING_BOOLEAN_FILTER_WITHOUT_BOOLEAN_VALUE, { rule, value: parsedValue, optionValue });
             }
-            return !value;
+            return !parsedValue;
+        },
+        isActive(value: unknown) {
+            if (rule.required) {
+                return true;
+            }
+
+            const parsedValue = this.parse(value);
+            return parsedValue === true;
         },
     };
 }

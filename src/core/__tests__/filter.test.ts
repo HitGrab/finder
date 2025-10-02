@@ -5,7 +5,7 @@ import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";
 
 describe("Filters", () => {
-    test("Boolean rule", () => {
+    test("Boolean filter", () => {
         const rule = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item) => item.price !== 0,
@@ -24,6 +24,12 @@ describe("Filters", () => {
         expect(finder.filters.has(rule)).toBe(true);
         expect(finder.filters.get(rule)).toBe(true);
 
+        finder.filters.delete(rule);
+
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toBe(false);
+
         // Finder will complain if an invalid set value is passed
         expect(() => {
             finder.filters.set(rule, 5);
@@ -38,7 +44,7 @@ describe("Filters", () => {
         }).toThrowError();
     });
 
-    test("Multiple rule without options", () => {
+    test("Multiple filter without options", () => {
         const rule = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item, value) => value.includes(item.price),
@@ -57,6 +63,12 @@ describe("Filters", () => {
         expect(finder.filters.has(rule)).toBe(true);
         expect(finder.filters.get(rule)).toEqual([5]);
 
+        finder.filters.delete(rule);
+
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toEqual([]);
+
         // Finder will complain if an invalid set value is passed
         expect(() => {
             finder.filters.set(rule, true);
@@ -67,7 +79,7 @@ describe("Filters", () => {
         }).toThrowError();
     });
 
-    test("Multiple rule with options", () => {
+    test("Multiple filter with options", () => {
         const rule = filterRule<MockObjectItem>({
             id: "price_options",
             filterFn: (item, value) => value.includes(item.price),
@@ -121,6 +133,12 @@ describe("Filters", () => {
         expect(finder.filters.isActive(rule)).toBe(true);
         expect(finder.filters.has(rule)).toBe(true);
         expect(finder.filters.get(rule)).toEqual(5);
+
+        finder.filters.delete(rule);
+
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toBe(undefined);
     });
 
     describe("Mutators", () => {
@@ -132,31 +150,6 @@ describe("Filters", () => {
             const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
             expect(finder.filters.isActive(rule)).toBe(true);
             expect(finder.filters.get(rule)).toBe(5);
-        });
-
-        test("Set", () => {
-            const rule = filterRule<MockObjectItem, number>({
-                id: "price",
-                filterFn: (item, value) => item.price === value,
-            });
-            const finder = new FinderCore(objectItems, { rules: [rule] });
-
-            // can be set to any value
-            finder.filters.set(rule, 5);
-            expect(finder.filters.isActive(rule)).toBe(true);
-            expect(finder.filters.get(rule)).toBe(5);
-        });
-
-        test("Delete", () => {
-            const rule = filterRule<MockObjectItem, number>({
-                id: "price",
-                filterFn: (item, value) => item.price === value,
-            });
-            const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
-            expect(finder.filters.isActive(rule)).toBe(true);
-            finder.filters.delete(rule);
-            expect(finder.filters.isActive(rule)).toBe(false);
-            expect(finder.filters.get(rule)).toBe(undefined);
         });
 
         test("Toggle", () => {
@@ -355,7 +348,7 @@ describe("Filters", () => {
             expect(finder.matches.items).toEqual([banana]);
         });
 
-        test("Scalar filter", () => {
+        test("Single filter", () => {
             const rules = [
                 filterRule<MockObjectItem, number>({
                     id: "price_is_below",

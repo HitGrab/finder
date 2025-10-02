@@ -37,22 +37,29 @@ class SearchMixin<FItem> {
         return this.searchTerm !== "";
     }
 
-    setSearchTerm(incomingSearchTerm: string) {
+    setSearchTerm(value: string) {
         const rule = this.rule;
         if (!rule) {
             throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
         }
 
+        if (this.#deps.isDisabled()) {
+            return;
+        }
+
+        const previousValue = this.searchTerm;
+        this.searchTerm = value;
+
+        // early exit if nothing changed
+        if (previousValue === value) {
+            return;
+        }
+
         this.#deps.debouncer(rule, () => {
-            if (this.#deps.isDisabled()) {
-                return;
-            }
-            const previousValue = this.searchTerm;
-            this.searchTerm = incomingSearchTerm;
             this.#deps.touch({
                 source: EVENT_SOURCE.SEARCH,
                 event: EVENTS.SET_SEARCH_TERM,
-                current: incomingSearchTerm,
+                current: value,
                 initial: previousValue,
                 rule,
             });

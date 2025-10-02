@@ -47,14 +47,14 @@ export function ruleEffect<FItem, FContext = any>(
         | FinderRule<FItem>
         | (string | FinderRule<FItem>)[]
         | ((items: FItem[], context: FContext) => string | FinderRule<FItem> | (string | FinderRule<FItem>)[]),
-    onChange: (instance: FinderCore<FItem, FContext>) => void,
+    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRule) => void,
 ): RuleEffect<FItem, FContext> {
     return { rules, onChange };
 }
 
 export function searchEffect<FItem, FContext = any>(
     haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]),
-    onChange: (instance: FinderCore<FItem, FContext>) => void,
+    onChange: (instance: FinderCore<FItem, FContext>, searchTerm: string) => void,
 ): SearchEffect<FItem, FContext> {
     return { haystack, onChange };
 }

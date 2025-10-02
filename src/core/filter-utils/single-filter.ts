@@ -21,8 +21,23 @@ export function SingleFilter(rule: HydratedFilterRule) {
         has(value: unknown) {
             return value !== undefined;
         },
-        toggle(optionValue?: any) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { rule, optionValue });
+        toggle(value: unknown, optionValue?: any) {
+            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { rule, value, optionValue });
+        },
+        isActive(value: unknown) {
+            if (rule.required) {
+                return true;
+            }
+
+            if (value === undefined) {
+                return false;
+            }
+
+            // Empty strings are considered inactive.
+            if (typeof value === "string" && value.trim() === "") {
+                return false;
+            }
+            return true;
         },
     };
 }
