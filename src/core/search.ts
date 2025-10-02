@@ -42,11 +42,8 @@ class SearchMixin<FItem> {
         if (!rule) {
             throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
         }
-        if (this.#deps.debouncer.has("_search") === false) {
-            this.#deps.debouncer.register("_search", rule.debounceMilliseconds);
-        }
 
-        this.#deps.debouncer.call("_search", () => {
+        this.#deps.debouncer(rule, () => {
             if (this.#deps.isDisabled()) {
                 return;
             }

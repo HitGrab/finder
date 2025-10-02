@@ -1,28 +1,26 @@
 import { debounce } from "lodash";
+import { FinderRule } from "./types/rule-types";
 
-interface CallbackObject {
-    debounceFn: CallableFunction;
-    delay?: number;
-}
+function DebounceCallbackRegistry() {
+    const registry = new Map<FinderRule, ReturnType<typeof debounce>>();
 
-class DebounceCallbackRegistry {
-    #registry: Record<string, CallbackObject> = {};
+    return (rule: FinderRule, callback: () => void) => {
+        // if this rule has no delay, immediately trigger the passed callback
+        if (rule.debounceMilliseconds === undefined) {
+            return callback();
+        }
 
-    register(id: string, delay?: number) {
-        this.#registry[id] = {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            debounceFn: delay ? debounce((callback: CallableFunction) => callback(), delay) : (callback: CallableFunction) => callback(),
-            delay,
-        };
-    }
+        // add a debounce function to the map
+        if (registry.has(rule) === false) {
+            registry.set(
+                rule,
+                debounce((cb: () => void) => cb(), rule.debounceMilliseconds),
+            );
+        }
 
-    has(id: string) {
-        return this.#registry[id] !== undefined;
-    }
-
-    call(id: string, callback: CallableFunction) {
-        this.#registry[id]?.debounceFn(callback);
-    }
+        // queue a debounce fn
+        return registry.get(rule)?.(callback);
+    };
 }
 
 export { DebounceCallbackRegistry };

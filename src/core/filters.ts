@@ -4,6 +4,9 @@ import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
+import { BooleanFilter } from "./hydrated-filter-rules/boolean-filter";
+import { MultipleFilter } from "./hydrated-filter-rules/multiple-filter";
+import { SingleFilter } from "./hydrated-filter-rules/single-filter";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -21,35 +24,36 @@ class FiltersMixin {
         this.#deps = deps;
     }
 
-    set<FValue>(identifier: FilterRuleIdentifier, incomingFilterValue: FValue | FValue[]) {
-        const rule = this.getRule(identifier);
-
-        const previousValue = this.get(identifier);
-
-        if (this.#deps.debouncer.has(rule.id) === false) {
-            this.#deps.debouncer.register(rule.id, rule.debounceMilliseconds);
+    set<FValue>(identifier: FilterRuleIdentifier, value: FValue | FValue[]) {
+        // early exit
+        if (this.#deps.isDisabled()) {
+            return;
         }
 
-        this.#deps.debouncer.call(rule.id, () => {
-            if (this.#deps.isDisabled()) {
-                return;
-            }
+        const rule = this.getRule(identifier);
+        const previousValue = this.get(identifier);
 
-            // empty strings are treated as if a filter is being deleted.
-            const isBlankString = typeof incomingFilterValue === "string" && incomingFilterValue.trim() === "";
-            const transformedFilterValue = isBlankString ? undefined : incomingFilterValue;
+        // empty strings are treated as if a filter is being deleted.
+        const isBlankString = typeof value === "string" && value.trim() === "";
+        const transformedFilterValue = isBlankString ? undefined : value;
 
-            // early exit if nothing changed
-            if (this.#values[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
-                return;
-            }
+        if (rule.boolean) {
+            BooleanFilter(rule).validate(transformedFilterValue);
+        } else if (rule.multiple) {
+            MultipleFilter(rule).validate(transformedFilterValue);
+        } // no need to validate single value filters
 
+        // early exit if nothing changed
+        if (this.#values[rule.id] !== undefined && this.#values[rule.id] === transformedFilterValue) {
+            return;
+        }
+
+        this.#deps.debouncer(rule, () => {
             this.#values = { ...this.#values, [rule.id]: transformedFilterValue };
-
             this.#deps.touch({
                 source: EVENT_SOURCE.FILTERS,
                 event: EVENTS.SET_FILTER,
-                current: incomingFilterValue,
+                current: transformedFilterValue,
                 initial: previousValue,
                 rule,
             });
@@ -68,63 +72,29 @@ class FiltersMixin {
         const rule = this.getRule(identifier);
         const value = this.#values[rule.id];
 
-        if (value === undefined) {
-            if (rule.defaultValue) {
-                return rule.defaultValue;
-            }
-
-            if (rule.required) {
-                if (rule.boolean) {
-                    return true;
-                }
-
-                if (Array.isArray(rule.options) && rule.options.length > 0) {
-                    return rule.options.at(0)?.value;
-                }
-            }
-
-            // cast empty values to the correct shape
-            if (rule.multiple) {
-                return [];
-            }
-
-            if (rule.boolean) {
-                return false;
-            }
+        if (rule.boolean) {
+            return BooleanFilter(rule).parse(value);
         }
 
-        return value;
+        if (rule.multiple) {
+            return MultipleFilter(rule).parse(value);
+        }
+
+        return SingleFilter(rule).parse(value);
     }
 
-    has(identifier: FilterRuleIdentifier, optionValue?: any) {
+    has(identifier: FilterRuleIdentifier, optionValue?: any): boolean {
         const rule = this.getRule(identifier);
-
-        const ruleValue = this.get(rule);
+        const value = this.#values[rule.id];
 
         if (rule.boolean) {
-            return ruleValue;
+            return BooleanFilter(rule).has(value);
+        }
+        if (rule.multiple) {
+            return MultipleFilter(rule).has(value, optionValue);
         }
 
-        if (optionValue === undefined) {
-            return ruleValue !== undefined;
-        }
-
-        const option = rule.options?.find((option) => {
-            if (typeof optionValue === "object" && "value" in optionValue) {
-                return option.value === optionValue.value;
-            }
-            return option.value === optionValue;
-        });
-
-        if (option === undefined) {
-            return false;
-        }
-
-        if (rule.multiple && Array.isArray(ruleValue)) {
-            return ruleValue.includes(option.value);
-        }
-
-        return ruleValue === option.value;
+        return SingleFilter(rule).has(value);
     }
 
     getRule(identifier: FilterRuleIdentifier) {
@@ -147,39 +117,17 @@ class FiltersMixin {
 
     toggle(identifier: FilterRuleIdentifier, optionValue?: any) {
         const rule = this.getRule(identifier);
+        const value = this.get(rule);
 
-        if (optionValue === undefined && rule.boolean) {
-            const filterValue = this.get(rule.id);
-            this.set(rule, !filterValue);
-            return;
+        if (rule.boolean) {
+            return this.set(rule, BooleanFilter(rule).toggle(value));
         }
 
-        if (rule.options === undefined) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_NO_OPTIONS, { identifier, optionValue });
+        if (rule.multiple) {
+            return this.set(rule, MultipleFilter(rule).toggle(value, optionValue));
         }
 
-        if (rule.multiple === false) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { identifier, optionValue });
-        }
-
-        const option = rule.options.find((option) => {
-            if (typeof optionValue === "object" && "value" in optionValue) {
-                return option.value === optionValue.value;
-            }
-            return option.value === optionValue;
-        });
-        if (option === undefined) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_THAT_DOES_NOT_EXIST, { identifier, optionValue });
-        }
-
-        const previousFilterValue: any[] = this.#values[rule.id] ?? [];
-
-        if (previousFilterValue.includes(option.value)) {
-            this.set(rule, [...previousFilterValue.filter((value) => value !== option.value)]);
-            return;
-        }
-
-        this.set(rule, [...previousFilterValue, option.value]);
+        throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { rule, optionValue });
     }
 
     test(options: FilterTestOptions) {

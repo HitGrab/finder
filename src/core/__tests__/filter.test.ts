@@ -5,37 +5,122 @@ import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";
 
 describe("Filters", () => {
-    test("Accessors", () => {
+    test("Boolean rule", () => {
+        const rule = filterRule<MockObjectItem>({
+            id: "price",
+            filterFn: (item) => item.price !== 0,
+            boolean: true,
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
+
+        // rule has no value while inactive
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toBe(false);
+
+        finder.filters.toggle(rule);
+
+        expect(finder.filters.isActive(rule)).toBe(true);
+        expect(finder.filters.has(rule)).toBe(true);
+        expect(finder.filters.get(rule)).toBe(true);
+
+        // Finder will complain if an invalid set value is passed
+        expect(() => {
+            finder.filters.set(rule, 5);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.set(rule, "string");
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.set(rule, [true, false]);
+        }).toThrowError();
+    });
+
+    test("Multiple rule without options", () => {
+        const rule = filterRule<MockObjectItem>({
+            id: "price",
+            filterFn: (item, value) => value.includes(item.price),
+            multiple: true,
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
+
+        // rule has no value while inactive
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toEqual([]);
+
+        finder.filters.set(rule, [5]);
+
+        expect(finder.filters.isActive(rule)).toBe(true);
+        expect(finder.filters.has(rule)).toBe(true);
+        expect(finder.filters.get(rule)).toEqual([5]);
+
+        // Finder will complain if an invalid set value is passed
+        expect(() => {
+            finder.filters.set(rule, true);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.set(rule, "string");
+        }).toThrowError();
+    });
+
+    test("Multiple rule with options", () => {
+        const rule = filterRule<MockObjectItem>({
+            id: "price_options",
+            filterFn: (item, value) => value.includes(item.price),
+            multiple: true,
+            options: [
+                { label: "Three", value: 3 },
+                { label: "Five", value: 5 },
+            ],
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
+
+        // rule has no value while inactive
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toEqual([]);
+
+        finder.filters.toggle(rule, 5);
+
+        expect(finder.filters.isActive(rule)).toBe(true);
+        expect(finder.filters.has(rule)).toBe(true);
+        expect(finder.filters.get(rule)).toEqual([5]);
+
+        // Finder will complain if an invalid set value is passed
+        expect(() => {
+            finder.filters.set(rule, true);
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.set(rule, "string");
+        }).toThrowError();
+
+        expect(() => {
+            finder.filters.toggle(rule, "red");
+        }).toThrowError();
+    });
+
+    test("Single rule", () => {
         const rule = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item, value) => item.price === value,
         });
         const finder = new FinderCore(objectItems, { rules: [rule] });
 
-        // hydrated rule can be retrieved
-        const hydratedRule = finder.filters.getRule(rule);
-        expect(finder.filters.rules).toEqual([hydratedRule]);
-
         // rule has no value while inactive
-        expect(finder.filters.isActive(rule)).toEqual(false);
-        expect(finder.filters.has(rule)).toEqual(false);
-        expect(finder.filters.get(rule)).toEqual(undefined);
-        expect(finder.filters.get(rule.id)).toEqual(undefined);
-        expect(finder.filters.get(hydratedRule)).toEqual(undefined);
-        expect(finder.filters.values[rule.id]).toEqual(undefined);
-        expect(finder.filters.raw[rule.id]).toEqual(undefined);
-        expect(finder.filters.activeRules).toEqual([]);
+        expect(finder.filters.isActive(rule)).toBe(false);
+        expect(finder.filters.has(rule)).toBe(false);
+        expect(finder.filters.get(rule)).toBe(undefined);
 
         finder.filters.set(rule, 5);
 
-        expect(finder.filters.isActive(rule)).toEqual(true);
-        expect(finder.filters.has(rule)).toEqual(true);
+        expect(finder.filters.isActive(rule)).toBe(true);
+        expect(finder.filters.has(rule)).toBe(true);
         expect(finder.filters.get(rule)).toEqual(5);
-        expect(finder.filters.get(rule.id)).toEqual(5);
-        expect(finder.filters.get(hydratedRule)).toEqual(5);
-        expect(finder.filters.values[rule.id]).toEqual(5);
-        expect(finder.filters.raw[rule.id]).toEqual(5);
-        expect(finder.filters.activeRules).toEqual([hydratedRule]);
     });
 
     describe("Mutators", () => {
@@ -45,8 +130,8 @@ describe("Filters", () => {
                 filterFn: (item, value) => item.price === value,
             });
             const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
-            expect(finder.filters.isActive(rule)).toEqual(true);
-            expect(finder.filters.get(rule)).toEqual(5);
+            expect(finder.filters.isActive(rule)).toBe(true);
+            expect(finder.filters.get(rule)).toBe(5);
         });
 
         test("Set", () => {
@@ -58,8 +143,8 @@ describe("Filters", () => {
 
             // can be set to any value
             finder.filters.set(rule, 5);
-            expect(finder.filters.isActive(rule)).toEqual(true);
-            expect(finder.filters.get(rule)).toEqual(5);
+            expect(finder.filters.isActive(rule)).toBe(true);
+            expect(finder.filters.get(rule)).toBe(5);
         });
 
         test("Delete", () => {
@@ -68,10 +153,10 @@ describe("Filters", () => {
                 filterFn: (item, value) => item.price === value,
             });
             const finder = new FinderCore(objectItems, { rules: [rule], initialFilters: { price: 5 } });
-            expect(finder.filters.isActive(rule)).toEqual(true);
+            expect(finder.filters.isActive(rule)).toBe(true);
             finder.filters.delete(rule);
-            expect(finder.filters.isActive(rule)).toEqual(false);
-            expect(finder.filters.get(rule)).toEqual(undefined);
+            expect(finder.filters.isActive(rule)).toBe(false);
+            expect(finder.filters.get(rule)).toBe(undefined);
         });
 
         test("Toggle", () => {
@@ -91,9 +176,9 @@ describe("Filters", () => {
                 finder.filters.toggle(numericRule);
             }).toThrowError();
 
-            expect(finder.filters.isActive(booleanRule)).toEqual(false);
+            expect(finder.filters.isActive(booleanRule)).toBe(false);
             finder.filters.toggle(booleanRule);
-            expect(finder.filters.isActive(booleanRule)).toEqual(true);
+            expect(finder.filters.isActive(booleanRule)).toBe(true);
         });
 
         test("ToggleOption", () => {
@@ -123,14 +208,14 @@ describe("Filters", () => {
             finder.filters.toggle(rule, 3);
             finder.filters.toggle(rule, 5);
             expect(finder.filters.get(rule)).toEqual([3, 5]);
-            expect(finder.filters.has(rule, 3)).toEqual(true);
-            expect(finder.filters.has(rule, optionThree)).toEqual(true);
+            expect(finder.filters.has(rule, 3)).toBe(true);
+            expect(finder.filters.has(rule, optionThree)).toBe(true);
 
             finder.filters.toggle(rule, 3);
             finder.filters.toggle(rule, 5);
             expect(finder.filters.get(rule)).toEqual([]);
-            expect(finder.filters.has(rule, 3)).toEqual(false);
-            expect(finder.filters.has(rule, optionThree)).toEqual(false);
+            expect(finder.filters.has(rule, 3)).toBe(false);
+            expect(finder.filters.has(rule, optionThree)).toBe(false);
         });
     });
 
