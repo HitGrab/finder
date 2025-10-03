@@ -11,7 +11,7 @@ export interface FinderProps<FItem, FContext> extends FinderConstructorOptions<F
 }
 export interface FinderContentProps<FContext = any> {
     pagination: PaginationMixinInterface;
-    context?: FContext;
+    context: FContext;
 }
 export interface FinderContentItemProps<FItem, FContext = any> extends FinderContentProps<FContext> {
     items: FItem[];
