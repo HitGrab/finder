@@ -18,26 +18,36 @@ export function finderRuleset<FItem>(rules: FinderRule<FItem>[]) {
     return rules;
 }
 
-export function searchRule<FItem>(rule: SearchRule<FItem>) {
+export function searchRule<FItem, FContext = any>(rule: SearchRule<FItem, FContext>) {
     return rule;
 }
 
-export function filterRule<FItem, FValue = any, T = FilterRuleWithMultipleValues<FItem, FValue>>(rule: T): FilterRuleWithMultipleValues<FItem, FValue>;
-export function filterRule<FItem, FValue = any, T = FilterRuleWithBooleanValue<FItem, FValue>>(rule: T): FilterRuleWithBooleanValue<FItem, FValue>;
-export function filterRule<FItem, FValue = any, T = FilterRuleWithSingleValue<FItem, FValue>>(rule: T): FilterRuleWithSingleValue<FItem, FValue>;
+export function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithMultipleValues<FItem, FValue, FContext>>(
+    rule: T,
+): FilterRuleWithMultipleValues<FItem, FValue>;
+export function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithBooleanValue<FItem, FContext>>(
+    rule: T,
+): FilterRuleWithBooleanValue<FItem, FValue>;
+export function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithSingleValue<FItem, FValue, FContext>>(
+    rule: T,
+): FilterRuleWithSingleValue<FItem, FValue>;
 export function filterRule<
     FItem,
     FValue = any,
-    T = FilterRuleWithSingleValue<FItem, FValue> | FilterRuleWithMultipleValues<FItem, FValue> | FilterRuleWithBooleanValue<FItem, FValue>,
+    FContext = any,
+    T =
+        | FilterRuleWithSingleValue<FItem, FValue, FContext>
+        | FilterRuleWithMultipleValues<FItem, FValue, FContext>
+        | FilterRuleWithBooleanValue<FItem, FContext>,
 >(rule: T) {
     return rule;
 }
 
-export function sortByRule<FItem>(rule: SortByRule<FItem>) {
+export function sortByRule<FItem, FContext = any>(rule: SortByRule<FItem, FContext>) {
     return rule;
 }
 
-export function groupByRule<FItem>(rule: GroupByRule<FItem>) {
+export function groupByRule<FItem, FContext = any>(rule: GroupByRule<FItem, FContext>) {
     return rule;
 }
 
