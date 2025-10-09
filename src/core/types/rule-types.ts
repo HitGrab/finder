@@ -3,7 +3,7 @@ import { FinderResultGroup, SortDirection } from "./core-types";
 /**
  * Select a property from the item to sort by.
  */
-export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context?: FContext) => string | number;
+export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context: FContext) => string | number;
 
 interface RuleBase {
     id: string;
@@ -26,12 +26,12 @@ export type HydratedFinderRule<FItem = any, FContext = any> =
 
 export interface SearchRule<FItem = any, FContext = any> extends Omit<RuleBase, "id"> {
     id?: string;
-    searchFn?: (item: FItem, context?: FContext) => string | string[];
+    searchFn?: (item: FItem, context: FContext) => string | string[];
 }
 
 export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
     items: FItem[];
-    context?: FContext;
+    context: FContext;
 }
 
 /**
@@ -51,20 +51,20 @@ export interface FilterRule<FItem = any, FValue = any, FContext = any> extends R
 export interface FilterRuleWithBooleanValue<FItem, FContext = any> extends FilterRule<FItem> {
     multiple?: false;
     boolean: true;
-    filterFn: (item: FItem, value: boolean, context?: FContext) => boolean;
+    filterFn: (item: FItem, value: boolean, context: FContext) => boolean;
     defaultValue?: boolean;
 }
 export interface FilterRuleWithSingleValue<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple?: false;
     boolean?: false;
-    filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
+    filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
     defaultValue?: FValue;
 }
 
 export interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
     multiple: true;
     boolean?: false;
-    filterFn: (item: FItem, value: FValue[], context?: FContext) => boolean;
+    filterFn: (item: FItem, value: FValue[], context: FContext) => boolean;
     defaultValue?: FValue[];
 }
 
@@ -83,7 +83,7 @@ export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> e
     hidden: boolean;
     multiple: boolean;
 
-    filterFn: ((item: FItem, value: FValue, context?: FContext) => boolean) | ((item: FItem, value: FValue[], context?: FContext) => boolean);
+    filterFn: ((item: FItem, value: FValue, context: FContext) => boolean) | ((item: FItem, value: FValue[], context: FContext) => boolean);
     defaultValue?: boolean | FValue | FValue[];
     _isHydrated: true;
 }

@@ -4,7 +4,7 @@ import { FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterRuleWit
 /**
  * Enforce structure for an array of rule of mixed types.
  */
-export declare function finderRuleset<FItem>(rules: FinderRule<FItem>[]): FinderRule<FItem>[];
+export declare function finderRuleset<FItem, FContext = any>(rules: FinderRule<FItem, FContext>[]): FinderRule<FItem, FContext>[];
 export declare function searchRule<FItem, FContext = any>(rule: SearchRule<FItem, FContext>): SearchRule<FItem, FContext>;
 export declare function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithMultipleValues<FItem, FValue, FContext>>(rule: T): FilterRuleWithMultipleValues<FItem, FValue>;
 export declare function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithBooleanValue<FItem, FContext>>(rule: T): FilterRuleWithBooleanValue<FItem, FValue>;

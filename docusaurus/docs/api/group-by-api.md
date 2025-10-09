@@ -18,14 +18,14 @@ finder.groupBy {
     // all defined GroupBy rules. Useful for controls.
     rules: GroupByRule[]
 
-    groupIdSortDirection: 'asc' | 'desc'
+    groupSortDirection: 'asc' | 'desc'
 
     set(identifier?: string | GroupByRule): void
 
     toggle(identifier?: string | GroupByRule): void
 
     // Determine how groups should be sorted.
-    setGroupIdSortDirection(direction?: 'asc' | 'desc')
+    setGroupSortDirection(direction?: 'asc' | 'desc')
 
     reset()
 }

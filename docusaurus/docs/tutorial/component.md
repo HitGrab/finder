@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Display Results
+# Display Matches
 
 Now that we have our ruleset, time to pass it to a Finder instance!
 

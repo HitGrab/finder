@@ -1,6 +1,6 @@
 {
   "id": "tutorial/component",
-  "title": "Display Results",
+  "title": "Display Matches",
   "description": "Now that we have our ruleset, time to pass it to a Finder instance!",
   "source": "@site/docs/tutorial/component.md",
   "sourceDirName": "tutorial",

@@ -119,7 +119,7 @@ class GroupByMixin<FItem, FContext> {
         };
     }
 
-    static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context?: unknown): FinderResultGroup<FItem>[] {
+    static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context: unknown): FinderResultGroup<FItem>[] {
         const groupObject = groupBy(items, (item) => options.rule?.groupFn(item, context));
 
         // transform the object into a sortable array

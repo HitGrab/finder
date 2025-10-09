@@ -104,13 +104,13 @@ FinderCore<FItem, FContext> {
         delete(identifier: string | FilterRule, value: any)
 
         // Test an array of filter rules against the items array. Useful for building input controls.
-        test(options: { rules?: FilterRule[]; values?: any; context?: FContext; isAdditive?: boolean;})
+        test(options: { rules?: FilterRule[]; values?: any; context: FContext; isAdditive?: boolean;})
 
         // Test a filter rule against the items array. Useful for building input controls.
-        testRule(options: { rule?: FilterRule; value?: any; context?: FContext; isAdditive?: boolean;})
+        testRule(options: { rule?: FilterRule; value?: any; context: FContext; isAdditive?: boolean;})
 
         // Test every option in a filter against the items array. Useful for building input controls.
-        testRuleOptions(options: { rules: FilterRule; value?: any; context?: FContext; isAdditive?: boolean;})
+        testRuleOptions(options: { rules: FilterRule; value?: any; context: FContext; isAdditive?: boolean;})
     }
 
     sortBy: {

@@ -9,10 +9,10 @@ Define a filter predicate that will return a boolean for each item. If multiple 
 **Type Signature**
 
 ```ts
-filterRule<FItem, FValue>({
+filterRule<FItem, FValue, FContext>({
     id: string;
-    filterFn: (item: FItem, value: FValue, context?: FContext) => boolean;
-    options?: FilterOption<FValue>[] | ((items: FItem[], context?: FContext) => FilterOption<FValue>[]);
+    filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
+    options?: FilterOption<FValue>[] | ((items: FItem[], context: FContext) => FilterOption<FValue>[]);
     multiple?: boolean;
     boolean?: boolean;
     required?: boolean;

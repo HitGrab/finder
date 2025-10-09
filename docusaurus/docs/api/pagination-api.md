@@ -22,6 +22,10 @@ finder.pagination {
     lastPage: number;
 
     isPaginated: boolean
+
+    setPage(page:number) => void;
+
+    setNumItemsPerPage(value: number) => void;
 }
 ```
 

@@ -40,6 +40,9 @@ finder.filters {
     // For rules with multiple options, you can pass an option to see if that value is selected.
     has(identifier: string | FilterRule, optionValue?: FilterOption | any): boolean
 
+    // Retrieve the hydrated version of the filter rule.
+    getRule(identifier: string | FilterRule): HydratedFilterRule | Error
+
     // Toggle a boolean filter or an option for a multiple filter.
     toggle(identifier: string | FilterRule, optionValue?: FilterOption | any): void
 
@@ -47,6 +50,7 @@ finder.filters {
     set(identifier: string | FilterRule, value: any): void
 
     // Delete the internal state for this rule.
+    // If value is passed and the rule has multiple values, only that value will be removed.
     delete(identifier: string | FilterRule, value: any)
 
     // Test an array of filter rules against the items array. Useful for building input controls.
