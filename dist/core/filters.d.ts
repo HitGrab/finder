@@ -23,6 +23,6 @@ declare class FiltersMixin {
     get values(): Record<string, any>;
     get raw(): Record<string, any>;
     serialize(): SerializedFiltersMixin;
-    static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any): FItem[];
+    static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context: any): FItem[];
 }
 export { FiltersMixin };

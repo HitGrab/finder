@@ -14,7 +14,7 @@ import {
 /**
  * Enforce structure for an array of rule of mixed types.
  */
-export function finderRuleset<FItem>(rules: FinderRule<FItem>[]) {
+export function finderRuleset<FItem, FContext = any>(rules: FinderRule<FItem, FContext>[]) {
     return rules;
 }
 

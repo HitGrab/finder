@@ -194,7 +194,7 @@ class FiltersMixin {
         };
     }
 
-    static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context?: any) {
+    static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context: any) {
         const activeRules = options.rules.filter((rule) => {
             return makeFilter(rule).isActive(options.values[rule.id]);
         });

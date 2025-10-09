@@ -1,7 +1,7 @@
 {
   "id": "rules/group-by-rule",
   "title": "GroupByRule",
-  "description": "| Prop          | Description                                                                                                     | Default | Required |",
+  "description": "Type Signature",
   "source": "@site/docs/rules/group-by-rule.md",
   "sourceDirName": "rules",
   "slug": "/rules/group-by-rule",

@@ -13,9 +13,9 @@ Use a `searchFn` to extract the string/strings from each item that will be compa
 **Type Signature**
 
 ```ts
-const rule = searchRule<FItem>({
+const rule = searchRule<FItem, FContext>({
     id?: string
-    searchFn: (item: FItem, context: any) => string | string[];
+    searchFn: (item: FItem, context: FContext) => string | string[];
     debounceMilliseconds?: number;
 })
 ```

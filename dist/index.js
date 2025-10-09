@@ -5248,7 +5248,7 @@ class iv {
       activeRule: u.activeRule,
       requireGroup: u.requireGroup,
       rules: u.rules,
-      groupIdSortDirection: u.groupSortDirection,
+      groupSortDirection: u.groupSortDirection,
       set: u.set.bind(u),
       toggle: u.toggle.bind(u),
       setGroupSortDirection: u.setGroupSortDirection.bind(u),

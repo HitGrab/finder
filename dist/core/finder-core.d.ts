@@ -65,7 +65,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         activeRule: import("..").GroupByRule<unknown, any> | undefined;
         requireGroup: boolean;
         rules: import("..").GroupByRule<unknown, any>[];
-        groupIdSortDirection: import("..").SortDirection | undefined;
+        groupSortDirection: import("..").SortDirection | undefined;
         set: (identifier?: string | import("..").GroupByRule) => void;
         toggle: (identifier: import("..").GroupByRule | string) => void;
         setGroupSortDirection: (direction?: import("..").SortDirection) => void;

@@ -1,7 +1,7 @@
 {
   "id": "index",
   "title": "Finder",
-  "description": "Use static rules to effortlessly sort, filter, search, and group data.",
+  "description": "Why use Finder?",
   "source": "@site/docs/index.md",
   "sourceDirName": ".",
   "slug": "/",

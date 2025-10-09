@@ -18,6 +18,6 @@ declare class GroupByMixin<FItem, FContext> {
     toggle(identifier: GroupByRule | string): void;
     reset(): void;
     serialize(): SerializedGroupByMixin;
-    static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context?: unknown): FinderResultGroup<FItem>[];
+    static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context: unknown): FinderResultGroup<FItem>[];
 }
 export { GroupByMixin };

@@ -1,7 +1,7 @@
 {
   "id": "components/finder",
   "title": "Finder",
-  "description": "The root component, Finder accepts an armada of configuration properties and provides simplified context to consuming components.",
+  "description": "The root component, Finder accepts an armada of configuration properties and provides an API context to consuming components.",
   "source": "@site/docs/components/finder.md",
   "sourceDirName": "components",
   "slug": "/components/finder",

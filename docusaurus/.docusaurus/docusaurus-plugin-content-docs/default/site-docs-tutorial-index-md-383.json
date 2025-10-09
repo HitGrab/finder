@@ -1,7 +1,7 @@
 {
   "id": "tutorial/index",
   "title": "Tutorial",
-  "description": "Building an Apartment Rental app",
+  "description": "Run npm i @hitgrab/finder in your repo of choice.",
   "source": "@site/docs/tutorial/index.md",
   "sourceDirName": "tutorial",
   "slug": "/tutorial/",

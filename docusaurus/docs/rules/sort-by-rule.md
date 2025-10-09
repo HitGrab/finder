@@ -10,9 +10,9 @@ If any sortBy rules are provided and no specific rule is set, the first sortBy r
 **Type Signature**
 
 ```ts
-sortByRule({
+sortByRule<FItem, FContext>({
     id: string;
-    sortFn: FinderPropertySelector<FItem> | FinderPropertySelector<FItem>[];
+    sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
     defaultSortDirection?: SortDirection;
     label?: string;
     hidden?: boolean;

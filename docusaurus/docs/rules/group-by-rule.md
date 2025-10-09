@@ -7,11 +7,11 @@ sidebar_position: 4
 **Type Signature**
 
 ```ts
-groupByRule({
+groupByRule<FItem, FContext>({
     id: string;
     groupFn: (item) => string | number;
-    sortGroupIdFn?: (group) => string | number;
-    groupIdSortDirection?: SortDirection;
+    sortGroupFn?: (group) => string | number;
+    defaultGroupSortDirection?: SortDirection;
     sticky?: {
         header?: string | string[];
         footer?: string | string[];
@@ -21,14 +21,14 @@ groupByRule({
 })
 ```
 
-| Prop          | Description                                                                                                     | Default | Required |
-| ------------- | --------------------------------------------------------------------------------------------------------------- | ------- | -------- |
-| id            | Every groupBy rule must have a unique string id.                                                                |         | ✓        |
-| groupFn       | A callback that returns a string or number. Items with the same value will be grouped together.                 |         | ✓        |
-| sortGroupIdFn | While any sortBy rules will operate on the items first, sortGroupIdFn allows you to sort the groups themselves. |         |          |
-| sticky        | Specify group ids that should be stickied to the top or bottom of the results.                                  |         |          |
-| label         | Optional label for your client to display.                                                                      |         |          |
-| hidden        | Optional display value for your client to display.                                                              | false   |          |
+| Prop        | Description                                                                                                     | Default | Required |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | ------- | -------- |
+| id          | Every groupBy rule must have a unique string id.                                                                |         | ✓        |
+| groupFn     | A callback that returns a string or number. Items with the same value will be grouped together.                 |         | ✓        |
+| sortGroupFn | While any sortBy rules will operate on the items first, sortGroupIdFn allows you to sort the groups themselves. |         |          |
+| sticky      | Specify group ids that should be stickied to the top or bottom of the results.                                  |         |          |
+| label       | Optional label for your client to display.                                                                      |         |          |
+| hidden      | Optional display value for your client to display.                                                              | false   |          |
 
 :::tip
 

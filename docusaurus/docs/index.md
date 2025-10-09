@@ -5,17 +5,41 @@ sidebar_position: 0
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import { SearchExample } from '/src/components/search-example/search-example';
 
 # Finder
 
+### Why use Finder?
+
 **Use static rules to effortlessly sort, filter, search, and group data.**
 
-Don't transform your object into a foreign tabular schema. Write static rules to bridge your existing objects into Finder, and let it worry about state for you.
+Objects, classes, strings; whatever dataset you're manipulating, you can use a Rule to connect Finder to manipulate it. You don't need to transform your object to match an external rubric.
 
-**Rules**
+**Reusable**
 
-- Inform Finder how to parse your object
-- Encapsulate byte-size logic
+Rules are object literals that can be shared to create reusable searches, filters or grouping. Write a Rule once, use it everywhere you're working with that object - catalog, customer orders, monthly dashboards and so forth!
+
+<div class="container padding-left--none padding-right--none">
+  <div class="row row--no-gutters">
+    <div class="col col--7">
+      <div class="col-demo">
+      **Effortless string matching**
+
+Extract a string ( or strings ) from your item to search against. Rank searches by closest match to return relevant results faster. The `<Finder.SearchTermHaystack />` component will highlight the matching segments of your Item's search term.
+
+</div>
+    </div>
+    <div class="col col--5">
+      <div class="col-demo"><SearchExample /></div>
+    </div>
+  </div>
+  </div>
+
+**Headless**
+
+Finder provides an API for managing rules and displaying matches. It doesn't have any opinions on how that should be rendered.
+
+**Rule Examples**
 
 <Tabs>
   <TabItem value="shoes" label="Search shoes" default>
@@ -100,7 +124,7 @@ Don't transform your object into a foreign tabular schema. Write static rules to
         // Use the sticky prop to weight them.
         sticky: {
             header: ['Honda', 'Ford']
-            footer: 'Bad Cars'
+            footer: 'Less cool cars'
         }
     })
 
@@ -110,31 +134,9 @@ Don't transform your object into a foreign tabular schema. Write static rules to
 </TabItem>
 </Tabs>
 
-## Why use Finder?
+:::info Do you _really_ need a whole library for basic data manipulation?
 
-**Flexible enough to accomodate any item data shape**
-
-Strings, objects, classes - whatever dataset you're manipulating, you can use a Rule to connect Finder to it. You don't need to transform your object to match an external rubric.
-
-**Reusable**
-
-Static Rules can be shared between Finder instances for reusable searches, filters or grouping. Write a Rule once, use it everywhere you're working with that object.
-
-**Effortless searching**
-
-Extract a string ( or strings ) from your item to search against. Rank searches by closest match to return relevant results faster.
-
-**Highlight submatches within a search string**
-
-The `<Finder.SearchTerm />` component will highlight the segments of your Item's search term.
-
-**Headless**
-
-Finder provides an API for managing controls and displaying results. It doesn't have any opinions on how that should be rendered.
-
-:::info ...why?
-
-Do you _really_ need a whole library for basic data manipulation? Well, maybe!
+Well, maybe!
 
 Filtering and sorting data is the easiest thing in the world, and a disproportionate percentage of webdev tasks. It can _also_ be a disproportionate amount of frustrations as client needs change at the last minute, filters get nested and coupled, and object shape changes.
 

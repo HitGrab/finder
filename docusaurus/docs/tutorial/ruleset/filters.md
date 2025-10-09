@@ -6,14 +6,25 @@ sidebar_position: 1
 
 Let's build some common filters.
 
-- Price
 - Is available immediately
+- Price
 - Number of bedrooms
 - Promixity to a location
 
-Let's transform those into filter rules.
+Filters come in three types; **Boolean**, **Single value**, and **Multiple value**.
 
-## Filter with defined options
+Filters default to having a single value, but boolean or multiple value mode can be enabled by adding `boolean: true` or `multiple: true` to your filter definition.
+
+## Boolean filter: Immediate availability
+
+```ts
+filterRule<ApartmentListing>({
+    filterFn: (listing) => listing.is_available_immediately,
+    boolean: true,
+});
+```
+
+## Single value filter with defined options
 
 ```ts
 filterRule<ApartmentListing, [number:min, number:max]>({
@@ -36,18 +47,6 @@ filterRule<ApartmentListing, [number:min, number:max]>({
         }
     ]
 })
-```
-
-## Boolean filter: Immediate availability
-
-```ts
-filterRule<ApartmentListing>({
-    // as this will be a boolean filter, we don't need to do a comparison.
-    filterFn: (listing) => listing.is_available_immediately,
-
-    // set to boolean mode.
-    boolean: true,
-});
 ```
 
 ## Multiple filter: Number of bedrooms

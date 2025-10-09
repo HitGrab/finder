@@ -13,6 +13,6 @@ declare class SearchMixin<FItem> {
     reset(): void;
     serialize(): SerializedSearchMixin;
     test(searchTerm: string, isAdditive?: boolean): FItem[];
-    static process<FItem>(options: SerializedSearchMixin, items: FItem[], context?: unknown): FItem[];
+    static process<FItem>(options: SerializedSearchMixin, items: FItem[], context: unknown): FItem[];
 }
 export { SearchMixin };
