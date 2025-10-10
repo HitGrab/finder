@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/Basic Usage/result",
+  "title": "Et voila!",
+  "description": "",
+  "source": "@site/docs/tutorial/Basic Usage/result.md",
+  "sourceDirName": "tutorial/Basic Usage",
+  "slug": "/tutorial/Basic Usage/result",
+  "permalink": "/finder/tutorial/Basic Usage/result",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Build Controls",
+    "permalink": "/finder/tutorial/Basic Usage/controls"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/rules/"
+  }
+}

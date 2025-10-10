@@ -6,17 +6,17 @@
     },
     "content": "393be207"
   },
-  "/finder/-def": {
+  "/finder/-f1b": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/finder/-329": {
+  "/finder/-afc": {
     "__comp": "a7bd4aaa",
     "__props": "1994f6cc"
   },
-  "/finder/-5cd": {
+  "/finder/-d1d": {
     "__comp": "a94703ab"
   },
   "/finder/api/-2a4": {
@@ -67,9 +67,13 @@
     "__comp": "17896441",
     "content": "fab3ce5d"
   },
-  "/finder/components/finder-search-term-fdb": {
+  "/finder/components/finder-search-term-haystack-268": {
     "__comp": "17896441",
-    "content": "60ade38f"
+    "content": "d57edb23"
+  },
+  "/finder/components/string-match-d40": {
+    "__comp": "17896441",
+    "content": "8f7baf8e"
   },
   "/finder/components/use-finder-ad4": {
     "__comp": "17896441",
@@ -119,29 +123,49 @@
     "__comp": "17896441",
     "content": "383d31c1"
   },
-  "/finder/tutorial/component-ca3": {
+  "/finder/tutorial/basic-usage/-1ab": {
     "__comp": "17896441",
-    "content": "abe4c3a6"
+    "content": "c8636784"
   },
-  "/finder/tutorial/controls-932": {
+  "/finder/tutorial/basic-usage/component-d93": {
     "__comp": "17896441",
-    "content": "b7608e14"
+    "content": "f15d6924"
   },
-  "/finder/tutorial/ruleset/-35a": {
+  "/finder/tutorial/basic-usage/controls-c2a": {
     "__comp": "17896441",
-    "content": "5b0914b1"
+    "content": "e5537422"
   },
-  "/finder/tutorial/ruleset/filters-a99": {
+  "/finder/tutorial/basic-usage/filters-f95": {
     "__comp": "17896441",
-    "content": "816cdef5"
+    "content": "876e7fb3"
   },
-  "/finder/tutorial/ruleset/search-80c": {
+  "/finder/tutorial/basic-usage/result-a60": {
     "__comp": "17896441",
-    "content": "f580874d"
+    "content": "1ef9dc3f"
   },
-  "/finder/tutorial/ruleset/sort-by-bed": {
+  "/finder/tutorial/basic-usage/search-d74": {
     "__comp": "17896441",
-    "content": "fec3d017"
+    "content": "b009dddf"
+  },
+  "/finder/tutorial/basic-usage/sort-by-1e8": {
+    "__comp": "17896441",
+    "content": "3450844d"
+  },
+  "/finder/tutorial/context-e86": {
+    "__comp": "17896441",
+    "content": "75653ef9"
+  },
+  "/finder/tutorial/effects-127": {
+    "__comp": "17896441",
+    "content": "6cb8c971"
+  },
+  "/finder/tutorial/pagination-ac4": {
+    "__comp": "17896441",
+    "content": "688b87d4"
+  },
+  "/finder/tutorial/testing-658": {
+    "__comp": "17896441",
+    "content": "ad27baa0"
   },
   "/finder/-8bd": {
     "__comp": "17896441",

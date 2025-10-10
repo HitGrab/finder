@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/basic-usage/sort-by",
+  "title": "Sort By",
+  "description": "We want to offer two sort options to the user; price and number of bedrooms.",
+  "source": "@site/docs/tutorial/basic-usage/sort-by.md",
+  "sourceDirName": "tutorial/basic-usage",
+  "slug": "/tutorial/basic-usage/sort-by",
+  "permalink": "/finder/tutorial/basic-usage/sort-by",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filters",
+    "permalink": "/finder/tutorial/basic-usage/filters"
+  },
+  "next": {
+    "title": "Display Matches",
+    "permalink": "/finder/tutorial/basic-usage/component"
+  }
+}

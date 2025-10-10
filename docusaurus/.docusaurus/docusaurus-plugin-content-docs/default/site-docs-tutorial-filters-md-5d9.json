@@ -1,7 +1,7 @@
 {
   "id": "tutorial/filters",
   "title": "Filters",
-  "description": "Some likely filters are:",
+  "description": "Let's build some common filters.",
   "source": "@site/docs/tutorial/filters.md",
   "sourceDirName": "tutorial",
   "slug": "/tutorial/filters",

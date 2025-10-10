@@ -1,0 +1,23 @@
+{
+  "id": "components/finder-search-term-haystack",
+  "title": "Finder.SearchTermHaystack",
+  "description": "This handy component allows you to highlight the segments in your haystack that matched your searchTerm. This wraps a StringMatch component and populates it with your Finder instance's current searchTerm.",
+  "source": "@site/docs/components/finder-search-term-haystack.md",
+  "sourceDirName": "components",
+  "slug": "/components/finder-search-term-haystack",
+  "permalink": "/finder/components/finder-search-term-haystack",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Finder.Content",
+    "permalink": "/finder/components/finder-content"
+  },
+  "next": {
+    "title": "StringMatch",
+    "permalink": "/finder/components/string-match"
+  }
+}

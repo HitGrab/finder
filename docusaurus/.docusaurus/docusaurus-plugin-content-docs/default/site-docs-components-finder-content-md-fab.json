@@ -17,7 +17,7 @@
     "permalink": "/finder/components/finder"
   },
   "next": {
-    "title": "Finder.SearchTerm",
-    "permalink": "/finder/components/finder-search-term"
+    "title": "Finder.SearchTermHaystack",
+    "permalink": "/finder/components/finder-search-term-haystack"
   }
 }

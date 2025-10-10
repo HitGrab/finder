@@ -1,0 +1,23 @@
+{
+  "id": "components/string-match",
+  "title": "StringMatch",
+  "description": "This highlight string segment matches within a haystack.",
+  "source": "@site/docs/components/string-match.md",
+  "sourceDirName": "components",
+  "slug": "/components/string-match",
+  "permalink": "/finder/components/string-match",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Finder.SearchTermHaystack",
+    "permalink": "/finder/components/finder-search-term-haystack"
+  },
+  "next": {
+    "title": "useFinder",
+    "permalink": "/finder/components/use-finder"
+  }
+}

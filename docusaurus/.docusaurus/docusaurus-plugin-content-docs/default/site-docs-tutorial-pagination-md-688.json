@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/pagination",
+  "title": "Paginating Matches",
+  "description": "Coming soon! For now, check out the Pagination API.",
+  "source": "@site/docs/tutorial/pagination.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/pagination",
+  "permalink": "/finder/tutorial/pagination",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Coupling Rules with Effects",
+    "permalink": "/finder/tutorial/effects"
+  },
+  "next": {
+    "title": "Pre-Testing Matches",
+    "permalink": "/finder/tutorial/testing"
+  }
+}

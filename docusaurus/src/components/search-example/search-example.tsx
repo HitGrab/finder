@@ -10,7 +10,7 @@ interface Shoe {
 
 const ruleset = [
     searchRule<Shoe>({
-        searchFn: (item) => `${item.name} ${item.brand}`,
+        searchFn: (item) => `${item.brand} ${item.name}`,
         debounceMilliseconds: 100,
     }),
 ];

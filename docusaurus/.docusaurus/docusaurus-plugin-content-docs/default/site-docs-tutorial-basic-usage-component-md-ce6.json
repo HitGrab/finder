@@ -1,0 +1,26 @@
+{
+  "id": "tutorial/Basic Usage/component",
+  "title": "Display Matches",
+  "description": "Now that we have our ruleset, time to pass it to a Finder instance!",
+  "source": "@site/docs/tutorial/Basic Usage/component.md",
+  "sourceDirName": "tutorial/Basic Usage",
+  "slug": "/tutorial/Basic Usage/component",
+  "permalink": "/finder/tutorial/Basic Usage/component",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Sort By",
+    "permalink": "/finder/tutorial/Basic Usage/sort-by"
+  },
+  "next": {
+    "title": "Build Controls",
+    "permalink": "/finder/tutorial/Basic Usage/controls"
+  }
+}

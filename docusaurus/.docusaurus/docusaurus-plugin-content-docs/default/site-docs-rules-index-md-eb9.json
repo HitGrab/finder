@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Build Controls",
-    "permalink": "/finder/tutorial/controls"
+    "title": "Pre-Testing Matches",
+    "permalink": "/finder/tutorial/testing"
   },
   "next": {
     "title": "SearchRule",

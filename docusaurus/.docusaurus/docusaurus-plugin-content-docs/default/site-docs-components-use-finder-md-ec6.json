@@ -1,7 +1,7 @@
 {
   "id": "components/use-finder",
   "title": "useFinder",
-  "description": "Access the current Finder context.",
+  "description": "Access the Finder API.",
   "source": "@site/docs/components/use-finder.md",
   "sourceDirName": "components",
   "slug": "/components/use-finder",
@@ -13,8 +13,8 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Finder.SearchTerm",
-    "permalink": "/finder/components/finder-search-term"
+    "title": "StringMatch",
+    "permalink": "/finder/components/string-match"
   },
   "next": {
     "title": "Examples",

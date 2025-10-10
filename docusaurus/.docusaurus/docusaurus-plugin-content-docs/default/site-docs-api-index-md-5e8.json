@@ -1,7 +1,7 @@
 {
   "id": "api/index",
   "title": "API",
-  "description": "Finder offers an imperative API that can access local state and mutate rules.",
+  "description": "FinderCore is a thin wrapper that provides an imperative interface to Finder's internal state.",
   "source": "@site/docs/api/index.md",
   "sourceDirName": "api",
   "slug": "/api/",

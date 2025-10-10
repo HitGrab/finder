@@ -1,6 +1,6 @@
 # useFinder
 
-Access the current Finder context.
+Access the Finder API.
 
 **Type Signature**
 
