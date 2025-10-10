@@ -323,7 +323,7 @@ function No({ children: c }) {
 }
 function Co({ children: c }) {
   const u = Nn();
-  return u.hasMatches === !1 ? typeof c == "function" ? /* @__PURE__ */ Le.jsx(c, { pagination: u.pagination, context: u.context }) : c : null;
+  return u.isEmpty === !1 && u.hasMatches === !1 ? typeof c == "function" ? /* @__PURE__ */ Le.jsx(c, { pagination: u.pagination, context: u.context }) : c : null;
 }
 function Do({ children: c }) {
   const u = Nn();

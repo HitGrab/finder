@@ -23,7 +23,7 @@ finder.search {
     // Reset searchTerm to an empty string.
     reset(): void
 
-    // test a search term without setting it into state
+    // test a search term without committing it
     test(searchTerm: string, isAdditive = false): FItem[]
 
 }

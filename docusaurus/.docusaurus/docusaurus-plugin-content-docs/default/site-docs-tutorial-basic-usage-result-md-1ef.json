@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/basic-usage/result",
+  "title": "Et voila!",
+  "description": "",
+  "source": "@site/docs/tutorial/basic-usage/result.md",
+  "sourceDirName": "tutorial/basic-usage",
+  "slug": "/tutorial/basic-usage/result",
+  "permalink": "/finder/tutorial/basic-usage/result",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Build Controls",
+    "permalink": "/finder/tutorial/basic-usage/controls"
+  },
+  "next": {
+    "title": "Injecting Context",
+    "permalink": "/finder/tutorial/context"
+  }
+}

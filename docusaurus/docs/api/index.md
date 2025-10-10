@@ -3,7 +3,7 @@ title: API
 sidebar_position: 3
 ---
 
-Finder offers an imperative API that can access local state and mutate rules.
+FinderCore is a thin wrapper that provides an imperative interface to Finder's internal state.
 
 ```ts
 FinderCore<FItem, FContext> {

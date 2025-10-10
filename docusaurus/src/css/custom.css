@@ -81,3 +81,30 @@
     padding: 10px;
     font-size: 10px;
 }
+
+.listingContainer {
+    padding: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    display: grid;
+    gap: 10px;
+    max-height: 500px;
+    overflow: auto;
+
+    .listing {
+        border-radius: 10px;
+        padding: 10px;
+        border: 1px solid #333;
+
+        .listing__header {
+            border-bottom: 1px solid #333;
+        }
+        .listing__content {
+            font-size: 12px;
+        }
+
+        span {
+            text-decoration: underline;
+            color: green;
+        }
+    }
+}

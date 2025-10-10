@@ -47,7 +47,7 @@ With the needle `orange`, `orc angel` has a score of 80, while `delicious orange
 Both scores are equally weighted.
 
 :::warning
-Ranked search will be overridden if a `sortBy` rule is set. If you want to use ranked search, you'll need to enable `ignoreSortByRulesWhileSearchRuleIsActive` in your configuration object.
+Ranked search will be overridden if a `sortBy` rule is set. If you want to use both ranked search and sortBy rules, you'll need to enable `ignoreSortByRulesWhileSearchRuleIsActive` in your configuration object.
 :::
 
 ## Custom search algorithms

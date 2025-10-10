@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/context",
+  "title": "Injecting Context",
+  "description": "Coming soon!",
+  "source": "@site/docs/tutorial/context.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/context",
+  "permalink": "/finder/tutorial/context",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/tutorial/basic-usage/result"
+  },
+  "next": {
+    "title": "Coupling Rules with Effects",
+    "permalink": "/finder/tutorial/effects"
+  }
+}

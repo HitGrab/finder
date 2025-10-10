@@ -1,7 +1,7 @@
 {
   "id": "tutorial/index",
-  "title": "Tutorial",
-  "description": "Run npm i @hitgrab/finder in your repo of choice.",
+  "title": "Tutorials",
+  "description": "",
   "source": "@site/docs/tutorial/index.md",
   "sourceDirName": "tutorial",
   "slug": "/tutorial/",
@@ -20,7 +20,7 @@
     "permalink": "/finder/"
   },
   "next": {
-    "title": "Define the Ruleset",
-    "permalink": "/finder/tutorial/ruleset/"
+    "title": "Basic Usage",
+    "permalink": "/finder/tutorial/basic-usage/"
   }
 }

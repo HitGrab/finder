@@ -9,15 +9,15 @@ export default [
   },
   {
     path: '/finder/',
-    component: ComponentCreator('/finder/', 'def'),
+    component: ComponentCreator('/finder/', 'f1b'),
     routes: [
       {
         path: '/finder/',
-        component: ComponentCreator('/finder/', '329'),
+        component: ComponentCreator('/finder/', 'afc'),
         routes: [
           {
             path: '/finder/',
-            component: ComponentCreator('/finder/', '5cd'),
+            component: ComponentCreator('/finder/', 'd1d'),
             routes: [
               {
                 path: '/finder/api/',
@@ -92,8 +92,14 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/components/finder-search-term',
-                component: ComponentCreator('/finder/components/finder-search-term', 'fdb'),
+                path: '/finder/components/finder-search-term-haystack',
+                component: ComponentCreator('/finder/components/finder-search-term-haystack', '268'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/components/string-match',
+                component: ComponentCreator('/finder/components/string-match', 'd40'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
@@ -170,38 +176,68 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/component',
-                component: ComponentCreator('/finder/tutorial/component', 'ca3'),
+                path: '/finder/tutorial/basic-usage/',
+                component: ComponentCreator('/finder/tutorial/basic-usage/', '1ab'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/controls',
-                component: ComponentCreator('/finder/tutorial/controls', '932'),
+                path: '/finder/tutorial/basic-usage/component',
+                component: ComponentCreator('/finder/tutorial/basic-usage/component', 'd93'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/ruleset/',
-                component: ComponentCreator('/finder/tutorial/ruleset/', '35a'),
+                path: '/finder/tutorial/basic-usage/controls',
+                component: ComponentCreator('/finder/tutorial/basic-usage/controls', 'c2a'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/ruleset/filters',
-                component: ComponentCreator('/finder/tutorial/ruleset/filters', 'a99'),
+                path: '/finder/tutorial/basic-usage/filters',
+                component: ComponentCreator('/finder/tutorial/basic-usage/filters', 'f95'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/ruleset/search',
-                component: ComponentCreator('/finder/tutorial/ruleset/search', '80c'),
+                path: '/finder/tutorial/basic-usage/result',
+                component: ComponentCreator('/finder/tutorial/basic-usage/result', 'a60'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/finder/tutorial/ruleset/sort-by',
-                component: ComponentCreator('/finder/tutorial/ruleset/sort-by', 'bed'),
+                path: '/finder/tutorial/basic-usage/search',
+                component: ComponentCreator('/finder/tutorial/basic-usage/search', 'd74'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/tutorial/basic-usage/sort-by',
+                component: ComponentCreator('/finder/tutorial/basic-usage/sort-by', '1e8'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/tutorial/context',
+                component: ComponentCreator('/finder/tutorial/context', 'e86'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/tutorial/effects',
+                component: ComponentCreator('/finder/tutorial/effects', '127'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/tutorial/pagination',
+                component: ComponentCreator('/finder/tutorial/pagination', 'ac4'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/tutorial/testing',
+                component: ComponentCreator('/finder/tutorial/testing', '658'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

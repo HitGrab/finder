@@ -66,13 +66,18 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "components/finder-search-term",
-              "path": "/finder/components/finder-search-term",
+              "id": "components/finder-search-term-haystack",
+              "path": "/finder/components/finder-search-term-haystack",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "components/index",
               "path": "/finder/components/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "components/string-match",
+              "path": "/finder/components/string-match",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -136,13 +141,48 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "tutorial/component",
-              "path": "/finder/tutorial/component",
+              "id": "tutorial/basic-usage/component",
+              "path": "/finder/tutorial/basic-usage/component",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "tutorial/controls",
-              "path": "/finder/tutorial/controls",
+              "id": "tutorial/basic-usage/controls",
+              "path": "/finder/tutorial/basic-usage/controls",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/basic-usage/filters",
+              "path": "/finder/tutorial/basic-usage/filters",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/basic-usage/index",
+              "path": "/finder/tutorial/basic-usage/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/basic-usage/result",
+              "path": "/finder/tutorial/basic-usage/result",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/basic-usage/search",
+              "path": "/finder/tutorial/basic-usage/search",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/basic-usage/sort-by",
+              "path": "/finder/tutorial/basic-usage/sort-by",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/context",
+              "path": "/finder/tutorial/context",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "tutorial/effects",
+              "path": "/finder/tutorial/effects",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -151,23 +191,13 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "tutorial/ruleset/filters",
-              "path": "/finder/tutorial/ruleset/filters",
+              "id": "tutorial/pagination",
+              "path": "/finder/tutorial/pagination",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "tutorial/ruleset/index",
-              "path": "/finder/tutorial/ruleset/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/ruleset/search",
-              "path": "/finder/tutorial/ruleset/search",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/ruleset/sort-by",
-              "path": "/finder/tutorial/ruleset/sort-by",
+              "id": "tutorial/testing",
+              "path": "/finder/tutorial/testing",
               "sidebar": "tutorialSidebar"
             }
           ],

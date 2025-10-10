@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/effects",
+  "title": "Coupling Rules with Effects",
+  "description": "Coming soon! For now, check out the Effects Rule definition.",
+  "source": "@site/docs/tutorial/effects.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/effects",
+  "permalink": "/finder/tutorial/effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Injecting Context",
+    "permalink": "/finder/tutorial/context"
+  },
+  "next": {
+    "title": "Paginating Matches",
+    "permalink": "/finder/tutorial/pagination"
+  }
+}

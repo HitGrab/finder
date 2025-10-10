@@ -1,0 +1,23 @@
+{
+  "id": "tutorial/testing",
+  "title": "Pre-Testing Matches",
+  "description": "Coming soon! For now, check out the Tests API.",
+  "source": "@site/docs/tutorial/testing.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/testing",
+  "permalink": "/finder/tutorial/testing",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Paginating Matches",
+    "permalink": "/finder/tutorial/pagination"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/rules/"
+  }
+}
