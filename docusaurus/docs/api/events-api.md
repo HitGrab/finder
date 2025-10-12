@@ -31,8 +31,8 @@ Triggered a single time when Finder is first initialized.
 {
     source: "core";
     event: "init";
-    snapshot: FinderSnapshot,
     timestamp: number;
+    instance: FinderCore;
 }
 ```
 
@@ -45,8 +45,8 @@ Triggered once when the user interacts with any rule. Useful if you want to dela
 {
     source: "core";
     event: "firstUserInteraction";
-    snapshot: FinderSnapshot,
     timestamp: number;
+    instance: FinderCore;
 }
 ```
 
@@ -59,8 +59,8 @@ Triggered once after an items array is set and `isLoading` is false.
 {
     source: "core";
     event: "ready";
-    snapshot: FinderSnapshot,
     timestamp: number;
+    instance: FinderCore;
 }
 ```
 
@@ -71,11 +71,11 @@ Triggered whenever a rule's state changes.
 ```ts
 // FinderChangeEvent
 {
-    source: "core" | "filters" | "groupBy" | "pagination" | "search" | "sortBy" | "layout";
+    source: "core" | "search" | "filters" | "sortBy" | "groupBy" | "pagination";
     event: "change";
     current: any;
     initial: any;
-    snapshot: FinderSnapshot,
     timestamp: number;
+    instance: FinderCore;
 }
 ```

@@ -16,7 +16,7 @@ ruleEffect(
     | ((items: FItem[], context: FContext) =>
         string | FinderRule<FItem> | (string | FinderRule<FItem>)[]
     ),
-    (instance:FinderCore) => void
+    (instance:FinderCore, triggeringRule: FinderRule) => void,
 ),
 ```
 
@@ -44,9 +44,9 @@ const rules = finderRuleset<Fruit>([
 
 // whenever these rules are changed, the callback will be triggered.
 const effects = [
-    ruleEffect(["is_an_orange", "is_an_apple"], (instance) => {
-        if (instance.filters.has("is_an_orange")) {
-            instance.filters.toggle("is_an_apple");
+    ruleEffect(["is_an_orange", "is_an_apple"], (instance, triggeringRule) => {
+        if (triggeringRule.id === "is_an_orange") {
+            instance.filters.delete("is_an_apple");
         }
     }),
 ];
@@ -55,5 +55,5 @@ const finder = new FinderCore(fruits, { rules, effects });
 ```
 
 :::tip
-Changes triggered inside an effect callback are processed silently, and do not trigger Events.  
+Changes triggered inside an ruleEffect callback are processed silently, and do not trigger Events.  
 :::

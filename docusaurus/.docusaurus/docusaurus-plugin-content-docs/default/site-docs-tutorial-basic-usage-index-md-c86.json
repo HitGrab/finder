@@ -1,7 +1,7 @@
 {
   "id": "tutorial/basic-usage/index",
   "title": "Basic Usage",
-  "description": "Run npm i @hitgrab/finder in your repo of choice.",
+  "description": "How do I find you when I cannot solve this problem",
   "source": "@site/docs/tutorial/basic-usage/index.md",
   "sourceDirName": "tutorial/basic-usage",
   "slug": "/tutorial/basic-usage/",
@@ -12,7 +12,8 @@
   "version": "current",
   "sidebarPosition": 1,
   "frontMatter": {
-    "sidebar_position": 1
+    "sidebar_position": 1,
+    "description": "How do I find you when I cannot solve this problem"
   },
   "sidebar": "tutorialSidebar",
   "previous": {

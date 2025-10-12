@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/context/injecting-state",
+  "title": "Dependent Finder.Content components",
+  "description": "User story:",
+  "source": "@site/docs/getting-started/context/injecting-state.md",
+  "sourceDirName": "getting-started/context",
+  "slug": "/getting-started/context/injecting-state",
+  "permalink": "/finder/getting-started/context/injecting-state",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dependent Rules",
+    "permalink": "/finder/getting-started/context/context-rules"
+  },
+  "next": {
+    "title": "Coupling Rules with Effects",
+    "permalink": "/finder/getting-started/effects"
+  }
+}

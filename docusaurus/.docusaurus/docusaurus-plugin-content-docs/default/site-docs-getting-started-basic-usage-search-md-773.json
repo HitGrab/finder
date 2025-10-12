@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/basic-usage/search",
+  "title": "Search",
+  "description": "SearchRules tell Finder how to interact with the searchable haystacks in your object. In this case, we want to search by either the street name, or the building name.",
+  "source": "@site/docs/getting-started/basic-usage/search.md",
+  "sourceDirName": "getting-started/basic-usage",
+  "slug": "/getting-started/basic-usage/search",
+  "permalink": "/finder/getting-started/basic-usage/search",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Basic Usage",
+    "permalink": "/finder/getting-started/basic-usage/"
+  },
+  "next": {
+    "title": "Filters",
+    "permalink": "/finder/getting-started/basic-usage/filters"
+  }
+}

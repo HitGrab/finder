@@ -90,8 +90,4 @@ export interface FilterTestRuleOptions {
     value: any;
     isAdditive?: boolean;
 }
-export interface FilterTestRuleOptionsOptions {
-    rule: string | FilterRuleUnion | HydratedFilterRule;
-    isAdditive?: boolean;
-}
 export {};

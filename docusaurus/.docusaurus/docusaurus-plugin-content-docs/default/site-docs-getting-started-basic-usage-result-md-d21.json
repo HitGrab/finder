@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/basic-usage/result",
+  "title": "Et voila!",
+  "description": "",
+  "source": "@site/docs/getting-started/basic-usage/result.md",
+  "sourceDirName": "getting-started/basic-usage",
+  "slug": "/getting-started/basic-usage/result",
+  "permalink": "/finder/getting-started/basic-usage/result",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Build Controls",
+    "permalink": "/finder/getting-started/basic-usage/controls"
+  },
+  "next": {
+    "title": "Injecting Context",
+    "permalink": "/finder/getting-started/context/"
+  }
+}

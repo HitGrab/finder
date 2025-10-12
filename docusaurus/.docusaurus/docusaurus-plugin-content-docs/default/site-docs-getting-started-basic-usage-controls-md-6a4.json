@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/basic-usage/controls",
+  "title": "Build Controls",
+  "description": "Finder doesn't have any opinion on how controls are rendered. Rule definitions, and state accessors/mutators are exposed so you can roll your own controls.",
+  "source": "@site/docs/getting-started/basic-usage/controls.md",
+  "sourceDirName": "getting-started/basic-usage",
+  "slug": "/getting-started/basic-usage/controls",
+  "permalink": "/finder/getting-started/basic-usage/controls",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Display Matches",
+    "permalink": "/finder/getting-started/basic-usage/component"
+  },
+  "next": {
+    "title": "Et voila!",
+    "permalink": "/finder/getting-started/basic-usage/result"
+  }
+}

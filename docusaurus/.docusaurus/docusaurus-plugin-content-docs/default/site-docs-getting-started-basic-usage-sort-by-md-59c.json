@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/basic-usage/sort-by",
+  "title": "Sort By",
+  "description": "We want to offer two sort options to the user; price and number of bedrooms.",
+  "source": "@site/docs/getting-started/basic-usage/sort-by.md",
+  "sourceDirName": "getting-started/basic-usage",
+  "slug": "/getting-started/basic-usage/sort-by",
+  "permalink": "/finder/getting-started/basic-usage/sort-by",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filters",
+    "permalink": "/finder/getting-started/basic-usage/filters"
+  },
+  "next": {
+    "title": "Display Matches",
+    "permalink": "/finder/getting-started/basic-usage/component"
+  }
+}
