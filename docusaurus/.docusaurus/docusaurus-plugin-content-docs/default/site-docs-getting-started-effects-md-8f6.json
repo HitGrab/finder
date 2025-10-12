@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/effects",
+  "title": "Coupling Rules with Effects",
+  "description": "Coming soon! For now, check out the Effects Rule definition.",
+  "source": "@site/docs/getting-started/effects.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/effects",
+  "permalink": "/finder/getting-started/effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dependent Finder.Content components",
+    "permalink": "/finder/getting-started/context/injecting-state"
+  },
+  "next": {
+    "title": "Paginating Matches",
+    "permalink": "/finder/getting-started/pagination"
+  }
+}

@@ -17,7 +17,7 @@ const HABITATS = [
     "Manitoba",
     "British Columbia",
     "Prince Edward Island",
-    "SasketchSaskatchewan",
+    "Saskatchewan",
     "Alberta",
     "Newfoundland and Labrador",
     "Northwest Territories",
@@ -101,7 +101,7 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
     const ruleValue = finder.filters.get(rule);
     const composedOptions = rule.required ? rule.options : [{ value: undefined, label: "All" }, ...rule.options];
     const selectedOptionIndex = composedOptions.findIndex(({ value }) => value === ruleValue);
-    const optionMatches = finder.filters.testRuleOptions({ rule });
+    const optionMatches = finder.filters.testRuleOptions(rule);
     return (
         <select
             value={selectedOptionIndex}

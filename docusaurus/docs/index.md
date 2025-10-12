@@ -13,15 +13,15 @@ import { GroupByExample } from '/src/components/group-by-example/group-by-exampl
 
 # Finder
 
-### Why use Finder?
+<span style={{float:'left'}}>![Example banner](/img/finder.jpg)</span>
 
-**Use static rules to effortlessly sort, filter, search, and group data.**
+## Use static rules to effortlessly sort, filter, search, and group data of any shape.
 
 Objects, classes, strings; whatever dataset you're manipulating, you can use a Rule to connect Finder to manipulate it. You don't need to transform your object to match an external rubric.
 
 **Reusable**
 
-Rules are object literals that can be shared to create reusable searches, filters or grouping. Write a Rule once, use it everywhere you're working with that object - catalog, customer orders, monthly dashboards and so forth!
+Rules are object literals that can create reusable searches, filters, sorting, or grouping. Write a Rule once, use it everywhere you're working with that object - catalog, customer orders, monthly dashboards and so on!
 
 <div class="container padding-left--none padding-right--none">
   <div class="row row--no-gutters">
@@ -39,9 +39,13 @@ Extract a string ( or strings ) from your item to search against. Rank searches 
   </div>
   </div>
 
+**Coupled Rules**
+
+If you have rules that need to interact with each other, you can add ruleEffects to listen for rule changes. If certain filters are mutually incompatible, or you need to reset the sortBy rules when the active groupBy rule changes, ruleEffects will get it done.
+
 **Headless**
 
-Finder provides an API for managing rules and displaying matches. It doesn't have any opinions on how results or controls should be rendered.
+Finder provides an API for managing rules and displaying matches. It doesn't have any opinions on how matches or controls should be rendered.
 
 **Rule Examples**
 
@@ -173,10 +177,8 @@ return <Finder items={shoes} rules={[rule]} />
 
 :::info Do you _really_ need a whole library for basic data manipulation?
 
-Well, maybe!
-
 Filtering and sorting data is the easiest thing in the world, and a disproportionate percentage of webdev tasks. It can _also_ be a disproportionate amount of frustrations as client needs change at the last minute, filters get nested and coupled, and object shape changes.
 
-Without good discipline and planning, data manipulation can become a tech debt quagmire. Finder is intended to make data manipulation easy, fast, and re-usable.
+Without good discipline and planning, data manipulation can become a spaghetti mountain of boilerplate. Finder is intended to make data manipulation easy, type-safe, and reusable.
 :::
 ````

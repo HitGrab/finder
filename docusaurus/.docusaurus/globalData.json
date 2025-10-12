@@ -91,6 +91,76 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "getting-started/basic-usage/component",
+              "path": "/finder/getting-started/basic-usage/component",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/controls",
+              "path": "/finder/getting-started/basic-usage/controls",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/filters",
+              "path": "/finder/getting-started/basic-usage/filters",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/index",
+              "path": "/finder/getting-started/basic-usage/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/result",
+              "path": "/finder/getting-started/basic-usage/result",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/search",
+              "path": "/finder/getting-started/basic-usage/search",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/basic-usage/sort-by",
+              "path": "/finder/getting-started/basic-usage/sort-by",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/context/context-rules",
+              "path": "/finder/getting-started/context/context-rules",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/context/index",
+              "path": "/finder/getting-started/context/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/context/injecting-state",
+              "path": "/finder/getting-started/context/injecting-state",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/effects",
+              "path": "/finder/getting-started/effects",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/index",
+              "path": "/finder/getting-started/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/pagination",
+              "path": "/finder/getting-started/pagination",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/testing",
+              "path": "/finder/getting-started/testing",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "index",
               "path": "/finder/",
               "sidebar": "tutorialSidebar"
@@ -138,66 +208,6 @@
             {
               "id": "rules/sort-by-rule",
               "path": "/finder/rules/sort-by-rule",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/component",
-              "path": "/finder/tutorial/basic-usage/component",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/controls",
-              "path": "/finder/tutorial/basic-usage/controls",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/filters",
-              "path": "/finder/tutorial/basic-usage/filters",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/index",
-              "path": "/finder/tutorial/basic-usage/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/result",
-              "path": "/finder/tutorial/basic-usage/result",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/search",
-              "path": "/finder/tutorial/basic-usage/search",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/basic-usage/sort-by",
-              "path": "/finder/tutorial/basic-usage/sort-by",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/context",
-              "path": "/finder/tutorial/context",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/effects",
-              "path": "/finder/tutorial/effects",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/index",
-              "path": "/finder/tutorial/",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/pagination",
-              "path": "/finder/tutorial/pagination",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "tutorial/testing",
-              "path": "/finder/tutorial/testing",
               "sidebar": "tutorialSidebar"
             }
           ],

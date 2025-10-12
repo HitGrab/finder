@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/context/index",
+  "title": "Injecting Context",
+  "description": "Often, you'll need Finder to be aware of external context.",
+  "source": "@site/docs/getting-started/context/index.md",
+  "sourceDirName": "getting-started/context",
+  "slug": "/getting-started/context/",
+  "permalink": "/finder/getting-started/context/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/getting-started/basic-usage/result"
+  },
+  "next": {
+    "title": "Dependent Rules",
+    "permalink": "/finder/getting-started/context/context-rules"
+  }
+}

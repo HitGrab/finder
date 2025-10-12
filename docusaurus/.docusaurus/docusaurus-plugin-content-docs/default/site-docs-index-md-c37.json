@@ -1,7 +1,7 @@
 {
   "id": "index",
   "title": "Finder",
-  "description": "Why use Finder?",
+  "description": "Example banner",
   "source": "@site/docs/index.md",
   "sourceDirName": ".",
   "slug": "/",
@@ -17,7 +17,7 @@
   },
   "sidebar": "tutorialSidebar",
   "next": {
-    "title": "Tutorials",
-    "permalink": "/finder/tutorial/"
+    "title": "Getting Started",
+    "permalink": "/finder/getting-started/"
   }
 }

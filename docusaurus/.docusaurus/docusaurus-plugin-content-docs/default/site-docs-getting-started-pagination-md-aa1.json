@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/pagination",
+  "title": "Paginating Matches",
+  "description": "Coming soon! For now, check out the Pagination API.",
+  "source": "@site/docs/getting-started/pagination.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/pagination",
+  "permalink": "/finder/getting-started/pagination",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Coupling Rules with Effects",
+    "permalink": "/finder/getting-started/effects"
+  },
+  "next": {
+    "title": "Pre-Testing Matches",
+    "permalink": "/finder/getting-started/testing"
+  }
+}

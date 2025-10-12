@@ -1,75 +1,9 @@
-import { filterRule, Finder, FinderContentItemProps, finderRuleset, searchRule, sortByRule, useFinder } from "@hitgrab/finder";
-import { ApartmentListing } from "./apartment-listing-example-types";
-import { useApartmentListings } from "./apartment-listing-example-logic";
-import { useState, useCallback } from "react";
+import { Finder, FinderContentItemProps, useFinder } from "@hitgrab/finder";
 
-const ruleset = finderRuleset<ApartmentListing>([
-    searchRule<ApartmentListing>({
-        searchFn: (listing) => {
-            if (listing.name) {
-                return [
-                    listing.name, // Cool Manor
-                    listing.address.street_address, // 111 Cool St
-                ];
-            }
-            return listing.address.street_address;
-        },
-    }),
-    filterRule<ApartmentListing>({
-        id: "is_available_immediately",
-        filterFn: (listing) => listing.is_available_immediately,
-        boolean: true,
-        label: "Available Immediately",
-    }),
-    filterRule<ApartmentListing, [min: number, max: number]>({
-        id: "price",
-        filterFn: (listing, value) => {
-            const [min, max] = value;
-            return listing.price >= min && listing.price <= max;
-        },
-        options: [
-            {
-                label: "under 1k",
-                value: [0, 1000],
-            },
-            {
-                label: "1k-2k",
-                value: [1000, 2000],
-            },
-            {
-                label: "2k+",
-                value: [2000, Infinity],
-            },
-        ],
-    }),
-    filterRule<ApartmentListing, number>({
-        id: "num_bedrooms_filter",
-        filterFn: (listing, value) => value.includes(listing.num_bedrooms),
-        options: ({ items }) => {
-            const allNumBedrooms = items.map((listing) => listing.num_bedrooms);
-            const uniqueNumBedrooms = new Set(allNumBedrooms);
-            const sortedUniqueNumBedrooms = Array.from(uniqueNumBedrooms).sort();
-            return sortedUniqueNumBedrooms.map((numBedrooms) => {
-                return {
-                    label: `${numBedrooms} Bedrooms`,
-                    value: numBedrooms,
-                };
-            });
-        },
-        multiple: true,
-    }),
-    sortByRule<ApartmentListing>({
-        id: "sort_by_price",
-        label: "Price",
-        sortFn: (listing) => listing.price,
-    }),
-    sortByRule<ApartmentListing>({
-        id: "sort_by_num_bedrooms",
-        label: "Number of Bedrooms",
-        sortFn: (listing) => listing.num_bedrooms,
-        defaultSortDirection: "desc",
-    }),
-]);
+import { useState, useCallback } from "react";
+import { ruleset } from "./apartment-listing-ruleset";
+import { ApartmentListing } from "./apartment-listing-types";
+import { useApartmentListings } from "./use-apartment-listings";
 
 export function ApartmentListingExample() {
     const data = useApartmentListings();
@@ -98,21 +32,23 @@ export function ApartmentListingExample() {
                         </fieldset>
                     </div>
                     <div className="col col--9">
-                        <Finder.Content>
-                            {{
-                                // Displayed while Finder's isLoading property is true.
-                                loading: "Loading...",
+                        <div className="listingContainer">
+                            <Finder.Content>
+                                {{
+                                    // Displayed while Finder's isLoading property is true.
+                                    loading: "Loading...",
 
-                                // Finder received an empty items array.
-                                empty: "No listings found.",
+                                    // Finder received an empty items array.
+                                    empty: "No listings found.",
 
-                                // No items were found that matched the current rules.
-                                noMatches: "No results found.",
+                                    // No items were found that matched the current rules.
+                                    noMatches: "No results found.",
 
-                                // The items parameter will receive the matches that have been searched, filtered, and sorted.
-                                items: ApartmentListingExampleItems,
-                            }}
-                        </Finder.Content>
+                                    // The items parameter will receive the matches that have been searched, filtered, and sorted.
+                                    items: ItemListing,
+                                }}
+                            </Finder.Content>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,34 +56,26 @@ export function ApartmentListingExample() {
     );
 }
 
-function ApartmentListingExampleItems({ items }: FinderContentItemProps<ApartmentListing>) {
-    return (
-        <div className="listingContainer">
-            {items.map((listing) => (
-                <Listing listing={listing} key={listing.id} />
-            ))}
-        </div>
-    );
-}
-
-function Listing({ listing }: { listing: ApartmentListing }) {
-    return (
-        <div className="listing">
-            <div className="listing__header">
-                <b>
-                    <Finder.SearchTermHaystack>{listing.name}</Finder.SearchTermHaystack>
-                </b>
-                <br />${new Intl.NumberFormat().format(listing.price)}
+function ItemListing({ items }: FinderContentItemProps<ApartmentListing>) {
+    return items.map((listing) => {
+        return (
+            <div className="listing" key={listing.id}>
+                <div className="listing__header">
+                    <b>
+                        <Finder.SearchTermHaystack>{listing.name}</Finder.SearchTermHaystack>
+                    </b>
+                    <br />${new Intl.NumberFormat().format(listing.price)}
+                </div>
+                <div className="listing__content">
+                    <Finder.SearchTermHaystack>{listing.address.street_address}</Finder.SearchTermHaystack>
+                    <br />
+                    {listing.num_bedrooms} bedroom(s)
+                    <br />
+                    {listing.is_available_immediately ? "✅" : "❌"} Available immediately
+                </div>
             </div>
-            <div className="listing__content">
-                <Finder.SearchTermHaystack>{listing.address.street_address}</Finder.SearchTermHaystack>
-                <br />
-                {listing.num_bedrooms} bedroom(s)
-                <br />
-                {listing.is_available_immediately ? "✅" : "❌"} Available immediately
-            </div>
-        </div>
-    );
+        );
+    });
 }
 
 function SearchControl() {
@@ -246,7 +174,6 @@ function MultipleFilterControl({ ruleId }: MultipleFilterControlProps) {
 
 function RadioSortBy() {
     const finder = useFinder();
-
     return (
         <ul>
             {finder.sortBy.rules.map((rule) => {

@@ -16,7 +16,7 @@ interface FinderProps<FItem, FContext> {
     rules: FinderRule<FItem>[];
 
     // optional side effects triggered when certain coupled rules change
-    effects?: RuleEffects[];
+    effects?: (RuleEffects | SearchEffects)[];
 
     // any state or methods that needs to be injected from your React app.
     // Context will be passed to all rules, as well as all FinderContent components.

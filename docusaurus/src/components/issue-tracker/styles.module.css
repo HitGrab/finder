@@ -1,0 +1,40 @@
+.container {
+    font-family: monospace;
+    padding: 10px;
+    border: 1px solid #333;
+    background: repeating-linear-gradient(-45deg, #eee5 0 4px, transparent 4px 8px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        button {
+            padding: 10px 20px;
+        }
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        button {
+            all: unset;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+
+            &[data-is-selected="true"] {
+                font-weight: bold;
+            }
+
+            &:hover {
+                outline: 1px dashed #333;
+            }
+        }
+    }
+}

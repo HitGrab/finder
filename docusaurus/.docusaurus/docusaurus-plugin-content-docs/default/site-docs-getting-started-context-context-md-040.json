@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/context/context",
+  "title": "Injecting Context",
+  "description": "You may need Finder's rules or render props to be aware of external context.",
+  "source": "@site/docs/getting-started/context/context.md",
+  "sourceDirName": "getting-started/context",
+  "slug": "/getting-started/context/",
+  "permalink": "/finder/getting-started/context/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/getting-started/basic-usage/result"
+  },
+  "next": {
+    "title": "Coupling Rules with Effects",
+    "permalink": "/finder/getting-started/effects"
+  }
+}

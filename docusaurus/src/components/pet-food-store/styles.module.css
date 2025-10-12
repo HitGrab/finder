@@ -1,0 +1,42 @@
+.container {
+    border: 1px solid #333;
+    padding: 10px;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+}
+
+.list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.item {
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    background-color: #d2ffdc;
+    transition: all 0.5s ease-out;
+
+    &[data-group-id="too-expensive"] {
+        background-color: #ffe6eb;
+        .image {
+            filter: grayscale(1);
+        }
+    }
+    &:not([data-group-id="too-expensive"]):hover {
+        scale: 1.1;
+        transition-duration: 0.1s;
+        cursor: pointer;
+    }
+}
+.image {
+    image-rendering: pixelated;
+    aspect-ratio: 1/1;
+    background-size: 100%;
+    width: 50px;
+    background-position-y: calc(mod(var(--image-index), 32) * 100% / 31);
+}

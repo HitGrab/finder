@@ -6,17 +6,17 @@
     },
     "content": "393be207"
   },
-  "/finder/-f1b": {
+  "/finder/-acf": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/finder/-afc": {
+  "/finder/-67d": {
     "__comp": "a7bd4aaa",
     "__props": "1994f6cc"
   },
-  "/finder/-d1d": {
+  "/finder/-138": {
     "__comp": "a94703ab"
   },
   "/finder/api/-2a4": {
@@ -83,6 +83,62 @@
     "__comp": "17896441",
     "content": "bf614533"
   },
+  "/finder/getting-started/-bea": {
+    "__comp": "17896441",
+    "content": "54c82979"
+  },
+  "/finder/getting-started/basic-usage/-7bd": {
+    "__comp": "17896441",
+    "content": "b32389a5"
+  },
+  "/finder/getting-started/basic-usage/component-864": {
+    "__comp": "17896441",
+    "content": "f0bdd776"
+  },
+  "/finder/getting-started/basic-usage/controls-a8c": {
+    "__comp": "17896441",
+    "content": "6a4f3065"
+  },
+  "/finder/getting-started/basic-usage/filters-e45": {
+    "__comp": "17896441",
+    "content": "b588fe56"
+  },
+  "/finder/getting-started/basic-usage/result-5ea": {
+    "__comp": "17896441",
+    "content": "d2175c93"
+  },
+  "/finder/getting-started/basic-usage/search-0b1": {
+    "__comp": "17896441",
+    "content": "77378bd2"
+  },
+  "/finder/getting-started/basic-usage/sort-by-9ac": {
+    "__comp": "17896441",
+    "content": "59c1b485"
+  },
+  "/finder/getting-started/context/-911": {
+    "__comp": "17896441",
+    "content": "7ab436ff"
+  },
+  "/finder/getting-started/context/context-rules-a1b": {
+    "__comp": "17896441",
+    "content": "d2f0699c"
+  },
+  "/finder/getting-started/context/injecting-state-84f": {
+    "__comp": "17896441",
+    "content": "7544a1d5"
+  },
+  "/finder/getting-started/effects-06e": {
+    "__comp": "17896441",
+    "content": "8f6bc936"
+  },
+  "/finder/getting-started/pagination-600": {
+    "__comp": "17896441",
+    "content": "aa14f89c"
+  },
+  "/finder/getting-started/testing-33e": {
+    "__comp": "17896441",
+    "content": "7c31b598"
+  },
   "/finder/rules/-280": {
     "__comp": "17896441",
     "content": "eb96bcc6"
@@ -118,54 +174,6 @@
   "/finder/rules/sort-by-rule-614": {
     "__comp": "17896441",
     "content": "c7f97675"
-  },
-  "/finder/tutorial/-02c": {
-    "__comp": "17896441",
-    "content": "383d31c1"
-  },
-  "/finder/tutorial/basic-usage/-1ab": {
-    "__comp": "17896441",
-    "content": "c8636784"
-  },
-  "/finder/tutorial/basic-usage/component-d93": {
-    "__comp": "17896441",
-    "content": "f15d6924"
-  },
-  "/finder/tutorial/basic-usage/controls-c2a": {
-    "__comp": "17896441",
-    "content": "e5537422"
-  },
-  "/finder/tutorial/basic-usage/filters-f95": {
-    "__comp": "17896441",
-    "content": "876e7fb3"
-  },
-  "/finder/tutorial/basic-usage/result-a60": {
-    "__comp": "17896441",
-    "content": "1ef9dc3f"
-  },
-  "/finder/tutorial/basic-usage/search-d74": {
-    "__comp": "17896441",
-    "content": "b009dddf"
-  },
-  "/finder/tutorial/basic-usage/sort-by-1e8": {
-    "__comp": "17896441",
-    "content": "3450844d"
-  },
-  "/finder/tutorial/context-e86": {
-    "__comp": "17896441",
-    "content": "75653ef9"
-  },
-  "/finder/tutorial/effects-127": {
-    "__comp": "17896441",
-    "content": "6cb8c971"
-  },
-  "/finder/tutorial/pagination-ac4": {
-    "__comp": "17896441",
-    "content": "688b87d4"
-  },
-  "/finder/tutorial/testing-658": {
-    "__comp": "17896441",
-    "content": "ad27baa0"
   },
   "/finder/-8bd": {
     "__comp": "17896441",

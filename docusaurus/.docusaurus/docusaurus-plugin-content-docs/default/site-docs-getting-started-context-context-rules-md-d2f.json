@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/context/context-rules",
+  "title": "Dependent Rules",
+  "description": "User story:",
+  "source": "@site/docs/getting-started/context/context-rules.md",
+  "sourceDirName": "getting-started/context",
+  "slug": "/getting-started/context/context-rules",
+  "permalink": "/finder/getting-started/context/context-rules",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Injecting Context",
+    "permalink": "/finder/getting-started/context/"
+  },
+  "next": {
+    "title": "Dependent Finder.Content components",
+    "permalink": "/finder/getting-started/context/injecting-state"
+  }
+}

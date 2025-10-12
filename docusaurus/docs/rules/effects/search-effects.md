@@ -12,18 +12,14 @@ searchEffects are triggered when the user searches for certain terms.
 **Type Signature**
 
 ```ts
-ruleEffect(
+searchEffect(
     haystack: string | string[]
     | ((items: FItem[], context: FContext) => string | string[]),
     callback: (instance:FinderCore) => void),
-    exact: boolean
 ```
 
-:::tip Exact matches ( true by default )
-An exact sequential string match is required somewhere within the haystack.
-For example, the searchTerm "apple" would match "basket of APPLES" but not "happy oranges, please."
-
-If false, "apple" would match "hAPPy oranges, pLEase."
+:::tip Exact string matching
+SearchEffects use the same matching algorithm as searchRules. If you want to match an exact string, you can wrap it in quotation marks.
 :::
 
 **Example Usage**
