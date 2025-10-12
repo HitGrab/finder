@@ -29,6 +29,9 @@
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
+/**
+* This global CSS is awful, but it's just for demonstration purposes.
+**/
 .listContainer {
     border: 1px solid #333;
     font-size: 11px;
@@ -75,6 +78,91 @@
             font-weight: bold;
         }
     }
+
+    .listContainer__content:has(.listContainer__itemWithImage) {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        height: 250px;
+    }
+    .listContainer__itemWithImage {
+        display: flex;
+        border: 1px solid #ccc;
+        padding: 5px;
+
+        .listContainer__image {
+            display: block;
+            image-rendering: pixelated;
+            position: relative;
+
+            &.listContainer__image--shoe {
+                width: 30%;
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+                background-size: 100%;
+                aspect-ratio: 100 / 64;
+            }
+            &.listContainer__image--bird {
+                aspect-ratio: 1/1;
+                background-size: 400%;
+                width: 50px;
+                background-position-x: calc(mod(var(--image-index), 4) * 33.3%);
+                background-position-y: calc(mod(var(--image-index), 37) * 100% / 37);
+            }
+            &.listContainer__image--car {
+                aspect-ratio: 2/1;
+                background-size: 100%;
+                width: 100px;
+                background-position-y: calc(mod(var(--image-index), 10) * 100% / 10);
+            }
+        }
+        span {
+            font-weight: bold;
+        }
+    }
+
+    .listContainer__itemWithImage.listContainer__image--fruit {
+        display: grid;
+        grid-template-columns: 1fr min-content;
+        justify-content: space-between;
+        align-content: center;
+        gap: 10px;
+
+        > div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .listContainer__image {
+            aspect-ratio: 1/1;
+            background-size: 3800%;
+            width: 50px;
+            background-position-x: calc(mod(var(--image-index), 4) * 100% / 37);
+            background-position-y: calc(mod(var(--image-index), 37) * 100% / 5);
+        }
+    }
+
+    .listContainer__itemGroup {
+        margin-bottom: 10px;
+
+        .listContainer__itemGroupLabel {
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+            margin-bottom: 5px;
+        }
+
+        .listContainer__itemGroupContent {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+    }
+}
+.listContainer__credits {
+    font-style: italic;
+    font-size: 12px;
+    word-wrap: anywhere;
 }
 
 .rule {

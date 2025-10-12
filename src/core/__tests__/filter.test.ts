@@ -580,19 +580,19 @@ describe("Filters", () => {
             const finder = new FinderCore(objectItems, { rules });
 
             // test a filter without setting the state
-            const testResult = finder.filters.testRuleOptions({ rule: filter });
+            const testResult = finder.filters.testRuleOptions(filter);
             expect(testResult.get(optionOne)?.length).toBe(1);
             expect(testResult.get(optionTwo)?.length).toBe(2);
             expect(testResult.get(optionThree)?.length).toBe(3);
 
             // test multiple filter
-            const multipleTestResult = finder.filters.testRuleOptions({ rule: multipleFilter });
+            const multipleTestResult = finder.filters.testRuleOptions(multipleFilter);
             expect(multipleTestResult.get(optionOne)?.length).toBe(1);
             expect(multipleTestResult.get(optionTwo)?.length).toBe(2);
             expect(multipleTestResult.get(optionThree)?.length).toBe(3);
 
             // test boolean filter
-            const booleanTestResult = finder.filters.testRuleOptions({ rule: booleanFilter });
+            const booleanTestResult = finder.filters.testRuleOptions(booleanFilter);
             expect(booleanTestResult.get(true)?.length).toBe(2);
             expect(booleanTestResult.get(false)?.length).toBe(3);
 

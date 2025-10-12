@@ -1,4 +1,4 @@
-import { FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "./types/rule-types";
+import { FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, HydratedFilterRule } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
@@ -19,7 +19,7 @@ declare class FiltersMixin {
     toggle(identifier: FilterRuleIdentifier, optionValue?: any): void;
     test(options: FilterTestOptions): any[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): any[];
-    testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions): Map<any, any>;
+    testRuleOptions(identifier: FilterRuleIdentifier, isAdditive?: boolean): Map<any, any>;
     get values(): Record<string, any>;
     get raw(): Record<string, any>;
     serialize(): SerializedFiltersMixin;

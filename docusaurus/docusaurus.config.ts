@@ -8,6 +8,7 @@ const config: Config = {
     title: "Finder",
     tagline: "Headless datatable management for things that aren't tables.",
     favicon: "img/favicon.ico",
+    staticDirectories: ["static"],
 
     // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
     future: {

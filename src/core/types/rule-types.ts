@@ -119,10 +119,3 @@ export interface FilterTestRuleOptions {
     value: any;
     isAdditive?: boolean;
 }
-
-// TODO: Maybe rename this
-export interface FilterTestRuleOptionsOptions {
-    rule: string | FilterRuleUnion | HydratedFilterRule;
-    isAdditive?: boolean;
-    mergeExistingValue?: boolean;
-}

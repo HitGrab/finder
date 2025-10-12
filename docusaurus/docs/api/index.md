@@ -110,7 +110,7 @@ FinderCore<FItem, FContext> {
         testRule(options: { rule?: FilterRule; value?: any; context: FContext; isAdditive?: boolean;})
 
         // Test every option in a filter against the items array. Useful for building input controls.
-        testRuleOptions(options: { rules: FilterRule; value?: any; context: FContext; isAdditive?: boolean;})
+        testRuleOptions(rule: string | FilterRule; isAdditive?: boolean;})
     }
 
     sortBy: {

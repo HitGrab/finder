@@ -1,5 +1,5 @@
 import { isHydratedFilterRule } from "./utils/rule-utils";
-import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, FilterTestRuleOptionsOptions, HydratedFilterRule } from "./types/rule-types";
+import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, HydratedFilterRule } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
@@ -133,7 +133,7 @@ class FiltersMixin {
         });
     }
 
-    testRuleOptions({ rule: identifier, ...options }: FilterTestRuleOptionsOptions) {
+    testRuleOptions(identifier: FilterRuleIdentifier, isAdditive?: boolean) {
         // If no data is available, we cannot perform any tests.
         if (this.#deps.isLoading()) {
             return new Map();
@@ -143,8 +143,8 @@ class FiltersMixin {
 
         if (rule.boolean === true) {
             const resultMap = new Map<FilterOption | boolean, any[]>();
-            resultMap.set(true, this.testRule({ rule, value: true, ...options }));
-            resultMap.set(false, this.testRule({ rule, value: false, ...options }));
+            resultMap.set(true, this.testRule({ rule, value: true }));
+            resultMap.set(false, this.testRule({ rule, value: false }));
             return resultMap;
         }
 
@@ -152,21 +152,14 @@ class FiltersMixin {
             const resultMap = new Map<FilterOption | boolean, any[]>();
             rule.options.forEach((option) => {
                 let transformedOptionValue;
-                if (options.mergeExistingValue) {
-                    // use raw value, not calculated value
-                    const initialValue = this.#rawValues[rule.id] ?? [];
 
-                    if (rule.multiple) {
-                        transformedOptionValue = [...initialValue, option.value];
-                    }
+                if (rule.multiple) {
+                    transformedOptionValue = [option.value];
                 } else {
-                    if (rule.multiple) {
-                        transformedOptionValue = [option.value];
-                    } else {
-                        transformedOptionValue = option.value;
-                    }
+                    transformedOptionValue = option.value;
                 }
-                resultMap.set(option, this.testRule({ rule: rule, value: transformedOptionValue, ...options }));
+
+                resultMap.set(option, this.testRule({ rule: rule, value: transformedOptionValue, isAdditive }));
             });
             return resultMap;
         }

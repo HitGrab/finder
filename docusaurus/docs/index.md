@@ -6,6 +6,10 @@ sidebar_position: 0
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { SearchExample } from '/src/components/search-example/search-example';
+import { SearchExampleWithIcons } from '/src/components/search-example/search-example-with-icons';
+import { FilterExample } from '/src/components/filter-example/filter-example';
+import { SortByExample } from '/src/components/sort-by-example/sort-by-example';
+import { GroupByExample } from '/src/components/group-by-example/group-by-example';
 
 # Finder
 
@@ -37,75 +41,104 @@ Extract a string ( or strings ) from your item to search against. Rank searches 
 
 **Headless**
 
-Finder provides an API for managing rules and displaying matches. It doesn't have any opinions on how that should be rendered.
+Finder provides an API for managing rules and displaying matches. It doesn't have any opinions on how results or controls should be rendered.
 
 **Rule Examples**
 
 <Tabs>
   <TabItem value="shoes" label="Search shoes" default>
-    ```ts
-    interface Shoe {
-        product {
-            name: string;
-        }
-        image_set: string[];
-        brand: string;
+  <div class="container padding-left--none padding-right--none">
+  <div class="row">
+    <div class="col col--8">
+```ts
+interface Shoe {
+    product {
+        name: string;
     }
+    image: string;
+}
 
-    // use searchRules to tell Finder which string - or strings! - to compare against your searchterm.
-    const rule = searchRule<Shoe>({
-        searchFn: (item) => item.product.name
-    })
+const rule = searchRule<Shoe>({
+searchFn: (item) => item.product.name
+})
 
-    return <Finder items={shoes} rules={[rule]} />
-    ```
+return <Finder items={shoes} rules={[rule]} />
+
+````
+    </div>
+    <div class="col col--4">
+    <SearchExampleWithIcons />
+    </div>
+    </div>
+
+</div>
 
 </TabItem>
 <TabItem value="birds" label="Filter birds">
-    ```ts
-    interface Avian {
-        name: string;
-        order: string;
-        superorder: string;
-        territory: string;
-        is_greater_sage_grouse: boolean;
-    }
+<div class="container padding-left--none padding-right--none">
+    <div class="row">
+        <div class="col col--8">
+            ```ts
+            interface Avian {
+                name: string;
+                territory: string;
+            }
 
-    // filterRules are static predicates. Let Finder worry about the state!
-    const rule = filterRule<Avian>({
-        filterFn: (birb, value) => birb.territory.includes(value)
-        multiple: true
-    })
+            const rule = filterRule<Avian>({
+                id: 'territory_filter',
+                filterFn: (birb, value) => birb.territory === value;
+            })
 
-    return <Finder items={birds} rules={[rule]} />
-    ```
+            return <Finder items={birds} rules={[rule]} />
+            ```
+        </div>
+        <div class="col col--4">
+            <FilterExample />
+        </div>
+    </div>
+
+</div>
 
 </TabItem>
 <TabItem value="fruits" label="Sort fruits">
+<div class="container padding-left--none padding-right--none">
+    <div class="row">
+        <div class="col col--8">
     ```ts
     interface Fruit {
         name: string;
         price: number;
-        sku: string;
-        expiry_date: string;
+        expiry_date: Date;
     }
 
-    // sortByRules define how to order an item list
-    const expiryDateRule = sortByRule<Fruit>({
-        sortFn: (fruit) => fruit.expiry_date,
-        label: "Expiry Date",
-        defaultSortOrder: 'desc'
-    })
-    const priceRule = sortByRule<Fruit>({
-        sortFn: (fruit) => fruit.price,
-        lbel: "Price lowest to highest"
-    })
+    const ruleset = [
+        sortByRule<Fruit>({
+            id: 'expiry_date',
+            sortFn: (fruit) => fruit.expiry_date.getTime(),
+            label: "Expires soon",
+            defaultSortDirection: 'desc'
+        }),
+        sortByRule<Fruit>({
+            id: 'price',
+            sortFn: (fruit) => fruit.price,
+            label: "Price lowest to highest"
+        }
+    ]);
 
-    return <Finder items={fruits} rules={[priceRule]} />
+    return <Finder items={fruits} rules={ruleset} />
     ```
+    </div>
+        <div class="col col--4">
+            <SortByExample />
+        </div>
+    </div>
+</div>
 
 </TabItem>
 <TabItem value="cars" label="Group cars">
+<div class="container padding-left--none padding-right--none">
+    <div class="row">
+        <div class="col col--8">
     ```ts
     interface Vehicle {
         name: string;
@@ -114,23 +147,27 @@ Finder provides an API for managing rules and displaying matches. It doesn't hav
         melts_in_rain: boolean;
     }
 
-    // groupByRules group items by a common value.
-    // Searches, filters, and pagination are still applied.
     const rule = groupByRule<Vehicle>({
+        id: 'group_by_make',
         groupFn: (car) => car.make,
-        label: "Manufacturer",
+        label: "Make",
 
         // want to sticky certain groups to the top or bottom of the list?
         // Use the sticky prop to weight them.
         sticky: {
-            header: ['Honda', 'Ford']
-            footer: 'Less cool cars'
+            header: ['Honda'],
+            footer: 'Tesla'
         }
     })
 
-    return <Finder items={vehicles} rules={[rule]} />
+    return <Finder items={vehicles} rules={[rule]} requireGroup={true} />
     ```
-
+</div>
+        <div class="col col--4">
+            <GroupByExample />
+        </div>
+    </div>
+</div>
 </TabItem>
 </Tabs>
 
@@ -142,3 +179,4 @@ Filtering and sorting data is the easiest thing in the world, and a disproportio
 
 Without good discipline and planning, data manipulation can become a tech debt quagmire. Finder is intended to make data manipulation easy, fast, and re-usable.
 :::
+````

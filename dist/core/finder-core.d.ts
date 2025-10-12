@@ -48,7 +48,7 @@ declare class FinderCore<FItem = any, FContext = any> {
         delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
-        testRuleOptions: ({ rule: identifier, ...options }: import("./types/rule-types").FilterTestRuleOptionsOptions) => Map<any, any>;
+        testRuleOptions: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, isAdditive?: boolean) => Map<any, any>;
     };
     get sortBy(): {
         activeRule: import("..").SortByRule<unknown, any> | undefined;
