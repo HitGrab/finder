@@ -93,6 +93,5 @@ export interface FilterTestRuleOptions {
 export interface FilterTestRuleOptionsOptions {
     rule: string | FilterRuleUnion | HydratedFilterRule;
     isAdditive?: boolean;
-    mergeExistingValue?: boolean;
 }
 export {};

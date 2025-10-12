@@ -9,7 +9,7 @@
     "license": "ISC",
     "private": true,
     "dependencies": {
-        "@hitgrab/finder": "0.1.3-alpha",
+        "@hitgrab/finder": "0.1.12-alpha",
         "lodash": "^4.17.21",
         "react": "^19.1.0",
         "react-dom": "^19.1.0"

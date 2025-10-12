@@ -7,6 +7,9 @@ export default {
   "title": "Finder",
   "tagline": "Headless datatable management for things that aren't tables.",
   "favicon": "img/favicon.ico",
+  "staticDirectories": [
+    "static"
+  ],
   "future": {
     "v4": {
       "removeLegacyPostBuildHeadAttribute": true,
@@ -344,9 +347,6 @@ export default {
   "baseUrlIssueBanner": true,
   "onBrokenAnchors": "warn",
   "onDuplicateRoutes": "warn",
-  "staticDirectories": [
-    "static"
-  ],
   "customFields": {},
   "plugins": [],
   "scripts": [],

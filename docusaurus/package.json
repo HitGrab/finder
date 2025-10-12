@@ -18,7 +18,7 @@
         "@docusaurus/core": "^3.9.1",
         "@docusaurus/preset-classic": "^3.9.1",
         "@docusaurus/theme-mermaid": "^3.9.1",
-        "@hitgrab/finder": "^0.1.9-alpha",
+        "@hitgrab/finder": "^0.1.12-alpha",
         "@mdx-js/react": "^3.0.0",
         "clsx": "^2.0.0",
         "lodash": "^4.17.21",
