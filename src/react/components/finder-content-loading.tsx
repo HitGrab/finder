@@ -1,9 +1,9 @@
 import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 
 interface FinderContentLoadingProps<FItem, FContext> {
-    children: ElementType<FinderContentProps<FItem, FContext>["loading"]>;
+    children: ElementType<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
 }
 function FinderContentLoading<FItem, FContext>({ children: Component }: FinderContentLoadingProps<FItem, FContext>) {
     const finder = useFinder();

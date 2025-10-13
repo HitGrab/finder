@@ -1,9 +1,9 @@
 import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
-import { ElementType } from "react";
+import { ElementType, ReactNode } from "react";
 
 interface FinderContentNoMatchesProps<FItem, FContext> {
-    children: ElementType<FinderContentProps<FItem, FContext>["loading"]>;
+    children: ElementType<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
 }
 function FinderContentNoMatches<FItem = any, FContext = any>({ children: Component }: FinderContentNoMatchesProps<FItem, FContext>) {
     const finder = useFinder();

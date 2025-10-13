@@ -1,4 +1,4 @@
-import { Finder, searchEffect } from "@hitgrab/finder";
+import { Finder, FinderContentProps } from "@hitgrab/finder";
 import "./global.css";
 import { range } from "lodash";
 import { ShoeCard, ShoeCardSkeleton } from "./components/shoe-card";
@@ -76,11 +76,7 @@ function App() {
                                 loading: range(0, 12).map((index) => <ShoeCardSkeleton key={index} />),
                                 empty: "No items in list",
                                 noMatches: "No matches found.",
-                                items: ({ items }) => {
-                                    return items.map((item: Shoe) => {
-                                        return <ShoeCard item={item} key={item.sku} />;
-                                    });
-                                },
+                                items: Items,
                             }}
                         </Finder.Content>
                     </section>
@@ -90,6 +86,12 @@ function App() {
             </div>
         </Finder>
     );
+}
+
+function Items({ items }: FinderContentProps<Shoe>["items"]) {
+    return items.map((item) => {
+        return <ShoeCard item={item} key={item.sku} />;
+    });
 }
 
 export { App };

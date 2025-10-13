@@ -33,15 +33,15 @@ function ShoeCard({ item }: ShoeCardProps) {
             </div>
             <div className="controls">
                 {item.in_stock ? (
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-                    <label
+                    <button
+                        type="button"
                         aria-label="Toggle"
                         onClick={() => {
                             finder.context.toggle(item);
                         }}
                     >
                         <input type="checkbox" checked={isSelected} readOnly={true} /> Selected
-                    </label>
+                    </button>
                 ) : (
                     <label>
                         <input type="checkbox" checked={isSelected} readOnly={true} disabled={true} /> Out of Stock

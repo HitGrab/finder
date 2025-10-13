@@ -6,7 +6,7 @@ function InStockFilterControls() {
 
     return (
         <label onChange={() => finder.filters.toggle("in_stock")}>
-            <input type="checkbox" checked={ruleValue} readOnly /> Only in-stock items
+            <input type="checkbox" checked={ruleValue} readOnly={true} /> Only in-stock items
         </label>
     );
 }
