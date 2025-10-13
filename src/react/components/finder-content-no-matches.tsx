@@ -1,14 +1,15 @@
-import { FinderContentRenderProp } from "../types/react-types";
+import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
+import { ElementType } from "react";
 
-interface FinderContentNoMatchesProps {
-    children: FinderContentRenderProp;
+interface FinderContentNoMatchesProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["loading"]>;
 }
-function FinderContentNoMatches({ children: Component }: FinderContentNoMatchesProps) {
+function FinderContentNoMatches<FItem = any, FContext = any>({ children: Component }: FinderContentNoMatchesProps<FItem, FContext>) {
     const finder = useFinder();
     if (finder.isEmpty === false && finder.hasMatches === false) {
         if (typeof Component === "function") {
-            return <Component pagination={finder.pagination} context={finder.context} />;
+            return <Component pagination={finder.pagination} context={finder.context as FContext} />;
         }
 
         return Component;

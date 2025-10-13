@@ -15,7 +15,7 @@ import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerialized
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
 import { FinderRule } from "./types/rule-types";
 
-class FinderCoreImplementation<FItem, FContext> {
+class FinderCoreImplementation<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
     isReady = false;

@@ -8,7 +8,7 @@ import { FinderRule } from "./types/rule-types";
 class FinderCore<FItem = any, FContext = any> {
     #finder: FinderCoreImplementation<FItem, FContext>;
 
-    constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem>) {
+    constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem, FContext>) {
         const getInstance = () => this;
         this.#finder = new FinderCoreImplementation(items, options, getInstance);
     }
@@ -63,6 +63,7 @@ class FinderCore<FItem = any, FContext = any> {
     get search() {
         const mixin = this.#finder.search;
         return {
+            rule: mixin.rule,
             searchTerm: mixin.searchTerm,
             hasSearchTerm: mixin.hasSearchTerm,
             hasSearchRule: mixin.hasSearchRule,

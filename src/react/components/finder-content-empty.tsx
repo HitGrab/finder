@@ -1,14 +1,15 @@
-import { FinderContentRenderProp } from "../types/react-types";
+import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
+import { ElementType } from "react";
 
-interface FinderContentEmptyProps {
-    children: FinderContentRenderProp;
+interface FinderContentEmptyProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["empty"]>;
 }
-function FinderContentEmpty({ children: Component }: FinderContentEmptyProps) {
+function FinderContentEmpty<FItem = any, FContext = any>({ children: Component }: FinderContentEmptyProps<FItem, FContext>) {
     const finder = useFinder();
     if (finder.isEmpty) {
         if (typeof Component === "function") {
-            return <Component pagination={finder.pagination} context={finder.context} />;
+            return <Component pagination={finder.pagination} context={finder.context as FContext} />;
         }
 
         return Component;

@@ -1,15 +1,15 @@
 import { ElementType } from "react";
-import { FinderContentItemProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
+import { FinderContentProps } from "../types/react-types";
 
-interface FinderContentItemsProps<FItem = any> {
-    children: ElementType<FinderContentItemProps<FItem>>;
+interface FinderContentItemsProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["items"]>;
 }
-function FinderContentItems<FItem>({ children: Component }: FinderContentItemsProps<FItem>) {
+function FinderContentItems<FItem = any, FContext = any>({ children: Component }: FinderContentItemsProps<FItem, FContext>) {
     const finder = useFinder();
     if (finder.hasMatches && finder.matches.items) {
         if (typeof Component === "function") {
-            return <Component items={finder.matches.items} pagination={finder.pagination} context={finder.context} />;
+            return <Component items={finder.matches.items} pagination={finder.pagination} context={finder.context as FContext} />;
         }
         return Component;
     }

@@ -2,7 +2,7 @@
  * React-specific types for creating consumer components.
  */
 
-import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
+import { ElementType, PropsWithChildren, RefObject } from "react";
 import { FinderConstructorOptions, FinderResultGroup, PaginationMixinInterface } from "../../core/types/core-types";
 import { StringMatchSegment } from "../../core/types/string-match-types";
 import { FinderCore } from "../../core/finder-core";
@@ -12,18 +12,30 @@ export interface FinderProps<FItem, FContext> extends FinderConstructorOptions<F
     controllerRef?: RefObject<FinderCore<FItem, FContext> | null>;
 }
 
-export interface FinderContentProps<FContext = any> {
-    pagination: PaginationMixinInterface;
-    context: FContext;
+export interface FinderContentProps<FItem = any, FContext = any> {
+    empty: {
+        pagination: PaginationMixinInterface;
+        context: FContext;
+    };
+    loading: {
+        pagination: PaginationMixinInterface;
+        context: FContext;
+    };
+    noMatches: {
+        pagination: PaginationMixinInterface;
+        context: FContext;
+    };
+    items: {
+        items: FItem[];
+        pagination: PaginationMixinInterface;
+        context: FContext;
+    };
+    groups: {
+        groups: FinderResultGroup<FItem>[];
+        pagination: PaginationMixinInterface;
+        context: FContext;
+    };
 }
-export interface FinderContentItemProps<FItem, FContext = any> extends FinderContentProps<FContext> {
-    items: FItem[];
-}
-export interface FinderContentGroupProps<FItem, FContext = any> extends FinderContentProps<FContext> {
-    groups: FinderResultGroup<FItem>[];
-}
-
-export type FinderContentRenderProp = ElementType<FinderContentProps> | ReactElement<FinderContentProps> | Iterable<ReactNode>;
 
 export interface StringMatchSegmentProps {
     segment: StringMatchSegment;
