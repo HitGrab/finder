@@ -7,7 +7,7 @@ import { FinderCore } from "./finder-core";
 import { FinderConstructorOptions, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName } from "./types/event-types";
 import { FinderRule } from "./types/rule-types";
-declare class FinderCoreImplementation<FItem, FContext> {
+declare class FinderCoreImplementation<FItem, FContext = any> {
     #private;
     isReady: boolean;
     isLoading: boolean;

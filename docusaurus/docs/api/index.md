@@ -3,7 +3,7 @@ title: API
 sidebar_position: 3
 ---
 
-FinderCore is a thin wrapper that provides an imperative interface to Finder's internal state.
+FinderCore wraps Finder's internal methods to simplify the API surface.
 
 ```ts
 FinderCore<FItem, FContext> {
@@ -51,6 +51,10 @@ FinderCore<FItem, FContext> {
     }
 
     search: {
+
+        // active rule
+        rule?: FinderRule
+
         // String that is currently being searched for. Defaults to an empty string.
         searchTerm: string
 

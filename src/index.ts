@@ -9,9 +9,6 @@ export type { RuleEffect, SearchEffect } from "./core/types/effect-types";
 // Events
 export type { FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent } from "./core/types/event-types";
 
-// Result segments
-export type { StringMatchSegment } from "./core/types/string-match-types";
-
 /**
  * React hooks and components
  */
@@ -20,4 +17,4 @@ export { Finder } from "./react/components/finder";
 export { useFinderRef } from "./react/hooks/use-finder-ref";
 export { StringMatch } from "./react/components/string-match";
 
-export type { FinderProps, FinderContentProps, FinderContentGroupProps, FinderContentItemProps, StringMatchSegmentProps } from "./react/types/react-types";
+export type { FinderProps, FinderContentProps, StringMatchSegmentProps } from "./react/types/react-types";

@@ -11,6 +11,9 @@ The Search api can be accessed from `finder.search`.
 ```ts
 finder.search {
 
+    // active rule
+    rule?: FinderRule
+
     // String that is currently being searched for. Defaults to an empty string.
     searchTerm: string
 

@@ -86,10 +86,11 @@ html {
     transition: all 0.3s ease-out;
 
     .name {
-        span {
+        mark {
             text-transform: uppercase;
             color: var(--color-bright);
             text-decoration: underline;
+            background-color: transparent;
         }
     }
 

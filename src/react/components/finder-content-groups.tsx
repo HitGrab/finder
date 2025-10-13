@@ -1,15 +1,15 @@
-import { ElementType } from "react";
-import { FinderContentGroupProps } from "../types/react-types";
+import { ElementType, ReactNode } from "react";
 import { useFinder } from "../hooks/use-finder";
+import { FinderContentProps } from "../..";
 
-interface FinderContentGroupsProps<FItem = any> {
-    children: ElementType<FinderContentGroupProps<FItem>>;
+interface FinderContentGroupsProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
 }
-function FinderContentGroups<FItem>({ children: Component }: FinderContentGroupsProps<FItem>) {
+function FinderContentGroups<FItem = any, FContext = any>({ children: Component }: FinderContentGroupsProps<FItem, FContext>) {
     const finder = useFinder();
     if (finder.hasMatches && finder.matches.groups) {
         if (typeof Component === "function") {
-            return <Component groups={finder.matches.groups} pagination={finder.pagination} context={finder.context} />;
+            return <Component groups={finder.matches.groups} pagination={finder.pagination} context={finder.context as FContext} />;
         }
 
         return Component;

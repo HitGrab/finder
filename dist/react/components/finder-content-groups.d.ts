@@ -1,7 +1,7 @@
-import { ElementType } from "react";
-import { FinderContentGroupProps } from "../types/react-types";
-interface FinderContentGroupsProps<FItem = any> {
-    children: ElementType<FinderContentGroupProps<FItem>>;
+import { ElementType, ReactNode } from "react";
+import { FinderContentProps } from "../..";
+interface FinderContentGroupsProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
 }
-declare function FinderContentGroups<FItem>({ children: Component }: FinderContentGroupsProps<FItem>): import("react/jsx-runtime").JSX.Element | null;
+declare function FinderContentGroups<FItem = any, FContext = any>({ children: Component }: FinderContentGroupsProps<FItem, FContext>): Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element | null;
 export { FinderContentGroups };

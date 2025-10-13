@@ -15,7 +15,7 @@ export const rules = finderRuleset<Shoe>([
         filterFn: (item, value) => value.includes(item.brand),
         options: () => brands.map((brand) => ({ label: brand, value: brand })),
     }),
-    filterRule({
+    filterRule<Shoe, [min: number, max: number]>({
         id: "price_between",
         label: "Price",
         multiple: true,
@@ -74,7 +74,7 @@ export const rules = finderRuleset<Shoe>([
         filterFn: (item) => item.in_stock,
         boolean: true,
     }),
-    filterRule({
+    filterRule<Shoe, string>({
         id: "color",
         label: "Color",
         filterFn: (item, value) => item.colors.includes(value),

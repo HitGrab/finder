@@ -5,7 +5,7 @@ import { FinderRule } from "./types/rule-types";
  */
 declare class FinderCore<FItem = any, FContext = any> {
     #private;
-    constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem>);
+    constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem, FContext>);
     get items(): FItem[];
     get context(): FContext;
     get isReady(): boolean;
@@ -26,6 +26,7 @@ declare class FinderCore<FItem = any, FContext = any> {
      */
     get matches(): import("./types/core-types").ResultSnapshot<FItem>;
     get search(): {
+        rule: import("..").SearchRule<unknown, any> | undefined;
         searchTerm: string;
         hasSearchTerm: boolean;
         hasSearchRule: boolean;

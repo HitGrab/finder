@@ -39,6 +39,10 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
 }
 
 function calculateExactStringCharacterIndexes(haystack: string, needle: string) {
+    // impossible to return a match
+    if (haystack.length < needle.length) {
+        return undefined;
+    }
     const index = haystack.indexOf(needle);
     if (index === -1) {
         return undefined;
@@ -47,6 +51,10 @@ function calculateExactStringCharacterIndexes(haystack: string, needle: string) 
 }
 
 function calculateSequentialCharacterIndexes(haystack: string, needle: string) {
+    // impossible to return a match
+    if (haystack.length < needle.length) {
+        return undefined;
+    }
     const needleAsCharacterArray = Array.from(needle);
     const characterMatches: number[] = [];
     let hayStackToIterateThrough = haystack;

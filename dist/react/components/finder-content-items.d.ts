@@ -1,7 +1,7 @@
-import { ElementType } from "react";
-import { FinderContentItemProps } from "../types/react-types";
-interface FinderContentItemsProps<FItem = any> {
-    children: ElementType<FinderContentItemProps<FItem>>;
+import { ElementType, ReactNode } from "react";
+import { FinderContentProps } from "../types/react-types";
+interface FinderContentItemsProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
 }
-declare function FinderContentItems<FItem>({ children: Component }: FinderContentItemsProps<FItem>): import("react/jsx-runtime").JSX.Element | null;
+declare function FinderContentItems<FItem = any, FContext = any>({ children: Component }: FinderContentItemsProps<FItem, FContext>): Iterable<ReactNode> | import("react/jsx-runtime").JSX.Element | null;
 export { FinderContentItems };

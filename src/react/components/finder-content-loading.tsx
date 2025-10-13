@@ -1,14 +1,15 @@
-import { FinderContentRenderProp } from "../types/react-types";
+import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
+import { ElementType, ReactNode } from "react";
 
-interface FinderContentLoadingProps {
-    children: FinderContentRenderProp;
+interface FinderContentLoadingProps<FItem, FContext> {
+    children: ElementType<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
 }
-function FinderContentLoading({ children: Component }: FinderContentLoadingProps) {
+function FinderContentLoading<FItem, FContext>({ children: Component }: FinderContentLoadingProps<FItem, FContext>) {
     const finder = useFinder();
     if (finder.isLoading) {
         if (typeof Component === "function") {
-            return <Component pagination={finder.pagination} context={finder.context} />;
+            return <Component pagination={finder.pagination} context={finder.context as FContext} />;
         }
 
         return Component;

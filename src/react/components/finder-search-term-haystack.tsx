@@ -7,7 +7,7 @@ interface FinderSearchTermHaystackProps {
     Match?: FinderSearchTermProp;
     Miss?: FinderSearchTermProp;
 }
-function FinderSearchTermHaystack({ Match = "span", Miss, children: haystack }: FinderSearchTermHaystackProps) {
+function FinderSearchTermHaystack({ Match = "mark", Miss, children: haystack }: FinderSearchTermHaystackProps) {
     const finder = useFinder();
 
     if (finder.search.hasSearchTerm === false) {
