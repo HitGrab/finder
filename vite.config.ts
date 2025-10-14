@@ -11,12 +11,13 @@ export default defineConfig({
             fileName: "index",
         },
         rollupOptions: {
-            external: ["react", "react-dom"],
+            external: ["react", "react-dom", "react/jsx-runtime"],
             output: {
                 // Provide global variables to use in the UMD build for externalized deps
                 globals: {
-                    react: "react",
-                    "react-dom": "react-dom",
+                    react: "React",
+                    "react-dom": "ReactDom",
+                    "react/jsx-runtime": "ReactJsxRuntime",
                 },
             },
         },
