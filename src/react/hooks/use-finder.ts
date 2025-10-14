@@ -1,9 +1,9 @@
-import { use } from "react";
+import { useContext } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderCore } from "../../core/finder-core";
 
 function useFinder<FItem = any, FContext = undefined>() {
-    const value = use(FinderCoreContext);
+    const value = useContext(FinderCoreContext);
     if (value === null) {
         throw new Error("useFinder requires a FinderContext.");
     }

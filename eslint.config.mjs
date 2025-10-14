@@ -1,5 +1,4 @@
 // @ts-check
-import jsxA11y from "eslint-plugin-jsx-a11y";
 import { defineConfig, globalIgnores } from "eslint/config";
 import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
@@ -70,10 +69,6 @@ export default defineConfig(
     },
     reactPlugin.configs.flat["jsx-runtime"],
     reactHooks.configs["recommended-latest"],
-
-    // Their config is outdated and doesn't quite match the spec, but the rules are still correctly applied.
-    // @ts-ignore
-    jsxA11y.flatConfigs.recommended,
 
     {
         /**

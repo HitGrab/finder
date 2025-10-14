@@ -1,5 +1,4 @@
 import { range } from "lodash";
-import { act } from "react";
 import { FinderCore } from "../finder-core";
 import { finderRuleset, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple } from "./test-constants";
@@ -85,9 +84,7 @@ describe("Search", () => {
             finder.search.setSearchTerm(String(value));
         });
 
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceMilliseconds) + 5));
-        });
+        await new Promise((resolve) => setTimeout(resolve, Number(rule.debounceMilliseconds) + 5));
 
         // The onchange event should only have triggered once
         expect(onChange).toHaveBeenCalledTimes(1);
