@@ -1,9 +1,9 @@
 import { FinderContentProps } from "../types/react-types";
 import { useFinder } from "../hooks/use-finder";
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactElement, ReactNode } from "react";
 
 interface FinderContentEmptyProps<FItem, FContext> {
-    children: ElementType<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
+    children: ElementType<FinderContentProps<FItem, FContext>["empty"]> | ReactElement<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
 }
 function FinderContentEmpty<FItem = any, FContext = any>({ children: Component }: FinderContentEmptyProps<FItem, FContext>) {
     const finder = useFinder();

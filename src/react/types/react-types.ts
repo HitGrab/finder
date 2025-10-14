@@ -37,6 +37,8 @@ export interface FinderContentProps<FItem = any, FContext = any> {
     };
 }
 
+export type FinderCoreContextProps = [FinderCore, number];
+
 export interface StringMatchSegmentProps {
     segment: StringMatchSegment;
     segmentIndex: number;

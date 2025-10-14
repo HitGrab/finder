@@ -1,9 +1,9 @@
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactElement, ReactNode } from "react";
 import { useFinder } from "../hooks/use-finder";
 import { FinderContentProps } from "../..";
 
 interface FinderContentGroupsProps<FItem, FContext> {
-    children: ElementType<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
+    children: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
 }
 function FinderContentGroups<FItem = any, FContext = any>({ children: Component }: FinderContentGroupsProps<FItem, FContext>) {
     const finder = useFinder();

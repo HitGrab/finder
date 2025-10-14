@@ -1,4 +1,4 @@
-import { ElementType, ReactNode } from "react";
+import { ElementType, ReactElement, ReactNode } from "react";
 import { FinderContentProps } from "../types/react-types";
 import { FinderContentLoading } from "./finder-content-loading";
 import { FinderContentEmpty } from "./finder-content-empty";
@@ -8,11 +8,17 @@ import { FinderContentGroups } from "./finder-content-groups";
 
 interface FinderContentContainerProps<FItem, FContext> {
     children: {
-        loading?: ElementType<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
-        empty?: ElementType<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
-        noMatches?: ElementType<FinderContentProps<FItem, FContext>["noMatches"]> | Iterable<ReactNode>;
-        items?: ElementType<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
-        groups?: ElementType<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
+        loading?:
+            | ElementType<FinderContentProps<FItem, FContext>["loading"]>
+            | ReactElement<FinderContentProps<FItem, FContext>["loading"]>
+            | Iterable<ReactNode>;
+        empty?: ElementType<FinderContentProps<FItem, FContext>["empty"]> | ReactElement<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
+        noMatches?:
+            | ElementType<FinderContentProps<FItem, FContext>["noMatches"]>
+            | ReactElement<FinderContentProps<FItem, FContext>["noMatches"]>
+            | Iterable<ReactNode>;
+        items?: ElementType<FinderContentProps<FItem, FContext>["items"]> | ReactElement<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
+        groups?: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
     };
 }
 function FinderContent<FItem = any, FContext = any>({ children: renderProps }: FinderContentContainerProps<FItem, FContext>) {

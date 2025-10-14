@@ -1,6 +1,7 @@
 import { createContext } from "react";
-import { FinderCore } from "../../core/finder-core";
+import { FinderCoreContextProps } from "../types/react-types";
 
-const FinderCoreContext = createContext<[FinderCore, number | undefined] | null>(null);
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+const FinderCoreContext = createContext<FinderCoreContextProps | null>(null);
 
 export { FinderCoreContext };

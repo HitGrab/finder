@@ -1,6 +1,6 @@
-import { useImperativeHandle, useState } from "react";
+import { useImperativeHandle, useMemo, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
-import { FinderProps } from "../types/react-types";
+import { FinderCoreContextProps, FinderProps } from "../types/react-types";
 import { FinderContent } from "./finder-content";
 import { FinderChangeEvent } from "../../core/types/event-types";
 import { FinderSearchTermHaystack } from "./finder-search-term-haystack";
@@ -30,7 +30,7 @@ function Finder<FItem = any, FContext = any>({
     children,
 }: FinderProps<FItem, FContext>) {
     // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
-    const [, setLastUpdatedAt] = useState<number | undefined>(undefined);
+    const [lastUpdatedAt, setLastUpdatedAt] = useState<number>(Date.now());
     const [instance] = useState<FinderCore<FItem, FContext>>(() => {
         const wrappedOnChange = (e: FinderChangeEvent) => {
             instance.events.on("change", (event: FinderChangeEvent) => setLastUpdatedAt(event.instance.updatedAt));
@@ -79,7 +79,11 @@ function Finder<FItem = any, FContext = any>({
 
     useImperativeHandle(controllerRef, () => instance, [instance]);
 
-    return <FinderCoreContext value={[instance, instance.updatedAt]}>{children}</FinderCoreContext>;
+    const value: FinderCoreContextProps = useMemo(() => {
+        return [instance, lastUpdatedAt];
+    }, [instance, lastUpdatedAt]);
+
+    return <FinderCoreContext.Provider value={value}>{children}</FinderCoreContext.Provider>;
 }
 
 Finder.Content = FinderContent;

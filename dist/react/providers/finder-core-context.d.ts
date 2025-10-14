@@ -1,3 +1,3 @@
-import { FinderCore } from "../../core/finder-core";
-declare const FinderCoreContext: import("react").Context<[FinderCore<any, any>, number | undefined] | null>;
+import { FinderCoreContextProps } from "../types/react-types";
+declare const FinderCoreContext: import("react").Context<FinderCoreContextProps | null>;
 export { FinderCoreContext };

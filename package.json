@@ -1,6 +1,6 @@
 {
     "name": "@hitgrab/finder",
-    "version": "0.1.13-alpha",
+    "version": "0.1.14-alpha",
     "description": "Headless datatables for things that aren't tables.",
     "type": "module",
     "files": [
@@ -48,24 +48,24 @@
         "url": "https://github.com/HitGrab/finder/issues"
     },
     "homepage": "https://github.com/HitGrab/finder#readme",
-    "dependencies": {
-        "lodash": "^4.17.21",
-        "react": "^19.1.0"
-    },
     "devDependencies": {
+        "@eslint/js": "^9.36.0",
         "@types/lodash": "^4.17.16",
         "@types/react": "^19.1.3",
         "@vitejs/plugin-react": "^4.3.2",
-        "@eslint/js": "^9.36.0",
         "eslint": "^9.36.0",
-        "eslint-plugin-jsx-a11y": "^6.10.2",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^5.2.0",
-        "typescript-eslint": "^8.45.0",
-        "prettier": "^3.5.3",
-        "typescript": "^5.9.2",
-        "vite": "^6.3.5",
-        "vite-plugin-checker": "^0.9.0",
-        "vitest": "^3.1.3"
+        "prettier": "^3.6.2",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.46.1",
+        "vite": "^7.1.9",
+        "vite-plugin-checker": "^0.11.0",
+        "vitest": "^3.2.4"
+    },
+    "peerDependencies": {
+        "lodash": "^4.17.21",
+        "react": ">=18",
+        "react-dom": ">=18"
     }
 }
