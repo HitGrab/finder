@@ -29,7 +29,6 @@ function Finder<FItem = any, FContext = any>({
     controllerRef,
     children,
 }: FinderProps<FItem, FContext>) {
-    console.log("rendering");
     // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
     const [lastUpdatedAt, setLastUpdatedAt] = useState<number>(Date.now());
     const [instance] = useState<FinderCore<FItem, FContext>>(() => {
