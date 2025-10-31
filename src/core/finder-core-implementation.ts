@@ -161,7 +161,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
 
         this.emitFirstUserInteraction();
 
-        this.updatedAt = Date.now();
+        this.#syncUpdatedAtTimestamp();
         this.#matches.setIsStale(true);
 
         // transform the internal touch event to a public change event
@@ -187,7 +187,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
     /** Internal events not triggered by a user action  */
     #systemTouch(touchEvent: FinderTouchEvent) {
         this.#matches.setIsStale(true);
-        this.updatedAt = Date.now();
+        this.#syncUpdatedAtTimestamp();
 
         // transform the internal touch event to a public change event
         const changeEvent: FinderChangeEvent = {
@@ -196,6 +196,11 @@ class FinderCoreImplementation<FItem, FContext = any> {
             instance: this.getInstanceFn(),
         };
         this.#eventEmitter.emit(touchEvent.event, changeEvent);
+    }
+
+    #syncUpdatedAtTimestamp() {
+        this.updatedAt = Date.now();
+        this.#eventEmitter.emit(EVENTS.SYNC_UPDATED_AT, this.updatedAt);
     }
 
     emitFirstUserInteraction() {

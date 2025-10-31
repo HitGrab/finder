@@ -2,9 +2,9 @@ import { useImperativeHandle, useMemo, useState } from "react";
 import { FinderCoreContext } from "../providers/finder-core-context";
 import { FinderCoreContextProps, FinderProps } from "../types/react-types";
 import { FinderContent } from "./finder-content";
-import { FinderChangeEvent } from "../../core/types/event-types";
 import { FinderSearchTermHaystack } from "./finder-search-term-haystack";
 import { FinderCore } from "../../core/finder-core";
+import { EVENTS } from "../../core/core-constants";
 
 function Finder<FItem = any, FContext = any>({
     items,
@@ -29,17 +29,11 @@ function Finder<FItem = any, FContext = any>({
     controllerRef,
     children,
 }: FinderProps<FItem, FContext>) {
+    console.log("rendering");
     // A barebones riff on useSyncExternalStore that'll trigger a React render whenever Finder's internal state changes.
     const [lastUpdatedAt, setLastUpdatedAt] = useState<number>(Date.now());
     const [instance] = useState<FinderCore<FItem, FContext>>(() => {
-        const wrappedOnChange = (e: FinderChangeEvent) => {
-            instance.events.on("change", (event: FinderChangeEvent) => setLastUpdatedAt(event.instance.updatedAt));
-            if (onChange) {
-                onChange(e);
-            }
-        };
-
-        return new FinderCore<FItem, FContext>(items, {
+        const finder = new FinderCore<FItem, FContext>(items, {
             rules,
             effects,
             initialSearchTerm,
@@ -57,8 +51,10 @@ function Finder<FItem = any, FContext = any>({
             onInit,
             onReady,
             onFirstUserInteraction,
-            onChange: wrappedOnChange,
+            onChange,
         });
+        finder.events.on(EVENTS.SYNC_UPDATED_AT, (timestamp: number) => setLastUpdatedAt(timestamp));
+        return finder;
     });
 
     // Finder will only render a new snapshot if these values have changed.

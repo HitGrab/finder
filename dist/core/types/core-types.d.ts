@@ -1,4 +1,5 @@
 import { DebounceCallbackRegistry } from "../debounce-callback-registry";
+import { FinderCore } from "../finder-core";
 import { RuleBook } from "../rule-book";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
@@ -91,3 +92,4 @@ export interface PaginationMixinInterface {
     setPage: (value: number) => void;
     setNumItemsPerPage: (value: number) => void;
 }
+export type SyncListenerFn = (instance: FinderCore) => void;
