@@ -19,6 +19,7 @@ export const EVENTS = {
     SET_GROUP_SORT_BY_DIRECTION: "setGroupBySortDirection",
     SET_PAGE: "setPage",
     SET_NUM_ITEMS_PER_PAGE: "setNumItemsPerPage",
+    SYNC_UPDATED_AT: "syncUpdatedAt",
 } as const satisfies EventList;
 
 export const EVENT_SOURCE = {

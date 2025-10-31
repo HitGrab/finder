@@ -16,6 +16,7 @@ export declare const EVENTS: {
     readonly SET_GROUP_SORT_BY_DIRECTION: "setGroupBySortDirection";
     readonly SET_PAGE: "setPage";
     readonly SET_NUM_ITEMS_PER_PAGE: "setNumItemsPerPage";
+    readonly SYNC_UPDATED_AT: "syncUpdatedAt";
 };
 export declare const EVENT_SOURCE: {
     readonly CORE: "core";
