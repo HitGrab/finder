@@ -39,14 +39,14 @@ declare class FinderCore<FItem = any, FContext = any> {
         raw: Record<string, any>;
         activeRules: import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
         rules: import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
-        isActive: (identifier: string | import("./types/rule-types").FilterRuleUnionHydratedDefinition | import("..").FilterRuleDefinition) => boolean;
-        get: (identifier: string | import("./types/rule-types").FilterRuleUnionHydratedDefinition | import("..").FilterRuleDefinition) => any;
+        isActive: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => boolean;
+        get: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => any;
         add: {
             <FValue>(identifier: Omit<import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
             (identifier: string, optionValue?: unknown): void;
         };
-        has: (identifier: string | import("./types/rule-types").FilterRuleUnionHydratedDefinition | import("..").FilterRuleDefinition, optionValue?: any) => boolean;
-        getRule: (identifier: string | import("./types/rule-types").FilterRuleUnionHydratedDefinition | import("..").FilterRuleDefinition) => import("./types/rule-types").FilterRuleWithBooleanValueAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithMultipleValuesAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithSingleValueAndHydratedOptions<any, any, any>;
+        has: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, optionValue?: any) => boolean;
+        getRule: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => import("./types/rule-types").FilterRuleWithBooleanValueAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithMultipleValuesAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithSingleValueAndHydratedOptions<any, any, any>;
         toggle: {
             (identifier: string, optionValue?: any): void;
             <FValue extends boolean>(identifier: import("./types/rule-types").FilterRuleWithBooleanValue<any, FValue>): void;
@@ -60,12 +60,12 @@ declare class FinderCore<FItem = any, FContext = any> {
         delete: {
             <FValue>(identifier: Omit<import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
             (identifier: string, optionValue?: unknown): void;
-            (identifier: Omit<import("..").FilterRuleDefinition, "options">, optionValue?: never): void;
+            (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, optionValue?: never): void;
         };
         reset: () => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
-        testRuleOptions: (identifier: string | import("./types/rule-types").FilterRuleUnionHydratedDefinition | import("..").FilterRuleDefinition, isAdditive?: boolean) => Map<any, any>;
+        testRuleOptions: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, isAdditive?: boolean) => Map<any, any>;
     };
     get sortBy(): {
         activeRule: import("..").SortByRuleDefinition<unknown, any> | undefined;

@@ -15,11 +15,11 @@ export {
     transformFilterToBoolean,
 } from "./core/utils/rule-type-enforcers";
 export type {
-    RuleDefinition as FinderRuleDefinition,
+    RuleDefinition,
     SearchRuleDefinition,
     SortByRuleDefinition,
     GroupByRuleDefinition,
-    FilterRuleUnionDefinition as FilterRuleDefinition,
+    FilterRuleDefinition,
     FilterOption,
 } from "./core/types/rule-types";
 export type { RuleEffect, SearchEffect } from "./core/types/effect-types";

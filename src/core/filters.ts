@@ -1,12 +1,4 @@
-import {
-    FilterOption,
-    FilterRuleUnionDefinition,
-    FilterRuleUnionHydratedDefinition,
-    FilterRuleWithBooleanValue,
-    FilterRuleWithMultipleValues,
-    FilterTestOptions,
-    FilterTestRuleOptions,
-} from "./types/rule-types";
+import { FilterOption, FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
@@ -19,7 +11,7 @@ interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
 
-type FilterRuleIdentifier = string | FilterRuleUnionDefinition | FilterRuleUnionHydratedDefinition;
+type FilterRuleIdentifier<FValue = any> = string | Omit<FilterRuleDefinition<any, FValue>, "options">;
 
 class FiltersMixin {
     #rawValues;
@@ -40,8 +32,8 @@ class FiltersMixin {
             return;
         }
 
-        const rule = this.getRule(identifier as string);
-        const previousValue = this.get(identifier as string);
+        const rule = this.getRule(identifier);
+        const previousValue = this.get(identifier);
 
         // empty strings are treated as if a filter is being deleted.
         const isBlankString = typeof value === "string" && value.trim() === "";
@@ -88,6 +80,9 @@ class FiltersMixin {
     }
 
     getRule(identifier: FilterRuleIdentifier) {
+        // getRule(identifier: string): FilterRuleUnionHydratedDefinition;
+        // getRule<FValue>(identifier: Omit<FilterRuleDefinition<any, FValue>, "options">): FilterRuleUnionHydratedDefinition<any, FValue>;
+        // getRule<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
         if (!isFilterRuleDefinitionWithHydratedOptions(rule)) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
@@ -98,16 +93,16 @@ class FiltersMixin {
     add<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
     add(identifier: string, optionValue?: unknown): void;
     add<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, optionValue?: unknown): void {
-        const rule = this.getRule(identifier as string);
+        const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).add(value, optionValue));
     }
 
     delete<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
     delete(identifier: string, optionValue?: unknown): void;
-    delete(identifier: Omit<FilterRuleDefinition, "options">, optionValue?: never): void;
-    delete<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, optionValue?: unknown): void {
-        const rule = this.getRule(identifier as string);
+    delete(identifier: FilterRuleIdentifier, optionValue?: never): void;
+    delete(identifier: FilterRuleIdentifier, optionValue?: unknown): void {
+        const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).delete(value, optionValue));
     }
