@@ -1,0 +1,12 @@
+import { RuleEffect, SearchEffect } from "../types/effect-types";
+import { FilterRuleUnionDefinition, FilterRuleUnionHydratedDefinition, FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterRuleWithSingleValue, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition } from "../types/rule-types";
+export declare function isSortByRuleDefinition<FItem>(rule: unknown): rule is SortByRuleDefinition<FItem>;
+export declare function isSearchRuleDefinition<FItem>(rule: unknown): rule is SearchRuleDefinition<FItem>;
+export declare function isFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleUnionDefinition<FItem>;
+export declare function isFilterRuleDefinitionWithHydratedOptions<FItem>(rule: unknown): rule is FilterRuleUnionHydratedDefinition<FItem>;
+export declare function isGroupByRuleDefinition<FItem>(rule: unknown): rule is GroupByRuleDefinition<FItem>;
+export declare function isRuleEffectDefinition<FItem>(data: unknown): data is RuleEffect<FItem>;
+export declare function isSearchEffectDefinition<FItem>(data: unknown): data is SearchEffect<FItem>;
+export declare function isBooleanFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithBooleanValue<FItem>;
+export declare function isMultipleValueFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithMultipleValues<FItem>;
+export declare function isSingleValueFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithSingleValue<FItem>;
