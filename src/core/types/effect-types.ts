@@ -1,18 +1,18 @@
 import { FinderCore } from "../finder-core";
-import { FinderRule } from "./rule-types";
+import { RuleDefinition } from "./rule-types";
 
 export interface RuleEffect<FItem = any, FContext = any> {
     rules:
         | string
-        | FinderRule<FItem>
-        | (string | FinderRule<FItem>)[]
-        | ((items: FItem[], context: FContext) => string | FinderRule<FItem> | (string | FinderRule<FItem>)[]);
-    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRule<FItem>) => void;
+        | RuleDefinition<FItem>
+        | (string | RuleDefinition<FItem>)[]
+        | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]);
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
 }
 
 export interface HydratedRuleEffect<FItem = any, FContext = any> {
-    rules: (string | FinderRule<FItem>)[];
-    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRule<FItem>) => void;
+    rules: (string | RuleDefinition<FItem>)[];
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
     _isHydrated: true;
 }
 

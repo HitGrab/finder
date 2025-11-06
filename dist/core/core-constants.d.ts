@@ -10,6 +10,7 @@ export declare const EVENTS: {
     readonly SET_SEARCH_TERM: "setSearchTerm";
     readonly RESET_SEARCH_TERM: "resetSearchTerm";
     readonly SET_FILTER: "setFilter";
+    readonly RESET_FILTERS: "resetFilters";
     readonly SET_SORT_BY: "setSortBy";
     readonly SET_SORT_BY_DIRECTION: "setSortDirection";
     readonly SET_GROUP_BY: "setGroupBy";
@@ -30,6 +31,7 @@ export declare const ERRORS: {
     RULE_NOT_FOUND: string;
     WRONG_RULE_TYPE_FOR_MIXIN: string;
     NO_SEARCH_RULE_SET: string;
+    INVALID_SEARCH_TERM_TYPE: string;
     SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY: string;
     ADDING_OPTION_TO_MULTIPLE_FILTER_WITHOUT_OPTION_VALUE: string;
     DELETING_OPTION_VALUE_FROM_NON_MULTIPLE_FILTER: string;

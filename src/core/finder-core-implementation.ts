@@ -9,11 +9,11 @@ import { FinderCore } from "./finder-core";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry";
 import { EffectBook } from "./effect-book";
 import { EventEmitter } from "./event-emitter";
-import { RuleBook } from "./rule-book";
 import { Tester } from "./tester";
 import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
-import { FinderRule } from "./types/rule-types";
+import { RuleDefinition } from "./types/rule-types";
+import { RuleBook } from "./rule-book/rule-book";
 
 class FinderCoreImplementation<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
@@ -58,6 +58,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
             initialSortBy,
             initialSortDirection,
             initialGroupBy,
+            initialGroupBySortDirection,
             initialFilters,
             context,
             page,
@@ -97,7 +98,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
         this.search = new SearchMixin({ initialSearchTerm }, mixinDeps);
         this.filters = new FiltersMixin({ initialFilters }, mixinDeps);
         this.sortBy = new SortByMixin({ initialSortBy, initialSortDirection }, mixinDeps);
-        this.groupBy = new GroupByMixin({ initialGroupBy, requireGroup: !!requireGroup }, mixinDeps);
+        this.groupBy = new GroupByMixin({ initialGroupBy, initialGroupBySortDirection, requireGroup: !!requireGroup }, mixinDeps);
         this.pagination = new PaginationMixin({ page, numItemsPerPage }, mixinDeps);
         this.updatedAt = Date.now();
 
@@ -294,7 +295,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
         };
     }
 
-    getRule(identifier: string | FinderRule<FItem>) {
+    getRule(identifier: string | RuleDefinition<FItem>) {
         return this.#ruleBook.getRule(identifier);
     }
 
@@ -346,7 +347,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
         }
     }
 
-    setRules(definitions: FinderRule<FItem, FContext>[]) {
+    setRules(definitions: RuleDefinition<FItem, FContext>[]) {
         if (isEqual(definitions, this.#ruleBook.getDefinitions()) === false) {
             this.#ruleBook.setRules(definitions);
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
@@ -361,6 +362,22 @@ class FinderCoreImplementation<FItem, FContext = any> {
             this.#effectBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_CONTEXT, current: context, initial: previousValue });
         }
+    }
+
+    toJSON(): Omit<FinderConstructorOptions<FItem>, "rules"> {
+        return {
+            disabled: this.disabled,
+            initialSearchTerm: this.search.searchTerm,
+            initialFilters: this.filters.raw,
+            page: this.pagination.page,
+            numItemsPerPage: this.pagination.numItemsPerPage,
+            initialSortBy: this.sortBy.activeRule?.id,
+            initialSortDirection: this.sortBy.sortDirection,
+            ignoreSortByRulesWhileSearchRuleIsActive: this.#ignoreSortByRulesWhileSearchRuleIsActive,
+            initialGroupBy: this.groupBy.activeRule?.id,
+            initialGroupBySortDirection: this.groupBy.groupBySortDirection,
+            requireGroup: this.groupBy.requireGroup,
+        };
     }
 }
 

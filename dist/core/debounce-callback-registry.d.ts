@@ -1,3 +1,3 @@
-import { FinderRule } from "./types/rule-types";
-declare function DebounceCallbackRegistry(): (rule: FinderRule, callback: () => void) => any;
+import { FinderRuleDefinition } from "./types/rule-types";
+declare function DebounceCallbackRegistry(): (rule: FinderRuleDefinition, callback: () => void) => any;
 export { DebounceCallbackRegistry };

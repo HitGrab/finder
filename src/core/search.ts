@@ -1,8 +1,8 @@
-import { isSearchRule } from "./utils/rule-utils";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";
 import { defaultSearchAndSortAlgorithm } from "./search/default-search-and-sort-algorithm";
+import { isSearchRuleDefinition } from "./utils/rule-utils";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;
@@ -14,16 +14,19 @@ class SearchMixin<FItem> {
     #deps;
 
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
+        if (initialSearchTerm && deps.getRuleBook().rules.find(isSearchRuleDefinition) === undefined) {
+            throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
+        }
         this.searchTerm = initialSearchTerm ?? "";
         this.#deps = deps;
     }
 
     get rule() {
-        return this.#deps.getRuleBook().rules.find(isSearchRule);
+        return this.#deps.getRuleBook().rules.find(isSearchRuleDefinition);
     }
 
     get hasSearchRule() {
-        return this.#deps.getRuleBook().rules.some(isSearchRule);
+        return this.rule !== undefined;
     }
 
     get hasSearchTerm() {
@@ -34,6 +37,10 @@ class SearchMixin<FItem> {
         const rule = this.rule;
         if (!rule) {
             throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
+        }
+
+        if (typeof value !== "string") {
+            throw new FinderError(ERRORS.INVALID_SEARCH_TERM_TYPE);
         }
 
         if (this.#deps.isDisabled()) {
@@ -86,7 +93,10 @@ class SearchMixin<FItem> {
     }
 
     static process<FItem>(options: SerializedSearchMixin, items: FItem[], context: unknown) {
-        if (options.rule === undefined || options.searchTerm === "") {
+        if (options.rule === undefined) {
+            throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
+        }
+        if (options.searchTerm === "") {
             return items;
         }
 

@@ -1,9 +1,9 @@
-import { isSortByRule } from "./utils/rule-utils";
 import { orderBy } from "lodash";
-import { SortByRule } from "./types/rule-types";
+import { SortByRuleDefinition } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
+import { isSortByRuleDefinition } from "./utils/rule-utils";
 
 const SORT_CYCLE_ORDER: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;
 
@@ -27,16 +27,16 @@ class SortByMixin<FItem> {
         this.#sortDirection = initialSortDirection;
     }
 
-    getRule(identifier: string | SortByRule) {
+    getRule(identifier: string | SortByRuleDefinition) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
-        if (isSortByRule(rule) === false) {
+        if (isSortByRuleDefinition(rule) === false) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
         }
         return rule;
     }
 
     get rules() {
-        return this.#deps.getRuleBook().rules.filter(isSortByRule);
+        return this.#deps.getRuleBook().rules.filter(isSortByRuleDefinition);
     }
 
     get activeRule() {
@@ -84,7 +84,7 @@ class SortByMixin<FItem> {
         this.setSortDirection("desc");
     }
 
-    set(identifier?: string | SortByRule, incomingSortDirection?: SortDirection) {
+    set(identifier?: string | SortByRuleDefinition, incomingSortDirection?: SortDirection) {
         if (this.#deps.isDisabled() || !this.activeRule) {
             return;
         }

@@ -2,8 +2,26 @@
 export type { FinderConstructorOptions, FinderResultGroup, SortDirection } from "./core/types/core-types";
 
 // Rules
-export { finderRuleset, searchRule, filterRule, sortByRule, groupByRule, ruleEffect, searchEffect } from "./core/utils/rule-type-enforcers";
-export type { FinderRule, SearchRule, SortByRule, GroupByRule, FilterRule, HydratedFilterRule, FilterRuleUnion, FilterOption } from "./core/types/rule-types";
+export {
+    finderRuleset,
+    searchRule,
+    filterRule,
+    sortByRule,
+    groupByRule,
+    ruleEffect,
+    searchEffect,
+    transformFilterToSingleValue,
+    transformFilterToMultiple,
+    transformFilterToBoolean,
+} from "./core/utils/rule-type-enforcers";
+export type {
+    RuleDefinition as FinderRuleDefinition,
+    SearchRuleDefinition,
+    SortByRuleDefinition,
+    GroupByRuleDefinition,
+    FilterRuleUnionDefinition as FilterRuleDefinition,
+    FilterOption,
+} from "./core/types/rule-types";
 export type { RuleEffect, SearchEffect } from "./core/types/effect-types";
 
 // Events

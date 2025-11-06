@@ -1,6 +1,6 @@
 import { EVENT_SOURCE, EVENTS } from "../core-constants";
 import { FinderCore } from "../finder-core";
-import { FinderRule } from "./rule-types";
+import { RuleDefinition } from "./rule-types";
 
 export type FinderTouchSource = (typeof EVENT_SOURCE)[keyof typeof EVENT_SOURCE];
 
@@ -39,7 +39,7 @@ export interface FinderTouchEvent {
     event: FinderEventName;
     current: any;
     initial: any;
-    rule?: FinderRule;
+    rule?: RuleDefinition;
 }
 
 /**

@@ -1,5 +1,5 @@
 import { FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
-import { FinderRule } from "./types/rule-types";
+import { FinderRuleDefinition } from "./types/rule-types";
 /**
  * This thin wrapper around FinderCoreImplementation defines the mixin interfaces and hides private methods.
  */
@@ -26,7 +26,7 @@ declare class FinderCore<FItem = any, FContext = any> {
      */
     get matches(): import("./types/core-types").ResultSnapshot<FItem>;
     get search(): {
-        rule: import("..").SearchRule<unknown, any> | undefined;
+        rule: import("..").SearchRuleDefinition<unknown, any> | undefined;
         searchTerm: string;
         hasSearchTerm: boolean;
         hasSearchRule: boolean;
@@ -37,38 +37,39 @@ declare class FinderCore<FItem = any, FContext = any> {
     get filters(): {
         values: Record<string, any>;
         raw: Record<string, any>;
-        activeRules: import("..").HydratedFilterRule<unknown, any, any>[];
-        rules: import("..").HydratedFilterRule<unknown, any, any>[];
-        isActive: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => boolean;
-        get: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => any;
-        add: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue: any) => void;
-        has: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => boolean;
-        getRule: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>) => import("..").HydratedFilterRule<any, any, any>;
-        toggle: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
-        set: <FValue>(identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, value: FValue | FValue[]) => void;
-        delete: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, optionValue?: any) => void;
+        activeRules: (import("..").FilterRuleDefinition<unknown> & import("./types/rule-types").HydratedFilterOptions<any>)[];
+        rules: (import("..").FilterRuleDefinition<unknown> & import("./types/rule-types").HydratedFilterOptions<any>)[];
+        isActive: (identifier: string | import("..").FilterRuleDefinition) => boolean;
+        get: (identifier: string | import("..").FilterRuleDefinition) => any;
+        add: (identifier: string | import("..").FilterRuleDefinition, optionValue: any) => void;
+        has: (identifier: string | import("..").FilterRuleDefinition, optionValue?: any) => boolean;
+        getRule: (identifier: string | import("..").FilterRuleDefinition) => import("..").FilterRuleDefinition<unknown> & import("./types/rule-types").HydratedFilterOptions<any>;
+        toggle: (identifier: string | import("..").FilterRuleDefinition, optionValue?: any) => void;
+        set: <FValue>(identifier: string | import("..").FilterRuleDefinition, value: FValue | FValue[]) => void;
+        delete: (identifier: string | import("..").FilterRuleDefinition, optionValue?: any) => void;
+        reset: () => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
-        testRuleOptions: (identifier: string | import("..").FilterRuleUnion | import("..").HydratedFilterRule<any, any, any>, isAdditive?: boolean) => Map<any, any>;
+        testRuleOptions: (identifier: string | import("..").FilterRuleDefinition, isAdditive?: boolean) => Map<any, any>;
     };
     get sortBy(): {
-        activeRule: import("..").SortByRule<unknown, any> | undefined;
+        activeRule: import("..").SortByRuleDefinition<unknown, any> | undefined;
         sortDirection: import("..").SortDirection;
         userHasSetSortDirection: boolean;
-        rules: import("..").SortByRule<unknown, any>[];
-        set: (identifier?: string | import("..").SortByRule, incomingSortDirection?: import("..").SortDirection) => void;
+        rules: import("..").SortByRuleDefinition<unknown, any>[];
+        set: (identifier?: string | import("..").SortByRuleDefinition, incomingSortDirection?: import("..").SortDirection) => void;
         setSortDirection: (incomingSortDirection?: import("..").SortDirection) => void;
         cycleSortDirection: () => void;
         toggleSortDirection: () => void;
         reset: () => void;
     };
     get groupBy(): {
-        activeRule: import("..").GroupByRule<unknown, any> | undefined;
+        activeRule: import("..").GroupByRuleDefinition<unknown, any> | undefined;
         requireGroup: boolean;
-        rules: import("..").GroupByRule<unknown, any>[];
-        groupSortDirection: import("..").SortDirection | undefined;
-        set: (identifier?: string | import("..").GroupByRule) => void;
-        toggle: (identifier: import("..").GroupByRule | string) => void;
+        rules: import("..").GroupByRuleDefinition<unknown, any>[];
+        groupBySortDirection: import("..").SortDirection | undefined;
+        set: (identifier?: string | import("..").GroupByRuleDefinition) => void;
+        toggle: (identifier: import("..").GroupByRuleDefinition | string) => void;
         setGroupSortDirection: (direction?: import("..").SortDirection) => void;
         reset: () => void;
     };
@@ -88,12 +89,13 @@ declare class FinderCore<FItem = any, FContext = any> {
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
-    setRules(definitions: FinderRule<FItem>[]): void;
+    setRules(definitions: FinderRuleDefinition<FItem>[]): void;
     setContext(context: FContext): void;
     /**
      * Utils
      */
     test(mixins: SnapshotSerializedMixins, isAdditive?: boolean): FItem[];
-    getRule(identifier: string | FinderRule<FItem>): FinderRule<FItem>;
+    getRule<T extends FinderRuleDefinition<FItem>>(identifier: string | FinderRuleDefinition<FItem>): T | undefined;
+    toJSON(): Omit<FinderConstructorOptions<FItem, any>, "rules">;
 }
 export { FinderCore };

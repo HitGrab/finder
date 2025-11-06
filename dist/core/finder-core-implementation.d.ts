@@ -6,7 +6,7 @@ import { PaginationMixin } from "./pagination";
 import { FinderCore } from "./finder-core";
 import { FinderConstructorOptions, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName } from "./types/event-types";
-import { FinderRule } from "./types/rule-types";
+import { FinderRuleDefinition } from "./types/rule-types";
 declare class FinderCoreImplementation<FItem, FContext = any> {
     #private;
     isReady: boolean;
@@ -20,7 +20,7 @@ declare class FinderCoreImplementation<FItem, FContext = any> {
     pagination: PaginationMixin<FItem>;
     context: FContext;
     getInstanceFn: () => FinderCore;
-    constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>, getInstanceFn: () => FinderCore);
+    constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialGroupBySortDirection, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>, getInstanceFn: () => FinderCore);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): import("./types/core-types").ResultSnapshot<FItem>;
@@ -33,12 +33,13 @@ declare class FinderCoreImplementation<FItem, FContext = any> {
         silently: (callback: EventCallback) => void;
         isSilent: () => boolean;
     };
-    getRule(identifier: string | FinderRule<FItem>): FinderRule<FItem>;
+    getRule(identifier: string | FinderRuleDefinition<FItem>): FinderRuleDefinition;
     get state(): "loading" | "empty" | "groups" | "items" | "noMatches";
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;
     setIsDisabled(value?: boolean): void;
-    setRules(definitions: FinderRule<FItem, FContext>[]): void;
+    setRules(definitions: FinderRuleDefinition<FItem, FContext>[]): void;
     setContext(context: FContext): void;
+    toJSON(): Omit<FinderConstructorOptions<FItem>, "rules">;
 }
 export { FinderCoreImplementation };

@@ -1,62 +1,74 @@
 import { range } from "lodash";
-import { filterRule, finderRuleset } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, transformFilterToBoolean, transformFilterToMultiple } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";
 
 describe("Filters", () => {
     test("Boolean filter", () => {
-        const rule = filterRule<MockObjectItem>({
+        const booleanFilter = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item) => item.price !== 0,
             boolean: true,
         });
-        const finder = new FinderCore(objectItems, { rules: [rule] });
+        const finder = new FinderCore(objectItems, { rules: [booleanFilter] });
 
         // rule has no value while inactive
-        expect(finder.filters.isActive(rule)).toBe(false);
-        expect(finder.filters.has(rule)).toBe(false);
-        expect(finder.filters.get(rule)).toBe(false);
+        expect(finder.filters.isActive(booleanFilter)).toBe(false);
+        expect(finder.filters.has(booleanFilter)).toBe(false);
+        expect(finder.filters.get(booleanFilter)).toBe(false);
 
-        finder.filters.toggle(rule);
+        finder.filters.toggle(booleanFilter);
 
-        expect(finder.filters.isActive(rule)).toBe(true);
-        expect(finder.filters.has(rule)).toBe(true);
-        expect(finder.filters.get(rule)).toBe(true);
+        expect(finder.filters.isActive(booleanFilter)).toBe(true);
+        expect(finder.filters.has(booleanFilter)).toBe(true);
+        expect(finder.filters.get(booleanFilter)).toBe(true);
 
-        finder.filters.delete(rule);
+        finder.filters.delete(booleanFilter);
 
-        expect(finder.filters.isActive(rule)).toBe(false);
-        expect(finder.filters.has(rule)).toBe(false);
-        expect(finder.filters.get(rule)).toBe(false);
+        expect(finder.filters.isActive(booleanFilter)).toBe(false);
+        expect(finder.filters.has(booleanFilter)).toBe(false);
+        expect(finder.filters.get(booleanFilter)).toBe(false);
 
         // Finder will complain if an invalid set value is passed
         expect(() => {
-            finder.filters.set(rule, 5);
+            // @ts-expect-error - Testing, expected to fail.
+            finder.filters.set(booleanFilter, 5);
         }).toThrowError();
 
         expect(() => {
-            finder.filters.add(rule, 5);
+            finder.filters.add(booleanFilter, 5);
         }).toThrowError();
 
         expect(() => {
-            finder.filters.delete(rule, 5);
+            finder.filters.delete(booleanFilter, 5);
         }).toThrowError();
 
         expect(() => {
-            finder.filters.set(rule, "string");
+            // @ts-expect-error - Testing, expected to fail.
+            finder.filters.toggle(booleanFilter, true);
         }).toThrowError();
 
         expect(() => {
-            finder.filters.set(rule, [true, false]);
+            // @ts-expect-error - Testing, expected to fail.
+            finder.filters.set(booleanFilter, "string");
+        }).toThrowError();
+
+        expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
+            finder.filters.set(booleanFilter, [true, false]);
         }).toThrowError();
     });
 
-    test("Multiple filter without options", () => {
-        const rule = filterRule<MockObjectItem>({
+    test("Multiple filter", () => {
+        const rule = filterRule<MockObjectItem, number>({
             id: "price",
-            filterFn: (item, value) => value.includes(item.price),
+            filterFn: (item, value) => value === item.price,
             multiple: true,
+            options: [
+                { label: "Three", value: 3 },
+                { label: "Five", value: 5 },
+            ],
         });
         const finder = new FinderCore(objectItems, { rules: [rule] });
 
@@ -79,43 +91,26 @@ describe("Filters", () => {
 
         expect(finder.filters.get(rule)).toEqual([3]);
 
-        finder.filters.add(rule, 5);
         finder.filters.delete(rule, 3);
+        finder.filters.add(rule, 5);
 
         expect(finder.filters.get(rule)).toEqual([5]);
 
         // Finder will complain if an invalid set value is passed
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(rule, true);
         }).toThrowError();
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(rule, "string");
         }).toThrowError();
-    });
 
-    test("Multiple filter with options", () => {
-        const rule = filterRule<MockObjectItem>({
-            id: "price_options",
-            filterFn: (item, value) => value.includes(item.price),
-            multiple: true,
-            options: [
-                { label: "Three", value: 3 },
-                { label: "Five", value: 5 },
-            ],
-        });
-        const finder = new FinderCore(objectItems, { rules: [rule] });
-
-        // rule has no value while inactive
-        expect(finder.filters.isActive(rule)).toBe(false);
-        expect(finder.filters.has(rule)).toBe(false);
-        expect(finder.filters.get(rule)).toEqual([]);
-
-        finder.filters.toggle(rule, 5);
-
-        expect(finder.filters.isActive(rule)).toBe(true);
-        expect(finder.filters.has(rule)).toBe(true);
-        expect(finder.filters.get(rule)).toEqual([5]);
+        expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
+            finder.filters.toggle(rule, "non_existent_option");
+        }).toThrowError();
     });
 
     test("Single rule", () => {
@@ -151,8 +146,38 @@ describe("Filters", () => {
         }).toThrowError();
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.toggle(rule, 5);
         }).toThrowError();
+    });
+
+    test("Rule convertors", () => {
+        const singleValueFilter = filterRule<MockObjectItem, number>({
+            id: "price",
+            filterFn: (item, value) => item.price === value,
+            required: true,
+        });
+        const finder = new FinderCore(objectItems, { rules: [] });
+        finder.setRules([singleValueFilter]);
+        finder.filters.set(singleValueFilter, 2);
+        expect(finder.matches.items).toEqual([orange]);
+
+        finder.filters.reset();
+
+        const multipleRule = transformFilterToMultiple(singleValueFilter);
+        finder.setRules([multipleRule]);
+        finder.filters.add(multipleRule, 3);
+        finder.filters.set(multipleRule, [2, 10]);
+        expect(finder.matches.items).toEqual([orange, banana]);
+
+        finder.filters.reset();
+
+        const booleanRule = transformFilterToBoolean(multipleRule);
+
+        finder.setRules([booleanRule]);
+        finder.filters.set(booleanRule, false);
+        finder.filters.set(booleanRule, true);
+        expect(finder.matches.items).toEqual([orange, banana]);
     });
 
     describe("Mutators", () => {
@@ -180,6 +205,7 @@ describe("Filters", () => {
 
             // cannot toggle non-boolean rules
             expect(() => {
+                // @ts-expect-error - Testing, expected to fail.
                 finder.filters.toggle(numericRule);
             }).toThrowError();
 
@@ -199,7 +225,7 @@ describe("Filters", () => {
             };
             const rule = filterRule<MockObjectItem, number>({
                 id: "price",
-                filterFn: (item, value) => value.includes(item.price),
+                filterFn: (item, value) => value === item.price,
                 multiple: true,
                 options: [
                     optionThree,
@@ -362,23 +388,20 @@ describe("Filters", () => {
             expect(finder.matches.items).toEqual([banana]);
         });
 
-        test("Single filter", () => {
+        test("Single value filter", () => {
             const rules = [
                 filterRule<MockObjectItem, number>({
                     id: "price_is_below",
-                    filterFn: (item, value) => {
-                        return item.price <= value;
-                    },
+                    filterFn: (item, value) => item.price <= value,
                 }),
             ];
-            const initialFilters = {
-                price_is_below: 5,
-            };
-            const finder = new FinderCore(objectItems, { rules, initialFilters });
+
+            const finder = new FinderCore(objectItems, { rules });
+            finder.filters.set("price_is_below", 5);
             expect(finder.matches.items).toEqual([apple, orange]);
         });
 
-        test("Multiple filters", () => {
+        test("Simultaneous filters", () => {
             const rules = finderRuleset<MockObjectItem>([
                 filterRule({
                     id: "tastiest_fruit_name",
@@ -567,7 +590,7 @@ describe("Filters", () => {
             });
             const multipleFilter = filterRule<MockObjectItem, number>({
                 id: "price_is_below",
-                filterFn: (item, value) => value.includes(item.price),
+                filterFn: (item, value) => value === item.price,
                 multiple: true,
                 options: () => [optionOne, optionTwo, optionThree],
             });

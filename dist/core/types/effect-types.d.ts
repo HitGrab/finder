@@ -1,12 +1,12 @@
 import { FinderCore } from "../finder-core";
-import { FinderRule } from "./rule-types";
+import { FinderRuleDefinition } from "./rule-types";
 export interface RuleEffect<FItem = any, FContext = any> {
-    rules: string | FinderRule<FItem> | (string | FinderRule<FItem>)[] | ((items: FItem[], context: FContext) => string | FinderRule<FItem> | (string | FinderRule<FItem>)[]);
-    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRule<FItem>) => void;
+    rules: string | FinderRuleDefinition<FItem> | (string | FinderRuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | FinderRuleDefinition<FItem> | (string | FinderRuleDefinition<FItem>)[]);
+    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRuleDefinition<FItem>) => void;
 }
 export interface HydratedRuleEffect<FItem = any, FContext = any> {
-    rules: (string | FinderRule<FItem>)[];
-    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRule<FItem>) => void;
+    rules: (string | FinderRuleDefinition<FItem>)[];
+    onChange: (instance: FinderCore<FItem, FContext>, rule: FinderRuleDefinition<FItem>) => void;
     _isHydrated: true;
 }
 export interface SearchEffect<FItem = any, FContext = any> {

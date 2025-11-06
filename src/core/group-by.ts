@@ -1,42 +1,46 @@
-import { isGroupByRule } from "./utils/rule-utils";
 import { groupBy, orderBy } from "lodash";
-import { GroupByRule } from "./types/rule-types";
+import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
+import { isGroupByRuleDefinition } from "./utils/rule-utils";
 
 interface InitialValues {
     initialGroupBy: string | undefined;
+    initialGroupBySortDirection?: SortDirection;
     requireGroup: boolean;
 }
+
+type GroupByRuleIdentifier = string | GroupByRuleDefinition;
 
 class GroupByMixin<FItem, FContext> {
     #groupBy;
 
     requireGroup;
 
-    #groupSortDirection?: SortDirection;
+    #groupBySortDirection?: SortDirection;
 
     #deps;
 
-    constructor({ initialGroupBy, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>) {
+    constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>) {
         this.#deps = deps;
         if (initialGroupBy) {
             this.#groupBy = this.getRule(initialGroupBy);
         }
+        this.#groupBySortDirection = initialGroupBySortDirection;
         this.requireGroup = requireGroup;
     }
 
-    getRule(identifier: string | GroupByRule) {
+    getRule(identifier: GroupByRuleIdentifier) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
-        if (isGroupByRule(rule) === false) {
+        if (isGroupByRuleDefinition(rule) === false) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
         }
         return rule;
     }
 
     get rules() {
-        return this.#deps.getRuleBook().rules.filter(isGroupByRule);
+        return this.#deps.getRuleBook().rules.filter(isGroupByRuleDefinition);
     }
 
     get activeRule() {
@@ -48,18 +52,18 @@ class GroupByMixin<FItem, FContext> {
         return this.activeRule !== undefined;
     }
 
-    get groupSortDirection() {
-        return this.#groupSortDirection ?? this.activeRule?.defaultGroupSortDirection;
+    get groupBySortDirection() {
+        return this.#groupBySortDirection ?? this.activeRule?.defaultGroupSortDirection;
     }
 
-    set(identifier?: string | GroupByRule) {
+    set(identifier?: GroupByRuleIdentifier) {
         if (this.#deps.isDisabled()) {
             return;
         }
 
         const previousRule = this.#groupBy;
 
-        let rule: GroupByRule | undefined;
+        let rule: GroupByRuleDefinition | undefined;
         const isBlankString = typeof identifier === "string" && identifier.trim() === "";
         if (isBlankString) {
             rule = undefined;
@@ -74,7 +78,7 @@ class GroupByMixin<FItem, FContext> {
         }
 
         this.#groupBy = rule;
-        this.#groupSortDirection = undefined;
+        this.#groupBySortDirection = undefined;
 
         this.#deps.touch({
             source: EVENT_SOURCE.GROUP_BY,
@@ -86,8 +90,8 @@ class GroupByMixin<FItem, FContext> {
     }
 
     setGroupSortDirection(direction?: SortDirection) {
-        const previousValue = this.#groupSortDirection;
-        this.#groupSortDirection = direction;
+        const previousValue = this.#groupBySortDirection;
+        this.#groupBySortDirection = direction;
 
         this.#deps.touch({
             source: EVENT_SOURCE.GROUP_BY,
@@ -98,7 +102,7 @@ class GroupByMixin<FItem, FContext> {
         });
     }
 
-    toggle(identifier: GroupByRule | string) {
+    toggle(identifier: GroupByRuleIdentifier) {
         const rule = this.getRule(identifier);
         if (this.activeRule === rule) {
             this.set(undefined);
@@ -115,7 +119,7 @@ class GroupByMixin<FItem, FContext> {
     serialize(): SerializedGroupByMixin {
         return {
             rule: this.activeRule,
-            sortDirection: this.#groupSortDirection,
+            groupBySortDirection: this.#groupBySortDirection,
         };
     }
 
@@ -138,7 +142,7 @@ class GroupByMixin<FItem, FContext> {
 
         if (options.rule?.sortGroupFn) {
             orderByCallbacks.push(options.rule.sortGroupFn);
-            orderSortDirection.push(options.sortDirection ?? "asc");
+            orderSortDirection.push(options.groupBySortDirection ?? "asc");
         }
 
         if (orderByCallbacks.length > 0) {
@@ -153,7 +157,7 @@ class GroupByMixin<FItem, FContext> {
 /**
  * Creates a sorting method for groupBy rule with 'sticky' header/footer groups.
  */
-function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRule<FItem>) {
+function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRuleDefinition<FItem>) {
     let stickyHeaderGroupIds: string[] = [];
     if (groupByRule.sticky?.header !== undefined) {
         if (Array.isArray(groupByRule.sticky.header)) {

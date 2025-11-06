@@ -5,95 +5,105 @@ import { FinderResultGroup, SortDirection } from "./core-types";
  */
 export type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context: FContext) => string | number;
 
-interface RuleBase {
+interface Rule {
     id: string;
     debounceMilliseconds?: number;
     label?: string;
     hidden?: boolean;
 }
-export type FinderRule<FItem = any, FContext = any> =
-    | SearchRule<FItem, FContext>
-    | FilterRuleUnion<FItem, FContext>
-    | HydratedFilterRule<FItem, FContext>
-    | SortByRule<FItem, FContext>
-    | GroupByRule<FItem, FContext>;
+export type RuleDefinition<FItem = any, FContext = any> =
+    | SearchRuleDefinition<FItem, FContext>
+    | FilterRuleUnionDefinition<FItem, FContext>
+    | SortByRuleDefinition<FItem, FContext>
+    | GroupByRuleDefinition<FItem, FContext>;
 
-export type HydratedFinderRule<FItem = any, FContext = any> =
-    | SearchRule<FItem, FContext>
-    | HydratedFilterRule<FItem, FContext>
-    | SortByRule<FItem, FContext>
-    | GroupByRule<FItem, FContext>;
+export type HydratedRuleDefinition<FItem = any, FValue = any, FContext = any> =
+    | SearchRuleDefinition<FItem, FContext>
+    | FilterRuleUnionHydratedDefinition<FItem, FValue, FContext>
+    | SortByRuleDefinition<FItem, FContext>
+    | GroupByRuleDefinition<FItem, FContext>;
 
-export interface SearchRule<FItem = any, FContext = any> extends Omit<RuleBase, "id"> {
+export interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
     id?: string;
     searchFn?: (item: FItem, context: FContext) => string | string[];
-}
-
-export interface FilterOptionGeneratorFnOptions<FItem, FContext = any> {
-    items: FItem[];
-    context: FContext;
 }
 
 /**
  * Describes the display of a filter or sort option.
  */
 export interface FilterOption<FValue = any> {
-    label: string;
+    label?: string;
     value: FValue;
     disabled?: boolean;
 }
 
-export interface FilterRule<FItem = any, FValue = any, FContext = any> extends RuleBase {
-    options?: FilterOption<FValue>[] | ((options: FilterOptionGeneratorFnOptions<FItem, FContext>) => FilterOption<FValue>[]);
+export interface FilterRuleDefinition<FItem = any, FValue = unknown, FContext = any> extends Rule {
+    filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
     required?: boolean;
+    strictOptions?: boolean;
+    multiple?: boolean;
+    boolean?: boolean;
 }
 
-export interface FilterRuleWithBooleanValue<FItem, FContext = any> extends FilterRule<FItem> {
+export interface FilterRuleWithBooleanValue<FItem = any, FValue = boolean, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     multiple?: false;
     boolean: true;
-    filterFn: (item: FItem, value: boolean, context: FContext) => boolean;
     defaultValue?: boolean;
+    options?: never;
 }
-export interface FilterRuleWithSingleValue<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
+export type FilterRuleWithBooleanValueAndHydratedOptions<FItem = any, FValue = unknown, FContext = any> = Omit<
+    FilterRuleWithBooleanValue<FItem, FValue, FContext>,
+    "options"
+> &
+    HydratedFilterOptions<FValue>;
+
+export interface FilterRuleWithSingleValue<FItem = any, FValue = unknown, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     multiple?: false;
     boolean?: false;
-    filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
     defaultValue?: FValue;
+    options?: FilterOption<FValue>[] | ((options: { items: FItem[]; context: FContext }) => FilterOption<FValue>[]);
 }
+export type FilterRuleWithSingleValueAndHydratedOptions<FItem = any, FValue = unknown, FContext = any> = Omit<
+    FilterRuleWithSingleValue<FItem, FValue, FContext>,
+    "options"
+> &
+    HydratedFilterOptions<FValue>;
 
-export interface FilterRuleWithMultipleValues<FItem, FValue, FContext = any> extends FilterRule<FItem, FValue, FContext> {
+export interface FilterRuleWithMultipleValues<FItem = any, FValue = unknown, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     multiple: true;
     boolean?: false;
-    filterFn: (item: FItem, value: FValue[], context: FContext) => boolean;
-    defaultValue?: FValue[];
+    defaultValue?: FValue;
+    options?: FilterOption<FValue>[] | ((options: { items: FItem[]; context: FContext }) => FilterOption<FValue>[]);
 }
+export type FilterRuleWithMultipleValuesAndHydratedOptions<FItem = any, FValue = unknown, FContext = any> = Omit<
+    FilterRuleWithMultipleValues<FItem, FValue, FContext>,
+    "options"
+> &
+    HydratedFilterOptions<FValue>;
 
-export type FilterRuleUnion<FItem = any, FValue = any> =
-    | FilterRuleWithBooleanValue<FItem>
-    | FilterRuleWithSingleValue<FItem, FValue>
-    | FilterRuleWithMultipleValues<FItem, FValue>;
+export type FilterRuleUnionDefinition<FItem = any, FValue = any, FContext = any> =
+    | FilterRuleWithBooleanValue<FItem, FContext>
+    | FilterRuleWithSingleValue<FItem, FValue, FContext>
+    | FilterRuleWithMultipleValues<FItem, FValue, FContext>;
 
 /**
  * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
  */
-export interface HydratedFilterRule<FItem = any, FValue = any, FContext = any> extends Omit<FilterRule<FItem, FValue>, "options"> {
-    options?: FilterOption<FValue>[];
-    required: boolean;
-    boolean: boolean;
-    hidden: boolean;
-    multiple: boolean;
+export type FilterRuleUnionHydratedDefinition<FItem = any, FValue = unknown, FContext = any> =
+    | FilterRuleWithBooleanValueAndHydratedOptions<FItem, FValue, FContext>
+    | FilterRuleWithMultipleValuesAndHydratedOptions<FItem, FValue, FContext>
+    | FilterRuleWithSingleValueAndHydratedOptions<FItem, FValue, FContext>;
 
-    filterFn: ((item: FItem, value: FValue, context: FContext) => boolean) | ((item: FItem, value: FValue[], context: FContext) => boolean);
-    defaultValue?: boolean | FValue | FValue[];
-    _isHydrated: true;
+export interface HydratedFilterOptions<FValue = any> {
+    options?: FilterOption<FValue>[];
 }
 
-export interface SortByRule<FItem = any, FContext = any> extends RuleBase {
+export interface SortByRuleDefinition<FItem = any, FContext = any> extends Rule {
     sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
     defaultSortDirection?: SortDirection;
 }
 
-export interface GroupByRule<FItem = any, FContext = any> extends RuleBase {
+export interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule {
     groupFn: FinderPropertySelector<FItem, FContext>;
     sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
     defaultGroupSortDirection?: SortDirection;
@@ -104,18 +114,20 @@ export interface GroupByRule<FItem = any, FContext = any> extends RuleBase {
 }
 
 export interface SearchTestOptions {
-    rule: SearchRule[];
+    rule: SearchRuleDefinition[];
     searchTerm: string;
 }
 
 export interface FilterTestOptions {
-    rules: HydratedFilterRule[];
+    rules: FilterRuleUnionHydratedDefinition[];
     values?: Record<string, any>;
     isAdditive?: boolean;
 }
 
 export interface FilterTestRuleOptions {
-    rule: string | FilterRuleUnion | HydratedFilterRule;
+    rule: string | FilterRuleUnionDefinition | FilterRuleUnionHydratedDefinition;
     value: any;
     isAdditive?: boolean;
 }
+
+export type AnyButNotArray = (object | string | bigint | number | boolean) & { length?: never };

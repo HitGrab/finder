@@ -1,50 +1,43 @@
-import { ERRORS } from "./core-constants";
-import { FinderError } from "./finder-error";
-import { FinderRule } from "./types/rule-types";
-import { isFilterRule, isGroupByRule, isSearchRule, isSortByRule } from "./utils/rule-utils";
+import { ERRORS } from "../core-constants";
+import { FinderError } from "../finder-error";
+import { HydratedRuleDefinition, RuleDefinition } from "../types/rule-types";
+import { isFilterRuleDefinition, isGroupByRuleDefinition, isSearchRuleDefinition, isSortByRuleDefinition } from "../utils/rule-utils";
 
 /**
- * Stores rule definitions and hydrated rules
+ * Stores rule definitions and hydrated rules class objects
  */
 export class RuleBook<FItem, FContext> {
     #definitions;
 
-    rules: FinderRule<FItem>[] = [];
+    rules: HydratedRuleDefinition[] = [];
 
-    constructor(definitions: FinderRule<FItem>[], items: FItem[], context: FContext) {
+    constructor(definitions: RuleDefinition<FItem>[], items: FItem[], context: FContext) {
         RuleBook.validateDefinitions(definitions);
         this.#definitions = definitions;
         this.hydrateDefinitions(items, context);
     }
 
     hydrateDefinitions(items: FItem[], context: FContext) {
-        this.rules = this.#definitions.map((rule) => {
-            if (isFilterRule(rule)) {
+        this.rules = this.#definitions.map((definition) => {
+            if (isFilterRuleDefinition(definition)) {
+                const options = typeof definition.options === "function" ? definition.options({ items, context }) : definition.options;
                 return {
-                    ...rule,
-
-                    options: typeof rule.options === "function" ? rule.options({ items, context }) : rule.options,
-
-                    // reduce uncertainty
-                    multiple: !!rule.multiple,
-                    required: !!rule.required,
-                    boolean: !!rule.boolean,
-                    hidden: !!rule.hidden,
-
-                    // brand it
-                    _isHydrated: true,
+                    ...definition,
+                    boolean: !!definition.boolean,
+                    multiple: !!definition.multiple,
+                    strictOptions: definition.strictOptions ?? true,
+                    options,
                 };
             }
-            return rule;
+            return definition;
         });
     }
 
-    getRule(identifier: string | FinderRule) {
+    getRule(identifier: string | RuleDefinition) {
         const rule = this.rules.find((rule) => {
             if (typeof identifier === "object") {
                 return rule.id === identifier.id;
             }
-
             return rule.id === identifier;
         });
         if (rule === undefined) {
@@ -57,28 +50,26 @@ export class RuleBook<FItem, FContext> {
         return this.#definitions;
     }
 
-    setRules(definitions: FinderRule<FItem>[]) {
+    setRules(definitions: RuleDefinition<FItem>[]) {
         RuleBook.validateDefinitions(definitions);
         this.#definitions = definitions;
     }
 
-    static validateDefinitions(definitions: FinderRule[]) {
+    static validateDefinitions(definitions: RuleDefinition[]) {
         if (definitions.length === 0) {
             return false;
         }
 
-        const validators = [isSearchRule, isFilterRule, isSortByRule, isGroupByRule];
+        const validators = [isSearchRuleDefinition, isFilterRuleDefinition, isSortByRuleDefinition, isGroupByRuleDefinition];
 
         const filterIds = new Set();
         definitions.forEach((rule) => {
-            if (rule.id === undefined && !isSearchRule(rule)) {
+            if (rule.id === undefined && !isSearchRuleDefinition(rule)) {
                 throw new FinderError(ERRORS.INVALID_RULE_WITHOUT_ID, rule);
             }
-
             if (validators.some((validator) => validator(rule)) === false) {
                 throw new FinderError(ERRORS.INVALID_RULE_SHAPE, rule);
             }
-
             if (rule.id) {
                 if (filterIds.has(rule.id)) {
                     throw new FinderError(ERRORS.INVALID_RULE_DUPLICATE, rule);

@@ -5,13 +5,33 @@ import { objectItems, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
 describe("Search", () => {
-    test("Accessors and Mutators", () => {
+    test("Default behaviour if no rule is set", () => {
+        const finder = new FinderCore(objectItems, { rules: [] });
+        expect(finder.search.hasSearchRule).toBe(false);
+        expect(finder.search.rule).toBe(undefined);
+        expect(finder.search.hasSearchTerm).toBe(false);
+
+        // Finder will complain when a searchTerm is set and no search rule was provided
+        expect(() => {
+            finder.search.setSearchTerm("doomed");
+        }).toThrowError();
+    });
+
+    test("Rule accessors", () => {
+        const rule = searchRule({
+            searchFn: (item: MockObjectItem) => item.type,
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
+        expect(finder.search.hasSearchRule).toBe(true);
+        expect(finder.search.rule).toEqual(rule);
+    });
+
+    test("Search term mutators", () => {
         const rule = searchRule({
             searchFn: (item: MockObjectItem) => item.type,
         });
 
         const finder = new FinderCore(objectItems, { rules: [rule] });
-        expect(finder.search.hasSearchRule).toBe(true);
 
         // empty string by default
         expect(finder.search.searchTerm).toBe("");
@@ -29,7 +49,7 @@ describe("Search", () => {
         expect(finder.search.hasSearchTerm).toBe(false);
     });
 
-    test("Search", () => {
+    test("Search result", () => {
         const rules = [
             searchRule({
                 searchFn: (item: MockObjectItem) => item.type,
@@ -39,6 +59,36 @@ describe("Search", () => {
         const finder = new FinderCore(objectItems, { rules });
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toEqual([apple]);
+    });
+
+    test("initialSearchTerm", () => {
+        const rule = searchRule({
+            searchFn: (item: MockObjectItem) => item.type,
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule], initialSearchTerm: "apple" });
+        expect(finder.matches.items).toEqual([apple]);
+
+        // An initialSearchTerm cannot be set if no search rule is provided
+        expect(() => {
+            new FinderCore(objectItems, { rules: [], initialSearchTerm: "doomed" });
+        }).toThrowError();
+    });
+
+    test("Search must be string", () => {
+        const rule = searchRule({
+            searchFn: (item: MockObjectItem) => item.type,
+        });
+        const finder = new FinderCore(objectItems, { rules: [rule] });
+        // An initialSearchTerm cannot be set if no search rule is provided
+        expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
+            finder.search.setSearchTerm({ doomed: true });
+        }).toThrowError();
+
+        expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
+            finder.search.setSearchTerm(undefined);
+        }).toThrowError();
     });
 
     test("Search ranks by closest match", () => {
@@ -91,14 +141,21 @@ describe("Search", () => {
     });
 
     test("Test search", () => {
+        const finderWithoutSearch = new FinderCore(objectItems, { rules: [] });
+
+        // Finder will complain when a test is called without a matching search rule
+        expect(() => {
+            finderWithoutSearch.search.test("doomed");
+        }).toThrowError();
+
         const rules = [
             searchRule({
                 searchFn: (item: MockObjectItem) => item.type,
             }),
         ];
 
-        const finder = new FinderCore(objectItems, { rules });
-        expect(finder.search.test("ple")).toEqual([apple]);
+        const finderWithSearch = new FinderCore(objectItems, { rules });
+        expect(finderWithSearch.search.test("ple")).toEqual([apple]);
     });
 
     test("Test quoted search", () => {

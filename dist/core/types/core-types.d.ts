@@ -1,10 +1,10 @@
 import { DebounceCallbackRegistry } from "../debounce-callback-registry";
-import { RuleBook } from "../rule-book";
+import { RuleBook } from "../rule-book/rule-book";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
-import { FinderRule, GroupByRule, HydratedFilterRule, SearchRule, SortByRule } from "./rule-types";
+import { FilterRuleUnionDefinition, FinderRuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition } from "./rule-types";
 export interface FinderConstructorOptions<FItem, FContext = any> {
-    rules: FinderRule<FItem>[];
+    rules: FinderRuleDefinition<FItem>[];
     effects?: (RuleEffect | SearchEffect)[];
     context?: FContext;
     isLoading?: boolean;
@@ -13,6 +13,7 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
     initialSortBy?: string;
     initialSortDirection?: SortDirection;
     initialGroupBy?: string;
+    initialGroupBySortDirection?: SortDirection;
     initialFilters?: Record<string, any>;
     ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
     requireGroup?: boolean;
@@ -59,14 +60,14 @@ export interface SnapshotSerializedMixins {
 }
 export interface SerializedSearchMixin {
     searchTerm: string;
-    rule?: SearchRule;
+    rule?: SearchRuleDefinition;
 }
 export interface SerializedFiltersMixin {
-    rules: HydratedFilterRule[];
+    rules: FilterRuleUnionDefinition[];
     values: Record<string, any>;
 }
 export interface SerializedSortByMixin {
-    rule?: SortByRule;
+    rule?: SortByRuleDefinition;
     sortDirection?: SortDirection;
 }
 export interface SerializedPaginationMixin {
@@ -74,12 +75,8 @@ export interface SerializedPaginationMixin {
     numItemsPerPage?: number;
 }
 export interface SerializedGroupByMixin {
-    rule?: GroupByRule;
-    sortDirection?: SortDirection;
-}
-export interface SearchScore {
-    percentOfHaystackMatched: number;
-    longestSequentialSequence: number;
+    rule?: GroupByRuleDefinition;
+    groupBySortDirection?: SortDirection;
 }
 export interface PaginationMixinInterface {
     page: number;
