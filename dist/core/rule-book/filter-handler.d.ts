@@ -19,7 +19,7 @@ export declare function makeFilterHandler(definition: HydratedFilterRuleDefiniti
     isMatch(item: any, value: unknown, context: unknown): boolean;
 } | {
     validate(value: unknown): boolean;
-    parse(value: unknown): unknown;
+    parse(value: unknown): any;
     has(value: unknown): value is {} | null;
     toggle(value: unknown, optionValue?: any): never;
     add(value: unknown, optionValue: any): never;

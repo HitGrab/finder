@@ -37,13 +37,13 @@ declare class FinderCore<FItem = any, FContext = any> {
     get filters(): {
         values: Record<string, any>;
         raw: Record<string, any>;
-        activeRules: import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
-        rules: import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
+        activeRules: import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>[];
+        rules: import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>[];
         isActive: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => boolean;
-        get: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => unknown;
+        get: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => any;
         add: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;
         has: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>, optionValue?: any) => boolean;
-        getRule: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>;
+        getRule: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>;
         toggle: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;
         set: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, value?: FValue | FValue[]) => void;
         delete: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;

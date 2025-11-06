@@ -22,7 +22,7 @@ export interface FilterOption<FValue = any> {
     value: FValue;
     disabled?: boolean;
 }
-export interface FilterRuleDefinition<FItem = any, FValue = unknown, FContext = any> extends Rule {
+export interface FilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends Rule {
     filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
     required?: boolean;
     strictOptions?: boolean;
@@ -40,12 +40,12 @@ export interface FilterRuleWithBooleanValue<FItem = any, FValue = boolean, FCont
     defaultValue?: boolean;
     options?: never;
 }
-export interface FilterRuleWithSingleValue<FItem = any, FValue = unknown, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+export interface FilterRuleWithSingleValue<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     multiple?: false;
     boolean?: false;
     defaultValue?: FValue;
 }
-export interface FilterRuleWithMultipleValues<FItem = any, FValue = unknown, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+export interface FilterRuleWithMultipleValues<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     multiple: true;
     boolean?: false;
     defaultValue?: FValue[];
@@ -53,7 +53,7 @@ export interface FilterRuleWithMultipleValues<FItem = any, FValue = unknown, FCo
 /**
  * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
  */
-export interface HydratedFilterRuleDefinition<FItem = any, FValue = unknown, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+export interface HydratedFilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
     options?: FilterOption<FValue>[];
     multiple: boolean;
     boolean: boolean;

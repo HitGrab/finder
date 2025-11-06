@@ -8,11 +8,11 @@ declare class FiltersMixin {
     #private;
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies);
     set<FValue>(identifier: FilterRuleIdentifier<FValue>, value?: FValue | FValue[]): void;
-    get rules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
-    get activeRules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
-    get(identifier: FilterRuleIdentifier): unknown;
+    get rules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>[];
+    get activeRules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>[];
+    get(identifier: FilterRuleIdentifier): any;
     has(identifier: FilterRuleIdentifier, optionValue?: any): boolean;
-    getRule(identifier: FilterRuleIdentifier): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>;
+    getRule(identifier: FilterRuleIdentifier): import("./types/rule-types").HydratedFilterRuleDefinition<any, any, any>;
     add<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
     delete<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
     toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
