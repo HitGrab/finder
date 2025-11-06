@@ -1,8 +1,8 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { FilterRuleWithSingleValue, HydratedFilterOptions } from "../types/rule-types";
+import { FilterRuleWithSingleValue, HydratedFilterRuleDefinition } from "../types/rule-types";
 
-export function SingleFilterHandler(definition: FilterRuleWithSingleValue & HydratedFilterOptions) {
+export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithSingleValue) {
     return {
         validate(value: unknown) {
             if (definition.strictOptions && Array.isArray(definition.options)) {

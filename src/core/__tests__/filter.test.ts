@@ -47,7 +47,6 @@ describe("Filters", () => {
         }).toThrowError();
 
         expect(() => {
-            // @ts-expect-error - Testing, expected to fail.
             finder.filters.toggle(booleanFilter, true);
         }).toThrowError();
 
@@ -57,20 +56,17 @@ describe("Filters", () => {
         }).toThrowError();
 
         expect(() => {
-            // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(booleanFilter, [true, false]);
         }).toThrowError();
     });
 
     test("Multiple filter", () => {
+        const optionThree = { label: "Three", value: 3 };
         const rule = filterRule<MockObjectItem, number>({
             id: "price",
             filterFn: (item, value) => value === item.price,
             multiple: true,
-            options: [
-                { label: "Three", value: 3 },
-                { label: "Five", value: 5 },
-            ],
+            options: [optionThree, { label: "Five", value: 5 }],
         });
         const finder = new FinderCore(objectItems, { rules: [rule] });
 
@@ -98,6 +94,12 @@ describe("Filters", () => {
 
         expect(finder.filters.get(rule)).toEqual([5]);
 
+        const mysteryRule = finder.filters.getRule(rule);
+        finder.filters.toggle(rule, optionThree);
+        finder.filters.add(mysteryRule.id, optionThree);
+        finder.filters.add(mysteryRule, optionThree);
+        finder.filters.toggle(mysteryRule, optionThree);
+
         // Finder will complain if an invalid set value is passed
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
@@ -111,7 +113,7 @@ describe("Filters", () => {
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
-            finder.filters.toggle(rule, "non_existent_option");
+            finder.filters.toggle(rule, "non_existent_option_with_incorrect_type");
         }).toThrowError();
     });
 
@@ -140,17 +142,14 @@ describe("Filters", () => {
         expect(finder.filters.get(rule)).toBe(undefined);
 
         expect(() => {
-            // @ts-expect-error - Testing, expected to fail.
             finder.filters.add(rule, 5);
         }).toThrowError();
 
         expect(() => {
-            // @ts-expect-error - Testing, expected to fail.
             finder.filters.delete(rule, 5);
         }).toThrowError();
 
         expect(() => {
-            // @ts-expect-error - Testing, expected to fail.
             finder.filters.toggle(rule, 5);
         }).toThrowError();
     });
@@ -187,7 +186,7 @@ describe("Filters", () => {
         });
 
         test("Toggle", () => {
-            const numericRule = filterRule<MockObjectItem, number>({
+            const singleValueRule = filterRule<MockObjectItem, number>({
                 id: "price",
                 filterFn: (item, value) => item.price === value,
             });
@@ -196,12 +195,11 @@ describe("Filters", () => {
                 filterFn: (item) => item.price === 10,
                 boolean: true,
             });
-            const finder = new FinderCore(objectItems, { rules: [numericRule, booleanRule], initialFilters: { price: 5 } });
+            const finder = new FinderCore(objectItems, { rules: [singleValueRule, booleanRule], initialFilters: { price: 5 } });
 
             // cannot toggle non-boolean rules
             expect(() => {
-                // @ts-expect-error - Testing, expected to fail.
-                finder.filters.toggle(numericRule);
+                finder.filters.toggle(singleValueRule);
             }).toThrowError();
 
             expect(finder.filters.isActive(booleanRule)).toBe(false);

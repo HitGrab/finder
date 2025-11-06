@@ -1,6 +1,6 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { HydratedRuleDefinition, RuleDefinition } from "../types/rule-types";
+import { RuleDefinition } from "../types/rule-types";
 import { isFilterRuleDefinition, isGroupByRuleDefinition, isSearchRuleDefinition, isSortByRuleDefinition } from "../utils/rule-utils";
 
 /**
@@ -9,7 +9,7 @@ import { isFilterRuleDefinition, isGroupByRuleDefinition, isSearchRuleDefinition
 export class RuleBook<FItem, FContext> {
     #definitions;
 
-    rules: HydratedRuleDefinition[] = [];
+    rules: RuleDefinition[] = [];
 
     constructor(definitions: RuleDefinition<FItem>[], items: FItem[], context: FContext) {
         RuleBook.validateDefinitions(definitions);

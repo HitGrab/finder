@@ -1,31 +1,23 @@
-import { FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
+import { AnyFilterRuleDefinition, FilterOption, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
-import { FilterRuleDefinition } from "..";
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
-type FilterRuleIdentifier<FValue = any> = string | Omit<FilterRuleDefinition<any, FValue>, "options">;
+type FilterRuleIdentifier<FValue = any> = string | AnyFilterRuleDefinition<any, FValue>;
 declare class FiltersMixin {
     #private;
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies);
-    set<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, value?: FValue[]): void;
-    set<FValue>(identifier: Omit<FilterRuleDefinition<any, FValue>, "options">, value?: FValue): void;
-    set(identifier: string, value?: unknown): void;
-    get rules(): import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
-    get activeRules(): import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
-    get(identifier: FilterRuleIdentifier): any;
+    set<FValue>(identifier: FilterRuleIdentifier<FValue>, value?: FValue | FValue[]): void;
+    get rules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
+    get activeRules(): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
+    get(identifier: FilterRuleIdentifier): unknown;
     has(identifier: FilterRuleIdentifier, optionValue?: any): boolean;
-    getRule(identifier: FilterRuleIdentifier): import("./types/rule-types").FilterRuleWithBooleanValueAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithMultipleValuesAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithSingleValueAndHydratedOptions<any, any, any>;
-    add<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-    add(identifier: string, optionValue?: unknown): void;
-    delete<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-    delete(identifier: string, optionValue?: unknown): void;
-    delete(identifier: FilterRuleIdentifier, optionValue?: never): void;
-    isRuleActive(identifier: FilterRuleIdentifier): boolean;
-    toggle(identifier: string, optionValue?: any): void;
-    toggle<FValue extends boolean>(identifier: FilterRuleWithBooleanValue<any, FValue>): void;
-    toggle<FValue>(identifier: FilterRuleWithMultipleValues<any, FValue>, optionValue?: FValue): void;
+    getRule(identifier: FilterRuleIdentifier): import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>;
+    add<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
+    delete<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
+    toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void;
     reset(): void;
+    isRuleActive(identifier: FilterRuleIdentifier): boolean;
     test(options: FilterTestOptions): any[];
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions): any[];
     testRuleOptions(identifier: FilterRuleIdentifier, isAdditive?: boolean): Map<any, any>;

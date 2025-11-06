@@ -2,7 +2,6 @@
 import { FinderCore } from "../finder-core";
 import { RuleEffect, SearchEffect } from "../types/effect-types";
 import {
-    FilterRuleUnionDefinition,
     FilterRuleWithBooleanValue,
     FilterRuleWithMultipleValues,
     FilterRuleWithSingleValue,
@@ -10,6 +9,7 @@ import {
     GroupByRuleDefinition,
     SearchRuleDefinition,
     SortByRuleDefinition,
+    AnyFilterRuleDefinition,
 } from "../types/rule-types";
 
 /**
@@ -70,20 +70,20 @@ export function searchEffect<FItem, FContext = any>(
     return { haystack, onChange };
 }
 
-export function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>) {
+export function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
     const composedFilter = { ...filter };
     delete composedFilter.boolean;
     delete composedFilter.multiple;
     return composedFilter as FilterRuleWithMultipleValues<FItem, FValue, FContext>;
 }
 
-export function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>) {
+export function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
     const composedFilter = { ...filter };
     delete composedFilter.multiple;
     return { ...composedFilter, boolean: true } as FilterRuleWithBooleanValue<FItem, boolean, FContext>;
 }
 
-export function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>) {
+export function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
     const composedFilter = { ...filter };
     delete composedFilter.boolean;
     return { ...composedFilter, multiple: true } as FilterRuleWithMultipleValues<FItem, FValue, FContext>;

@@ -33,7 +33,7 @@ declare class FinderCoreImplementation<FItem, FContext = any> {
         silently: (callback: EventCallback) => void;
         isSilent: () => boolean;
     };
-    getRule(identifier: string | RuleDefinition<FItem>): import("./types/rule-types").HydratedRuleDefinition;
+    getRule(identifier: string | RuleDefinition<FItem>): RuleDefinition;
     get state(): "loading" | "empty" | "groups" | "items" | "noMatches";
     setItems(items: FItem[] | null | undefined): void;
     setIsLoading(value?: boolean): void;

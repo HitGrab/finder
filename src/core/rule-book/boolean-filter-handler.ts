@@ -1,8 +1,8 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { FilterRuleWithBooleanValue } from "../types/rule-types";
+import { FilterRuleWithBooleanValue, HydratedFilterRuleDefinition } from "../types/rule-types";
 
-export function BooleanFilterHandler(definition: FilterRuleWithBooleanValue) {
+export function BooleanFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithBooleanValue) {
     return {
         validate(value: unknown) {
             if (value !== undefined && typeof value !== "boolean") {

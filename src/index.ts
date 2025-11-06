@@ -15,12 +15,12 @@ export {
     transformFilterToBoolean,
 } from "./core/utils/rule-type-enforcers";
 export type {
-    RuleDefinition,
     SearchRuleDefinition,
     SortByRuleDefinition,
     GroupByRuleDefinition,
     FilterRuleDefinition,
     FilterOption,
+    AnyFilterRuleDefinition,
 } from "./core/types/rule-types";
 export type { RuleEffect, SearchEffect } from "./core/types/effect-types";
 

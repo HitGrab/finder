@@ -4284,10 +4284,6 @@ class Gf {
     const l = this.getRule(u), d = this.#t[l.id];
     this.set(l, te(l).delete(d, i));
   }
-  isRuleActive(u) {
-    const i = this.getRule(u), l = this.#t[i.id];
-    return te(i).isActive(l);
-  }
   toggle(u, i) {
     const l = this.getRule(u), d = this.#t[l.id];
     if (l.boolean && i !== void 0)
@@ -4303,6 +4299,10 @@ class Gf {
       current: this.values,
       initial: u
     });
+  }
+  isRuleActive(u) {
+    const i = this.getRule(u), l = this.#t[i.id];
+    return te(i).isActive(l);
   }
   test(u) {
     if (this.#e.isLoading())

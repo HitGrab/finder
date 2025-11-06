@@ -2,7 +2,7 @@ import { DebounceCallbackRegistry } from "../debounce-callback-registry";
 import { RuleBook } from "../rule-book/rule-book";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
-import { RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition, FilterRuleUnionHydratedDefinition } from "./rule-types";
+import { RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition, HydratedFilterRuleDefinition } from "./rule-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
     rules: RuleDefinition<FItem>[];
@@ -88,7 +88,7 @@ export interface SerializedSearchMixin {
 }
 
 export interface SerializedFiltersMixin {
-    rules: FilterRuleUnionHydratedDefinition[];
+    rules: HydratedFilterRuleDefinition[];
     values: Record<string, any>;
 }
 

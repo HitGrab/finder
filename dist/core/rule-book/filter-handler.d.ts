@@ -1,5 +1,5 @@
-import { FilterRuleUnionHydratedDefinition } from "../types/rule-types";
-export declare function makeFilterHandler(definition: FilterRuleUnionHydratedDefinition): {
+import { HydratedFilterRuleDefinition } from "../types/rule-types";
+export declare function makeFilterHandler(definition: HydratedFilterRuleDefinition): {
     validate(value: unknown): boolean;
     parse(value: unknown): boolean;
     has(value: unknown): boolean;
@@ -19,7 +19,7 @@ export declare function makeFilterHandler(definition: FilterRuleUnionHydratedDef
     isMatch(item: any, value: unknown, context: unknown): boolean;
 } | {
     validate(value: unknown): boolean;
-    parse(value: unknown): any;
+    parse(value: unknown): unknown;
     has(value: unknown): value is {} | null;
     toggle(value: unknown, optionValue?: any): never;
     add(value: unknown, optionValue: any): never;

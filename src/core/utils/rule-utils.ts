@@ -1,14 +1,15 @@
 import { RuleEffect, SearchEffect } from "../types/effect-types";
 import {
-    FilterRuleUnionDefinition,
-    FilterRuleUnionHydratedDefinition,
     FilterRuleWithBooleanValue,
     FilterRuleWithMultipleValues,
     FilterRuleWithSingleValue,
     GroupByRuleDefinition,
+    HydratedFilterRuleDefinition,
     SearchRuleDefinition,
     SortByRuleDefinition,
 } from "../types/rule-types";
+
+type FilterRuleUnion<FItem> = FilterRuleWithSingleValue<FItem> | FilterRuleWithMultipleValues<FItem> | FilterRuleWithBooleanValue<FItem>;
 
 export function isSortByRuleDefinition<FItem>(rule: unknown): rule is SortByRuleDefinition<FItem> {
     return typeof rule === "object" && rule !== null && "sortFn" in rule;
@@ -18,11 +19,11 @@ export function isSearchRuleDefinition<FItem>(rule: unknown): rule is SearchRule
     return typeof rule === "object" && rule !== null && "searchFn" in rule;
 }
 
-export function isFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleUnionDefinition<FItem> {
+export function isFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleUnion<FItem> {
     return typeof rule === "object" && rule !== null && "filterFn" in rule;
 }
 
-export function isFilterRuleDefinitionWithHydratedOptions<FItem>(rule: unknown): rule is FilterRuleUnionHydratedDefinition<FItem> {
+export function isFilterRuleDefinitionWithHydratedOptions(rule: unknown): rule is HydratedFilterRuleDefinition {
     return isFilterRuleDefinition(rule) && typeof rule.options !== "function";
 }
 

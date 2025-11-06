@@ -37,35 +37,20 @@ declare class FinderCore<FItem = any, FContext = any> {
     get filters(): {
         values: Record<string, any>;
         raw: Record<string, any>;
-        activeRules: import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
-        rules: import("./types/rule-types").FilterRuleUnionHydratedDefinition<unknown>[];
-        isActive: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => boolean;
-        get: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => any;
-        add: {
-            <FValue>(identifier: Omit<import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-            (identifier: string, optionValue?: unknown): void;
-        };
-        has: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, optionValue?: any) => boolean;
-        getRule: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">) => import("./types/rule-types").FilterRuleWithBooleanValueAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithMultipleValuesAndHydratedOptions<any, any, any> | import("./types/rule-types").FilterRuleWithSingleValueAndHydratedOptions<any, any, any>;
-        toggle: {
-            (identifier: string, optionValue?: any): void;
-            <FValue extends boolean>(identifier: import("./types/rule-types").FilterRuleWithBooleanValue<any, FValue>): void;
-            <FValue>(identifier: import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, optionValue?: FValue): void;
-        };
-        set: {
-            <FValue>(identifier: Omit<import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, "options">, value?: FValue[]): void;
-            <FValue>(identifier: Omit<import("..").FilterRuleDefinition<any, FValue>, "options">, value?: FValue): void;
-            (identifier: string, value?: unknown): void;
-        };
-        delete: {
-            <FValue>(identifier: Omit<import("./types/rule-types").FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-            (identifier: string, optionValue?: unknown): void;
-            (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, optionValue?: never): void;
-        };
+        activeRules: import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
+        rules: import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>[];
+        isActive: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => boolean;
+        get: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => unknown;
+        add: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;
+        has: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>, optionValue?: any) => boolean;
+        getRule: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>) => import("./types/rule-types").HydratedFilterRuleDefinition<any, unknown, any>;
+        toggle: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;
+        set: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, value?: FValue | FValue[]) => void;
+        delete: <FValue>(identifier: string | import("..").AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | import("..").FilterOption<FValue>) => void;
         reset: () => void;
         test: (options: import("./types/rule-types").FilterTestOptions) => any[];
         testRule: ({ rule: identifier, value, ...options }: import("./types/rule-types").FilterTestRuleOptions) => any[];
-        testRuleOptions: (identifier: string | Omit<import("..").FilterRuleDefinition<any, any, any>, "options">, isAdditive?: boolean) => Map<any, any>;
+        testRuleOptions: (identifier: string | import("..").AnyFilterRuleDefinition<any, any>, isAdditive?: boolean) => Map<any, any>;
     };
     get sortBy(): {
         activeRule: import("..").SortByRuleDefinition<unknown, any> | undefined;

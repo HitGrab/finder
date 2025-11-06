@@ -1,6 +1,6 @@
 import { FinderCore } from "../finder-core";
 import { RuleEffect, SearchEffect } from "../types/effect-types";
-import { FilterRuleUnionDefinition, FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterRuleWithSingleValue, RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition } from "../types/rule-types";
+import { FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterRuleWithSingleValue, RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition, AnyFilterRuleDefinition } from "../types/rule-types";
 /**
  * Enforce structure for an array of rule of mixed types.
  */
@@ -13,6 +13,6 @@ export declare function sortByRule<FItem, FContext = any>(rule: SortByRuleDefini
 export declare function groupByRule<FItem, FContext = any>(rule: GroupByRuleDefinition<FItem, FContext>): GroupByRuleDefinition<FItem, FContext>;
 export declare function ruleEffect<FItem, FContext = any>(rules: string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]), onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void): RuleEffect<FItem, FContext>;
 export declare function searchEffect<FItem, FContext = any>(haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]), onChange: (instance: FinderCore<FItem, FContext>, searchTerm: string) => void): SearchEffect<FItem, FContext>;
-export declare function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
-export declare function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>): FilterRuleWithBooleanValue<FItem, boolean, FContext>;
-export declare function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: FilterRuleUnionDefinition<FItem, FValue, FContext>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
+export declare function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
+export declare function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithBooleanValue<FItem, boolean, FContext>;
+export declare function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;

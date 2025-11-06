@@ -1,5 +1,5 @@
-import { FilterRuleWithBooleanValue } from "../types/rule-types";
-export declare function BooleanFilterHandler(definition: FilterRuleWithBooleanValue): {
+import { FilterRuleWithBooleanValue, HydratedFilterRuleDefinition } from "../types/rule-types";
+export declare function BooleanFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithBooleanValue): {
     validate(value: unknown): boolean;
     parse(value: unknown): boolean;
     has(value: unknown): boolean;

@@ -1,18 +1,16 @@
-import { FilterOption, FilterRuleWithBooleanValue, FilterRuleWithMultipleValues, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
+import { AnyFilterRuleDefinition, FilterOption, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
 import { makeFilterHandler } from "./rule-book/filter-handler";
 import { isFilterRuleDefinitionWithHydratedOptions } from "./utils/rule-utils";
-import { FilterRuleDefinition } from "..";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
 
-type FilterRuleIdentifier<FValue = any> = string | Omit<FilterRuleDefinition<any, FValue>, "options">;
-
+type FilterRuleIdentifier<FValue = any> = string | AnyFilterRuleDefinition<any, FValue>;
 class FiltersMixin {
     #rawValues;
 
@@ -23,10 +21,7 @@ class FiltersMixin {
         this.#deps = deps;
     }
 
-    set<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, value?: FValue[]): void;
-    set<FValue>(identifier: Omit<FilterRuleDefinition<any, FValue>, "options">, value?: FValue): void;
-    set(identifier: string, value?: unknown): void;
-    set<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, value?: unknown): void {
+    set<FValue>(identifier: FilterRuleIdentifier<FValue>, value?: FValue | FValue[]): void {
         // early exit
         if (this.#deps.isDisabled()) {
             return;
@@ -80,9 +75,6 @@ class FiltersMixin {
     }
 
     getRule(identifier: FilterRuleIdentifier) {
-        // getRule(identifier: string): FilterRuleUnionHydratedDefinition;
-        // getRule<FValue>(identifier: Omit<FilterRuleDefinition<any, FValue>, "options">): FilterRuleUnionHydratedDefinition<any, FValue>;
-        // getRule<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
         if (!isFilterRuleDefinitionWithHydratedOptions(rule)) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
@@ -90,33 +82,19 @@ class FiltersMixin {
         return rule;
     }
 
-    add<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-    add(identifier: string, optionValue?: unknown): void;
-    add<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, optionValue?: unknown): void {
+    add<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).add(value, optionValue));
     }
 
-    delete<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
-    delete(identifier: string, optionValue?: unknown): void;
-    delete(identifier: FilterRuleIdentifier, optionValue?: never): void;
-    delete(identifier: FilterRuleIdentifier, optionValue?: unknown): void {
+    delete<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).delete(value, optionValue));
     }
 
-    isRuleActive(identifier: FilterRuleIdentifier) {
-        const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
-        return makeFilterHandler(rule).isActive(value);
-    }
-
-    toggle(identifier: string, optionValue?: any): void;
-    toggle<FValue extends boolean>(identifier: FilterRuleWithBooleanValue<any, FValue>): void;
-    toggle<FValue>(identifier: FilterRuleWithMultipleValues<any, FValue>, optionValue?: FValue): void;
-    toggle(identifier: string | FilterRuleWithBooleanValue | FilterRuleWithMultipleValues, optionValue?: any): void {
+    toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
         if (rule.boolean && optionValue !== undefined) {
@@ -135,6 +113,12 @@ class FiltersMixin {
             current: this.values,
             initial: previousValues,
         });
+    }
+
+    isRuleActive(identifier: FilterRuleIdentifier) {
+        const rule = this.getRule(identifier);
+        const value = this.#rawValues[rule.id];
+        return makeFilterHandler(rule).isActive(value);
     }
 
     test(options: FilterTestOptions) {

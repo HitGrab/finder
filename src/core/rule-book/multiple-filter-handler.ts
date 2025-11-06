@@ -1,8 +1,8 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { FilterRuleWithMultipleValues, HydratedFilterOptions } from "../types/rule-types";
+import { FilterRuleWithMultipleValues, HydratedFilterRuleDefinition } from "../types/rule-types";
 
-export function MultipleFilterHandler(definition: FilterRuleWithMultipleValues & HydratedFilterOptions) {
+export function MultipleFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithMultipleValues) {
     return {
         validate(value: unknown) {
             if (value !== undefined && Array.isArray(value) === false) {
