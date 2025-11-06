@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import { filterRule, finderRuleset, transformFilterToBoolean, transformFilterToMultiple } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, transformFilterToMultiple } from "../utils/rule-type-enforcers";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";
@@ -37,10 +37,12 @@ describe("Filters", () => {
         }).toThrowError();
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.add(booleanFilter, 5);
         }).toThrowError();
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.delete(booleanFilter, 5);
         }).toThrowError();
 
@@ -113,7 +115,7 @@ describe("Filters", () => {
         }).toThrowError();
     });
 
-    test("Single rule", () => {
+    test("Single value rule", () => {
         const rule = filterRule<MockObjectItem>({
             id: "price",
             filterFn: (item, value) => item.price === value,
@@ -138,10 +140,12 @@ describe("Filters", () => {
         expect(finder.filters.get(rule)).toBe(undefined);
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.add(rule, 5);
         }).toThrowError();
 
         expect(() => {
+            // @ts-expect-error - Testing, expected to fail.
             finder.filters.delete(rule, 5);
         }).toThrowError();
 
@@ -168,15 +172,6 @@ describe("Filters", () => {
         finder.setRules([multipleRule]);
         finder.filters.add(multipleRule, 3);
         finder.filters.set(multipleRule, [2, 10]);
-        expect(finder.matches.items).toEqual([orange, banana]);
-
-        finder.filters.reset();
-
-        const booleanRule = transformFilterToBoolean(multipleRule);
-
-        finder.setRules([booleanRule]);
-        finder.filters.set(booleanRule, false);
-        finder.filters.set(booleanRule, true);
         expect(finder.matches.items).toEqual([orange, banana]);
     });
 

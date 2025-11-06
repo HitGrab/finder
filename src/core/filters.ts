@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/unified-signatures */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import {
     FilterOption,
     FilterRuleUnionDefinition,
@@ -97,14 +95,19 @@ class FiltersMixin {
         return rule;
     }
 
-    add(identifier: FilterRuleIdentifier, optionValue: any) {
-        const rule = this.getRule(identifier);
+    add<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
+    add(identifier: string, optionValue?: unknown): void;
+    add<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, optionValue?: unknown): void {
+        const rule = this.getRule(identifier as string);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).add(value, optionValue));
     }
 
-    delete(identifier: FilterRuleIdentifier, optionValue?: any) {
-        const rule = this.getRule(identifier);
+    delete<FValue>(identifier: Omit<FilterRuleWithMultipleValues<any, FValue>, "options">, optionValue?: FValue): void;
+    delete(identifier: string, optionValue?: unknown): void;
+    delete(identifier: Omit<FilterRuleDefinition, "options">, optionValue?: never): void;
+    delete<FValue>(identifier: string | Omit<FilterRuleDefinition<any, FValue>, "options">, optionValue?: unknown): void {
+        const rule = this.getRule(identifier as string);
         const value = this.#rawValues[rule.id];
         this.set(rule, makeFilterHandler(rule).delete(value, optionValue));
     }
