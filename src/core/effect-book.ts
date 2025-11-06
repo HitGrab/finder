@@ -1,8 +1,8 @@
 import { FinderCore } from "./finder-core";
 import { hasCharacterIndexMatches } from "./search/calculate-string-match-segments";
 import { HydratedRuleEffect, HydratedSearchEffect, RuleEffect, SearchEffect } from "./types/effect-types";
-import { FinderRule } from "./types/rule-types";
-import { isRuleEffect, isSearchEffect } from "./utils/rule-utils";
+import { RuleDefinition } from "./types/rule-types";
+import { isRuleEffectDefinition, isSearchEffectDefinition } from "./utils/rule-utils";
 
 export class EffectBook<FItem, FContext> {
     #ruleEffectDefinitions;
@@ -12,8 +12,8 @@ export class EffectBook<FItem, FContext> {
     ruleEffects: HydratedRuleEffect[] = [];
 
     constructor(effects: (RuleEffect | SearchEffect)[], items: FItem[], context: FContext) {
-        this.#ruleEffectDefinitions = effects.filter(isRuleEffect);
-        this.#searchEffectDefinitions = effects.filter(isSearchEffect);
+        this.#ruleEffectDefinitions = effects.filter(isRuleEffectDefinition);
+        this.#searchEffectDefinitions = effects.filter(isSearchEffectDefinition);
         this.hydrateDefinitions(items, context);
     }
 
@@ -30,7 +30,7 @@ export class EffectBook<FItem, FContext> {
         });
     }
 
-    processRule(rule: FinderRule, instance: FinderCore) {
+    processRule(rule: RuleDefinition, instance: FinderCore) {
         this.ruleEffects.forEach((effect) => {
             const isEffectTriggered = effect.rules.some((identifier) => {
                 if (typeof identifier === "string" && rule.id === identifier) {

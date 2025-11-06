@@ -1,17 +1,16 @@
-import { isHydratedFilterRule } from "./utils/rule-utils";
-import { FilterOption, FilterRuleUnion, FilterTestOptions, FilterTestRuleOptions, HydratedFilterRule } from "./types/rule-types";
+import { AnyFilterRuleDefinition, FilterOption, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
-import { makeFilter } from "./filter-utils/filter-factory";
+import { makeFilterHandler } from "./rule-book/filter-handler";
+import { isFilterRuleDefinitionWithHydratedOptions } from "./utils/rule-utils";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;
 }
 
-type FilterRuleIdentifier = string | FilterRuleUnion | HydratedFilterRule;
-
+type FilterRuleIdentifier<FValue = any> = string | AnyFilterRuleDefinition<any, FValue>;
 class FiltersMixin {
     #rawValues;
 
@@ -22,7 +21,7 @@ class FiltersMixin {
         this.#deps = deps;
     }
 
-    set<FValue>(identifier: FilterRuleIdentifier, value: FValue | FValue[]) {
+    set<FValue>(identifier: FilterRuleIdentifier<FValue>, value?: FValue | FValue[]): void {
         // early exit
         if (this.#deps.isDisabled()) {
             return;
@@ -36,7 +35,7 @@ class FiltersMixin {
         const transformedFilterValue = isBlankString ? undefined : value;
 
         // ensure we have valid data
-        makeFilter(rule).validate(value);
+        makeFilterHandler(rule).validate(value);
 
         // early exit if nothing changed
         if (this.#rawValues[rule.id] !== undefined && this.#rawValues[rule.id] === transformedFilterValue) {
@@ -56,57 +55,70 @@ class FiltersMixin {
     }
 
     get rules() {
-        return this.#deps.getRuleBook().rules.filter(isHydratedFilterRule);
+        return this.#deps.getRuleBook().rules.filter(isFilterRuleDefinitionWithHydratedOptions);
     }
 
     get activeRules() {
-        return this.rules.filter((rule) => makeFilter(rule).isActive(this.#rawValues[rule.id]));
+        return this.rules.filter((rule) => makeFilterHandler(rule).isActive(this.#rawValues[rule.id]));
     }
 
     get(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
-        return makeFilter(rule).parse(value);
+        return makeFilterHandler(rule).parse(value);
     }
 
     has(identifier: FilterRuleIdentifier, optionValue?: any): boolean {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
-
-        return makeFilter(rule).has(value, optionValue);
+        return makeFilterHandler(rule).has(value, optionValue);
     }
 
     getRule(identifier: FilterRuleIdentifier) {
         const rule = this.#deps.getRuleBook().getRule(identifier);
-        if (isHydratedFilterRule(rule) === false) {
+        if (!isFilterRuleDefinitionWithHydratedOptions(rule)) {
             throw new FinderError(ERRORS.WRONG_RULE_TYPE_FOR_MIXIN, { rule });
         }
         return rule;
     }
 
-    add(identifier: FilterRuleIdentifier, optionValue: any) {
+    add<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
-        this.set(rule, makeFilter(rule).add(value, optionValue));
+        this.set(rule, makeFilterHandler(rule).add(value, optionValue));
     }
 
-    delete(identifier: FilterRuleIdentifier, optionValue?: any) {
+    delete<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
-        this.set(rule, makeFilter(rule).delete(value, optionValue));
+        this.set(rule, makeFilterHandler(rule).delete(value, optionValue));
+    }
+
+    toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
+        const rule = this.getRule(identifier);
+        const value = this.#rawValues[rule.id];
+        if (rule.boolean && optionValue !== undefined) {
+            throw new FinderError(ERRORS.TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE, { rule, value });
+        }
+        const toggledValue = makeFilterHandler(rule).toggle(value, optionValue);
+        this.set(rule, toggledValue);
+    }
+
+    reset() {
+        const previousValues = this.values;
+        this.#rawValues = {};
+        this.#deps.touch({
+            source: EVENT_SOURCE.FILTERS,
+            event: EVENTS.RESET_FILTERS,
+            current: this.values,
+            initial: previousValues,
+        });
     }
 
     isRuleActive(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
         const value = this.#rawValues[rule.id];
-        return makeFilter(rule).isActive(value);
-    }
-
-    toggle(identifier: FilterRuleIdentifier, optionValue?: any) {
-        const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
-        const toggledValue = makeFilter(rule).toggle(value, optionValue);
-        this.set(rule, toggledValue);
+        return makeFilterHandler(rule).isActive(value);
     }
 
     test(options: FilterTestOptions) {
@@ -141,7 +153,7 @@ class FiltersMixin {
 
         const rule = this.getRule(identifier);
 
-        if (rule.boolean === true) {
+        if (rule.boolean) {
             const resultMap = new Map<FilterOption | boolean, any[]>();
             resultMap.set(true, this.testRule({ rule, value: true }));
             resultMap.set(false, this.testRule({ rule, value: false }));
@@ -189,14 +201,15 @@ class FiltersMixin {
 
     static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context: any) {
         const activeRules = options.rules.filter((rule) => {
-            return makeFilter(rule).isActive(options.values[rule.id]);
+            return isFilterRuleDefinitionWithHydratedOptions(rule) && makeFilterHandler(rule).isActive(options.values[rule.id]);
         });
         if (activeRules.length === 0) {
             return items;
         }
         return items.filter((item) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            return activeRules.every((rule) => rule.filterFn(item, options.values[rule.id], context));
+            return activeRules.every(
+                (rule) => isFilterRuleDefinitionWithHydratedOptions(rule) && makeFilterHandler(rule).isMatch(item, options.values[rule.id], context),
+            );
         });
     }
 }

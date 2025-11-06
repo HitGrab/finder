@@ -1,10 +1,10 @@
 import { debounce } from "lodash";
-import { FinderRule } from "./types/rule-types";
+import { RuleDefinition } from "./types/rule-types";
 
 function DebounceCallbackRegistry() {
-    const registry = new Map<FinderRule, ReturnType<typeof debounce>>();
+    const registry = new Map<RuleDefinition, ReturnType<typeof debounce>>();
 
-    return (rule: FinderRule, callback: () => void) => {
+    return (rule: RuleDefinition, callback: () => void) => {
         // if this rule has no delay, immediately trigger the passed callback
         if (rule.debounceMilliseconds === undefined) {
             return callback();

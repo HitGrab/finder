@@ -1,5 +1,5 @@
 import { orderBy } from "lodash";
-import { SearchScore, SerializedSearchMixin } from "../types/core-types";
+import { SerializedSearchMixin } from "../types/core-types";
 import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
 import { calculateSearchScore } from "./search-score";
 import { transformStringForComparison } from "./search-string-transform";
@@ -7,6 +7,11 @@ import { transformStringForComparison } from "./search-string-transform";
 interface SearchScoreItem<FItem> {
     item: FItem;
     score: SearchScore;
+}
+
+interface SearchScore {
+    percentOfHaystackMatched: number;
+    longestSequentialSequence: number;
 }
 
 export function defaultSearchAndSortAlgorithm<FItem>(options: SerializedSearchMixin, items: FItem[], context: unknown) {

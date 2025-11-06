@@ -1,6 +1,6 @@
 import { FinderCoreImplementation } from "./finder-core-implementation";
 import { FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
-import { FinderRule } from "./types/rule-types";
+import { RuleDefinition } from "./types/rule-types";
 
 /**
  * This thin wrapper around FinderCoreImplementation defines the mixin interfaces and hides private methods.
@@ -88,6 +88,7 @@ class FinderCore<FItem = any, FContext = any> {
             toggle: mixin.toggle.bind(mixin),
             set: mixin.set.bind(mixin),
             delete: mixin.delete.bind(mixin),
+            reset: mixin.reset.bind(mixin),
             test: mixin.test.bind(mixin),
             testRule: mixin.testRule.bind(mixin),
             testRuleOptions: mixin.testRuleOptions.bind(mixin),
@@ -115,7 +116,7 @@ class FinderCore<FItem = any, FContext = any> {
             activeRule: mixin.activeRule,
             requireGroup: mixin.requireGroup,
             rules: mixin.rules,
-            groupSortDirection: mixin.groupSortDirection,
+            groupBySortDirection: mixin.groupBySortDirection,
             set: mixin.set.bind(mixin),
             toggle: mixin.toggle.bind(mixin),
             setGroupSortDirection: mixin.setGroupSortDirection.bind(mixin),
@@ -153,7 +154,7 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.setIsDisabled(value);
     }
 
-    setRules(definitions: FinderRule<FItem>[]) {
+    setRules(definitions: RuleDefinition<FItem>[]) {
         return this.#finder.setRules(definitions);
     }
 
@@ -169,8 +170,13 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.test(mixins, isAdditive);
     }
 
-    getRule(identifier: string | FinderRule<FItem>) {
-        return this.#finder.getRule(identifier);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+    getRule<T extends RuleDefinition<FItem>>(identifier: string | RuleDefinition<FItem>) {
+        return this.#finder.getRule(identifier) as T | undefined;
+    }
+
+    toJSON() {
+        return this.#finder.toJSON();
     }
 }
 

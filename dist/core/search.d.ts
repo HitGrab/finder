@@ -6,7 +6,7 @@ declare class SearchMixin<FItem> {
     #private;
     searchTerm: string;
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>);
-    get rule(): import("..").SearchRule<unknown, any> | undefined;
+    get rule(): import("..").SearchRuleDefinition<unknown, any> | undefined;
     get hasSearchRule(): boolean;
     get hasSearchTerm(): boolean;
     setSearchTerm(value: string): void;
