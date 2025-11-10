@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "allowJs": true,
+        "allowJs": false,
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
-        "checkJs": true,
+        "checkJs": false,
         "declaration": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
@@ -12,7 +12,7 @@
         "lib": ["DOM", "DOM.Iterable", "ES2022"],
         "module": "ES2022",
         "moduleResolution": "Bundler",
-        "noEmit": true,
+        "noEmit": false,
         "noImplicitReturns": true,
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
