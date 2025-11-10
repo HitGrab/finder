@@ -9,7 +9,7 @@ interface InitialValues {
 }
 
 class SearchMixin<FItem> {
-    searchTerm: string;
+    searchTerm = "";
 
     #deps;
 

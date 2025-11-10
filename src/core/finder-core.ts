@@ -1,4 +1,4 @@
-import { FinderCoreImplementation } from "./finder-core-implementation";
+import { FinderImplementation } from "./finder-implementation";
 import { FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
 import { RuleDefinition } from "./types/rule-types";
 
@@ -6,11 +6,11 @@ import { RuleDefinition } from "./types/rule-types";
  * This thin wrapper around FinderCoreImplementation defines the mixin interfaces and hides private methods.
  */
 class FinderCore<FItem = any, FContext = any> {
-    #finder: FinderCoreImplementation<FItem, FContext>;
+    #finder: FinderImplementation<FItem, FContext>;
 
     constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem, FContext>) {
         const getInstance = () => this;
-        this.#finder = new FinderCoreImplementation(items, options, getInstance);
+        this.#finder = new FinderImplementation(items, options, getInstance);
     }
 
     get items() {

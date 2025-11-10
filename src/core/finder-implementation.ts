@@ -1,21 +1,21 @@
-import { SearchMixin } from "./search";
-import { isEqual } from "lodash";
-import { EVENT_SOURCE, EVENTS } from "./core-constants";
-import { FiltersMixin } from "./filters";
-import { SortByMixin } from "./sort-by";
-import { GroupByMixin } from "./group-by";
-import { PaginationMixin } from "./pagination";
 import { FinderCore } from "./finder-core";
 import { DebounceCallbackRegistry } from "./debounce-callback-registry";
-import { EffectBook } from "./effect-book";
 import { EventEmitter } from "./event-emitter";
 import { Tester } from "./tester";
 import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
 import { RuleDefinition } from "./types/rule-types";
 import { RuleBook } from "./rule-book/rule-book";
+import { isRuleEffectDefinition, isSearchEffectDefinition } from "./utils/rule-utils";
+import { isEqual } from "lodash";
+import { EVENT_SOURCE, EVENTS } from "./core-constants";
+import { FiltersMixin } from "./filters-mixin";
+import { GroupByMixin } from "./group-by-mixin";
+import { PaginationMixin } from "./pagination-mixin";
+import { SearchMixin } from "./search-mixin";
+import { SortByMixin } from "./sort-by-mixin";
 
-class FinderCoreImplementation<FItem, FContext = any> {
+export class FinderImplementation<FItem, FContext = any> {
     #items: FItem[] | null | undefined;
 
     isReady = false;
@@ -30,24 +30,22 @@ class FinderCoreImplementation<FItem, FContext = any> {
 
     #ignoreSortByRulesWhileSearchRuleIsActive;
 
-    #eventEmitter: EventEmitter<FinderEventName>;
+    #eventEmitter = new EventEmitter<FinderEventName>();
 
     // Subclasses that extend functionality
-
     search: SearchMixin<FItem>;
     filters: FiltersMixin;
     sortBy: SortByMixin<FItem>;
-    groupBy: GroupByMixin<FItem, FContext>;
+    groupBy: GroupByMixin<FItem>;
     pagination: PaginationMixin<FItem>;
-
-    #matches: Tester<FItem, FContext>;
+    #matches = new Tester<FItem, FContext>();
 
     context: FContext;
 
     #ruleBook: RuleBook<FItem, FContext>;
-    #effectBook: EffectBook<FItem, FContext>;
 
-    getInstanceFn;
+    // return the public API for this Finder instance
+    getInstanceInterfaceFn;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -72,21 +70,27 @@ class FinderCoreImplementation<FItem, FContext = any> {
             onFirstUserInteraction,
             onChange,
         }: FinderConstructorOptions<FItem, FContext>,
-        getInstanceFn: () => FinderCore,
+        getInstanceInterfaceFn: () => FinderCore,
     ) {
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
-        this.#eventEmitter = new EventEmitter();
-        this.getInstanceFn = getInstanceFn;
+        this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
+        this.getInstanceInterfaceFn = getInstanceInterfaceFn;
+        this.updatedAt = Date.now();
+        this.context = context as FContext;
+        this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
 
-        this.#ruleBook = new RuleBook(rules, items ?? [], context);
-        this.#effectBook = new EffectBook(effects ?? [], items ?? [], context);
+        const ruleEffects = effects?.filter(isRuleEffectDefinition) ?? [];
+        const searchEffects = effects?.filter(isSearchEffectDefinition) ?? [];
+        this.#ruleBook = new RuleBook({ rules, ruleEffects, searchEffects });
+        this.#ruleBook.hydrateDefinitions(items ?? [], context as FContext);
+
         const debouncerFn = DebounceCallbackRegistry();
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
-        const mixinDeps: MixinInjectedDependencies<FItem, FContext> = {
+        const mixinDeps: MixinInjectedDependencies<FItem> = {
             getItems: () => this.items,
-            getRuleBook: () => this.#ruleBook,
+            getRuleBook: () => this.#ruleBook.list,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
@@ -100,14 +104,6 @@ class FinderCoreImplementation<FItem, FContext = any> {
         this.sortBy = new SortByMixin({ initialSortBy, initialSortDirection }, mixinDeps);
         this.groupBy = new GroupByMixin({ initialGroupBy, initialGroupBySortDirection, requireGroup: !!requireGroup }, mixinDeps);
         this.pagination = new PaginationMixin({ page, numItemsPerPage }, mixinDeps);
-        this.updatedAt = Date.now();
-
-        this.#matches = new Tester();
-
-        // type hack: revise this later
-        this.context = context as FContext;
-
-        this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
 
         // Don't trigger any events while onInit methods trigger
         this.#eventEmitter.silently(() => {
@@ -115,7 +111,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
                 source: EVENT_SOURCE.CORE,
                 event: EVENTS.INIT,
                 timestamp: Date.now(),
-                instance: this.getInstanceFn(),
+                instance: this.getInstanceInterfaceFn(),
             };
 
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
@@ -132,7 +128,6 @@ class FinderCoreImplementation<FItem, FContext = any> {
             this.#eventEmitter.on(EVENTS.FIRST_USER_INTERACTION, onFirstUserInteraction);
         }
 
-        this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
         if (onReady) {
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
             if (this.isReady) {
@@ -140,7 +135,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
                     source: EVENT_SOURCE.CORE,
                     event: EVENTS.READY,
                     timestamp: Date.now(),
-                    instance: this.getInstanceFn(),
+                    instance: this.getInstanceInterfaceFn(),
                 });
             }
         }
@@ -169,18 +164,14 @@ class FinderCoreImplementation<FItem, FContext = any> {
         const payload: FinderChangeEvent = {
             ...touchEvent,
             timestamp: Date.now(),
-            instance: this.getInstanceFn(),
+            instance: this.getInstanceInterfaceFn(),
         };
         this.#eventEmitter.emit(EVENTS.CHANGE, payload);
 
         // trigger any effects that may be affected by the change to this rule
         this.#eventEmitter.silently(() => {
             if (touchEvent.rule) {
-                this.#effectBook.processRule(touchEvent.rule, this.getInstanceFn());
-            }
-
-            if (this.search.hasSearchTerm) {
-                this.#effectBook.processSearchTerm(this.search.searchTerm, this.getInstanceFn());
+                this.#ruleBook.onChange(touchEvent.rule, this.getInstanceInterfaceFn());
             }
         });
     }
@@ -194,7 +185,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
         const changeEvent: FinderChangeEvent = {
             ...touchEvent,
             timestamp: Date.now(),
-            instance: this.getInstanceFn(),
+            instance: this.getInstanceInterfaceFn(),
         };
         this.#eventEmitter.emit(touchEvent.event, changeEvent);
     }
@@ -212,7 +203,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
                 source: EVENT_SOURCE.CORE,
                 event: EVENTS.FIRST_USER_INTERACTION,
                 timestamp: Date.now(),
-                instance: this.getInstanceFn(),
+                instance: this.getInstanceInterfaceFn(),
             };
             // emit the public-facing change event
             this.#eventEmitter.emit(EVENTS.FIRST_USER_INTERACTION, payload);
@@ -296,7 +287,7 @@ class FinderCoreImplementation<FItem, FContext = any> {
     }
 
     getRule(identifier: string | RuleDefinition<FItem>) {
-        return this.#ruleBook.getRule(identifier);
+        return this.#ruleBook.list.getRule(identifier);
     }
 
     get state() {
@@ -323,7 +314,6 @@ class FinderCoreImplementation<FItem, FContext = any> {
             const previousValue = this.#items;
             this.#items = items;
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-            this.#effectBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_ITEMS, current: items, initial: previousValue });
         }
     }
@@ -348,9 +338,9 @@ class FinderCoreImplementation<FItem, FContext = any> {
     }
 
     setRules(definitions: RuleDefinition<FItem, FContext>[]) {
-        if (isEqual(definitions, this.#ruleBook.getDefinitions()) === false) {
-            this.#ruleBook.setRules(definitions);
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
+        if (isEqual(definitions, this.#ruleBook.list.definitions) === false) {
+            this.#ruleBook.list.setRules(definitions);
+            this.#ruleBook.list.hydrateDefinitions(this.items, this.context);
         }
     }
 
@@ -359,7 +349,6 @@ class FinderCoreImplementation<FItem, FContext = any> {
         if (isEqual(context, previousValue) === false) {
             this.context = context;
             this.#ruleBook.hydrateDefinitions(this.items, this.context);
-            this.#effectBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_CONTEXT, current: context, initial: previousValue });
         }
     }
@@ -380,5 +369,3 @@ class FinderCoreImplementation<FItem, FContext = any> {
         };
     }
 }
-
-export { FinderCoreImplementation };

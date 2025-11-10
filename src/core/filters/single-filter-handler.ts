@@ -1,6 +1,6 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { FilterRuleWithSingleValue, HydratedFilterRuleDefinition } from "../types/rule-types";
+import { HydratedFilterRuleDefinition, FilterRuleWithSingleValue } from "../types/rule-types";
 
 export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithSingleValue) {
     return {

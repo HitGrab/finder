@@ -1,6 +1,6 @@
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
-import { FilterRuleWithMultipleValues, HydratedFilterRuleDefinition } from "../types/rule-types";
+import { HydratedFilterRuleDefinition, FilterRuleWithMultipleValues } from "../types/rule-types";
 
 export function MultipleFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithMultipleValues) {
     return {

@@ -1,14 +1,23 @@
+import { FinderCore } from "../finder-core";
+import { RuleEffect, SearchEffect } from "../types/effect-types";
 import { RuleDefinition } from "../types/rule-types";
+import { RuleEffectAppendix } from "./rule-effect-appendix";
+import { RuleListAppendix } from "./rule-list-appendix";
+import { SearchEffectAppendix } from "./search-effect-appendix";
+interface RuleBookOptions {
+    rules: RuleDefinition[];
+    ruleEffects: RuleEffect[];
+    searchEffects: SearchEffect[];
+}
 /**
  * Stores rule definitions and hydrated rules class objects
  */
 export declare class RuleBook<FItem, FContext> {
-    #private;
-    rules: RuleDefinition[];
-    constructor(definitions: RuleDefinition<FItem>[], items: FItem[], context: FContext);
+    list: RuleListAppendix;
+    ruleEffects: RuleEffectAppendix<FItem, FContext>;
+    searchEffects: SearchEffectAppendix<FItem, FContext>;
+    constructor({ rules, ruleEffects, searchEffects }: RuleBookOptions);
     hydrateDefinitions(items: FItem[], context: FContext): void;
-    getRule(identifier: string | RuleDefinition): RuleDefinition;
-    getDefinitions(): RuleDefinition<FItem>[];
-    setRules(definitions: RuleDefinition<FItem>[]): void;
-    static validateDefinitions(definitions: RuleDefinition[]): boolean;
+    onChange(rule: RuleDefinition, instanceInterface: FinderCore): void;
 }
+export {};

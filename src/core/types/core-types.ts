@@ -1,5 +1,5 @@
 import { DebounceCallbackRegistry } from "../debounce-callback-registry";
-import { RuleBook } from "../rule-book/rule-book";
+import { RuleListAppendix } from "../rule-book/rule-list-appendix";
 import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
 import { RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition, HydratedFilterRuleDefinition } from "./rule-types";
@@ -57,10 +57,10 @@ export interface ResultSnapshot<FItem> {
     hasGroupByRule: boolean;
 }
 
-export interface MixinInjectedDependencies<FItem = any, FContext = any> {
+export interface MixinInjectedDependencies<FItem = any> {
     isLoading: () => boolean;
     isDisabled: () => boolean;
-    getRuleBook: () => RuleBook<FItem, FContext>;
+    getRuleBook: () => RuleListAppendix;
     touch: FinderTouchCallback;
     getItems: () => FItem[];
     test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
