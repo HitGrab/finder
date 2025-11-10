@@ -1,8 +1,8 @@
-import { FiltersMixin } from "./filters";
-import { GroupByMixin } from "./group-by";
-import { PaginationMixin } from "./pagination";
-import { SearchMixin } from "./search";
-import { SortByMixin } from "./sort-by";
+import { FiltersMixin } from "./filters-mixin";
+import { GroupByMixin } from "./group-by-mixin";
+import { PaginationMixin } from "./pagination-mixin";
+import { SearchMixin } from "./search-mixin";
+import { SortByMixin } from "./sort-by-mixin";
 import { FinderResultGroup, ResultSnapshot, SnapshotOptions } from "./types/core-types";
 
 export class Tester<FItem, FContext> {

@@ -6,10 +6,10 @@ interface InitialValues {
     requireGroup: boolean;
 }
 type GroupByRuleIdentifier = string | GroupByRuleDefinition;
-declare class GroupByMixin<FItem, FContext> {
+declare class GroupByMixin<FItem> {
     #private;
     requireGroup: boolean;
-    constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>);
+    constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>);
     getRule(identifier: GroupByRuleIdentifier): GroupByRuleDefinition<any, any>;
     get rules(): GroupByRuleDefinition<unknown, any>[];
     get activeRule(): GroupByRuleDefinition<unknown, any> | undefined;

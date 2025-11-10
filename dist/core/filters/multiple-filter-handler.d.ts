@@ -1,4 +1,4 @@
-import { FilterRuleWithMultipleValues, HydratedFilterRuleDefinition } from "../types/rule-types";
+import { HydratedFilterRuleDefinition, FilterRuleWithMultipleValues } from "../types/rule-types";
 export declare function MultipleFilterHandler(definition: HydratedFilterRuleDefinition & FilterRuleWithMultipleValues): {
     validate(value: unknown): boolean;
     parse(value: unknown): any[];

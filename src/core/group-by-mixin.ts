@@ -13,7 +13,7 @@ interface InitialValues {
 
 type GroupByRuleIdentifier = string | GroupByRuleDefinition;
 
-class GroupByMixin<FItem, FContext> {
+class GroupByMixin<FItem> {
     #groupBy;
 
     requireGroup;
@@ -22,7 +22,7 @@ class GroupByMixin<FItem, FContext> {
 
     #deps;
 
-    constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem, FContext>) {
+    constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         if (initialGroupBy) {
             this.#groupBy = this.getRule(initialGroupBy);

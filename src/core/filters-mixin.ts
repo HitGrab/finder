@@ -3,8 +3,8 @@ import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
-import { makeFilterHandler } from "./rule-book/filter-handler";
 import { isFilterRuleDefinitionWithHydratedOptions } from "./utils/rule-utils";
+import { makeFilterHandler } from "./filters/filter-handler";
 
 interface InitialValues {
     initialFilters: Record<string, any> | undefined;

@@ -1,13 +1,13 @@
-import { SearchMixin } from "./search";
-import { FiltersMixin } from "./filters";
-import { SortByMixin } from "./sort-by";
-import { GroupByMixin } from "./group-by";
-import { PaginationMixin } from "./pagination";
 import { FinderCore } from "./finder-core";
 import { FinderConstructorOptions, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName } from "./types/event-types";
 import { RuleDefinition } from "./types/rule-types";
-declare class FinderCoreImplementation<FItem, FContext = any> {
+import { FiltersMixin } from "./filters-mixin";
+import { GroupByMixin } from "./group-by-mixin";
+import { PaginationMixin } from "./pagination-mixin";
+import { SearchMixin } from "./search-mixin";
+import { SortByMixin } from "./sort-by-mixin";
+export declare class FinderImplementation<FItem, FContext = any> {
     #private;
     isReady: boolean;
     isLoading: boolean;
@@ -16,11 +16,11 @@ declare class FinderCoreImplementation<FItem, FContext = any> {
     search: SearchMixin<FItem>;
     filters: FiltersMixin;
     sortBy: SortByMixin<FItem>;
-    groupBy: GroupByMixin<FItem, FContext>;
+    groupBy: GroupByMixin<FItem>;
     pagination: PaginationMixin<FItem>;
     context: FContext;
-    getInstanceFn: () => FinderCore;
-    constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialGroupBySortDirection, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>, getInstanceFn: () => FinderCore);
+    getInstanceInterfaceFn: () => FinderCore;
+    constructor(items: FItem[] | null | undefined, { rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialGroupBySortDirection, initialFilters, context, page, numItemsPerPage, isLoading, disabled, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, }: FinderConstructorOptions<FItem, FContext>, getInstanceInterfaceFn: () => FinderCore);
     emitFirstUserInteraction(): void;
     get items(): FItem[];
     get matches(): import("./types/core-types").ResultSnapshot<FItem>;
@@ -42,4 +42,3 @@ declare class FinderCoreImplementation<FItem, FContext = any> {
     setContext(context: FContext): void;
     toJSON(): Omit<FinderConstructorOptions<FItem>, "rules">;
 }
-export { FinderCoreImplementation };
