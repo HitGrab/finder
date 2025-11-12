@@ -29,6 +29,30 @@ describe("SortBy", () => {
         expect(finder.matches.items).toEqual([banana, orange, apple]);
     });
 
+    test("Toggle", () => {
+        const rules = [
+            sortByRule({
+                id: "sort_by_price",
+                sortFn: (item: MockObjectItem) => item.price,
+            }),
+            sortByRule({
+                id: "sort_by_expiry",
+                sortFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules });
+        expect(finder.sortBy.activeRule?.id).toBe("sort_by_price");
+
+        finder.sortBy.toggle("sort_by_expiry");
+        expect(finder.sortBy.activeRule?.id).toBe("sort_by_expiry");
+        expect(finder.sortBy.sortDirection).toBe("asc");
+
+        finder.sortBy.toggle("sort_by_expiry");
+        expect(finder.sortBy.activeRule?.id).toBe("sort_by_expiry");
+        expect(finder.sortBy.sortDirection).toBe("desc");
+    });
+
     test("Cycles", () => {
         const rules = [
             sortByRule({

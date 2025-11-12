@@ -103,6 +103,22 @@ class SortByMixin<FItem> {
         });
     }
 
+    toggle(identifier: string | SortByRuleDefinition) {
+        if (this.#deps.isDisabled()) {
+            return;
+        }
+        if (this.isRuleActive(identifier)) {
+            this.toggleSortDirection();
+            return;
+        }
+        this.set(identifier);
+    }
+
+    isRuleActive(identifier: string | SortByRuleDefinition) {
+        const rule = this.getRule(identifier);
+        return rule.id === this.activeRule?.id;
+    }
+
     reset() {
         this.set(undefined, undefined);
     }
