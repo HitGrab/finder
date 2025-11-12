@@ -222,10 +222,12 @@ declare class FinderCore<FItem = any, FContext = any> {
     userHasSetSortDirection: boolean;
     rules: SortByRuleDefinition<unknown, any>[];
     set: (identifier?: string | SortByRuleDefinition, incomingSortDirection?: SortDirection) => void;
+    toggle: (identifier: string | SortByRuleDefinition) => void;
+    isRuleActive: (identifier: string | SortByRuleDefinition) => boolean;
+    reset: () => void;
     setSortDirection: (incomingSortDirection?: SortDirection) => void;
     cycleSortDirection: () => void;
     toggleSortDirection: () => void;
-    reset: () => void;
   };
   get groupBy(): {
     activeRule: GroupByRuleDefinition<unknown, any> | undefined;
@@ -535,4 +537,4 @@ declare function StringMatch({
   Miss
 }: StringMatchProps): string | (string | react_jsx_runtime4.JSX.Element)[];
 //#endregion
-export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleEffect, type SearchEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };
+export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };

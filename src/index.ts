@@ -1,5 +1,6 @@
 export type { FinderConstructorOptions, FinderResultGroup, SortDirection } from "./core/types/core-types";
 export type {
+    RuleDefinition,
     SearchRuleDefinition,
     SortByRuleDefinition,
     GroupByRuleDefinition,
