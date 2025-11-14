@@ -10,7 +10,7 @@ interface FinderContentNoMatchesProps<FItem, FContext> {
 }
 function FinderContentNoMatches<FItem = any, FContext = any>({ children: Component }: FinderContentNoMatchesProps<FItem, FContext>) {
     const finder = useFinder();
-    if (finder.isEmpty === false && finder.hasMatches === false) {
+    if (finder.state === "noMatches") {
         if (typeof Component === "function") {
             return <Component pagination={finder.pagination} context={finder.context as FContext} />;
         }

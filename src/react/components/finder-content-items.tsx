@@ -7,7 +7,7 @@ interface FinderContentItemsProps<FItem, FContext> {
 }
 function FinderContentItems<FItem = any, FContext = any>({ children: Component }: FinderContentItemsProps<FItem, FContext>) {
     const finder = useFinder();
-    if (finder.hasMatches && finder.matches.items) {
+    if (finder.state === "items" && finder.matches.items) {
         if (typeof Component === "function") {
             return <Component items={finder.matches.items} pagination={finder.pagination} context={finder.context as FContext} />;
         }
