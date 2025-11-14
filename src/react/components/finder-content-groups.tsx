@@ -7,7 +7,7 @@ interface FinderContentGroupsProps<FItem, FContext> {
 }
 function FinderContentGroups<FItem = any, FContext = any>({ children: Component }: FinderContentGroupsProps<FItem, FContext>) {
     const finder = useFinder();
-    if (finder.hasMatches && finder.matches.groups) {
+    if (finder.state === "groups" && finder.matches.groups) {
         if (typeof Component === "function") {
             return <Component groups={finder.matches.groups} pagination={finder.pagination} context={finder.context as FContext} />;
         }
