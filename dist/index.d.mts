@@ -74,7 +74,10 @@ interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule {
   sticky?: {
     header?: string | string[];
     footer?: string | string[];
-  };
+  } | ((groups: FinderResultGroup<FItem>[], context: FContext) => {
+    header?: string | string[];
+    footer?: string | string[];
+  });
 }
 interface FilterTestOptions {
   rules: HydratedFilterRuleDefinition[];

@@ -151,8 +151,12 @@ class GroupByMixin<FItem> {
         const orderByCallbacks = [];
         const orderSortDirection = [];
         if (hasStickyGroups && options.rule) {
-            orderByCallbacks.push(composeStickyGroupOrderCallback(options.rule));
-            orderSortDirection.push("asc");
+            // don't love this phrasing
+            const hydratedSticky = typeof options.rule.sticky === "function" ? options.rule.sticky(groups, context) : options.rule.sticky;
+            if (hydratedSticky) {
+                orderByCallbacks.push(composeStickyGroupOrderCallback(hydratedSticky));
+                orderSortDirection.push("asc");
+            }
         }
 
         if (options.rule?.sortGroupFn) {
@@ -174,27 +178,32 @@ class GroupByMixin<FItem> {
     }
 }
 
+interface ComposeStickyGroupOrderCallbackOptions {
+    header?: string | string[] | undefined;
+    footer?: string | string[] | undefined;
+}
 /**
  * Creates a sorting method for groupBy rule with 'sticky' header/footer groups.
  */
-function composeStickyGroupOrderCallback<FItem>(groupByRule: GroupByRuleDefinition<FItem>) {
+function composeStickyGroupOrderCallback<FItem>({ header, footer }: ComposeStickyGroupOrderCallbackOptions) {
     let stickyHeaderGroupIds: string[] = [];
-    if (groupByRule.sticky?.header !== undefined) {
-        if (Array.isArray(groupByRule.sticky.header)) {
-            stickyHeaderGroupIds = groupByRule.sticky.header;
+
+    if (header !== undefined) {
+        if (Array.isArray(header)) {
+            stickyHeaderGroupIds = header;
         }
-        if (typeof groupByRule.sticky.header === "string") {
-            stickyHeaderGroupIds = [groupByRule.sticky.header];
+        if (typeof header === "string") {
+            stickyHeaderGroupIds = [header];
         }
     }
 
     let stickyFooterGroupIds: string[] = [];
-    if (groupByRule.sticky?.footer !== undefined) {
-        if (Array.isArray(groupByRule.sticky.footer)) {
-            stickyFooterGroupIds = groupByRule.sticky.footer;
+    if (footer !== undefined) {
+        if (Array.isArray(footer)) {
+            stickyFooterGroupIds = footer;
         }
-        if (typeof groupByRule.sticky.footer === "string") {
-            stickyFooterGroupIds = [groupByRule.sticky.footer];
+        if (typeof footer === "string") {
+            stickyFooterGroupIds = [footer];
         }
     }
 
