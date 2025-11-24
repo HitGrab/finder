@@ -91,6 +91,32 @@ describe("GroupBy", () => {
         ]);
     });
 
+    test("Groups sticky function", () => {
+        const rules = [
+            groupByRule({
+                id: "expiry_date",
+                groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+                sticky: (groups, context) => {
+                    console.log(groups);
+                    expect(groups).toEqual([
+                        { id: "three", items: [apple] },
+                        { id: "five", items: [orange, banana] },
+                    ]);
+                    expect(context).toBe("abc");
+                    return {
+                        header: ["five"],
+                    };
+                },
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true, context: "abc" });
+        expect(finder.matches.groups).toEqual([
+            { id: "five", items: [orange, banana] },
+            { id: "three", items: [apple] },
+        ]);
+    });
+
     test("Sticky headers", () => {
         const rules = [
             groupByRule({

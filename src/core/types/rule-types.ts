@@ -80,10 +80,18 @@ export interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule
     groupFn: (item: FItem, context: FContext) => string | number | (string | number)[];
     sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
     defaultGroupSortDirection?: SortDirection;
-    sticky?: {
-        header?: string | string[];
-        footer?: string | string[];
-    };
+    sticky?:
+        | {
+              header?: string | string[];
+              footer?: string | string[];
+          }
+        | ((
+              groups: FinderResultGroup<FItem>[],
+              context: FContext,
+          ) => {
+              header?: string | string[];
+              footer?: string | string[];
+          });
 }
 
 export interface SearchTestOptions {
