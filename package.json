@@ -1,6 +1,6 @@
 {
     "name": "@hitgrab/finder",
-    "version": "0.1.22-alpha",
+    "version": "0.1.23-alpha",
     "description": "Effortless data manipulation with static rules.",
     "type": "module",
     "files": [

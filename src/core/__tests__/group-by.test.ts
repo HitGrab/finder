@@ -19,6 +19,24 @@ describe("GroupBy", () => {
         ]);
     });
 
+    test("Items in multiple groups", () => {
+        const rules = [
+            groupByRule({
+                id: "expiry_date",
+                groupFn: (item: MockObjectItem) => [item.daysUntilExpiryDate, item.price],
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
+        expect(finder.matches.groups).toEqual([
+            { id: "1", items: [apple] },
+            { id: "2", items: [orange] },
+            { id: "10", items: [banana] },
+            { id: "three", items: [apple] },
+            { id: "five", items: [orange, banana] },
+        ]);
+    });
+
     test("Groups sort order", () => {
         const rules = [
             groupByRule({

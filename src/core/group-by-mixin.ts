@@ -1,4 +1,4 @@
-import { groupBy, orderBy } from "lodash";
+import { orderBy } from "lodash";
 import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
@@ -124,7 +124,21 @@ class GroupByMixin<FItem> {
     }
 
     static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context: unknown): FinderResultGroup<FItem>[] {
-        const groupObject = groupBy(items, (item) => options.rule?.groupFn(item, context));
+        // similar to lodash's groupBy, except that it supports multiple keys.
+        // If multiple keys are provided, Items may appear in multiple groups.
+        const groupObject = items.reduce<Record<string | number, FItem[]>>((acc, item) => {
+            const keys = options.rule?.groupFn(item, context);
+            if (!keys) {
+                return acc;
+            }
+            const keysAsArray = Array.isArray(keys) ? keys : [keys];
+            keysAsArray.forEach((key) => {
+                acc[key] ??= [];
+                acc[key].push(item);
+            });
+
+            return acc;
+        }, {});
 
         // transform the object into a sortable array
         const groups = Object.entries(groupObject).map(([id, items]) => ({
