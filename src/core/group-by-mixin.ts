@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { orderBy } from "lodash";
 import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
@@ -155,7 +156,13 @@ class GroupByMixin<FItem> {
         }
 
         if (options.rule?.sortGroupFn) {
-            orderByCallbacks.push(options.rule.sortGroupFn);
+            orderByCallbacks.push((group: FinderResultGroup<FItem>) => {
+                if (options.rule?.sortGroupFn === undefined) {
+                    return 0;
+                }
+                // ensure context is provided to the sort method
+                return options.rule.sortGroupFn(group, context);
+            });
             orderSortDirection.push(options.groupBySortDirection ?? "asc");
         }
 
@@ -163,7 +170,6 @@ class GroupByMixin<FItem> {
             const direction = orderSortDirection as SortDirection;
             return orderBy(groups, orderByCallbacks, direction);
         }
-
         return groups;
     }
 }

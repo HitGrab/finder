@@ -28,6 +28,7 @@ describe("GroupBy", () => {
         ];
 
         const finder = new FinderCore(objectItems, { rules, requireGroup: true });
+
         expect(finder.matches.groups).toEqual([
             { id: "1", items: [apple] },
             { id: "2", items: [orange] },
@@ -56,6 +57,33 @@ describe("GroupBy", () => {
         ]);
 
         finder.groupBy.setGroupSortDirection("desc");
+
+        expect(finder.matches.groups).toEqual([
+            { id: "three", items: [apple] },
+            { id: "five", items: [orange, banana] },
+        ]);
+    });
+
+    test("Groups sort order with context", () => {
+        const rules = [
+            groupByRule({
+                id: "expiry_date",
+                groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+                sortGroupFn: (group, context) => {
+                    // "A" instead of a number to ensure the value is correctly sorted in a string comparison
+                    return group.id === context ? "a" : group.id;
+                },
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true, context: "five" });
+
+        expect(finder.matches.groups).toEqual([
+            { id: "five", items: [orange, banana] },
+            { id: "three", items: [apple] },
+        ]);
+
+        finder.setContext("three");
 
         expect(finder.matches.groups).toEqual([
             { id: "three", items: [apple] },
