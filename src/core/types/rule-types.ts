@@ -72,12 +72,12 @@ export interface HydratedFilterRuleDefinition<FItem = any, FValue = any, FContex
 }
 
 export interface SortByRuleDefinition<FItem = any, FContext = any> extends Rule {
-    sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
+    sortFn: (item: FItem, context: FContext) => string | number | (string | number)[];
     defaultSortDirection?: SortDirection;
 }
 
 export interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule {
-    groupFn: FinderPropertySelector<FItem, FContext>;
+    groupFn: (item: FItem, context: FContext) => string | number | (string | number)[];
     sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
     defaultGroupSortDirection?: SortDirection;
     sticky?: {
