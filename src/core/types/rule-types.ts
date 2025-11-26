@@ -72,7 +72,7 @@ export interface HydratedFilterRuleDefinition<FItem = any, FValue = any, FContex
 }
 
 export interface SortByRuleDefinition<FItem = any, FContext = any> extends Rule {
-    sortFn: (item: FItem, context: FContext) => string | number | (string | number)[];
+    sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
     defaultSortDirection?: SortDirection;
 }
 

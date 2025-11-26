@@ -97,7 +97,6 @@ describe("GroupBy", () => {
                 id: "expiry_date",
                 groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
                 sticky: (groups, context) => {
-                    console.log(groups);
                     expect(groups).toEqual([
                         { id: "three", items: [apple] },
                         { id: "five", items: [orange, banana] },
