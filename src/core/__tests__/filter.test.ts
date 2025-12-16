@@ -509,6 +509,84 @@ describe("Filters", () => {
         });
     });
 
+    describe("Strict options", () => {
+        test("Catches invalid values", () => {
+            const rules = [
+                filterRule<MockObjectItem, number>({
+                    id: "price_is_below",
+                    filterFn: (item, value) => item.price <= value,
+                    options: [
+                        {
+                            label: "Five",
+                            value: 5,
+                        },
+                        {
+                            label: "Three",
+                            value: 3,
+                        },
+                    ],
+                }),
+            ];
+
+            const finder = new FinderCore(objectItems, { rules });
+            expect(() => {
+                finder.filters.set("price_is_below", 12);
+            }).toThrowError();
+
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
+        });
+
+        test("Can be disabled", () => {
+            const rules = [
+                filterRule<MockObjectItem, number>({
+                    id: "price_is_below",
+                    filterFn: (item, value) => item.price <= value,
+                    options: [
+                        {
+                            label: "Five",
+                            value: 5,
+                        },
+                        {
+                            label: "Three",
+                            value: 3,
+                        },
+                    ],
+                    strictOptions: false,
+                }),
+            ];
+
+            const finder = new FinderCore(objectItems, { rules });
+            finder.filters.set("price_is_below", 12);
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
+        });
+
+        test("Blank strings, undefined and null values reset the filter", () => {
+            const rules = [
+                filterRule<MockObjectItem, number>({
+                    id: "price_is_below",
+                    filterFn: (item, value) => item.price <= value,
+                    options: [
+                        {
+                            label: "Five",
+                            value: 5,
+                        },
+                        {
+                            label: "Three",
+                            value: 3,
+                        },
+                    ],
+                }),
+            ];
+
+            const finder = new FinderCore(objectItems, { rules });
+            finder.filters.set("price_is_below", 5);
+            finder.filters.set("price_is_below", "");
+            finder.filters.set("price_is_below", undefined);
+            finder.filters.set("price_is_below", null);
+            expect(finder.matches.items).toEqual([apple, orange, banana]);
+        });
+    });
+
     test("Debounced filter changes trigger once", async () => {
         const rule = filterRule({
             id: "price_is_below",

@@ -31,11 +31,14 @@ class FiltersMixin {
         const previousValue = this.get(identifier);
 
         // empty strings are treated as if a filter is being deleted.
-        const isBlankString = typeof value === "string" && value.trim() === "";
-        const transformedFilterValue = isBlankString ? undefined : value;
+        const isFilterBeingReset = (typeof value === "string" && value.trim() === "") || value === undefined || value === null;
+        const transformedFilterValue = isFilterBeingReset ? undefined : value;
 
-        // ensure we have valid data
-        makeFilterHandler(rule).validate(value);
+        // if the filter value is blank or undefined, the user is removing this filter so we don't need to validate it.
+        if (isFilterBeingReset === false) {
+            // ensure we have valid data
+            makeFilterHandler(rule).validate(transformedFilterValue);
+        }
 
         // early exit if nothing changed
         if (this.#rawValues[rule.id] !== undefined && this.#rawValues[rule.id] === transformedFilterValue) {
