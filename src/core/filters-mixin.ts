@@ -103,7 +103,7 @@ class FiltersMixin {
         if (rule.boolean && optionValue !== undefined) {
             throw new FinderError(ERRORS.TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE, { rule, value });
         }
-        const toggledValue = makeFilterHandler(rule).toggle(value, optionValue);
+        const toggledValue = makeFilterHandler(rule).toggle(value, optionValue, !!rule.required);
         this.set(rule, toggledValue);
     }
 

@@ -32,8 +32,11 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
             return value !== undefined;
         },
 
-        toggle(value: unknown, optionValue?: any) {
-            throw new FinderError(ERRORS.TOGGLING_OPTION_ON_RULE_WITH_SINGLE_VALUE, { rule: definition, value, optionValue });
+        toggle(value: unknown, optionValue: any = undefined, isRequired: boolean) {
+            if (value === optionValue && isRequired === false) {
+                return undefined;
+            }
+            return optionValue;
         },
 
         add(value: unknown, optionValue: any) {
