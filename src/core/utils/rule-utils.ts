@@ -42,7 +42,7 @@ export function isSearchEffectDefinition<FItem>(data: unknown): data is SearchEf
 export function isBooleanFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithBooleanValue<FItem> {
     return isFilterRuleDefinition(rule) && rule.boolean === true;
 }
-export function isMultipleValueFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithMultipleValues<FItem> {
+export function isMultipleFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithMultipleValues<FItem> {
     return isFilterRuleDefinition(rule) && rule.multiple === true;
 }
 

@@ -141,16 +141,20 @@ describe("Filters", () => {
         expect(finder.filters.has(rule)).toBe(false);
         expect(finder.filters.get(rule)).toBe(undefined);
 
+        finder.filters.delete(rule);
+        finder.filters.toggle(rule, 3);
+        expect(finder.filters.get(rule)).toBe(3);
+        finder.filters.toggle(rule, 3);
+        expect(finder.filters.get(rule)).toBe(undefined);
+        finder.filters.toggle(rule, 5);
+        expect(finder.filters.get(rule)).toBe(5);
+
         expect(() => {
             finder.filters.add(rule, 5);
         }).toThrowError();
 
         expect(() => {
             finder.filters.delete(rule, 5);
-        }).toThrowError();
-
-        expect(() => {
-            finder.filters.toggle(rule, 5);
         }).toThrowError();
     });
 
@@ -196,11 +200,6 @@ describe("Filters", () => {
                 boolean: true,
             });
             const finder = new FinderCore(objectItems, { rules: [singleValueRule, booleanRule], initialFilters: { price: 5 } });
-
-            // cannot toggle non-boolean rules
-            expect(() => {
-                finder.filters.toggle(singleValueRule);
-            }).toThrowError();
 
             expect(finder.filters.isActive(booleanRule)).toBe(false);
             finder.filters.toggle(booleanRule);
