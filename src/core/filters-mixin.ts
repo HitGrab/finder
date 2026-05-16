@@ -202,6 +202,27 @@ class FiltersMixin {
         };
     }
 
+    get api() {
+        return {
+            values: this.values,
+            raw: this.raw,
+            activeRules: this.activeRules,
+            rules: this.rules,
+            isActive: this.isRuleActive.bind(this),
+            get: this.get.bind(this),
+            add: this.add.bind(this),
+            has: this.has.bind(this),
+            getRule: this.getRule.bind(this),
+            toggle: this.toggle.bind(this),
+            set: this.set.bind(this),
+            delete: this.delete.bind(this),
+            reset: this.reset.bind(this),
+            test: this.test.bind(this),
+            testRule: this.testRule.bind(this),
+            testRuleOptions: this.testRuleOptions.bind(this),
+        };
+    }
+
     static process<FItem>(options: SerializedFiltersMixin, items: FItem[], context: any) {
         const activeRules = options.rules.filter((rule) => {
             return isFilterRuleDefinitionWithHydratedOptions(rule) && makeFilterHandler(rule).isActive(options.values[rule.id]);

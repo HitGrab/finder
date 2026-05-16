@@ -28,6 +28,7 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
     // Pagination properties
     page?: number;
     numItemsPerPage?: number;
+    resetPaginationOn?: ("change" | "search" | "filter" | "sortBy" | "groupBy")[];
 
     // Triggered after Finder initializes for the first time.
     onInit?: FinderOnInitCallback;
@@ -67,7 +68,7 @@ export interface MixinInjectedDependencies<FItem = any> {
     debouncer: ReturnType<typeof DebounceCallbackRegistry>;
 }
 
-export type EventCallback = (payload?: any) => void;
+export type EventCallback<T = any> = (payload?: T) => void;
 
 export interface SnapshotOptions<FItem, FContext> {
     items: FItem[];

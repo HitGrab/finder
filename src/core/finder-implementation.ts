@@ -45,7 +45,9 @@ export class FinderImplementation<FItem, FContext = any> {
     #ruleBook: RuleBook<FItem, FContext>;
 
     // return the public API for this Finder instance
-    getInstanceInterfaceFn;
+    getPublicInterfaceFn;
+
+    resetPaginationOn;
 
     constructor(
         items: FItem[] | null | undefined,
@@ -61,6 +63,7 @@ export class FinderImplementation<FItem, FContext = any> {
             context,
             page,
             numItemsPerPage,
+            resetPaginationOn = ["sortBy", "groupBy"],
             isLoading,
             disabled,
             requireGroup,
@@ -75,11 +78,12 @@ export class FinderImplementation<FItem, FContext = any> {
         this.#items = items;
         this.disabled = !!disabled;
         this.isLoading = !!isLoading;
-        this.isReady = !!isLoading === false && Array.isArray(items) && items.length > 0;
-        this.getInstanceInterfaceFn = getInstanceInterfaceFn;
+        this.isReady = !!isLoading === false && Array.isArray(items);
+        this.getPublicInterfaceFn = getInstanceInterfaceFn;
         this.updatedAt = Date.now();
         this.context = context as FContext;
         this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
+        this.resetPaginationOn = resetPaginationOn;
 
         const ruleEffects = effects?.filter(isRuleEffectDefinition) ?? [];
         const searchEffects = effects?.filter(isSearchEffectDefinition) ?? [];
@@ -111,7 +115,7 @@ export class FinderImplementation<FItem, FContext = any> {
                 source: EVENT_SOURCE.CORE,
                 event: EVENTS.INIT,
                 timestamp: Date.now(),
-                instance: this.getInstanceInterfaceFn(),
+                instance: this.getPublicInterfaceFn(),
             };
 
             // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
@@ -129,19 +133,17 @@ export class FinderImplementation<FItem, FContext = any> {
         }
 
         if (onReady) {
-            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
             if (this.isReady) {
+                // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
                 onReady({
                     source: EVENT_SOURCE.CORE,
                     event: EVENTS.READY,
                     timestamp: Date.now(),
-                    instance: this.getInstanceInterfaceFn(),
+                    instance: this.getPublicInterfaceFn(),
                 });
+            } else {
+                this.#eventEmitter.on(EVENTS.READY, onReady);
             }
-        }
-
-        if (this.isReady === false && onReady) {
-            this.#eventEmitter.on(EVENTS.READY, onReady);
         }
     }
 
@@ -159,19 +161,22 @@ export class FinderImplementation<FItem, FContext = any> {
 
         this.#syncUpdatedAtTimestamp();
         this.#matches.setIsStale(true);
+        if (this.resetPaginationOn.includes("change") || this.resetPaginationOn.some((source) => source === touchEvent.source)) {
+            this.pagination.reset();
+        }
 
         // transform the internal touch event to a public change event
         const payload: FinderChangeEvent = {
             ...touchEvent,
             timestamp: Date.now(),
-            instance: this.getInstanceInterfaceFn(),
+            instance: this.getPublicInterfaceFn(),
         };
         this.#eventEmitter.emit(EVENTS.CHANGE, payload);
 
         // trigger any effects that may be affected by the change to this rule
         this.#eventEmitter.silently(() => {
             if (touchEvent.rule) {
-                this.#ruleBook.onChange(touchEvent.rule, this.getInstanceInterfaceFn());
+                this.#ruleBook.onChange(touchEvent.rule, this.getPublicInterfaceFn());
             }
         });
     }
@@ -185,7 +190,7 @@ export class FinderImplementation<FItem, FContext = any> {
         const changeEvent: FinderChangeEvent = {
             ...touchEvent,
             timestamp: Date.now(),
-            instance: this.getInstanceInterfaceFn(),
+            instance: this.getPublicInterfaceFn(),
         };
         this.#eventEmitter.emit(touchEvent.event, changeEvent);
     }
@@ -203,7 +208,7 @@ export class FinderImplementation<FItem, FContext = any> {
                 source: EVENT_SOURCE.CORE,
                 event: EVENTS.FIRST_USER_INTERACTION,
                 timestamp: Date.now(),
-                instance: this.getInstanceInterfaceFn(),
+                instance: this.getPublicInterfaceFn(),
             };
             // emit the public-facing change event
             this.#eventEmitter.emit(EVENTS.FIRST_USER_INTERACTION, payload);
@@ -366,6 +371,7 @@ export class FinderImplementation<FItem, FContext = any> {
             initialGroupBy: this.groupBy.activeRule?.id,
             initialGroupBySortDirection: this.groupBy.groupBySortDirection,
             requireGroup: this.groupBy.requireGroup,
+            resetPaginationOn: this.resetPaginationOn,
         };
     }
 }

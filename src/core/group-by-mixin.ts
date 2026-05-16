@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { orderBy } from "lodash";
 import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
@@ -121,6 +120,19 @@ class GroupByMixin<FItem> {
         return {
             rule: this.activeRule,
             groupBySortDirection: this.#groupBySortDirection,
+        };
+    }
+
+    get api() {
+        return {
+            activeRule: this.activeRule,
+            requireGroup: this.requireGroup,
+            rules: this.rules,
+            groupBySortDirection: this.groupBySortDirection,
+            set: this.set.bind(this),
+            toggle: this.toggle.bind(this),
+            setGroupSortDirection: this.setGroupSortDirection.bind(this),
+            reset: this.reset.bind(this),
         };
     }
 

@@ -295,6 +295,7 @@ interface FinderConstructorOptions<FItem, FContext = any> {
   requireGroup?: boolean;
   page?: number;
   numItemsPerPage?: number;
+  resetPaginationOn?: ("change" | "search" | "filter" | "sortBy" | "groupBy")[];
   onInit?: FinderOnInitCallback;
   onReady?: FinderOnReadyCallback;
   onFirstUserInteraction?: FinderOnFirstUserInteractCallback;
@@ -312,7 +313,7 @@ interface ResultSnapshot<FItem> {
   numTotalItems: number;
   hasGroupByRule: boolean;
 }
-type EventCallback = (payload?: any) => void;
+type EventCallback<T = any> = (payload?: T) => void;
 interface SnapshotSerializedMixins {
   search?: SerializedSearchMixin;
   filters?: SerializedFiltersMixin;
