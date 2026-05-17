@@ -1,0 +1,24 @@
+{
+  "id": "Getting Started/Tutorial/search",
+  "title": "Search",
+  "description": "SearchRules tell Finder how to interact with the searchable haystacks in your object. In this case, we want to search by either the street name, or the building name.",
+  "source": "@site/docs/Getting Started/02-Tutorial/02-search.md",
+  "sourceDirName": "Getting Started/02-Tutorial",
+  "slug": "/Getting Started/Tutorial/search",
+  "permalink": "/finder/Getting Started/Tutorial/search",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Quick Start",
+    "permalink": "/finder/Getting Started/Tutorial/Quick Start"
+  },
+  "next": {
+    "title": "Filters",
+    "permalink": "/finder/Getting Started/filters"
+  }
+}

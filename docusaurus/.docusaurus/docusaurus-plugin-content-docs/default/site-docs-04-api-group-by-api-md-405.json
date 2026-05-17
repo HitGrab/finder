@@ -1,0 +1,26 @@
+{
+  "id": "API/group-by-api",
+  "title": "GroupBy",
+  "description": "The GroupBy api can be accessed from finder.groupBy.",
+  "source": "@site/docs/04-API/group-by-api.md",
+  "sourceDirName": "04-API",
+  "slug": "/API/group-by-api",
+  "permalink": "/finder/API/group-by-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Pagination",
+    "permalink": "/finder/API/pagination-api"
+  },
+  "next": {
+    "title": "Events",
+    "permalink": "/finder/API/events-api"
+  }
+}

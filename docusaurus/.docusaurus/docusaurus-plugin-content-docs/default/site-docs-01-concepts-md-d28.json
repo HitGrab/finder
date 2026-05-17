@@ -1,0 +1,24 @@
+{
+  "id": "concepts",
+  "title": "Core Concepts",
+  "description": "Run npm i @hitgrab/finder in your repo of choice.",
+  "source": "@site/docs/01-concepts.md",
+  "sourceDirName": ".",
+  "slug": "/concepts",
+  "permalink": "/finder/concepts",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/Getting Started/Tutorial/Et Voila"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/Rules/"
+  }
+}

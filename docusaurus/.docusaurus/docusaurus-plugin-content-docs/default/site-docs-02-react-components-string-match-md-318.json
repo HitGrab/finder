@@ -1,0 +1,23 @@
+{
+  "id": "React Components/string-match",
+  "title": "StringMatch",
+  "description": "This highlight string segment matches within a haystack.",
+  "source": "@site/docs/02-React Components/string-match.md",
+  "sourceDirName": "02-React Components",
+  "slug": "/React Components/string-match",
+  "permalink": "/finder/React Components/string-match",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Finder.SearchTermHaystack",
+    "permalink": "/finder/React Components/finder-search-term-haystack"
+  },
+  "next": {
+    "title": "useFinder",
+    "permalink": "/finder/React Components/use-finder"
+  }
+}

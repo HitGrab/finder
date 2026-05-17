@@ -1,0 +1,26 @@
+{
+  "id": "API/pagination-api",
+  "title": "Pagination",
+  "description": "The Pagination api can be accessed from finder.pagination.",
+  "source": "@site/docs/04-API/pagination-api.md",
+  "sourceDirName": "04-API",
+  "slug": "/API/pagination-api",
+  "permalink": "/finder/API/pagination-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "SortBy",
+    "permalink": "/finder/API/sort-by-api"
+  },
+  "next": {
+    "title": "GroupBy",
+    "permalink": "/finder/API/group-by-api"
+  }
+}

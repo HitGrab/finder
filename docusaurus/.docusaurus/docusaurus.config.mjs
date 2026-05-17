@@ -70,7 +70,10 @@ export default {
       {
         "docs": {
           "routeBasePath": "/",
-          "sidebarPath": "./sidebars.ts"
+          "sidebarPath": "./sidebars.ts",
+          "remarkPlugins": [
+            null
+          ]
         },
         "blog": false,
         "theme": {
@@ -108,7 +111,7 @@ export default {
           ]
         }
       ],
-      "copyright": "Copyright © 2025 Hitgrab Labs, Inc. Built with Docusaurus."
+      "copyright": "Copyright © 2026 Hitgrab Labs, Inc. Built with Docusaurus."
     },
     "prism": {
       "theme": {

@@ -1,0 +1,26 @@
+{
+  "id": "reference/API/sort-by-api",
+  "title": "SortBy",
+  "description": "The Sortby api can be accessed from finder.sortBy.",
+  "source": "@site/docs/reference/03-API/sort-by-api.md",
+  "sourceDirName": "reference/03-API",
+  "slug": "/reference/API/sort-by-api",
+  "permalink": "/finder/reference/API/sort-by-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Filters",
+    "permalink": "/finder/reference/API/filters-api"
+  },
+  "next": {
+    "title": "Pagination",
+    "permalink": "/finder/reference/API/pagination-api"
+  }
+}

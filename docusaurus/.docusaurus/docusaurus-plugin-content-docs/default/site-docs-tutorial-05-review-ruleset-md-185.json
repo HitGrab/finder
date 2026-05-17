@@ -1,0 +1,24 @@
+{
+  "id": "tutorial/Review Ruleset",
+  "title": "Review Ruleset",
+  "description": "We've assembled our piles of rules. Let's bundle them using a finderRuleset type guard into a single file.",
+  "source": "@site/docs/tutorial/05-Review Ruleset.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/Review Ruleset",
+  "permalink": "/finder/tutorial/Review Ruleset",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Add SortBy Rules",
+    "permalink": "/finder/tutorial/sort-by"
+  },
+  "next": {
+    "title": "Display in React",
+    "permalink": "/finder/tutorial/Display in React"
+  }
+}

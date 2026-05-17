@@ -1,0 +1,23 @@
+{
+  "id": "Advanced/context/index",
+  "title": "Injecting Context",
+  "description": "Often, you'll need Finder to be aware of external context.",
+  "source": "@site/docs/05-Advanced/context/index.md",
+  "sourceDirName": "05-Advanced/context",
+  "slug": "/Advanced/context/",
+  "permalink": "/finder/Advanced/context/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Tests",
+    "permalink": "/finder/API/test-api"
+  },
+  "next": {
+    "title": "Dependent Rules",
+    "permalink": "/finder/Advanced/context/context-rules"
+  }
+}

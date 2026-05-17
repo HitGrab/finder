@@ -1,0 +1,23 @@
+{
+  "id": "Advanced/testing/testing",
+  "title": "Pre-Testing Matches",
+  "description": "Coming soon! For now, check out the Tests API.",
+  "source": "@site/docs/05-Advanced/testing/testing.md",
+  "sourceDirName": "05-Advanced/testing",
+  "slug": "/Advanced/testing/",
+  "permalink": "/finder/Advanced/testing/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Paginating Matches",
+    "permalink": "/finder/Advanced/pagination/"
+  },
+  "next": {
+    "title": "Examples",
+    "permalink": "/finder/Examples/"
+  }
+}

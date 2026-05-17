@@ -1,0 +1,24 @@
+{
+  "id": "Getting Started/Tutorial/Display in React",
+  "title": "Display in React",
+  "description": "To use Finder in React, you'll need to use the `` component.",
+  "source": "@site/docs/01-Getting Started/02-Tutorial/06-Display in React.md",
+  "sourceDirName": "01-Getting Started/02-Tutorial",
+  "slug": "/Getting Started/Tutorial/Display in React",
+  "permalink": "/finder/Getting Started/Tutorial/Display in React",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Review Ruleset",
+    "permalink": "/finder/Getting Started/Tutorial/Review Ruleset"
+  },
+  "next": {
+    "title": "Build Form Controls",
+    "permalink": "/finder/Getting Started/Tutorial/Build Form Controls"
+  }
+}

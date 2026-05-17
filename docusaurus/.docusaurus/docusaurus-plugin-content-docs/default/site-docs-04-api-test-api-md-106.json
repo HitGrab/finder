@@ -1,0 +1,23 @@
+{
+  "id": "API/test-api",
+  "title": "Tests",
+  "description": "Test lets you test a ruleset's results without mutating state. The Tests api can be accessed from finder.test.",
+  "source": "@site/docs/04-API/test-api.md",
+  "sourceDirName": "04-API",
+  "slug": "/API/test-api",
+  "permalink": "/finder/API/test-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Matches",
+    "permalink": "/finder/API/matches-api"
+  },
+  "next": {
+    "title": "Injecting Context",
+    "permalink": "/finder/Guides/context/"
+  }
+}

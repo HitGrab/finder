@@ -1,0 +1,24 @@
+{
+  "id": "Tutorial/Add Filters",
+  "title": "Add Filters",
+  "description": "Filters come in three flavours; Boolean, Single value, and Multiple value.",
+  "source": "@site/docs/02-Tutorial/03-Add Filters.md",
+  "sourceDirName": "02-Tutorial",
+  "slug": "/Tutorial/Add Filters",
+  "permalink": "/finder/Tutorial/Add Filters",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Add a Search Rule",
+    "permalink": "/finder/Tutorial/Add a Search Rule"
+  },
+  "next": {
+    "title": "Add SortBy Rules",
+    "permalink": "/finder/Tutorial/Add SortBy Rules"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "guides/context/context-rules",
+  "title": "Dependent Rules",
+  "description": "User story:",
+  "source": "@site/docs/guides/context/context-rules.md",
+  "sourceDirName": "guides/context",
+  "slug": "/guides/context/context-rules",
+  "permalink": "/finder/guides/context/context-rules",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Injecting Context",
+    "permalink": "/finder/guides/context/"
+  },
+  "next": {
+    "title": "Dependent Finder.Content components",
+    "permalink": "/finder/guides/context/injecting-state"
+  }
+}

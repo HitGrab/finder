@@ -1,0 +1,14 @@
+{
+  "id": "examples/example",
+  "title": "example",
+  "description": "Pixel Armory",
+  "source": "@site/docs/examples/example.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/example",
+  "permalink": "/finder/examples/example",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

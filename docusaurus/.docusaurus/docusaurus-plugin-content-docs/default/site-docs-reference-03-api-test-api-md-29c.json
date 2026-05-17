@@ -1,0 +1,23 @@
+{
+  "id": "reference/api/test-api",
+  "title": "Tests",
+  "description": "Test lets you test a ruleset's results without mutating state. The Tests api can be accessed from finder.test.",
+  "source": "@site/docs/reference/03-api/test-api.md",
+  "sourceDirName": "reference/03-api",
+  "slug": "/reference/api/test-api",
+  "permalink": "/finder/reference/api/test-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Matches",
+    "permalink": "/finder/reference/api/matches-api"
+  },
+  "next": {
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
+  }
+}

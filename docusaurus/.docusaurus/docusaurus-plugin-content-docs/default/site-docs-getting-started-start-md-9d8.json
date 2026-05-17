@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/start",
+  "title": "Getting Started",
+  "description": "Run npm i @hitgrab/finder in your repo of choice.",
+  "source": "@site/docs/getting-started/start.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/start",
+  "permalink": "/finder/getting-started/start",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Filters",
+    "permalink": "/finder/getting-started/filters"
+  },
+  "next": {
+    "title": "Sort By",
+    "permalink": "/finder/getting-started/sort-by"
+  }
+}

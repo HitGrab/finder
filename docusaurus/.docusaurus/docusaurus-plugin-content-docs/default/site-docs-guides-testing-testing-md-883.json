@@ -1,0 +1,19 @@
+{
+  "id": "guides/testing/testing",
+  "title": "Pre-Testing Matches",
+  "description": "Coming soon! For now, check out the Tests API.",
+  "source": "@site/docs/guides/testing/testing.md",
+  "sourceDirName": "guides/testing",
+  "slug": "/guides/testing/",
+  "permalink": "/finder/guides/testing/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Paginating Matches",
+    "permalink": "/finder/guides/pagination/"
+  }
+}

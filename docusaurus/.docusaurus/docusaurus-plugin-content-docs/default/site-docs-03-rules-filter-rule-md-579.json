@@ -1,0 +1,26 @@
+{
+  "id": "Rules/filter-rule",
+  "title": "FilterRule",
+  "description": "Define a filter predicate that will return a boolean for each item. If multiple filters are active, all filters must match for an item to be returned.",
+  "source": "@site/docs/03-Rules/filter-rule.md",
+  "sourceDirName": "03-Rules",
+  "slug": "/Rules/filter-rule",
+  "permalink": "/finder/Rules/filter-rule",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "SearchRule",
+    "permalink": "/finder/Rules/search-rule"
+  },
+  "next": {
+    "title": "SortByRule",
+    "permalink": "/finder/Rules/sort-by-rule"
+  }
+}

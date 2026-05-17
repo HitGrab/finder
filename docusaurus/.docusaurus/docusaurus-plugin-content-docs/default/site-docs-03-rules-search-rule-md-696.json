@@ -1,0 +1,26 @@
+{
+  "id": "Rules/search-rule",
+  "title": "SearchRule",
+  "description": "Select strings from your items to search against",
+  "source": "@site/docs/03-Rules/search-rule.md",
+  "sourceDirName": "03-Rules",
+  "slug": "/Rules/search-rule",
+  "permalink": "/finder/Rules/search-rule",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Rules",
+    "permalink": "/finder/Rules/"
+  },
+  "next": {
+    "title": "FilterRule",
+    "permalink": "/finder/Rules/filter-rule"
+  }
+}

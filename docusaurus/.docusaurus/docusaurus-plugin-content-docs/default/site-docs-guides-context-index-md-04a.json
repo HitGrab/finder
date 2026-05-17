@@ -1,0 +1,23 @@
+{
+  "id": "guides/context/index",
+  "title": "Injecting Context",
+  "description": "Often, you'll need Finder to be aware of external context.",
+  "source": "@site/docs/guides/context/index.md",
+  "sourceDirName": "guides/context",
+  "slug": "/guides/context/",
+  "permalink": "/finder/guides/context/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/tutorial/complete"
+  },
+  "next": {
+    "title": "Dependent Rules",
+    "permalink": "/finder/guides/context/context-rules"
+  }
+}

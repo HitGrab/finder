@@ -1,0 +1,23 @@
+{
+  "id": "advanced/effects",
+  "title": "Coupling Rules with Effects",
+  "description": "Coming soon! For now, check out the Effects Rule definition.",
+  "source": "@site/docs/advanced/effects.md",
+  "sourceDirName": "advanced",
+  "slug": "/advanced/effects",
+  "permalink": "/finder/advanced/effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "useFinder",
+    "permalink": "/finder/components/use-finder"
+  },
+  "next": {
+    "title": "Examples",
+    "permalink": "/finder/examples/"
+  }
+}

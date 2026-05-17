@@ -1,0 +1,19 @@
+{
+  "id": "examples/Pixel Armory",
+  "title": "Pixel Armory",
+  "description": "Pixel Armory",
+  "source": "@site/docs/examples/Pixel Armory.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/Pixel Armory",
+  "permalink": "/finder/examples/Pixel Armory",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
+  }
+}

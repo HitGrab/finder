@@ -1,0 +1,14 @@
+{
+  "id": "Examples/index",
+  "title": "Examples",
+  "description": "Kicking Rad Shoes",
+  "source": "@site/docs/06-Examples/index.md",
+  "sourceDirName": "06-Examples",
+  "slug": "/Examples/",
+  "permalink": "/finder/Examples/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

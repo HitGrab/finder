@@ -1,0 +1,26 @@
+{
+  "id": "Rules/group-by-rule",
+  "title": "GroupByRule",
+  "description": "Type Signature",
+  "source": "@site/docs/03-Rules/group-by-rule.md",
+  "sourceDirName": "03-Rules",
+  "slug": "/Rules/group-by-rule",
+  "permalink": "/finder/Rules/group-by-rule",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "SortByRule",
+    "permalink": "/finder/Rules/sort-by-rule"
+  },
+  "next": {
+    "title": "Effects",
+    "permalink": "/finder/Rules/effects/"
+  }
+}

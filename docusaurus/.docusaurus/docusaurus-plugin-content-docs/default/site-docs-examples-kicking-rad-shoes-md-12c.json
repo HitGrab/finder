@@ -1,0 +1,23 @@
+{
+  "id": "examples/Kicking Rad Shoes",
+  "title": "Kicking Rad Shoes",
+  "description": "View Demo",
+  "source": "@site/docs/examples/Kicking Rad Shoes.md",
+  "sourceDirName": "examples",
+  "slug": "/examples/Kicking Rad Shoes",
+  "permalink": "/finder/examples/Kicking Rad Shoes",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tests",
+    "permalink": "/finder/reference/api/test-api"
+  },
+  "next": {
+    "title": "Pixel Armory",
+    "permalink": "/finder/examples/Pixel Armory"
+  }
+}

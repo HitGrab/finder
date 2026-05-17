@@ -1,0 +1,23 @@
+{
+  "id": "reference/React Components/finder-content",
+  "title": "Finder.Content",
+  "description": "FinderContent accepts a set of renderProps, and will determine the most appropriate state to display. Only a single state can be active at a time.",
+  "source": "@site/docs/reference/03-React Components/finder-content.md",
+  "sourceDirName": "reference/03-React Components",
+  "slug": "/reference/React Components/finder-content",
+  "permalink": "/finder/reference/React Components/finder-content",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Finder",
+    "permalink": "/finder/reference/React Components/finder"
+  },
+  "next": {
+    "title": "Finder.SearchTermHaystack",
+    "permalink": "/finder/reference/React Components/finder-search-term-haystack"
+  }
+}

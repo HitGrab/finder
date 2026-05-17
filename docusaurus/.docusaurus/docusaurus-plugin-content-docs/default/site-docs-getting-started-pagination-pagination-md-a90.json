@@ -1,0 +1,23 @@
+{
+  "id": "getting-started/pagination/pagination",
+  "title": "Paginating Matches",
+  "description": "Coming soon! For now, check out the Pagination API.",
+  "source": "@site/docs/getting-started/pagination/pagination.md",
+  "sourceDirName": "getting-started/pagination",
+  "slug": "/getting-started/pagination/",
+  "permalink": "/finder/getting-started/pagination/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dependent Finder.Content components",
+    "permalink": "/finder/getting-started/context/injecting-state"
+  },
+  "next": {
+    "title": "Pre-Testing Matches",
+    "permalink": "/finder/getting-started/testing/"
+  }
+}
