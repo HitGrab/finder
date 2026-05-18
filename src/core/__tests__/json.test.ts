@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { FinderConstructorOptions, SortDirection } from "../types/core-types";
+import { FinderConstructorOptions } from "../types/core-types";
 import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -64,7 +64,7 @@ describe("toJSON", () => {
             numItemsPerPage: 5,
             resetPaginationOn: ["sortBy", "groupBy"],
             initialSortBy: "sort_rule",
-            initialSortDirection: "asc" as SortDirection,
+            initialSortDirection: "asc",
             ignoreSortByRulesWhileSearchRuleIsActive: undefined,
             initialGroupBy: "group_rule",
             initialGroupBySortDirection: undefined,

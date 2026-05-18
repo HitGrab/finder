@@ -1,7 +1,7 @@
 {
   "id": "reference/api/search-api",
   "title": "Search",
-  "description": "The Search api can be accessed from finder.search.",
+  "description": "Properties",
   "source": "@site/docs/reference/03-api/search-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/search-api",

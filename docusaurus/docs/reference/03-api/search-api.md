@@ -4,32 +4,37 @@ sidebar_position: 0
 
 # Search
 
-The Search api can be accessed from `finder.search`.
+## Properties
 
-**Type Signature**
+| Name          | Type                              | Description                                            |
+| ------------- | --------------------------------- | ------------------------------------------------------ |
+| rule          | SearchRuleDefinition \| undefined | The active search rule set by this instance's ruleset. |
+| searchTerm    | string                            | The user's search query, or an empty string.           |
+| hasSearchTerm | boolean                           | True if `searchTerm` is not an empty string.           |
+| hasSearchRule | boolean                           | True if the ruleset provides a valid SearchRule.       |
 
-```ts
-finder.search {
+## Methods
 
-    // active rule
-    rule?: FinderRule
+### setSearchTerm
 
-    // String that is currently being searched for. Defaults to an empty string.
-    searchTerm: string
+```ts [Signature]
+finder.search.setSearchTerm(searchTerm:string) => void;
+```
 
-    hasSearchTerm: boolean
+### reset
 
-    hasSearchRule: boolean
+Resets search term state to an empty string.
 
-    setSearchTerm(value:string): void
+```ts [Signature]
+finder.search.reset() => void;
+```
 
-    // Reset searchTerm to an empty string.
-    reset(): void
+### test
 
-    // test a search term without committing it
-    test(searchTerm: string, isAdditive = false): FItem[]
+Evaluate which items would match this search term without committing the change to state.
 
-}
+```ts [Signature]
+finder.search.test(searchTerm:string, isAdditive:boolean) => FItem[];
 ```
 
 **Example Usage**

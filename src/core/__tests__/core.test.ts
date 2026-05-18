@@ -15,7 +15,7 @@ describe("Core", () => {
         ];
         expect(() => {
             new FinderCore(objectItems, { rules });
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Catches malformed rules", () => {
@@ -27,7 +27,7 @@ describe("Core", () => {
         ];
         expect(() => {
             new FinderCore(objectItems, { rules });
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Catches missing ids", () => {
@@ -39,6 +39,6 @@ describe("Core", () => {
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             new FinderCore(objectItems, { rules });
-        }).toThrowError();
+        }).toThrow();
     });
 });

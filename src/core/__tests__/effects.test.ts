@@ -31,9 +31,9 @@ describe("Effects", () => {
             ];
 
             const finder = new FinderCore(objectItems, { rules, effects });
-            expect(ruleEffectFn).toBeCalledTimes(0);
+            expect(ruleEffectFn).toHaveBeenCalledTimes(0);
             finder.filters.set("orange", true);
-            expect(ruleEffectFn).toBeCalledTimes(1);
+            expect(ruleEffectFn).toHaveBeenCalledTimes(1);
             expect(finder.filters.raw).toEqual({ orange: true, apple: false });
         });
 
@@ -75,9 +75,9 @@ describe("Effects", () => {
             ];
 
             const finder = new FinderCore(objectItems, { rules, effects, initialSortBy: "sort_expiry_date" });
-            expect(ruleEffectFn).toBeCalledTimes(0);
+            expect(ruleEffectFn).toHaveBeenCalledTimes(0);
             finder.filters.set("orange", true);
-            expect(ruleEffectFn).toBeCalledTimes(1);
+            expect(ruleEffectFn).toHaveBeenCalledTimes(1);
             expect(finder.sortBy.activeRule?.id).toBe("sort_name");
         });
     });
@@ -98,12 +98,12 @@ describe("Effects", () => {
             ];
 
             const finder = new FinderCore(objectItems, { rules, effects });
-            expect(searchEffectFn).toBeCalledTimes(0);
+            expect(searchEffectFn).toHaveBeenCalledTimes(0);
             finder.search.setSearchTerm("orange");
-            expect(searchEffectFn).toBeCalledTimes(1);
+            expect(searchEffectFn).toHaveBeenCalledTimes(1);
 
             finder.search.setSearchTerm("strawberry");
-            expect(searchEffectFn).toBeCalledTimes(1);
+            expect(searchEffectFn).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -3,7 +3,32 @@ title: API
 sidebar_position: 3
 ---
 
+import Link from '@docusaurus/Link';
+
 FinderCore wraps Finder's internal methods to simplify the API surface.
+
+## Constructor
+
+## Properties
+
+| Name       | Type                                                       | Description                                                                                              |
+| ---------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| context    | FContext                                                   | A reference to an external context object.                                                               |
+| disabled   | boolean                                                    | If set true, this instance will ignore any rule state changes.                                           |
+| hasMatches | boolean                                                    | If the current combination of search and filters have found any matches.                                 |
+| isReady    | boolean                                                    | Evaluates as true once `isLoading` is false, and the items object is a valid array.                      |
+| isEmpty    | boolean                                                    | Evaluates as true once `isLoading` is false, and the items object is a valid array, but has length zero. |
+| isLoading  | boolean                                                    | Set to true once a valid dataset has been received.                                                      |
+| items      | FItem[]                                                    | The dataset being operated on.                                                                           |
+| state      | 'loading' \| 'empty' \| 'groups' \| 'items' \| 'noMatches' | Only a single state can be active at a time.                                                             |
+| search     | object                                                     | <Link to="/reference/api/search-api">Search API</Link>.                                                  |
+| filter     | object                                                     | <Link to="/reference/api/filter-api">Filter API</Link>.                                                  |
+| sortBy     | object                                                     | <Link to="/reference/api/sort-by-api">SortBy API</Link>.                                                 |
+| groupBy    | object                                                     | <Link to="/reference/api/group-by-api">GroupBy API</Link>.                                               |
+| pagination | object                                                     | <Link to="/reference/api/sort-by-api">Pagination API</Link>.                                             |
+| updatedAt  | number                                                     | In milliseconds.                                                                                         |
+
+## Methods
 
 ```ts
 FinderCore<FItem, FContext> {

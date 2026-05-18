@@ -341,15 +341,15 @@ export default {
       "minHeadingLevel": 2,
       "maxHeadingLevel": 3
     },
-    "liveCodeBlock": {
-      "playgroundPosition": "bottom"
-    },
     "mermaid": {
       "theme": {
         "dark": "dark",
         "light": "default"
       },
       "options": {}
+    },
+    "liveCodeBlock": {
+      "playgroundPosition": "bottom"
     }
   },
   "baseUrlIssueBanner": true,
