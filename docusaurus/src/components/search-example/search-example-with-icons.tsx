@@ -1,5 +1,5 @@
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
-import { Finder, FinderContentItemProps, searchRule } from "@hitgrab/finder";
+import { Finder, FinderContentProps, searchRule } from "@hitgrab/finder";
 import { Shoe } from "./search-example-types";
 import { SearchExampleInput } from "./search-example-controls";
 import { generateItems } from "./search-example-data";
@@ -28,7 +28,7 @@ export function SearchExampleWithIcons() {
     );
 }
 
-function SearchExampleItemsWithIcons({ items }: FinderContentItemProps<Shoe>) {
+function SearchExampleItemsWithIcons({ items }: FinderContentProps<Shoe>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
     return items.map((item) => {
         return (

@@ -27,9 +27,8 @@ If searching your dataset is expensive, searchRules have an optional `debounceMi
 
 Only a single search rule can be defined per Finder instance. If you need to do multiple kinds of text searches, consider using a Filter!
 
-:::info Further reading
+:::info[Further reading]
 
 - <Link to="/reference/rules/search-rule">SearchRule</Link>
 - <Link to="/reference/api/search-api">Search API</Link>
-
-:::
+  :::

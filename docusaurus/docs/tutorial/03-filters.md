@@ -73,7 +73,7 @@ filterRule<ApartmentListing, number>({
 });
 ```
 
-:::info Further reading
+:::info[Further reading]
 
 - <Link to="/reference/rules/filter-rule">FilterRule definition</Link>
 - <Link to="/reference/api/filter-api">Filter API</Link>

@@ -1,4 +1,4 @@
-import { Finder, FinderContentItemProps, useFinder } from "@hitgrab/finder";
+import { Finder, FinderContentProps, useFinder } from "@hitgrab/finder";
 
 import { useState, useCallback } from "react";
 import { ruleset } from "./apartment-listing-ruleset";
@@ -56,7 +56,7 @@ export function ApartmentListingExample() {
     );
 }
 
-function ItemListing({ items }: FinderContentItemProps<ApartmentListing>) {
+function ItemListing({ items }: FinderContentProps<ApartmentListing>["items"]) {
     return items.map((listing) => {
         return (
             <div className="listing" key={listing.id}>
@@ -127,14 +127,15 @@ function SingleValueControl({ ruleId }: SingleValueControlProps) {
     const finder = useFinder();
     const rule = finder.filters.getRule(ruleId);
     const ruleValue = finder.filters.get(rule);
-    const composedOptions = rule.required ? rule.options : [{ value: undefined, label: "All" }, ...rule.options];
+    const options = rule.options ?? [];
+    const composedOptions = rule.required ? options : [{ value: undefined, label: "All" }, ...options];
     const selectedOptionIndex = composedOptions.findIndex(({ value }) => value === ruleValue);
     return (
         <select
             value={selectedOptionIndex}
             onChange={(e) => {
                 const selectedOption = composedOptions.at(e.currentTarget.selectedIndex);
-                finder.filters.set(ruleId, selectedOption.value);
+                finder.filters.set(ruleId, selectedOption?.value);
             }}
         >
             {composedOptions.map((option, index) => {
@@ -157,7 +158,7 @@ function MultipleFilterControl({ ruleId }: MultipleFilterControlProps) {
     const rule = finder.filters.getRule(ruleId);
     return (
         <ul>
-            {rule.options.map((option) => {
+            {rule.options?.map((option) => {
                 const isChecked = finder.filters.has(rule, option);
                 return (
                     <li key={option.value}>

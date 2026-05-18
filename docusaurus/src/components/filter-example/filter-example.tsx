@@ -1,6 +1,6 @@
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import { faker } from "@faker-js/faker";
-import { filterRule, Finder, FinderContentItemProps, finderRuleset, useFinder } from "@hitgrab/finder";
+import { filterRule, Finder, FinderContentProps, finderRuleset, useFinder } from "@hitgrab/finder";
 import { random } from "lodash";
 
 interface Avian {
@@ -69,7 +69,7 @@ function FilterExample() {
     );
 }
 
-function FilterItems({ items }: FinderContentItemProps<Avian>) {
+function FilterItems({ items }: FinderContentProps<Avian>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
     return items.map((item) => {
         return (
@@ -99,7 +99,8 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
     const finder = useFinder();
     const rule = finder.filters.getRule(ruleId);
     const ruleValue = finder.filters.get(rule);
-    const composedOptions = rule.required ? rule.options : [{ value: undefined, label: "All" }, ...rule.options];
+    const options = rule.options ?? [];
+    const composedOptions = rule.required ? options : [{ value: undefined, label: "All" }, ...options];
     const selectedOptionIndex = composedOptions.findIndex(({ value }) => value === ruleValue);
     const optionMatches = finder.filters.testRuleOptions(rule);
     return (
@@ -107,7 +108,7 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
             value={selectedOptionIndex}
             onChange={(e) => {
                 const selectedOption = composedOptions.at(e.currentTarget.selectedIndex);
-                finder.filters.set(ruleId, selectedOption.value);
+                finder.filters.set(ruleId, selectedOption?.value);
             }}
         >
             {composedOptions.map((option, index) => {
@@ -119,9 +120,8 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
                 }
 
                 return (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <option value={index} key={index}>
-                        {option.label || option.value} ({numMatches})
+                    <option value={index} key={option.value}>
+                        {option.label ?? option.value} ({numMatches})
                     </option>
                 );
             })}

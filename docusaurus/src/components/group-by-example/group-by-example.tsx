@@ -1,6 +1,6 @@
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import { faker } from "@faker-js/faker";
-import { Finder, FinderContentGroupProps, finderRuleset, groupByRule, sortByRule, useFinder } from "@hitgrab/finder";
+import { Finder, FinderContentProps, finderRuleset, groupByRule, sortByRule } from "@hitgrab/finder";
 import { random } from "lodash";
 
 function createVehicle(): Vehicle {
@@ -59,7 +59,7 @@ function GroupByExample() {
     );
 }
 
-function GroupedItems({ groups }: FinderContentGroupProps<Vehicle>) {
+function GroupedItems({ groups }: FinderContentProps<Vehicle>["groups"]) {
     const { withBaseUrl } = useBaseUrlUtils();
     return groups.map((group) => {
         return (

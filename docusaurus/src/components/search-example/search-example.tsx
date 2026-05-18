@@ -1,4 +1,4 @@
-import { Finder, FinderContentItemProps, searchRule } from "@hitgrab/finder";
+import { Finder, FinderContentProps, searchRule } from "@hitgrab/finder";
 import { generateItems } from "./search-example-data";
 import { Shoe } from "./search-example-types";
 import { SearchExampleInput } from "./search-example-controls";
@@ -26,7 +26,7 @@ export function SearchExample() {
     );
 }
 
-function SearchExampleItems({ items }: FinderContentItemProps<Shoe>) {
+function SearchExampleItems({ items }: FinderContentProps<Shoe>["items"]) {
     return items.map((item) => {
         const composedHaystack = `${item.brand} ${item.name}™`;
         return (

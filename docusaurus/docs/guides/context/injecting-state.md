@@ -55,10 +55,10 @@ function IssueTracker() {
 
 ### Consume the context in the Item renderprop
 
-The second generic of the `FinderContentItemProps` type is the Context. From here, you can use those contextual methods and props to your hearts content.
+The second generic of the `FinderContentProps` type is the Context. From here, you can use those contextual methods and props to your hearts content.
 
 ```ts
-function IssueTrackerItems({ items, context }: FinderContentItemProps<Issue, IssueTrackerContext>) {
+function IssueTrackerItems({ items, context }: FinderContentProps<Issue, IssueTrackerContext>['items']) {
     return items.map((item) => {
         const isSelected = context.isSelected(item.id);
         return (

@@ -10,6 +10,7 @@ import { SearchExampleWithIcons } from '/src/components/search-example/search-ex
 import { FilterExample } from '/src/components/filter-example/filter-example';
 import { SortByExample } from '/src/components/sort-by-example/sort-by-example';
 import { GroupByExample } from '/src/components/group-by-example/group-by-example';
+import { Finder, searchRule } from '@hitgrab/finder';
 
 # Finder
 
@@ -54,17 +55,17 @@ Finder provides an API for managing rules and displaying matches. It doesn't hav
   <div class="container padding-left--none padding-right--none">
   <div class="row">
     <div class="col col--8">
-```ts
+```tsx 
 interface Shoe {
     product {
         name: string;
-    }
+    };
     image: string;
 }
 
 const rule = searchRule<Shoe>({
 searchFn: (item) => item.product.name
-})
+});
 
 return <Finder items={shoes} rules={[rule]} />
 

@@ -42,7 +42,7 @@ export const ruleset = finderRuleset<ApartmentListing>([
     }),
     filterRule<ApartmentListing, number>({
         id: "num_bedrooms_filter",
-        filterFn: (listing, value) => value.includes(listing.num_bedrooms),
+        filterFn: (listing, value) => value === listing.num_bedrooms,
         options: ({ items }) => {
             const allNumBedrooms = items.map((listing) => listing.num_bedrooms);
             const uniqueNumBedrooms = new Set(allNumBedrooms);

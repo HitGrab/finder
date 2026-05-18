@@ -29,7 +29,7 @@ If any sortBy rules are provided and no specific rule is set, the first sortBy r
 SortBy rules use lodash's `orderBy` under the hood, so `sortFn` and `defaultSortDirection` both accept arrays of callbacks and directions.
 :::
 
-:::info Further reading
+:::info[Further reading]
 
 - <Link to="/reference/rules/sort-by-rule">SortByRule definition</Link>
 - <Link to="/reference/api/sort-by-api">SortBy API</Link>

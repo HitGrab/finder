@@ -1,6 +1,6 @@
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import { faker } from "@faker-js/faker";
-import { Finder, FinderContentItemProps, finderRuleset, sortByRule, useFinder } from "@hitgrab/finder";
+import { Finder, FinderContentProps, finderRuleset, sortByRule, useFinder } from "@hitgrab/finder";
 import { capitalize, random } from "lodash";
 
 function createFruit(): Fruit {
@@ -52,7 +52,7 @@ function SortByExample() {
     );
 }
 
-function FilterItems({ items }: FinderContentItemProps<Fruit>) {
+function FilterItems({ items }: FinderContentProps<Fruit>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
     return items.map((item) => {
         return (
