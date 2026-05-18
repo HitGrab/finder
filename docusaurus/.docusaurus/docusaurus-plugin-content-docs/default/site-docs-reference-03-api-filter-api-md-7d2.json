@@ -1,7 +1,7 @@
 {
   "id": "reference/api/filter-api",
   "title": "Filters",
-  "description": "The Filters api can be accessed from finder.filters.",
+  "description": "Properties",
   "source": "@site/docs/reference/03-api/filter-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/filter-api",

@@ -15,18 +15,18 @@ sidebar_position: 0
 
 ## Methods
 
-### setSearchTerm
-
-```ts [Signature]
-finder.search.setSearchTerm(searchTerm:string) => void;
-```
-
 ### reset
 
 Resets search term state to an empty string.
 
 ```ts [Signature]
 finder.search.reset() => void;
+```
+
+### setSearchTerm
+
+```ts [Signature]
+finder.search.setSearchTerm(searchTerm:string) => void;
 ```
 
 ### test
@@ -37,7 +37,7 @@ Evaluate which items would match this search term without committing the change 
 finder.search.test(searchTerm:string, isAdditive:boolean) => FItem[];
 ```
 
-**Example Usage**
+## Example Usage
 
 ```ts
 function Search() {

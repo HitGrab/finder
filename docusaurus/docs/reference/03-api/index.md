@@ -13,6 +13,12 @@ FinderCore wraps Finder's internal methods to simplify the API surface.
 
 | Name       | Type                                                       | Description                                                                                              |
 | ---------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| search     | object                                                     | <Link to="/reference/api/search-api">Search API</Link>.                                                  |
+| filters    | object                                                     | <Link to="/reference/api/filter-api">Filter API</Link>.                                                  |
+| sortBy     | object                                                     | <Link to="/reference/api/sort-by-api">SortBy API</Link>.                                                 |
+| groupBy    | object                                                     | <Link to="/reference/api/group-by-api">GroupBy API</Link>.                                               |
+| pagination | object                                                     | <Link to="/reference/api/sort-by-api">Pagination API</Link>.                                             |
+| events     | object                                                     | <Link to="/reference/api/events-api">Events API</Link>                                                   |
 | context    | FContext                                                   | A reference to an external context object.                                                               |
 | disabled   | boolean                                                    | If set true, this instance will ignore any rule state changes.                                           |
 | hasMatches | boolean                                                    | If the current combination of search and filters have found any matches.                                 |
@@ -21,11 +27,6 @@ FinderCore wraps Finder's internal methods to simplify the API surface.
 | isLoading  | boolean                                                    | Set to true once a valid dataset has been received.                                                      |
 | items      | FItem[]                                                    | The dataset being operated on.                                                                           |
 | state      | 'loading' \| 'empty' \| 'groups' \| 'items' \| 'noMatches' | Only a single state can be active at a time.                                                             |
-| search     | object                                                     | <Link to="/reference/api/search-api">Search API</Link>.                                                  |
-| filter     | object                                                     | <Link to="/reference/api/filter-api">Filter API</Link>.                                                  |
-| sortBy     | object                                                     | <Link to="/reference/api/sort-by-api">SortBy API</Link>.                                                 |
-| groupBy    | object                                                     | <Link to="/reference/api/group-by-api">GroupBy API</Link>.                                               |
-| pagination | object                                                     | <Link to="/reference/api/sort-by-api">Pagination API</Link>.                                             |
 | updatedAt  | number                                                     | In milliseconds.                                                                                         |
 
 ## Methods
