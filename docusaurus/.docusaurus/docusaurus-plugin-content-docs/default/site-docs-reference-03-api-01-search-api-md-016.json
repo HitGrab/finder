@@ -2,7 +2,7 @@
   "id": "reference/api/search-api",
   "title": "Search",
   "description": "Properties",
-  "source": "@site/docs/reference/03-api/search-api.md",
+  "source": "@site/docs/reference/03-api/01-search-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/search-api",
   "permalink": "/finder/reference/api/search-api",
@@ -10,14 +10,15 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
+  "sidebarPosition": 1,
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Pagination",
-    "permalink": "/finder/reference/api/pagination-api"
+    "title": "API",
+    "permalink": "/finder/reference/api/"
   },
   "next": {
-    "title": "SortBy",
-    "permalink": "/finder/reference/api/sort-by-api"
+    "title": "Filters",
+    "permalink": "/finder/reference/api/filter-api"
   }
 }

@@ -44,7 +44,7 @@ filterRule<ApartmentListing, [min: number, max: number]>({
 });
 ```
 
-:::tip Optionally Strict Options
+:::tip[Optionally Strict Options]
 If a rule has defined options, Finder will not allow the user to select a value outside that set. If you need custom values, you can set `strictOptions: false` in the rule definition.
 :::
 

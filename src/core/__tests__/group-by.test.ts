@@ -44,12 +44,11 @@ describe("GroupBy", () => {
                 id: "expiry_date",
                 groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
                 sortGroupFn: (group) => group.id,
+                defaultGroupSortDirection: "asc",
             }),
         ];
 
         const finder = new FinderCore(objectItems, { rules, requireGroup: true });
-
-        finder.groupBy.setGroupSortDirection("asc");
 
         expect(finder.matches.groups).toEqual([
             { id: "five", items: [orange, banana] },

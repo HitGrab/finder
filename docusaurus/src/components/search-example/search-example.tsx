@@ -16,10 +16,12 @@ const items = generateItems(NUM_ITEMS);
 export function SearchExample() {
     return (
         <Finder items={items} rules={ruleset}>
-            <div className="listContainer">
+            <div className="card assetCard">
                 <SearchExampleInput />
-                <div className="listContainer__content">
-                    <Finder.Content>{{ items: SearchExampleItems, noMatches: "No matches found" }}</Finder.Content>
+                <div className="scrollable">
+                    <div className="scrollable__content">
+                        <Finder.Content>{{ items: SearchExampleItems, noMatches: "No matches found" }}</Finder.Content>
+                    </div>
                 </div>
             </div>
         </Finder>
@@ -27,12 +29,18 @@ export function SearchExample() {
 }
 
 function SearchExampleItems({ items }: FinderContentProps<Shoe>["items"]) {
-    return items.map((item) => {
-        const composedHaystack = `${item.brand} ${item.name}™`;
-        return (
-            <div className="listContainer__item" key={item.sku}>
-                <Finder.SearchTermHaystack>{composedHaystack}</Finder.SearchTermHaystack>
-            </div>
-        );
-    });
+    return (
+        <div className="assetTable assetTable--compact">
+            {items.map((item) => {
+                const composedHaystack = `${item.brand} ${item.name}™`;
+                return (
+                    <div className="row" key={item.sku}>
+                        <div>
+                            <Finder.SearchTermHaystack>{composedHaystack}</Finder.SearchTermHaystack>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }

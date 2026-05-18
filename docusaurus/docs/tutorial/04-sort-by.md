@@ -25,7 +25,7 @@ Only a single sortBy rule can be active at one time.
 
 If any sortBy rules are provided and no specific rule is set, the first sortBy rule in the stack will be considered active.
 
-:::tip Complex sorting
+:::tip[Complex sorting]
 SortBy rules use lodash's `orderBy` under the hood, so `sortFn` and `defaultSortDirection` both accept arrays of callbacks and directions.
 :::
 

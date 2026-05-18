@@ -10,10 +10,8 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
-  "sidebarPosition": 3,
   "frontMatter": {
-    "title": "API",
-    "sidebar_position": 3
+    "title": "API"
   },
   "sidebar": "tutorialSidebar",
   "previous": {

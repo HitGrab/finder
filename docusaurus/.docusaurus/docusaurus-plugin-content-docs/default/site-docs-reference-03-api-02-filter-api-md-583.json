@@ -2,7 +2,7 @@
   "id": "reference/api/filter-api",
   "title": "Filters",
   "description": "Properties",
-  "source": "@site/docs/reference/03-api/filter-api.md",
+  "source": "@site/docs/reference/03-api/02-filter-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/filter-api",
   "permalink": "/finder/reference/api/filter-api",
@@ -20,7 +20,7 @@
     "permalink": "/finder/reference/api/search-api"
   },
   "next": {
-    "title": "Events",
-    "permalink": "/finder/reference/api/events-api"
+    "title": "SortBy",
+    "permalink": "/finder/reference/api/sort-by-api"
   }
 }

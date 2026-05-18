@@ -1,6 +1,7 @@
 ---
 slug: "/"
 sidebar_position: 0
+hide_table_of_contents: true
 ---
 
 import Tabs from '@theme/Tabs';
@@ -108,7 +109,7 @@ return <Finder items={shoes} rules={[rule]} />
 <TabItem value="fruits" label="Sort fruits">
 <div class="container padding-left--none padding-right--none">
     <div class="row">
-        <div class="col col--8">
+        <div class="col col--6">
     ```ts
     interface Fruit {
         name: string;
@@ -116,24 +117,24 @@ return <Finder items={shoes} rules={[rule]} />
         expiry_date: Date;
     }
 
-    const ruleset = [
-        sortByRule<Fruit>({
+    const ruleset = finderRuleset<Fruit>([
+        sortByRule({
             id: 'expiry_date',
             sortFn: (fruit) => fruit.expiry_date.getTime(),
             label: "Expires soon",
             defaultSortDirection: 'desc'
         }),
-        sortByRule<Fruit>({
+        sortByRule({
             id: 'price',
             sortFn: (fruit) => fruit.price,
             label: "Price lowest to highest"
         }
-    ]);
+    ]));
 
     return <Finder items={fruits} rules={ruleset} />
     ```
     </div>
-        <div class="col col--4">
+        <div class="col col--6">
             <SortByExample />
         </div>
     </div>
@@ -176,7 +177,7 @@ return <Finder items={shoes} rules={[rule]} />
 </TabItem>
 </Tabs>
 
-:::info Do you _really_ need a whole library for basic data manipulation?
+:::info[Do you _really_ need a whole library for basic data manipulation?]
 
 Filtering and sorting data is the easiest thing in the world, and a disproportionate percentage of webdev tasks. It can _also_ be a disproportionate amount of frustrations as client needs change at the last minute, filters get nested and coupled, and object shape changes.
 

@@ -119,7 +119,7 @@ class GroupByMixin<FItem> {
     serialize(): SerializedGroupByMixin {
         return {
             rule: this.activeRule,
-            groupBySortDirection: this.#groupBySortDirection,
+            groupBySortDirection: this.groupBySortDirection,
         };
     }
 

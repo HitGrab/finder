@@ -2,7 +2,7 @@
   "id": "reference/api/events-api",
   "title": "Events",
   "description": "The Events api can be accessed from finder.events.",
-  "source": "@site/docs/reference/03-api/events-api.md",
+  "source": "@site/docs/reference/03-api/06-events-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/events-api",
   "permalink": "/finder/reference/api/events-api",
@@ -10,6 +10,7 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
+  "sidebarPosition": 6,
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {

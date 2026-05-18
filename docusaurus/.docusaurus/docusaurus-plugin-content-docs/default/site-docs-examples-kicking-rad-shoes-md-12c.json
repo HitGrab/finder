@@ -13,8 +13,8 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Tests",
-    "permalink": "/finder/reference/api/test-api"
+    "title": "FinderConstructorOptions",
+    "permalink": "/finder/reference/types/constructor"
   },
   "next": {
     "title": "Pixel Armory",

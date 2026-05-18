@@ -2,7 +2,7 @@
 
 searchEffects are triggered when the user searches for certain terms.
 
-:::info Use cases
+:::info[Use cases]
 
 - Suggesting a filter if the user searches for a matching keyword.
 - Preload data based on their search.

@@ -2,7 +2,7 @@
 
 ruleEffects are triggered when certain rules are changed. It allows you to couple rules to each other wihout adding complex onChange events.
 
-:::info Use cases
+:::info[Use cases]
 
 - I want to reset sort order when the user changes their filters.
 - Two filters are mutually exclusive, and one should be disabled when the other is active.

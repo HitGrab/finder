@@ -44,15 +44,15 @@ export default [
   },
   {
     path: '/finder/',
-    component: ComponentCreator('/finder/', '751'),
+    component: ComponentCreator('/finder/', 'bcc'),
     routes: [
       {
         path: '/finder/',
-        component: ComponentCreator('/finder/', '0fb'),
+        component: ComponentCreator('/finder/', '48b'),
         routes: [
           {
             path: '/finder/',
-            component: ComponentCreator('/finder/', 'bb3'),
+            component: ComponentCreator('/finder/', 'a7b'),
             routes: [
               {
                 path: '/finder/Core Concepts',
@@ -98,49 +98,49 @@ export default [
               },
               {
                 path: '/finder/reference/api/events-api',
-                component: ComponentCreator('/finder/reference/api/events-api', 'e6e'),
+                component: ComponentCreator('/finder/reference/api/events-api', '186'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/filter-api',
-                component: ComponentCreator('/finder/reference/api/filter-api', '52e'),
+                component: ComponentCreator('/finder/reference/api/filter-api', '2f2'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/group-by-api',
-                component: ComponentCreator('/finder/reference/api/group-by-api', '5c8'),
+                component: ComponentCreator('/finder/reference/api/group-by-api', 'ac4'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/matches-api',
-                component: ComponentCreator('/finder/reference/api/matches-api', '5c2'),
+                component: ComponentCreator('/finder/reference/api/matches-api', '7b2'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/pagination-api',
-                component: ComponentCreator('/finder/reference/api/pagination-api', '56d'),
+                component: ComponentCreator('/finder/reference/api/pagination-api', '760'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/search-api',
-                component: ComponentCreator('/finder/reference/api/search-api', '703'),
+                component: ComponentCreator('/finder/reference/api/search-api', '9ff'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/sort-by-api',
-                component: ComponentCreator('/finder/reference/api/sort-by-api', 'eb6'),
+                component: ComponentCreator('/finder/reference/api/sort-by-api', '709'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
                 path: '/finder/reference/api/test-api',
-                component: ComponentCreator('/finder/reference/api/test-api', '6b8'),
+                component: ComponentCreator('/finder/reference/api/test-api', '98e'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
@@ -231,6 +231,18 @@ export default [
               {
                 path: '/finder/reference/rules/sort-by-rule',
                 component: ComponentCreator('/finder/reference/rules/sort-by-rule', 'c0f'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/reference/types/',
+                component: ComponentCreator('/finder/reference/types/', '65c'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/reference/types/constructor',
+                component: ComponentCreator('/finder/reference/types/constructor', 'a23'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

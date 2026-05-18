@@ -40,7 +40,7 @@ finder.filters.delete(id: AnyFilterRuleDefinition | string, value?: any) => void
 Retrieve the processed value for a filter rule. If the rule has a `defaultValue` and no local state, the default will be returned. If a rule is required, the first valid option will be returned if possible.
 
 ```ts
-finder.filters.get(id: AnyFilterRuleDefinition | string) => any
+finder.filters.get(id: AnyFilterRuleDefinition | string): any
 ```
 
 ### getRule
@@ -48,7 +48,7 @@ finder.filters.get(id: AnyFilterRuleDefinition | string) => any
 Retrieve the hydrated version of the filter rule. Useful for building controls!
 
 ```ts
-finder.filters.getRule(id: AnyFilterRuleDefinition | string) => HydratedFilterRuleDefinition | Error
+finder.filters.getRule(id: AnyFilterRuleDefinition | string): HydratedFilterRuleDefinition | Error
 ```
 
 ### has
@@ -56,7 +56,7 @@ finder.filters.getRule(id: AnyFilterRuleDefinition | string) => HydratedFilterRu
 Check the processed value for a filter rule or option. For a boolean rule, if `required` or set, it will return true. For rules with defined options, you can pass an option to see if that value is selected.
 
 ```ts
-finder.filters.has(id: AnyFilterRuleDefinition | string, optionValue?: FilterOption | any) => boolean
+finder.filters.has(id: AnyFilterRuleDefinition | string, optionValue?: FilterOption | any): boolean
 ```
 
 ### isActive
@@ -64,7 +64,7 @@ finder.filters.has(id: AnyFilterRuleDefinition | string, optionValue?: FilterOpt
 Check if a rule has a value, or has `required:true`.
 
 ```ts
-finder.filters.isActive(id: AnyFilterRuleDefinition | string) => boolean
+finder.filters.isActive(id: AnyFilterRuleDefinition | string): boolean
 ```
 
 ### set
@@ -76,7 +76,7 @@ This behaves slightly differently by rule flavour.
 - `multiple:false`. Set the rule's value. If the passed value is `undefined`, the rule will be reset.
 
 ```ts
-finder.filters.set(id: AnyFilterRuleDefinition | string, value?: any) => void
+finder.filters.set(id: AnyFilterRuleDefinition | string, value?: any): void
 ```
 
 ### reset
@@ -84,7 +84,7 @@ finder.filters.set(id: AnyFilterRuleDefinition | string, value?: any) => void
 ALL active rules are reset.
 
 ```ts
-finder.filters.reset() => void
+finder.filters.reset(): void
 ```
 
 ### test

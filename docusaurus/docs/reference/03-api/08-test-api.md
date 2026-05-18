@@ -2,7 +2,7 @@
 
 Test lets you test a ruleset's results without mutating state. The Tests api can be accessed from `finder.test`.
 
-:::tip Advanced feature
+:::tip[Advanced feature]
 Want to test a specific filter or a searchTerm instead of a complete ruleset? Use `finder.filters.test()` or `finder.search.test()` instead.
 :::
 
@@ -35,6 +35,6 @@ interface SerializedMixins {
 finder.test(mixins: SerializedMixins, isAdditive: boolean): FItem[]
 ```
 
-:::info Additive Testing
+:::info[Additive Testing]
 If `isAdditive` is true, Finder will merge the existing ruleset and state into the test.
 :::

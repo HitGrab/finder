@@ -17,10 +17,12 @@ const ruleset = [
 export function SearchExampleWithIcons() {
     return (
         <Finder items={items} rules={ruleset}>
-            <div className="listContainer">
+            <div className="card assetCard">
                 <SearchExampleInput />
-                <div className="listContainer__content">
-                    <Finder.Content>{{ items: SearchExampleItemsWithIcons, noMatches: "No matches found" }}</Finder.Content>
+                <div className="scrollable">
+                    <div className="scrollable__content">
+                        <Finder.Content>{{ items: SearchExampleItemsWithIcons, noMatches: "No matches found" }}</Finder.Content>
+                    </div>
                 </div>
             </div>
             <div className="listContainer__credits">Assets from https://freddiepng.itch.io/3-air-jordans-free</div>
@@ -30,17 +32,21 @@ export function SearchExampleWithIcons() {
 
 function SearchExampleItemsWithIcons({ items }: FinderContentProps<Shoe>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
-    return items.map((item) => {
-        return (
-            <div className="listContainer__itemWithImage" key={item.sku}>
-                <div
-                    className="listContainer__image listContainer__image--shoe"
-                    style={{ backgroundImage: `url(${withBaseUrl(item.image)})`, filter: `hue-rotate(${item.hue_shift}deg)` }}
-                />
-                <div>
-                    <Finder.SearchTermHaystack>{item.name}</Finder.SearchTermHaystack>
-                </div>
-            </div>
-        );
-    });
+    return (
+        <div className="assetTable">
+            {items.map((item) => {
+                return (
+                    <div className="row" key={item.sku}>
+                        <div>
+                            <Finder.SearchTermHaystack>{item.name}</Finder.SearchTermHaystack>
+                            <div
+                                className=" asset__image--shoe"
+                                style={{ backgroundImage: `url(${withBaseUrl(item.image)})`, filter: `hue-rotate(${item.hue_shift}deg)` }}
+                            />
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }

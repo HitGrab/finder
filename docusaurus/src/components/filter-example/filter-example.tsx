@@ -56,40 +56,49 @@ const ruleset = finderRuleset<Avian, string>([
 function FilterExample() {
     return (
         <Finder items={items} rules={ruleset}>
-            <div className="listContainer">
-                <div className="listContainer__stickyHeader">
-                    <DropdownFilter ruleId="habitat" />
+            <div className="card assetCard">
+                <div className="card__header">
+                    <h3>Filter Fowl</h3>
                 </div>
-                <div className="listContainer__content">
-                    <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
+                <div className="scrollable">
+                    <div className="scrollable__content">
+                        <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
+                    </div>
+                </div>
+                <div className="card__footer">
+                    <DropdownFilter ruleId="habitat" />
+                    <div className="listContainer__credits">Assets from https://onocentaur.itch.io/birds</div>
                 </div>
             </div>
-            <div className="listContainer__credits">Assets from https://onocentaur.itch.io/birds</div>
         </Finder>
     );
 }
 
 function FilterItems({ items }: FinderContentProps<Avian>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
-    return items.map((item) => {
-        return (
-            <div className="listContainer__itemWithImage" key={[item.territory, item.name].join("")}>
-                <div>
-                    <div
-                        className="listContainer__image listContainer__image--bird"
-                        style={{ backgroundImage: `url(${withBaseUrl("/img/birds/birds.png")})`, "--image-index": item.image_index } as React.CSSProperties}
-                    />
-                </div>
-                <div>
-                    <b>
-                        <Finder.SearchTermHaystack>{item.name}</Finder.SearchTermHaystack>
-                    </b>
-                    <br />
-                    Habitat: {item.territory}
-                </div>
-            </div>
-        );
-    });
+    return (
+        <div className="assetTable">
+            {items.map((item) => {
+                return (
+                    <div className="row" key={[item.territory, item.name].join("")}>
+                        <div>
+                            <div
+                                className=" asset__image--bird"
+                                style={
+                                    { backgroundImage: `url(${withBaseUrl("/img/birds/birds.png")})`, "--image-index": item.image_index } as React.CSSProperties
+                                }
+                            />
+                            <b>
+                                <Finder.SearchTermHaystack>{item.name}</Finder.SearchTermHaystack>
+                            </b>
+                            <br />
+                            Habitat: {item.territory}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
 }
 
 interface DropdownFilterProps {
@@ -98,13 +107,16 @@ interface DropdownFilterProps {
 function DropdownFilter({ ruleId }: DropdownFilterProps) {
     const finder = useFinder();
     const rule = finder.filters.getRule(ruleId);
+    const hasValue = finder.filters.has(ruleId);
     const ruleValue = finder.filters.get(rule);
     const options = rule.options ?? [];
     const composedOptions = rule.required ? options : [{ value: undefined, label: "All" }, ...options];
     const selectedOptionIndex = composedOptions.findIndex(({ value }) => value === ruleValue);
     const optionMatches = finder.filters.testRuleOptions(rule);
+
     return (
         <select
+            className={`button button-block ${hasValue ? "" : "empty"}`}
             value={selectedOptionIndex}
             onChange={(e) => {
                 const selectedOption = composedOptions.at(e.currentTarget.selectedIndex);

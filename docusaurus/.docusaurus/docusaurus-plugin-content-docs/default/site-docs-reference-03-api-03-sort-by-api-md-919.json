@@ -2,7 +2,7 @@
   "id": "reference/api/sort-by-api",
   "title": "SortBy",
   "description": "Properties",
-  "source": "@site/docs/reference/03-api/sort-by-api.md",
+  "source": "@site/docs/reference/03-api/03-sort-by-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/sort-by-api",
   "permalink": "/finder/reference/api/sort-by-api",
@@ -10,14 +10,15 @@
   "unlisted": false,
   "tags": [],
   "version": "current",
+  "sidebarPosition": 3,
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Pagination",
-    "permalink": "/finder/reference/api/pagination-api"
+    "title": "Filters",
+    "permalink": "/finder/reference/api/filter-api"
   },
   "next": {
-    "title": "Tests",
-    "permalink": "/finder/reference/api/test-api"
+    "title": "GroupBy",
+    "permalink": "/finder/reference/api/group-by-api"
   }
 }

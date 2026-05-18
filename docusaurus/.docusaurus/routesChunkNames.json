@@ -49,17 +49,17 @@
     },
     "content": "content---finder-markdown-page-393-596"
   },
-  "/finder/-751": {
+  "/finder/-bcc": {
     "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
       "plugin": "plugin---finder-aba-774"
     }
   },
-  "/finder/-0fb": {
+  "/finder/-48b": {
     "__comp": "__comp---theme-doc-version-roota-7-b-5de",
     "__props": "__props---finder-199-9ba"
   },
-  "/finder/-bb3": {
+  "/finder/-a7b": {
     "__comp": "__comp---theme-doc-roota-94-67a"
   },
   "/finder/Core Concepts-325": {
@@ -90,37 +90,37 @@
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---finder-reference-api-c-65-df2"
   },
-  "/finder/reference/api/events-api-e6e": {
+  "/finder/reference/api/events-api-186": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-events-apic-71-911"
+    "content": "content---finder-reference-api-events-api-721-dd1"
   },
-  "/finder/reference/api/filter-api-52e": {
+  "/finder/reference/api/filter-api-2f2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-filter-api-7-d-2-c89"
+    "content": "content---finder-reference-api-filter-api-583-386"
   },
-  "/finder/reference/api/group-by-api-5c8": {
+  "/finder/reference/api/group-by-api-ac4": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-group-by-api-193-e98"
+    "content": "content---finder-reference-api-group-by-api-44-a-8c7"
   },
-  "/finder/reference/api/matches-api-5c2": {
+  "/finder/reference/api/matches-api-7b2": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-matches-apibce-684"
+    "content": "content---finder-reference-api-matches-api-621-5c5"
   },
-  "/finder/reference/api/pagination-api-56d": {
+  "/finder/reference/api/pagination-api-760": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-pagination-api-841-e01"
+    "content": "content---finder-reference-api-pagination-apieb-7-d8f"
   },
-  "/finder/reference/api/search-api-703": {
+  "/finder/reference/api/search-api-9ff": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-search-api-64-e-22a"
+    "content": "content---finder-reference-api-search-api-016-969"
   },
-  "/finder/reference/api/sort-by-api-eb6": {
+  "/finder/reference/api/sort-by-api-709": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-sort-by-api-8-b-5-f44"
+    "content": "content---finder-reference-api-sort-by-api-919-901"
   },
-  "/finder/reference/api/test-api-6b8": {
+  "/finder/reference/api/test-api-98e": {
     "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---finder-reference-api-test-api-29-c-ae5"
+    "content": "content---finder-reference-api-test-apie-53-f7d"
   },
   "/finder/reference/react-components/-922": {
     "__comp": "__comp---theme-doc-item-178-a40",
@@ -181,6 +181,14 @@
   "/finder/reference/rules/sort-by-rule-c0f": {
     "__comp": "__comp---theme-doc-item-178-a40",
     "content": "content---finder-reference-rules-sort-by-rule-058-5d7"
+  },
+  "/finder/reference/types/-65c": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-reference-types-cc-4-9b5"
+  },
+  "/finder/reference/types/constructor-a23": {
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---finder-reference-types-constructore-6-c-8f1"
   },
   "/finder/tutorial/complete-96b": {
     "__comp": "__comp---theme-doc-item-178-a40",
