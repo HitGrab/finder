@@ -166,11 +166,6 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "reference/types/constructor",
-              "path": "/finder/reference/types/constructor",
-              "sidebar": "tutorialSidebar"
-            },
-            {
               "id": "reference/types/index",
               "path": "/finder/reference/types/",
               "sidebar": "tutorialSidebar"

@@ -26,13 +26,13 @@ const ruleset = finderRuleset<Fruit>([
     sortByRule({
         id: "expiry_date",
         sortFn: (fruit) => fruit.expiry_date.getTime(),
-        label: "Expires soon",
+        label: "Expiry",
         defaultSortDirection: "asc",
     }),
     sortByRule({
         id: "price",
         sortFn: (fruit) => fruit.price,
-        label: "Price lowest to highest",
+        label: "Price",
     }),
 ]);
 

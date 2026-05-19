@@ -1,7 +1,7 @@
 {
   "id": "reference/api/matches-api",
   "title": "Matches",
-  "description": "The Matches api can be accessed from finder.matches.",
+  "description": "| Name            | Type                         | Description                                                                                                                                                    |",
   "source": "@site/docs/reference/03-api/07-matches-api.md",
   "sourceDirName": "reference/03-api",
   "slug": "/reference/api/matches-api",

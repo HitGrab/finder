@@ -212,6 +212,12 @@
     }
 }
 
+.asset__search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .assetTable {
     display: grid;
     row-gap: var(--ifm-card-vertical-spacing);

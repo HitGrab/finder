@@ -1,6 +1,4 @@
-import * as react0 from "react";
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
-import * as react_jsx_runtime4 from "react/jsx-runtime";
 
 //#region src/core/types/rule-types.d.ts
 /**
@@ -424,7 +422,7 @@ interface FinderContentLoadingProps<FItem, FContext> {
 }
 declare function FinderContentLoading<FItem, FContext>({
   children: Component
-}: FinderContentLoadingProps<FItem, FContext>): react_jsx_runtime4.JSX.Element | Iterable<ReactNode> | null;
+}: FinderContentLoadingProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-content-empty.d.ts
 interface FinderContentEmptyProps<FItem, FContext> {
@@ -432,7 +430,7 @@ interface FinderContentEmptyProps<FItem, FContext> {
 }
 declare function FinderContentEmpty<FItem = any, FContext = any>({
   children: Component
-}: FinderContentEmptyProps<FItem, FContext>): react_jsx_runtime4.JSX.Element | Iterable<ReactNode> | null;
+}: FinderContentEmptyProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-content-no-matches.d.ts
 interface FinderContentNoMatchesProps<FItem, FContext> {
@@ -440,7 +438,7 @@ interface FinderContentNoMatchesProps<FItem, FContext> {
 }
 declare function FinderContentNoMatches<FItem = any, FContext = any>({
   children: Component
-}: FinderContentNoMatchesProps<FItem, FContext>): react_jsx_runtime4.JSX.Element | Iterable<ReactNode> | null;
+}: FinderContentNoMatchesProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-content-items.d.ts
 interface FinderContentItemsProps<FItem, FContext> {
@@ -448,7 +446,7 @@ interface FinderContentItemsProps<FItem, FContext> {
 }
 declare function FinderContentItems<FItem = any, FContext = any>({
   children: Component
-}: FinderContentItemsProps<FItem, FContext>): react_jsx_runtime4.JSX.Element | Iterable<ReactNode> | null;
+}: FinderContentItemsProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-content-groups.d.ts
 interface FinderContentGroupsProps<FItem, FContext> {
@@ -456,7 +454,7 @@ interface FinderContentGroupsProps<FItem, FContext> {
 }
 declare function FinderContentGroups<FItem = any, FContext = any>({
   children: Component
-}: FinderContentGroupsProps<FItem, FContext>): react_jsx_runtime4.JSX.Element | Iterable<ReactNode> | null;
+}: FinderContentGroupsProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-content.d.ts
 interface FinderContentContainerProps<FItem, FContext> {
@@ -470,7 +468,7 @@ interface FinderContentContainerProps<FItem, FContext> {
 }
 declare function FinderContent<FItem = any, FContext = any>({
   children: renderProps
-}: FinderContentContainerProps<FItem, FContext>): (react_jsx_runtime4.JSX.Element | undefined)[];
+}: FinderContentContainerProps<FItem, FContext>): (import("react/jsx-runtime").JSX.Element | undefined)[];
 declare namespace FinderContent {
   var Loading: typeof FinderContentLoading;
   var Empty: typeof FinderContentEmpty;
@@ -489,7 +487,7 @@ declare function FinderSearchTermHaystack({
   Match,
   Miss,
   children: haystack
-}: FinderSearchTermHaystackProps): string | react_jsx_runtime4.JSX.Element;
+}: FinderSearchTermHaystackProps): string | import("react/jsx-runtime").JSX.Element;
 //#endregion
 //#region src/react/components/finder.d.ts
 declare function Finder<FItem = any, FContext = any>({
@@ -515,14 +513,14 @@ declare function Finder<FItem = any, FContext = any>({
   onChange,
   controllerRef,
   children
-}: FinderProps<FItem, FContext>): react_jsx_runtime4.JSX.Element;
+}: FinderProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element;
 declare namespace Finder {
   var Content: typeof FinderContent;
   var SearchTermHaystack: typeof FinderSearchTermHaystack;
 }
 //#endregion
 //#region src/react/hooks/use-finder-ref.d.ts
-declare function useFinderRef<FItem = any, FContext = any>(): react0.RefObject<FinderCore<FItem, FContext> | null>;
+declare function useFinderRef<FItem = any, FContext = any>(): import("react").RefObject<FinderCore<FItem, FContext> | null>;
 //#endregion
 //#region src/react/components/string-match.d.ts
 interface StringMatchProps {
@@ -539,6 +537,6 @@ declare function StringMatch({
   haystack,
   Match,
   Miss
-}: StringMatchProps): string | (string | react_jsx_runtime4.JSX.Element)[];
+}: StringMatchProps): string | (string | import("react/jsx-runtime").JSX.Element)[];
 //#endregion
 export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };

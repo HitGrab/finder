@@ -109,7 +109,7 @@ return <Finder items={shoes} rules={[rule]} />
 <TabItem value="fruits" label="Sort fruits">
 <div class="container padding-left--none padding-right--none">
     <div class="row">
-        <div class="col col--6">
+        <div class="col col--8">
     ```ts
     interface Fruit {
         name: string;
@@ -134,7 +134,7 @@ return <Finder items={shoes} rules={[rule]} />
     return <Finder items={fruits} rules={ruleset} />
     ```
     </div>
-        <div class="col col--6">
+        <div class="col col--4">
             <SortByExample />
         </div>
     </div>

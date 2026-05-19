@@ -1,7 +1,7 @@
 {
   "id": "reference/types/index",
   "title": "Types",
-  "description": "",
+  "description": "FinderConstructorOptions",
   "source": "@site/docs/reference/04-types/index.md",
   "sourceDirName": "reference/04-types",
   "slug": "/reference/types/",
@@ -19,7 +19,7 @@
     "permalink": "/finder/reference/api/test-api"
   },
   "next": {
-    "title": "FinderConstructorOptions",
-    "permalink": "/finder/reference/types/constructor"
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
   }
 }

@@ -1,29 +1,14 @@
 # Matches
 
-The Matches api can be accessed from `finder.matches`.
+| Name            | Type                         | Description                                                                                                                                                    |
+| --------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| items           | `FItem[]`                    | Flat array of items that passed the search rule, all filters, have been sorted by any sortBy rules, and paginated. Will be undefined if `requireGroup:true`.   |
+| groups          | `FinderResultGroup<FItem>[]` | Flat array of groups that passed the search rule, all filters, have been sorted by any sortBy rules, and paginated. Will be undefined if `requireGroup:false`. |
+| numMatchedItems | number                       |                                                                                                                                                                |
+| numTotalItems   | number                       | The total number of items in the dataset.                                                                                                                      |
+| hasGroupByRule  | boolean                      |                                                                                                                                                                |
 
-**Type Signature**
-
-```ts
-finder.matches {
-
-    // Flat array of items that passed the search rule, all filters, have been sorted by any sortBy rules, and paginated.
-    // Will be undefined if requireGroup is set.
-    items?: FItem[];
-
-    // Flat array of groups that passed the search rule, all filters, have been sorted by any sortBy rules, and paginated.
-    // Will be undefined if requireGroup is NOT set.
-    groups?: FinderResultGroup<FItem>[];
-
-    numMatchedItems: number;
-
-    numTotalItems: number;
-
-    hasGroupByRule: boolean;
-}
-```
-
-**Example Usage**
+## Example Usage
 
 ```ts
 function Results() {
