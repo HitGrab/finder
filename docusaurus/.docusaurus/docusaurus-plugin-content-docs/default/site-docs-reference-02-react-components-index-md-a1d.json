@@ -1,6 +1,6 @@
 {
   "id": "reference/react-components/index",
-  "title": "React Components",
+  "title": "React",
   "description": "",
   "source": "@site/docs/reference/02-react-components/index.md",
   "sourceDirName": "reference/02-react-components",
@@ -12,7 +12,7 @@
   "version": "current",
   "sidebarPosition": 3,
   "frontMatter": {
-    "title": "React Components",
+    "title": "React",
     "sidebar_position": 3
   },
   "sidebar": "tutorialSidebar",

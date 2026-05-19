@@ -13,6 +13,7 @@ export function createListing() {
         },
         num_bedrooms: faker.number.int({ min: 1, max: 5 }),
         is_available_immediately: random(0, 1) ? true : false,
+        hue_shift: random(0, 360),
     };
 }
 

@@ -172,11 +172,38 @@
     float: left;
     margin-right: 10px;
     vertical-align: middle;
-
     aspect-ratio: 2/1;
     background-size: 100%;
     width: 100px;
     background-position-y: calc(mod(var(--image-index), 10) * 100% / 10);
+}
+
+.apartmentControl {
+    border: 2px solid var(--ifm-color-primary-lightest);
+    margin-bottom: 10px;
+}
+
+.apartmentListings {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 250px));
+    gap: 10px;
+
+    .apartmentCard {
+        border: 1px solid #333;
+
+        .card__image {
+            aspect-ratio: 3/2;
+        }
+
+        .card__header {
+            padding-bottom: 10px;
+        }
+    }
+}
+
+.asset__image--apartment {
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 .assetCard {

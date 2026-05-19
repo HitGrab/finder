@@ -1,5 +1,5 @@
 ---
-title: React Components
+title: React
 sidebar_position: 3
 ---
 

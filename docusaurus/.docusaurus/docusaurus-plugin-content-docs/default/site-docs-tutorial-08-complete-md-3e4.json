@@ -11,7 +11,9 @@
   "tags": [],
   "version": "current",
   "sidebarPosition": 8,
-  "frontMatter": {},
+  "frontMatter": {
+    "hide_table_of_contents": true
+  },
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "Build Form Controls",

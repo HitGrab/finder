@@ -8,4 +8,5 @@ export interface ApartmentListing {
     };
     num_bedrooms: number;
     is_available_immediately: boolean;
+    hue_shift: number;
 }

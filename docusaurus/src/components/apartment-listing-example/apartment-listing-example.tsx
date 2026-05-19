@@ -12,42 +12,55 @@ export function ApartmentListingExample() {
             <div className="container">
                 <div className="row">
                     <div className="col col--3">
-                        <fieldset>
-                            <legend>Search</legend>
-                            <SearchControl />
-                        </fieldset>
-                        <fieldset>
-                            <legend>Filters</legend>
-                            <div>
-                                <BooleanFilterControl ruleId="is_available_immediately" />
+                        <div className="card apartmentControl">
+                            <div className="card__body">
+                                <b>Search</b>
+                                <br />
+                                <SearchControl />
                             </div>
-                            <div>
-                                Price: <SingleValueControl ruleId="price" />
+                        </div>
+                        <div className="card apartmentControl">
+                            <div className="card__body">
+                                <b>Filters</b>
+                                <br />
+                                <div>
+                                    <BooleanFilterControl ruleId="is_available_immediately" />
+                                </div>
+                                <div>
+                                    Price: <SingleValueControl ruleId="price" />
+                                </div>
+                                Num Bedrooms: <MultipleFilterControl ruleId="num_bedrooms_filter" />
                             </div>
-                            Num Bedrooms: <MultipleFilterControl ruleId="num_bedrooms_filter" />
-                        </fieldset>
-                        <fieldset>
-                            <legend>Sort</legend>
-                            <RadioSortBy />
-                        </fieldset>
+                        </div>
+                        <div className="card apartmentControl">
+                            <div className="card__body">
+                                <b>Sort</b>
+                                <br />
+                                <RadioSortBy />
+                            </div>
+                        </div>
                     </div>
                     <div className="col col--9">
-                        <div className="listingContainer">
-                            <Finder.Content>
-                                {{
-                                    // Displayed while Finder's isLoading property is true.
-                                    loading: "Loading...",
+                        <div className="scrollable" style={{ height: "100%" }}>
+                            <div className="scrollable__content">
+                                <div className="apartmentListings">
+                                    <Finder.Content>
+                                        {{
+                                            // Displayed while Finder's isLoading property is true.
+                                            loading: "Loading...",
 
-                                    // Finder received an empty items array.
-                                    empty: "No listings found.",
+                                            // Finder received an empty items array.
+                                            empty: "No listings found.",
 
-                                    // No items were found that matched the current rules.
-                                    noMatches: "No results found.",
+                                            // No items were found that matched the current rules.
+                                            noMatches: "No results found.",
 
-                                    // The items parameter will receive the matches that have been searched, filtered, and sorted.
-                                    items: ItemListing,
-                                }}
-                            </Finder.Content>
+                                            // The items parameter will receive the matches that have been searched, filtered, and sorted.
+                                            items: ItemListing,
+                                        }}
+                                    </Finder.Content>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -59,19 +72,25 @@ export function ApartmentListingExample() {
 function ItemListing({ items }: FinderContentProps<ApartmentListing>["items"]) {
     return items.map((listing) => {
         return (
-            <div className="listing" key={listing.id}>
-                <div className="listing__header">
-                    <b>
+            <div className="card apartmentCard" key={listing.id}>
+                <div
+                    className="card__image asset__image--apartment"
+                    style={{
+                        backgroundImage:
+                            'url("https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=300&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
+                        filter: `hue-rotate(${listing.hue_shift}deg)`,
+                    }}
+                />
+                <div className="card__body">
+                    <h4>
                         <Finder.SearchTermHaystack>{listing.name}</Finder.SearchTermHaystack>
-                    </b>
-                    <br />${new Intl.NumberFormat().format(listing.price)}
-                </div>
-                <div className="listing__content">
+                    </h4>
                     <Finder.SearchTermHaystack>{listing.address.street_address}</Finder.SearchTermHaystack>
-                    <br />
-                    {listing.num_bedrooms} bedroom(s)
-                    <br />
-                    {listing.is_available_immediately ? "✅" : "❌"} Available immediately
+                </div>
+                <div className="card__footer">
+                    <span className="badge badge--primary">{new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(listing.price)}</span>
+                    <span className="badge badge--secondary">{listing.num_bedrooms} bedroom(s)</span>
+                    <span className="badge badge--info">{listing.is_available_immediately ? "✅ Available" : "❌ Soon"}</span>
                 </div>
             </div>
         );
@@ -94,14 +113,14 @@ function SearchControl() {
     }, [finder.search]);
 
     return (
-        <>
+        <div className="listContainer__search">
             <input placeholder="Search" type="text" value={query} onInput={(e) => handleQueryChange(e.currentTarget.value)} />
             {finder.search.hasSearchTerm && (
                 <button type="button" className="listContainer__search__resetButton" onClick={handleReset}>
                     x
                 </button>
             )}
-        </>
+        </div>
     );
 }
 
