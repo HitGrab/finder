@@ -1,0 +1,26 @@
+{
+  "id": "Rules/index",
+  "title": "Rules",
+  "description": "\"Rules\" are static definitions that tell Finder how to interact with the unique shape of your Items objects. Finder will use that information to determine what internal state to track.",
+  "source": "@site/docs/03-Rules/index.md",
+  "sourceDirName": "03-Rules",
+  "slug": "/Rules/",
+  "permalink": "/finder/Rules/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "Et voila!",
+    "permalink": "/finder/Tutorial/Et Voila"
+  },
+  "next": {
+    "title": "SearchRule",
+    "permalink": "/finder/Rules/search-rule"
+  }
+}

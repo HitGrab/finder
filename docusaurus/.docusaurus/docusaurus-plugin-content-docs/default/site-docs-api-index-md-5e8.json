@@ -1,7 +1,7 @@
 {
   "id": "api/index",
   "title": "API",
-  "description": "FinderCore is a thin wrapper that provides an imperative interface to Finder's internal state.",
+  "description": "FinderCore wraps Finder's internal methods to simplify the API surface.",
   "source": "@site/docs/api/index.md",
   "sourceDirName": "api",
   "slug": "/api/",
@@ -15,7 +15,7 @@
     "title": "API",
     "sidebar_position": 3
   },
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
     "title": "FinderRuleset",
     "permalink": "/finder/rules/ruleset"

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { FinderCore } from "../finder-core";
 import { RuleEffect, SearchEffect } from "../types/effect-types";
 import { RuleDefinition } from "../types/rule-types";

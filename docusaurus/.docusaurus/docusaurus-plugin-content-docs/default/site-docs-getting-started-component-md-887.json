@@ -1,0 +1,23 @@
+{
+  "id": "Getting Started/component",
+  "title": "Display Matches",
+  "description": "Now that we have our ruleset, time to pass it to a Finder instance!",
+  "source": "@site/docs/Getting Started/component.md",
+  "sourceDirName": "Getting Started",
+  "slug": "/Getting Started/component",
+  "permalink": "/finder/Getting Started/component",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Add SortBy Rules",
+    "permalink": "/finder/Getting Started/Tutorial/Add SortBy Rules"
+  },
+  "next": {
+    "title": "Build Controls",
+    "permalink": "/finder/Getting Started/controls"
+  }
+}

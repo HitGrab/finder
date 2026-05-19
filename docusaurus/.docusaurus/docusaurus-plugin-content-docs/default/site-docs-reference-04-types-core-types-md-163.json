@@ -1,0 +1,23 @@
+{
+  "id": "reference/types/core-types",
+  "title": "Core Types",
+  "description": "",
+  "source": "@site/docs/reference/04-types/core-types.md",
+  "sourceDirName": "reference/04-types",
+  "slug": "/reference/types/core-types",
+  "permalink": "/finder/reference/types/core-types",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tests",
+    "permalink": "/finder/reference/api/test-api"
+  },
+  "next": {
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
+  }
+}

@@ -1,6 +1,6 @@
 import { useBaseUrlUtils } from "@docusaurus/useBaseUrl";
 import { faker } from "@faker-js/faker";
-import { Finder, FinderContentItemProps, finderRuleset, sortByRule, useFinder } from "@hitgrab/finder";
+import { Finder, FinderContentProps, finderRuleset, sortByRule, useFinder } from "@hitgrab/finder";
 import { capitalize, random } from "lodash";
 
 function createFruit(): Fruit {
@@ -26,74 +26,92 @@ const ruleset = finderRuleset<Fruit>([
     sortByRule({
         id: "expiry_date",
         sortFn: (fruit) => fruit.expiry_date.getTime(),
-        label: "Expires soon",
+        label: "Expiry",
         defaultSortDirection: "asc",
     }),
     sortByRule({
         id: "price",
         sortFn: (fruit) => fruit.price,
-        label: "Price lowest to highest",
+        label: "Price",
     }),
 ]);
 
 function SortByExample() {
     return (
         <Finder items={items} rules={ruleset}>
-            <div className="listContainer">
-                <div className="listContainer__stickyHeader">
-                    <RadioSortBy />
+            <div className="card assetCard">
+                <div className="card__header">
+                    <h3>Ye Olde Banana Stand</h3>
                 </div>
-                <div className="listContainer__content">
-                    <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
+                <div className="card__image scrollable">
+                    <div className="scrollable__content">
+                        <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
+                    </div>
+                </div>
+                <div className="card__footer">
+                    <SortByControl />
+                    <div className="listContainer__credits">Assets from https://ninjikin.itch.io/fruit</div>
                 </div>
             </div>
-            <div className="listContainer__credits">Assets from https://ninjikin.itch.io/fruit</div>
         </Finder>
     );
 }
 
-function FilterItems({ items }: FinderContentItemProps<Fruit>) {
+function FilterItems({ items }: FinderContentProps<Fruit>["items"]) {
     const { withBaseUrl } = useBaseUrlUtils();
-    return items.map((item) => {
-        return (
-            <div className="listContainer__itemWithImage listContainer__image--fruit" key={item.sku}>
-                <div>
-                    <div
-                        className="listContainer__image"
-                        style={{ backgroundImage: `url(${withBaseUrl("/img/fruit/fruit.png")})`, "--image-index": item.image_index } as React.CSSProperties}
-                    />
-                    <div>
-                        <b>
-                            <Finder.SearchTermHaystack>{capitalize(item.name)}</Finder.SearchTermHaystack>
-                        </b>
-                        <br />
-                        Best before:{" "}
-                        {item.expiry_date.toLocaleDateString("en-us", {
-                            weekday: "long",
-                            month: "short",
-                            day: "numeric",
-                        })}
+    return (
+        <div className="assetTable">
+            {items.map((item) => {
+                return (
+                    <div className="row" key={item.sku}>
+                        <div>
+                            <div
+                                className="asset__image--fruit"
+                                style={
+                                    {
+                                        backgroundImage: `url(${withBaseUrl("/img/fruit/fruit.png")})`,
+                                        "--image-index": item.image_index,
+                                    } as React.CSSProperties
+                                }
+                            />
+                            <b>
+                                <Finder.SearchTermHaystack>{capitalize(item.name)}</Finder.SearchTermHaystack>
+                            </b>
+                            <br />
+                            Expires:{" "}
+                            {item.expiry_date.toLocaleDateString("en-us", {
+                                weekday: "short",
+                                month: "short",
+                                day: "numeric",
+                            })}
+                        </div>
+                        <div className="text--right">{new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(item.price)}</div>
                     </div>
-                </div>
-
-                <div>{new Intl.NumberFormat("en-us", { style: "currency", currency: "USD" }).format(item.price)}</div>
-            </div>
-        );
-    });
+                );
+            })}
+        </div>
+    );
 }
 
-function RadioSortBy() {
+function SortByControl() {
     const finder = useFinder();
-
-    return finder.sortBy.rules.map((rule) => {
-        const isChecked = finder.sortBy.activeRule === rule;
-        return (
-            <label key={rule.id}>
-                <input type="radio" checked={isChecked} onChange={() => finder.sortBy.set(rule)} />
-                {rule.label}
-            </label>
-        );
-    });
+    return (
+        <div className="button-group button-group--block">
+            {finder.sortBy.rules.map((rule) => {
+                const isChecked = finder.sortBy.activeRule === rule;
+                return (
+                    <button
+                        type="button"
+                        className={`button button--primary ${isChecked ? "" : "button--outline"}`}
+                        key={rule.id}
+                        onClick={() => finder.sortBy.set(rule)}
+                    >
+                        {rule.label}
+                    </button>
+                );
+            })}
+        </div>
+    );
 }
 
 export { SortByExample };

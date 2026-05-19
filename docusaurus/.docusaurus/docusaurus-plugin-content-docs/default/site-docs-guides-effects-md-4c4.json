@@ -1,0 +1,23 @@
+{
+  "id": "guides/effects",
+  "title": "Coupling Rules with Effects",
+  "description": "Coming soon! For now, check out the Effects Rule definition.",
+  "source": "@site/docs/guides/effects.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/effects",
+  "permalink": "/finder/guides/effects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dependent Finder.Content components",
+    "permalink": "/finder/guides/context/injecting-state"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/reference/Rules/"
+  }
+}

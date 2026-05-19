@@ -1,0 +1,24 @@
+{
+  "id": "tutorial/Add SortBy Rules",
+  "title": "Add SortBy Rules",
+  "description": "We want to offer two sort options to the user; price and number of bedrooms.",
+  "source": "@site/docs/tutorial/04-Add SortBy Rules.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/Add SortBy Rules",
+  "permalink": "/finder/tutorial/Add SortBy Rules",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Add Filters",
+    "permalink": "/finder/tutorial/filters"
+  },
+  "next": {
+    "title": "Review Ruleset",
+    "permalink": "/finder/tutorial/Review Ruleset"
+  }
+}

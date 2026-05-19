@@ -15,7 +15,7 @@
     "title": "React Components",
     "sidebar_position": 3
   },
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
     "title": "Tests",
     "permalink": "/finder/api/test-api"

@@ -1,0 +1,23 @@
+{
+  "id": "guides/context/injecting-state",
+  "title": "Dependent Finder.Content components",
+  "description": "User story:",
+  "source": "@site/docs/guides/context/injecting-state.md",
+  "sourceDirName": "guides/context",
+  "slug": "/guides/context/injecting-state",
+  "permalink": "/finder/guides/context/injecting-state",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dependent Rules",
+    "permalink": "/finder/guides/context/context-rules"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/reference/rules/"
+  }
+}

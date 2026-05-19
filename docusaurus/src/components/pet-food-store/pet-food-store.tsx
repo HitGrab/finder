@@ -1,4 +1,4 @@
-import { Finder, FinderContentGroupProps, finderRuleset, groupByRule } from "@hitgrab/finder";
+import { Finder, FinderContentProps, finderRuleset, groupByRule } from "@hitgrab/finder";
 import React, { useState, useMemo, Fragment } from "react";
 import styles from "./styles.module.css";
 import { faker } from "@faker-js/faker";
@@ -66,7 +66,7 @@ function PetFoodStore() {
     );
 }
 
-function PetFoodStoreGroups({ groups }: FinderContentGroupProps<Food>) {
+function PetFoodStoreGroups({ groups }: FinderContentProps<Food>["groups"]) {
     const { withBaseUrl } = useBaseUrlUtils();
     return groups.map((group) => {
         return (

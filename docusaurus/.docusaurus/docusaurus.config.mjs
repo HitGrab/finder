@@ -13,23 +13,24 @@ export default {
   "future": {
     "v4": {
       "removeLegacyPostBuildHeadAttribute": true,
-      "useCssCascadeLayers": true
+      "useCssCascadeLayers": true,
+      "siteStorageNamespacing": true,
+      "fasterByDefault": true,
+      "mdx1CompatDisabledByDefault": true
     },
-    "experimental_faster": {
-      "swcJsLoader": false,
-      "swcJsMinimizer": false,
-      "swcHtmlMinimizer": false,
-      "lightningCssMinimizer": false,
-      "mdxCrossCompilerCache": false,
-      "rspackBundler": false,
-      "rspackPersistentCache": false,
-      "ssgWorkerThreads": false
-    },
-    "experimental_storage": {
-      "type": "localStorage",
-      "namespace": false
-    },
-    "experimental_router": "browser"
+    "experimental_vcs": {},
+    "experimental_router": "browser",
+    "faster": {
+      "swcJsLoader": true,
+      "swcJsMinimizer": true,
+      "swcHtmlMinimizer": true,
+      "lightningCssMinimizer": true,
+      "mdxCrossCompilerCache": true,
+      "rspackBundler": true,
+      "rspackPersistentCache": true,
+      "ssgWorkerThreads": true,
+      "gitEagerVcs": true
+    }
   },
   "url": "https://hitgrab.github.io",
   "baseUrl": "/finder/",
@@ -41,9 +42,9 @@ export default {
     "format": "mdx",
     "emoji": true,
     "mdx1Compat": {
-      "comments": true,
-      "admonitions": true,
-      "headingIds": true
+      "comments": false,
+      "admonitions": false,
+      "headingIds": false
     },
     "anchors": {
       "maintainCase": false
@@ -54,7 +55,8 @@ export default {
     }
   },
   "themes": [
-    "@docusaurus/theme-mermaid"
+    "@docusaurus/theme-mermaid",
+    "@docusaurus/theme-live-codeblock"
   ],
   "i18n": {
     "defaultLocale": "en",
@@ -70,7 +72,10 @@ export default {
       {
         "docs": {
           "routeBasePath": "/",
-          "sidebarPath": "./sidebars.ts"
+          "sidebarPath": "./sidebars.ts",
+          "remarkPlugins": [
+            null
+          ]
         },
         "blog": false,
         "theme": {
@@ -108,7 +113,7 @@ export default {
           ]
         }
       ],
-      "copyright": "Copyright © 2025 Hitgrab Labs, Inc. Built with Docusaurus."
+      "copyright": "Copyright © 2026 Hitgrab Labs, Inc. Built with Docusaurus."
     },
     "prism": {
       "theme": {
@@ -342,9 +347,16 @@ export default {
         "light": "default"
       },
       "options": {}
+    },
+    "liveCodeBlock": {
+      "playgroundPosition": "bottom"
     }
   },
   "baseUrlIssueBanner": true,
+  "storage": {
+    "type": "localStorage",
+    "namespace": true
+  },
   "onBrokenAnchors": "warn",
   "onDuplicateRoutes": "warn",
   "customFields": {},

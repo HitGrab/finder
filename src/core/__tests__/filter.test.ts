@@ -34,30 +34,30 @@ describe("Filters", () => {
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(booleanFilter, 5);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.add(booleanFilter, 5);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.delete(booleanFilter, 5);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             finder.filters.toggle(booleanFilter, true);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(booleanFilter, "string");
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             finder.filters.set(booleanFilter, [true, false]);
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Multiple filter", () => {
@@ -104,17 +104,17 @@ describe("Filters", () => {
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(rule, true);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.set(rule, "string");
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.filters.toggle(rule, "non_existent_option_with_incorrect_type");
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Single value rule", () => {
@@ -151,11 +151,11 @@ describe("Filters", () => {
 
         expect(() => {
             finder.filters.add(rule, 5);
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             finder.filters.delete(rule, 5);
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Rule convertors", () => {
@@ -530,7 +530,7 @@ describe("Filters", () => {
             const finder = new FinderCore(objectItems, { rules });
             expect(() => {
                 finder.filters.set("price_is_below", 12);
-            }).toThrowError();
+            }).toThrow();
 
             expect(finder.matches.items).toEqual([apple, orange, banana]);
         });

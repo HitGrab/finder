@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { faker } from "@faker-js/faker";
-import { Finder, FinderContentItemProps } from "@hitgrab/finder";
+import { Finder, FinderContentProps, RuleDefinition } from "@hitgrab/finder";
 import { random } from "lodash";
 import styles from "./styles.module.css";
 import { useCallback, useMemo, useState } from "react";
@@ -10,7 +10,7 @@ interface Issue {
     user_name: string;
     severity: number;
 }
-const rules = [];
+const rules: RuleDefinition[] = [];
 
 function createIssue(): Issue {
     return {
@@ -92,7 +92,7 @@ export function IssueTracker() {
     );
 }
 
-function IssueTrackerItems({ items, context }: FinderContentItemProps<Issue, FinderContext>) {
+function IssueTrackerItems({ items, context }: FinderContentProps<Issue, FinderContext>["items"]) {
     return items.map((item) => {
         const isSelected = context.isSelected(item.id);
         return (

@@ -1,4 +1,3 @@
-import { type } from "@generated/site-storage";
 import { useFinder } from "@hitgrab/finder";
 import { useState, useCallback } from "react";
 

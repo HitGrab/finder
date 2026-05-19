@@ -14,7 +14,7 @@
   "frontMatter": {
     "sidebar_position": 0
   },
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
     "title": "API",
     "permalink": "/finder/api/"

@@ -1,0 +1,24 @@
+{
+  "id": "reference/api/matches-api",
+  "title": "Matches",
+  "description": "| Name            | Type                         | Description                                                                                                                                                    |",
+  "source": "@site/docs/reference/03-api/07-matches-api.md",
+  "sourceDirName": "reference/03-api",
+  "slug": "/reference/api/matches-api",
+  "permalink": "/finder/reference/api/matches-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Events",
+    "permalink": "/finder/reference/api/events-api"
+  },
+  "next": {
+    "title": "Tests",
+    "permalink": "/finder/reference/api/test-api"
+  }
+}

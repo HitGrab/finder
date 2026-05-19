@@ -1,0 +1,26 @@
+{
+  "id": "reference/API/filters-api",
+  "title": "Filters",
+  "description": "The Filters api can be accessed from finder.filters.",
+  "source": "@site/docs/reference/03-API/filters-api.md",
+  "sourceDirName": "reference/03-API",
+  "slug": "/reference/API/filters-api",
+  "permalink": "/finder/reference/API/filters-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Search",
+    "permalink": "/finder/reference/API/search-api"
+  },
+  "next": {
+    "title": "SortBy",
+    "permalink": "/finder/reference/API/sort-by-api"
+  }
+}

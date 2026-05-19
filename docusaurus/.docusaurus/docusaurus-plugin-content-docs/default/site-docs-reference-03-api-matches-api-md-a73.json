@@ -1,0 +1,23 @@
+{
+  "id": "reference/API/matches-api",
+  "title": "Matches",
+  "description": "The Matches api can be accessed from finder.matches.",
+  "source": "@site/docs/reference/03-API/matches-api.md",
+  "sourceDirName": "reference/03-API",
+  "slug": "/reference/API/matches-api",
+  "permalink": "/finder/reference/API/matches-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Events",
+    "permalink": "/finder/reference/API/events-api"
+  },
+  "next": {
+    "title": "Tests",
+    "permalink": "/finder/reference/API/test-api"
+  }
+}

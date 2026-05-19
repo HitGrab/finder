@@ -11,7 +11,7 @@
   "tags": [],
   "version": "current",
   "frontMatter": {},
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
     "title": "GroupBy",
     "permalink": "/finder/api/group-by-api"

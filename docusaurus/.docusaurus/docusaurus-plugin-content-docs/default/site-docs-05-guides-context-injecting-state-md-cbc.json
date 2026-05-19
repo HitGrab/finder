@@ -1,0 +1,14 @@
+{
+  "id": "Guides/context/injecting-state",
+  "title": "Dependent Finder.Content components",
+  "description": "User story:",
+  "source": "@site/docs/05-Guides/context/injecting-state.md",
+  "sourceDirName": "05-Guides/context",
+  "slug": "/Guides/context/injecting-state",
+  "permalink": "/finder/Guides/context/injecting-state",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {}
+}

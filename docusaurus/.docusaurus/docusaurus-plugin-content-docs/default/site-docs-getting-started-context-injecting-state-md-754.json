@@ -17,7 +17,7 @@
     "permalink": "/finder/getting-started/context/context-rules"
   },
   "next": {
-    "title": "Coupling Rules with Effects",
-    "permalink": "/finder/getting-started/effects"
+    "title": "Paginating Matches",
+    "permalink": "/finder/getting-started/pagination/"
   }
 }

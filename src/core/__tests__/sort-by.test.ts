@@ -65,4 +65,16 @@ describe("SortBy", () => {
         finder.sortBy.cycleSortDirection();
         expect(finder.sortBy.sortDirection).toEqual("desc");
     });
+
+    test("sortFn Array", () => {
+        const rules = [
+            sortByRule({
+                id: "sort_by_price",
+                sortFn: [(item: MockObjectItem) => item.daysUntilExpiryDate, (item: MockObjectItem) => item.price],
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules });
+        expect(finder.matches.items).toEqual([orange, banana, apple]);
+    });
 });

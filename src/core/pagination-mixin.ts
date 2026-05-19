@@ -47,6 +47,10 @@ class PaginationMixin<FItem> {
         }
     }
 
+    reset() {
+        this.#page = 1;
+    }
+
     get lastPage() {
         if (this.numItemsPerPage === undefined) {
             return undefined;
@@ -79,6 +83,19 @@ class PaginationMixin<FItem> {
         return {
             page: this.#page,
             numItemsPerPage: this.numItemsPerPage,
+        };
+    }
+
+    get api() {
+        return {
+            page: this.page,
+            offset: this.offset,
+            numItemsPerPage: this.numItemsPerPage,
+            numTotalItems: this.numTotalItems,
+            lastPage: this.lastPage,
+            isPaginated: this.numItemsPerPage !== undefined,
+            setPage: this.setPage.bind(this),
+            setNumItemsPerPage: this.setNumItemsPerPage.bind(this),
         };
     }
 

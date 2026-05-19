@@ -92,6 +92,18 @@ class SearchMixin<FItem> {
         return this.#deps.test({ search: { searchTerm, rule: this.rule } }, isAdditive);
     }
 
+    get api() {
+        return {
+            rule: this.rule,
+            searchTerm: this.searchTerm,
+            hasSearchTerm: this.hasSearchTerm,
+            hasSearchRule: this.hasSearchRule,
+            setSearchTerm: this.setSearchTerm.bind(this),
+            reset: this.reset.bind(this),
+            test: this.test.bind(this),
+        };
+    }
+
     static process<FItem>(options: SerializedSearchMixin, items: FItem[], context: unknown) {
         if (options.rule === undefined) {
             throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);

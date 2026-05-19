@@ -14,7 +14,7 @@
   "frontMatter": {
     "sidebar_position": 4
   },
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
     "title": "SortByRule",
     "permalink": "/finder/rules/sort-by-rule"

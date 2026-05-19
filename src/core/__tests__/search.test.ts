@@ -14,7 +14,7 @@ describe("Search", () => {
         // Finder will complain when a searchTerm is set and no search rule was provided
         expect(() => {
             finder.search.setSearchTerm("doomed");
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Rule accessors", () => {
@@ -71,7 +71,7 @@ describe("Search", () => {
         // An initialSearchTerm cannot be set if no search rule is provided
         expect(() => {
             new FinderCore(objectItems, { rules: [], initialSearchTerm: "doomed" });
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Search must be string", () => {
@@ -83,12 +83,12 @@ describe("Search", () => {
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.search.setSearchTerm({ doomed: true });
-        }).toThrowError();
+        }).toThrow();
 
         expect(() => {
             // @ts-expect-error - Testing, expected to fail.
             finder.search.setSearchTerm(undefined);
-        }).toThrowError();
+        }).toThrow();
     });
 
     test("Search ranks by closest match", () => {
@@ -146,7 +146,7 @@ describe("Search", () => {
         // Finder will complain when a test is called without a matching search rule
         expect(() => {
             finderWithoutSearch.search.test("doomed");
-        }).toThrowError();
+        }).toThrow();
 
         const rules = [
             searchRule({

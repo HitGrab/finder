@@ -1,0 +1,23 @@
+{
+  "id": "reference/types/constructor",
+  "title": "FinderConstructorOptions",
+  "description": "",
+  "source": "@site/docs/reference/04-types/constructor.md",
+  "sourceDirName": "reference/04-types",
+  "slug": "/reference/types/constructor",
+  "permalink": "/finder/reference/types/constructor",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Types",
+    "permalink": "/finder/reference/types/"
+  },
+  "next": {
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
+  }
+}

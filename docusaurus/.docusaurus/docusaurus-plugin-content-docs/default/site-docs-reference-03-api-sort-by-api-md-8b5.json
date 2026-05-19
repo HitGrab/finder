@@ -1,0 +1,23 @@
+{
+  "id": "reference/api/sort-by-api",
+  "title": "SortBy",
+  "description": "Properties",
+  "source": "@site/docs/reference/03-api/sort-by-api.md",
+  "sourceDirName": "reference/03-api",
+  "slug": "/reference/api/sort-by-api",
+  "permalink": "/finder/reference/api/sort-by-api",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Pagination",
+    "permalink": "/finder/reference/api/pagination-api"
+  },
+  "next": {
+    "title": "Tests",
+    "permalink": "/finder/reference/api/test-api"
+  }
+}

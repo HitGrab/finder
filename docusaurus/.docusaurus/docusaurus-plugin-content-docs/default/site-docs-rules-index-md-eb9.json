@@ -14,10 +14,10 @@
   "frontMatter": {
     "sidebar_position": 2
   },
-  "sidebar": "tutorialSidebar",
+  "sidebar": "docs",
   "previous": {
-    "title": "Pre-Testing Matches",
-    "permalink": "/finder/getting-started/testing"
+    "title": "Et voila!",
+    "permalink": "/finder/Getting Started/Tutorial/Et Voila"
   },
   "next": {
     "title": "SearchRule",

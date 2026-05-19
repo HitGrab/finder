@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { SortDirection } from "../types/core-types";
+import { FinderConstructorOptions } from "../types/core-types";
 import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -19,6 +19,7 @@ describe("toJSON", () => {
             initialFilters: {},
             page: 1,
             numItemsPerPage: undefined,
+            resetPaginationOn: ["sortBy", "groupBy"],
             initialSortBy: "sort_rule",
             initialSortDirection: "asc",
             ignoreSortByRulesWhileSearchRuleIsActive: undefined,
@@ -38,6 +39,7 @@ describe("toJSON", () => {
             initialFilters: { name_filter: "apple" },
             page: 1,
             numItemsPerPage: 5,
+            resetPaginationOn: ["sortBy", "groupBy"],
             initialSortBy: "sort_rule",
             initialSortDirection: "asc",
             ignoreSortByRulesWhileSearchRuleIsActive: undefined,
@@ -54,14 +56,15 @@ describe("toJSON", () => {
             sortByRule({ id: "sort_rule", sortFn: (item) => item.daysUntilExpiryDate }),
             groupByRule({ id: "group_rule", groupFn: (item) => item.daysUntilExpiryDate }),
         ]);
-        const data = {
+        const data: Omit<FinderConstructorOptions<any>, "rules"> = {
             disabled: false,
             initialSearchTerm: "apple",
             initialFilters: { name_filter: "apple" },
             page: 1,
             numItemsPerPage: 5,
+            resetPaginationOn: ["sortBy", "groupBy"],
             initialSortBy: "sort_rule",
-            initialSortDirection: "asc" as SortDirection,
+            initialSortDirection: "asc",
             ignoreSortByRulesWhileSearchRuleIsActive: undefined,
             initialGroupBy: "group_rule",
             initialGroupBySortDirection: undefined,

@@ -1,0 +1,23 @@
+{
+  "id": "reference/Rules/ruleset",
+  "title": "FinderRuleset",
+  "description": "Optional wrapper to ensures that an array of rules all have the correct shape.",
+  "source": "@site/docs/reference/03-Rules/ruleset.md",
+  "sourceDirName": "reference/03-Rules",
+  "slug": "/reference/Rules/ruleset",
+  "permalink": "/finder/reference/Rules/ruleset",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Search Effects",
+    "permalink": "/finder/reference/Rules/effects/search-effects"
+  },
+  "next": {
+    "title": "React Components",
+    "permalink": "/finder/reference/React Components/"
+  }
+}

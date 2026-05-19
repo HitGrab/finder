@@ -1,0 +1,23 @@
+{
+  "id": "reference/react-components/use-finder",
+  "title": "useFinder",
+  "description": "Access the Finder API.",
+  "source": "@site/docs/reference/02-react-components/use-finder.md",
+  "sourceDirName": "reference/02-react-components",
+  "slug": "/reference/react-components/use-finder",
+  "permalink": "/finder/reference/react-components/use-finder",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "StringMatch",
+    "permalink": "/finder/reference/react-components/string-match"
+  },
+  "next": {
+    "title": "API",
+    "permalink": "/finder/reference/api/"
+  }
+}

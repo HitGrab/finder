@@ -1,0 +1,27 @@
+{
+  "id": "React Components/index",
+  "title": "React Components",
+  "description": "",
+  "source": "@site/docs/02-React Components/index.md",
+  "sourceDirName": "02-React Components",
+  "slug": "/React Components/",
+  "permalink": "/finder/React Components/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "React Components",
+    "sidebar_position": 3
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "FinderRuleset",
+    "permalink": "/finder/Rules/ruleset"
+  },
+  "next": {
+    "title": "Finder",
+    "permalink": "/finder/React Components/finder"
+  }
+}

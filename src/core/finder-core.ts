@@ -61,83 +61,23 @@ class FinderCore<FItem = any, FContext = any> {
     }
 
     get search() {
-        const mixin = this.#finder.search;
-        return {
-            rule: mixin.rule,
-            searchTerm: mixin.searchTerm,
-            hasSearchTerm: mixin.hasSearchTerm,
-            hasSearchRule: mixin.hasSearchRule,
-            setSearchTerm: mixin.setSearchTerm.bind(mixin),
-            reset: mixin.reset.bind(mixin),
-            test: mixin.test.bind(mixin),
-        };
+        return this.#finder.search.api;
     }
 
     get filters() {
-        const mixin = this.#finder.filters;
-        return {
-            values: mixin.values,
-            raw: mixin.raw,
-            activeRules: mixin.activeRules,
-            rules: mixin.rules,
-            isActive: mixin.isRuleActive.bind(mixin),
-            get: mixin.get.bind(mixin),
-            add: mixin.add.bind(mixin),
-            has: mixin.has.bind(mixin),
-            getRule: mixin.getRule.bind(mixin),
-            toggle: mixin.toggle.bind(mixin),
-            set: mixin.set.bind(mixin),
-            delete: mixin.delete.bind(mixin),
-            reset: mixin.reset.bind(mixin),
-            test: mixin.test.bind(mixin),
-            testRule: mixin.testRule.bind(mixin),
-            testRuleOptions: mixin.testRuleOptions.bind(mixin),
-        };
+        return this.#finder.filters.api;
     }
 
     get sortBy() {
-        const mixin = this.#finder.sortBy;
-        return {
-            activeRule: mixin.activeRule,
-            sortDirection: mixin.sortDirection,
-            userHasSetSortDirection: mixin.userHasSetSortDirection,
-            rules: mixin.rules,
-            set: mixin.set.bind(mixin),
-            toggle: mixin.toggle.bind(mixin),
-            isRuleActive: mixin.isRuleActive.bind(mixin),
-            reset: mixin.reset.bind(mixin),
-            setSortDirection: mixin.setSortDirection.bind(mixin),
-            cycleSortDirection: mixin.cycleSortDirection.bind(mixin),
-            toggleSortDirection: mixin.toggleSortDirection.bind(mixin),
-        };
+        return this.#finder.sortBy.api;
     }
 
     get groupBy() {
-        const mixin = this.#finder.groupBy;
-        return {
-            activeRule: mixin.activeRule,
-            requireGroup: mixin.requireGroup,
-            rules: mixin.rules,
-            groupBySortDirection: mixin.groupBySortDirection,
-            set: mixin.set.bind(mixin),
-            toggle: mixin.toggle.bind(mixin),
-            setGroupSortDirection: mixin.setGroupSortDirection.bind(mixin),
-            reset: mixin.reset.bind(mixin),
-        };
+        return this.#finder.groupBy.api;
     }
 
     get pagination() {
-        const mixin = this.#finder.pagination;
-        return {
-            page: mixin.page,
-            offset: mixin.offset,
-            numItemsPerPage: mixin.numItemsPerPage,
-            numTotalItems: mixin.numTotalItems,
-            lastPage: mixin.lastPage,
-            isPaginated: mixin.numItemsPerPage !== undefined,
-            setPage: mixin.setPage.bind(mixin),
-            setNumItemsPerPage: mixin.setNumItemsPerPage.bind(mixin),
-        };
+        return this.#finder.pagination.api;
     }
 
     /**

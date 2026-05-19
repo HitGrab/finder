@@ -1,0 +1,24 @@
+{
+  "id": "Getting Started/Tutorial/filters",
+  "title": "Filters",
+  "description": "Filters come in three types; Boolean, Single value, and Multiple value.",
+  "source": "@site/docs/Getting Started/02-Tutorial/03-filters.md",
+  "sourceDirName": "Getting Started/02-Tutorial",
+  "slug": "/Getting Started/Tutorial/filters",
+  "permalink": "/finder/Getting Started/Tutorial/filters",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Search",
+    "permalink": "/finder/Getting Started/Tutorial/Add a Search Rule"
+  },
+  "next": {
+    "title": "Display Matches",
+    "permalink": "/finder/Getting Started/component"
+  }
+}

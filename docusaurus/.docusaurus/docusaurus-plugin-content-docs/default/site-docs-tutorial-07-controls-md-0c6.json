@@ -1,0 +1,24 @@
+{
+  "id": "tutorial/controls",
+  "title": "Build Form Controls",
+  "description": "Finder doesn't have any opinion on how controls are rendered. Instead, it provides a useFinder hook that exposes Rule definitions, and state accessors/mutators so you can easily roll your own controls.",
+  "source": "@site/docs/tutorial/07-controls.md",
+  "sourceDirName": "tutorial",
+  "slug": "/tutorial/controls",
+  "permalink": "/finder/tutorial/controls",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Display in React",
+    "permalink": "/finder/tutorial/react"
+  },
+  "next": {
+    "title": "Et voila!",
+    "permalink": "/finder/tutorial/complete"
+  }
+}

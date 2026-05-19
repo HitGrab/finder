@@ -1,0 +1,24 @@
+{
+  "id": "Getting Started/Tutorial/Quick Start",
+  "title": "Quick Start",
+  "description": "Building an Apartment Rental app",
+  "source": "@site/docs/01-Getting Started/02-Tutorial/01-Quick Start.md",
+  "sourceDirName": "01-Getting Started/02-Tutorial",
+  "slug": "/Getting Started/Tutorial/Quick Start",
+  "permalink": "/finder/Getting Started/Tutorial/Quick Start",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {},
+  "sidebar": "docs",
+  "previous": {
+    "title": "Core Concepts",
+    "permalink": "/finder/Core Concepts"
+  },
+  "next": {
+    "title": "Add a Search Rule",
+    "permalink": "/finder/Getting Started/Tutorial/Add a Search Rule"
+  }
+}

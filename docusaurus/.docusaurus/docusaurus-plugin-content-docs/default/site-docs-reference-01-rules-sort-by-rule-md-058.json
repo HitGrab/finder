@@ -1,0 +1,26 @@
+{
+  "id": "reference/rules/sort-by-rule",
+  "title": "SortByRule",
+  "description": "Only a single sortBy rule can be active at one time.",
+  "source": "@site/docs/reference/01-rules/sort-by-rule.md",
+  "sourceDirName": "reference/01-rules",
+  "slug": "/reference/rules/sort-by-rule",
+  "permalink": "/finder/reference/rules/sort-by-rule",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "FilterRule",
+    "permalink": "/finder/reference/rules/filter-rule"
+  },
+  "next": {
+    "title": "GroupByRule",
+    "permalink": "/finder/reference/rules/group-by-rule"
+  }
+}

@@ -130,19 +130,31 @@ class SortByMixin<FItem> {
         };
     }
 
+    get api() {
+        return {
+            activeRule: this.activeRule,
+            sortDirection: this.sortDirection,
+            userHasSetSortDirection: this.userHasSetSortDirection,
+            rules: this.rules,
+            set: this.set.bind(this),
+            toggle: this.toggle.bind(this),
+            isRuleActive: this.isRuleActive.bind(this),
+            reset: this.reset.bind(this),
+            setSortDirection: this.setSortDirection.bind(this),
+            cycleSortDirection: this.cycleSortDirection.bind(this),
+            toggleSortDirection: this.toggleSortDirection.bind(this),
+        };
+    }
+
     static process<FItem>(options: SerializedSortByMixin, items: FItem[], context: unknown) {
         if (options.rule === undefined) {
             return items;
         }
 
+        const sortFnAsArray = Array.isArray(options.rule.sortFn) ? options.rule.sortFn : [options.rule.sortFn];
         return orderBy(
             items,
-            (item) => {
-                if (typeof options.rule?.sortFn === "function") {
-                    return options.rule.sortFn(item, context);
-                }
-                return Number.NEGATIVE_INFINITY;
-            },
+            sortFnAsArray.map((fn) => (item: FItem) => fn(item, context)),
             options.sortDirection,
         );
     }

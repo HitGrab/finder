@@ -1,0 +1,25 @@
+{
+  "id": "reference/types/index",
+  "title": "Types",
+  "description": "FinderConstructorOptions",
+  "source": "@site/docs/reference/04-types/index.md",
+  "sourceDirName": "reference/04-types",
+  "slug": "/reference/types/",
+  "permalink": "/finder/reference/types/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Types"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Tests",
+    "permalink": "/finder/reference/api/test-api"
+  },
+  "next": {
+    "title": "Kicking Rad Shoes",
+    "permalink": "/finder/examples/Kicking Rad Shoes"
+  }
+}

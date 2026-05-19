@@ -1,0 +1,27 @@
+{
+  "id": "reference/API/index",
+  "title": "API",
+  "description": "FinderCore wraps Finder's internal methods to simplify the API surface.",
+  "source": "@site/docs/reference/04-API/index.md",
+  "sourceDirName": "reference/04-API",
+  "slug": "/reference/API/",
+  "permalink": "/finder/reference/API/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "API",
+    "sidebar_position": 3
+  },
+  "sidebar": "docs",
+  "previous": {
+    "title": "useFinder",
+    "permalink": "/finder/reference/React Components/use-finder"
+  },
+  "next": {
+    "title": "Search",
+    "permalink": "/finder/reference/API/search-api"
+  }
+}

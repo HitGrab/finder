@@ -32,6 +32,7 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
             return value !== undefined;
         },
 
+        // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Necessary for consistency with other handlers
         toggle(value: unknown, optionValue: any = undefined, isRequired: boolean) {
             if (value === optionValue && isRequired === false) {
                 return undefined;
