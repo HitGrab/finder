@@ -177,34 +177,4 @@ describe("Search", () => {
         // with failed subquery
         expect(finder.search.test('ipsum "ame c"')).toEqual([]);
     });
-
-    test("Test suggestions", () => {
-        const rules = finderRuleset<MockObjectItem>([
-            searchRule({
-                searchFn: (item) => item.name,
-                suggestFilters: true,
-            }),
-            filterRule({
-                label: "Expiry date",
-                id: "expiry_date",
-                filterFn: (item, value) => item.daysUntilExpiryDate === value,
-                options: ({ items }) => {
-                    const expiryDates = new Set<string>();
-                    items.forEach((item) => {
-                        expiryDates.add(item.daysUntilExpiryDate);
-                    });
-                    return Array.from(expiryDates).map((date) => {
-                        return {
-                            label: capitalize(date),
-                            value: date,
-                        };
-                    });
-                },
-            }),
-        ]);
-
-        const finder = new FinderCore(objectItems, { rules });
-        finder.search.setSearchTerm("three");
-        console.log(finder.filters.getRule("expiry_date"), finder.search.suggestedFilters);
-    });
 });
