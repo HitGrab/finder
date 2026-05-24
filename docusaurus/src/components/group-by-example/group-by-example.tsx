@@ -67,13 +67,15 @@ function GroupByExample() {
                 <div className="card__header">
                     <h3>Groupable Cars</h3>
                 </div>
+                <div className="assetCard__controls">
+                    <GroupByControl />
+                </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
                         <Finder.Content>{{ groups: GroupedItems }}</Finder.Content>
                     </div>
                 </div>
                 <div className="card__footer">
-                    <GroupByControl />
                     <div className="listContainer__credits">Assets from https://jackburton84.itch.io/80s-pixel-cars-pack-retro-vehicle-sprites</div>
                 </div>
             </div>

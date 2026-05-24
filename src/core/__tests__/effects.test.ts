@@ -96,7 +96,6 @@ describe("Effects", () => {
                     searchEffectFn();
                 }),
             ];
-
             const finder = new FinderCore(objectItems, { rules, effects });
             expect(searchEffectFn).toHaveBeenCalledTimes(0);
             finder.search.setSearchTerm("orange");

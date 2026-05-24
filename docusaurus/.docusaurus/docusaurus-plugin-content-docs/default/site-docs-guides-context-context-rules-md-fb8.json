@@ -1,6 +1,6 @@
 {
   "id": "guides/context/context-rules",
-  "title": "Dependent Rules",
+  "title": "Informing rules with external context",
   "description": "User story:",
   "source": "@site/docs/guides/context/context-rules.md",
   "sourceDirName": "guides/context",
@@ -17,7 +17,7 @@
     "permalink": "/finder/guides/context/"
   },
   "next": {
-    "title": "Dependent Finder.Content components",
-    "permalink": "/finder/guides/context/injecting-state"
+    "title": "Making Finder React components aware of external context",
+    "permalink": "/finder/guides/context/injecting-context"
   }
 }

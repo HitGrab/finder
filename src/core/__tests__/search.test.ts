@@ -1,6 +1,6 @@
-import { range } from "lodash";
+import { capitalize, range } from "lodash";
 import { FinderCore } from "../finder-core";
-import { finderRuleset, searchRule, sortByRule } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 

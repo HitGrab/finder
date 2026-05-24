@@ -1,0 +1,23 @@
+{
+  "id": "guides/context/injecting-context",
+  "title": "Making Finder React components aware of external context",
+  "description": "User story:",
+  "source": "@site/docs/guides/context/injecting-context.md",
+  "sourceDirName": "guides/context",
+  "slug": "/guides/context/injecting-context",
+  "permalink": "/finder/guides/context/injecting-context",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Informing rules with external context",
+    "permalink": "/finder/guides/context/context-rules"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/reference/rules/"
+  }
+}

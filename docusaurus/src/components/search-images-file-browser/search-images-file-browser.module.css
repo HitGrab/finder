@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+.controls {
+    display: grid;
+    grid-template-columns: 1fr min-content;
+}
+
+.searchContainer {
+    position: relative;
+    max-width: 200px;
+
+    input {
+        width: 100%;
+    }
+}

@@ -212,6 +212,10 @@
     }
 }
 
+.assetCard__controls {
+    padding: calc(var(--ifm-card-vertical-spacing) / 2) var(--ifm-card-horizontal-spacing);
+}
+
 .asset__search {
     display: flex;
     align-items: center;

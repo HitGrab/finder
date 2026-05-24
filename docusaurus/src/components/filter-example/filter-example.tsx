@@ -37,9 +37,7 @@ const items = faker.helpers.multiple(createBird, { count: 100 });
 const ruleset = finderRuleset<Avian, string>([
     filterRule({
         id: "habitat",
-        filterFn: (item, value) => {
-            return value == item.territory;
-        },
+        filterFn: (item, value) => value == item.territory,
         options: ({ items }) => {
             const allTerritory = new Set(items.map((i) => i.territory));
             return Array.from(allTerritory)
@@ -60,13 +58,15 @@ function FilterExample() {
                 <div className="card__header">
                     <h3>Filter Fowl</h3>
                 </div>
+                <div className="assetCard__controls">
+                    <DropdownFilter ruleId="habitat" />
+                </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
                         <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
                     </div>
                 </div>
                 <div className="card__footer">
-                    <DropdownFilter ruleId="habitat" />
                     <div className="listContainer__credits">Assets from https://onocentaur.itch.io/birds</div>
                 </div>
             </div>
@@ -80,7 +80,7 @@ function FilterItems({ items }: FinderContentProps<Avian>["items"]) {
         <div className="assetTable">
             {items.map((item) => {
                 return (
-                    <div className="row" key={[item.territory, item.name].join("")}>
+                    <div className="row" key={[item.territory, item.name, item.image_index].join("")}>
                         <div>
                             <div
                                 className=" asset__image--bird"
@@ -130,9 +130,8 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
                 } else {
                     numMatches = optionMatches.has(option) ? optionMatches.get(option).length : 0;
                 }
-
                 return (
-                    <option value={index} key={option.value}>
+                    <option value={index} key={String(option.value)}>
                         {option.label ?? option.value} ({numMatches})
                     </option>
                 );

@@ -14,7 +14,7 @@ interface SearchScore {
     longestSequentialSequence: number;
 }
 
-export function defaultSearchAndSortAlgorithm<FItem>(options: SerializedSearchMixin, items: FItem[], context: unknown) {
+export function defaultSearchAndSortAlgorithm<FItem>(options: SerializedSearchMixin, items: FItem[], context?: unknown) {
     const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
         if (options.rule?.searchFn === undefined) {
             return acc;

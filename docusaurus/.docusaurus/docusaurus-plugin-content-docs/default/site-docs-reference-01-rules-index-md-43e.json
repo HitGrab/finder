@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Dependent Finder.Content components",
-    "permalink": "/finder/guides/context/injecting-state"
+    "title": "Making Finder React components aware of external context",
+    "permalink": "/finder/guides/context/injecting-context"
   },
   "next": {
     "title": "SearchRule",
