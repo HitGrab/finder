@@ -60,13 +60,15 @@ function FilterExample() {
                 <div className="card__header">
                     <h3>Filter Fowl</h3>
                 </div>
+                <div className="assetCard__controls">
+                    <DropdownFilter ruleId="habitat" />
+                </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
                         <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
                     </div>
                 </div>
                 <div className="card__footer">
-                    <DropdownFilter ruleId="habitat" />
                     <div className="listContainer__credits">Assets from https://onocentaur.itch.io/birds</div>
                 </div>
             </div>

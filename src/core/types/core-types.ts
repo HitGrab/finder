@@ -1,3 +1,4 @@
+import { FilterOption } from "@hitgrab/finder";
 import { DebounceCallbackRegistry } from "../debounce-callback-registry";
 import { RuleListAppendix } from "../rule-book/rule-list-appendix";
 import { RuleEffect, SearchEffect } from "./effect-types";
@@ -117,4 +118,9 @@ export interface PaginationMixinInterface {
     isPaginated: boolean;
     setPage: (value: number) => void;
     setNumItemsPerPage: (value: number) => void;
+}
+
+export interface SearchRuleSuggestion {
+    rule: RuleDefinition;
+    optionMatches?: FilterOption[];
 }

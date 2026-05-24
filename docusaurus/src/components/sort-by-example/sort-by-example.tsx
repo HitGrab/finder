@@ -43,13 +43,15 @@ function SortByExample() {
                 <div className="card__header">
                     <h3>Ye Olde Banana Stand</h3>
                 </div>
+                <div className="assetCard__controls">
+                    <SortByControl />
+                </div>
                 <div className="card__image scrollable">
                     <div className="scrollable__content">
                         <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
                     </div>
                 </div>
                 <div className="card__footer">
-                    <SortByControl />
                     <div className="listContainer__credits">Assets from https://ninjikin.itch.io/fruit</div>
                 </div>
             </div>

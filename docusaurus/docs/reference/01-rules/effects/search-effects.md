@@ -18,7 +18,7 @@ searchEffect(
     callback: (instance:FinderCore) => void),
 ```
 
-:::tip Exact string matching
+:::tip[Exact string matching]
 SearchEffects use the same matching algorithm as searchRules. If you want to match an exact string, you can wrap it in quotation marks.
 :::
 

@@ -21,13 +21,15 @@ export function SearchExampleWithIcons() {
                 <div className="card__header">
                     <h3>Find that perfect shoe</h3>
                 </div>
+                <div className="assetCard__controls">
+                    <SearchExampleInput />
+                </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
                         <Finder.Content>{{ items: SearchExampleItemsWithIcons, noMatches: "No matches found" }}</Finder.Content>
                     </div>
                 </div>
                 <div className="card__footer">
-                    <SearchExampleInput />
                     <div className="listContainer__credits">Assets from https://freddiepng.itch.io/3-air-jordans-free</div>
                 </div>
             </div>

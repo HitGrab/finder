@@ -1,3 +1,4 @@
+import { FilterOption as FilterOption$1 } from "@hitgrab/finder";
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
 
 //#region src/core/types/rule-types.d.ts
@@ -15,6 +16,7 @@ type RuleDefinition<FItem = any, FContext = any> = SearchRuleDefinition<FItem, F
 interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
   id?: string;
   searchFn?: (item: FItem, context: FContext) => string | string[];
+  suggestFilters?: boolean;
 }
 /**
  * Describes the display of a filter or sort option.
@@ -189,6 +191,7 @@ declare class FinderCore<FItem = any, FContext = any> {
   get search(): {
     rule: SearchRuleDefinition<unknown, any> | undefined;
     searchTerm: string;
+    suggestedFilters: SearchRuleSuggestion[];
     hasSearchTerm: boolean;
     hasSearchRule: boolean;
     setSearchTerm: (value: string) => void;
@@ -348,6 +351,10 @@ interface PaginationMixinInterface {
   isPaginated: boolean;
   setPage: (value: number) => void;
   setNumItemsPerPage: (value: number) => void;
+}
+interface SearchRuleSuggestion {
+  rule: RuleDefinition;
+  optionMatches?: FilterOption$1[];
 }
 //#endregion
 //#region src/core/types/string-match-types.d.ts

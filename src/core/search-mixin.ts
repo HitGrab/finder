@@ -1,8 +1,8 @@
 import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FinderError } from "./finder-error";
-import { MixinInjectedDependencies, SerializedSearchMixin } from "./types/core-types";
+import { MixinInjectedDependencies, SearchRuleSuggestion, SerializedSearchMixin } from "./types/core-types";
 import { defaultSearchAndSortAlgorithm } from "./search/default-search-and-sort-algorithm";
-import { isSearchRuleDefinition } from "./utils/rule-utils";
+import { isFilterRuleDefinitionWithHydratedOptions, isSearchRuleDefinition } from "./utils/rule-utils";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;
@@ -31,6 +31,54 @@ class SearchMixin<FItem> {
 
     get hasSearchTerm() {
         return this.searchTerm !== "";
+    }
+
+    get suggestedFilters() {
+        const suggestions: SearchRuleSuggestion[] = [];
+        if (this.hasSearchTerm && this.rule?.suggestFilters) {
+            const filterRules = this.#deps.getRuleBook().rules.filter(isFilterRuleDefinitionWithHydratedOptions);
+            const rulesWithOptions = filterRules.filter((rule) => rule.options && rule.options.length > 0);
+
+            if (rulesWithOptions.length > 0) {
+                rulesWithOptions.forEach((rule) => {
+                    const optionMatches = defaultSearchAndSortAlgorithm(
+                        {
+                            searchTerm: this.searchTerm,
+                            rule: {
+                                searchFn: (option) => option.label,
+                            },
+                        },
+                        rule.options ?? [],
+                    );
+                    if (optionMatches.length > 0) {
+                        suggestions.push({
+                            rule,
+                            optionMatches,
+                        });
+                    }
+                });
+            }
+
+            const rulesWithLabels = filterRules
+                .filter((rule) => rule.label !== undefined)
+                // remove any rules that have already been matched
+                .filter((rule) => suggestions.some((suggestion) => suggestion.rule === rule) === false);
+
+            if (rulesWithLabels.length > 0) {
+                defaultSearchAndSortAlgorithm(
+                    {
+                        searchTerm: this.searchTerm,
+                        rule: {
+                            searchFn: (rule) => rule.label,
+                        },
+                    },
+                    rulesWithLabels,
+                ).forEach((rule) => {
+                    suggestions.push({ rule });
+                });
+            }
+        }
+        return suggestions;
     }
 
     setSearchTerm(value: string) {
@@ -96,6 +144,7 @@ class SearchMixin<FItem> {
         return {
             rule: this.rule,
             searchTerm: this.searchTerm,
+            suggestedFilters: this.suggestedFilters,
             hasSearchTerm: this.hasSearchTerm,
             hasSearchRule: this.hasSearchRule,
             setSearchTerm: this.setSearchTerm.bind(this),
