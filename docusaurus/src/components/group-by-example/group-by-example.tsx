@@ -45,13 +45,7 @@ const ruleset = finderRuleset<Vehicle>([
     }),
     groupByRule({
         id: "group_by_year",
-        label: "Year asc",
-        groupFn: (car) => car.year,
-        defaultGroupSortDirection: "asc",
-    }),
-    groupByRule({
-        id: "group_by_year_desc",
-        label: "Year desc",
+        label: "Year",
         groupFn: (car) => car.year,
         defaultGroupSortDirection: "desc",
     }),

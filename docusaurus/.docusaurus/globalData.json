@@ -36,8 +36,8 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "guides/context/injecting-state",
-              "path": "/finder/guides/context/injecting-state",
+              "id": "guides/context/injecting-context",
+              "path": "/finder/guides/context/injecting-context",
               "sidebar": "tutorialSidebar"
             },
             {

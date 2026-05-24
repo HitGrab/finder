@@ -37,9 +37,7 @@ const items = faker.helpers.multiple(createBird, { count: 100 });
 const ruleset = finderRuleset<Avian, string>([
     filterRule({
         id: "habitat",
-        filterFn: (item, value) => {
-            return value == item.territory;
-        },
+        filterFn: (item, value) => value == item.territory,
         options: ({ items }) => {
             const allTerritory = new Set(items.map((i) => i.territory));
             return Array.from(allTerritory)
@@ -82,7 +80,7 @@ function FilterItems({ items }: FinderContentProps<Avian>["items"]) {
         <div className="assetTable">
             {items.map((item) => {
                 return (
-                    <div className="row" key={[item.territory, item.name].join("")}>
+                    <div className="row" key={[item.territory, item.name, item.image_index].join("")}>
                         <div>
                             <div
                                 className=" asset__image--bird"
@@ -132,9 +130,8 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
                 } else {
                     numMatches = optionMatches.has(option) ? optionMatches.get(option).length : 0;
                 }
-
                 return (
-                    <option value={index} key={option.value}>
+                    <option value={index} key={String(option.value)}>
                         {option.label ?? option.value} ({numMatches})
                     </option>
                 );

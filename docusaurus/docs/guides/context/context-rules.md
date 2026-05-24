@@ -1,6 +1,6 @@
 import { PetFoodStore } from '/src/components/pet-food-store/pet-food-store';
 
-# Dependent Rules
+# Informing rules with external context
 
 **User story:**
 Lindsay McUser wants to buy in-game food to feed their virtual pets, but they only have a limited amount of coins.

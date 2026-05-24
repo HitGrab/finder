@@ -1,6 +1,6 @@
 import { IssueTracker } from '/src/components/issue-tracker/issue-tracker';
 
-# Dependent Finder.Content components
+# Making Finder React components aware of external context
 
 **User story:**
 Max McHacker needs to select reported issues to forward to the dev team.
