@@ -1,7 +1,7 @@
 import { orderBy } from "lodash";
 import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { isGroupByRuleDefinition } from "./utils/rule-utils";
 
@@ -25,7 +25,12 @@ class GroupByMixin<FItem> {
     constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         if (initialGroupBy) {
-            this.#groupBy = this.getRule(initialGroupBy);
+            const isValidRule = this.#deps.getRuleBook().hasRule(initialGroupBy);
+            if (isValidRule) {
+                this.#groupBy = this.getRule(initialGroupBy);
+            } else {
+                console.warn(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialGroupBy });
+            }
         }
         this.#groupBySortDirection = initialGroupBySortDirection;
         this.requireGroup = requireGroup;

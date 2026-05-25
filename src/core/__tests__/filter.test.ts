@@ -3,6 +3,7 @@ import { filterRule, finderRuleset, transformFilterToMultiple } from "../utils/r
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";
+import { WARNINGS } from "../core-constants";
 
 describe("Filters", () => {
     test("Boolean filter", () => {
@@ -362,6 +363,40 @@ describe("Filters", () => {
         });
     });
 
+    test("Has checks", () => {
+        const colorFilter = filterRule<{ colors: string[] }, string>({
+            id: "color",
+            label: "Color",
+            filterFn: (item, value) => item.colors.includes(value),
+            options: [
+                {
+                    label: "Rosybrown",
+                    value: "rosybrown",
+                },
+                {
+                    label: "Teal",
+                    value: "teal",
+                },
+            ],
+        });
+        const singleValueFilter = filterRule<MockObjectItem, number>({
+            id: "price",
+            filterFn: (item, value) => item.price === value,
+        });
+
+        const finder = new FinderCore<MockObjectItem>(objectItems, { rules: [colorFilter, singleValueFilter] });
+        expect(finder.filters.has(colorFilter)).toBe(false);
+
+        finder.filters.set(colorFilter, "teal");
+        expect(finder.filters.has(colorFilter)).toBe(true);
+        expect(finder.filters.has(colorFilter, "rosybrown")).toBe(false);
+        expect(finder.filters.has(colorFilter, "teal")).toBe(true);
+
+        expect(finder.filters.has(singleValueFilter)).toBe(false);
+        finder.filters.set(singleValueFilter, 5);
+        expect(finder.filters.has(singleValueFilter)).toBe(true);
+    });
+
     describe("Matcher", () => {
         test("Boolean filter", () => {
             const rule = filterRule<MockObjectItem>({
@@ -692,5 +727,53 @@ describe("Filters", () => {
             // result state is unchanged
             expect(finder.matches.items).toEqual([apple, orange, banana]);
         });
+    });
+
+    describe("Touched rules", () => {
+        test("Rules are marked as touched", () => {
+            const firstRuleDefinition = filterRule({
+                id: "price_is_below",
+                filterFn: (item: MockObjectItem, value: number) => item.price <= value,
+                defaultValue: 5,
+            });
+            const secondRuleDefinition = filterRule({
+                id: "has_seeds",
+                filterFn: (item: MockObjectItem) => item.name === "Apple",
+                boolean: true,
+            });
+
+            const finder = new FinderCore(objectItems, { rules: [firstRuleDefinition, secondRuleDefinition] });
+
+            // the definitions and hydrated rule are distinct objects
+            const firstHydratedRule = finder.filters.getRule(firstRuleDefinition);
+            const secondHydratedRule = finder.filters.getRule(secondRuleDefinition);
+
+            // starts empty
+            expect(finder.filters.touchedRules).toEqual([]);
+
+            // appears in the touched object once a value has been set
+            finder.filters.toggle(secondRuleDefinition);
+            expect(finder.filters.touchedRules).toContain(secondHydratedRule);
+
+            // once toggled a second time, the rule reverts to the default value and is no longer considered touched
+            finder.filters.toggle(secondRuleDefinition);
+            expect(finder.filters.touchedRules).not.toContain(secondHydratedRule);
+
+            finder.filters.set(firstRuleDefinition, 6);
+            expect(finder.filters.touchedRules).toContain(firstHydratedRule);
+            finder.filters.set(firstRuleDefinition, firstRuleDefinition.defaultValue);
+            expect(finder.filters.touchedRules).not.toContain(firstHydratedRule);
+        });
+    });
+
+    test("Ignores invalid initialValues", () => {
+        const rules = finderRuleset([]);
+
+        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+        new FinderCore(objectItems, { rules, initialFilters: { not_a_real_rule: 5 } });
+
+        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.INITIAL_RULE_NOT_FOUND, { rule: "not_a_real_rule" });
+        consoleMock.mockReset();
     });
 });

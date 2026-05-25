@@ -1,95 +1,5 @@
-import { FilterOption as FilterOption$1 } from "@hitgrab/finder";
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
 
-//#region src/core/types/rule-types.d.ts
-/**
- * Select a property from the item to sort by.
- */
-type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context: FContext) => string | number;
-interface Rule {
-  id: string;
-  debounceMilliseconds?: number;
-  label?: string;
-  hidden?: boolean;
-}
-type RuleDefinition<FItem = any, FContext = any> = SearchRuleDefinition<FItem, FContext> | FilterRuleDefinition<FItem, FContext> | SortByRuleDefinition<FItem, FContext> | GroupByRuleDefinition<FItem, FContext>;
-interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
-  id?: string;
-  searchFn?: (item: FItem, context: FContext) => string | string[];
-  suggestFilters?: boolean;
-}
-/**
- * Describes the display of a filter or sort option.
- */
-interface FilterOption<FValue = any> {
-  label?: string;
-  value: FValue;
-  disabled?: boolean;
-}
-interface FilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends Rule {
-  filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
-  required?: boolean;
-  strictOptions?: boolean;
-  multiple?: boolean;
-  boolean?: boolean;
-  options?: FilterOption<FValue>[] | ((options: {
-    items: FItem[];
-    context: FContext;
-  }) => FilterOption<FValue>[]);
-}
-type AnyFilterRuleDefinition<FItem = any, FValue = any> = Omit<FilterRuleDefinition<FItem, FValue>, "options">;
-interface FilterRuleWithBooleanValue<FItem = any, FValue = boolean, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
-  multiple?: false;
-  boolean: true;
-  defaultValue?: boolean;
-  options?: never;
-}
-interface FilterRuleWithSingleValue<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
-  multiple?: false;
-  boolean?: false;
-  defaultValue?: FValue;
-}
-interface FilterRuleWithMultipleValues<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
-  multiple: true;
-  boolean?: false;
-  defaultValue?: FValue[];
-}
-/**
- * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
- */
-interface HydratedFilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
-  options?: FilterOption<FValue>[];
-  multiple: boolean;
-  boolean: boolean;
-  _isHydrated: true;
-}
-interface SortByRuleDefinition<FItem = any, FContext = any> extends Rule {
-  sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
-  defaultSortDirection?: SortDirection;
-}
-interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule {
-  groupFn: (item: FItem, context: FContext) => string | number | (string | number)[];
-  sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
-  defaultGroupSortDirection?: SortDirection;
-  sticky?: {
-    header?: string | string[];
-    footer?: string | string[];
-  } | ((groups: FinderResultGroup<FItem>[], context: FContext) => {
-    header?: string | string[];
-    footer?: string | string[];
-  });
-}
-interface FilterTestOptions {
-  rules: HydratedFilterRuleDefinition[];
-  values?: Record<string, any>;
-  isAdditive?: boolean;
-}
-interface FilterTestRuleOptions {
-  rule: string | AnyFilterRuleDefinition;
-  value: any;
-  isAdditive?: boolean;
-}
-//#endregion
 //#region src/core/core-constants.d.ts
 declare const EVENTS: {
   readonly INIT: "init";
@@ -200,8 +110,11 @@ declare class FinderCore<FItem = any, FContext = any> {
   };
   get filters(): {
     values: Record<string, any>;
-    raw: Record<string, any>;
+    raw: {
+      [k: string]: any;
+    };
     activeRules: HydratedFilterRuleDefinition<any, any, any>[];
+    touchedRules: HydratedFilterRuleDefinition<any, any, any>[];
     rules: HydratedFilterRuleDefinition<any, any, any>[];
     isActive: (identifier: string | AnyFilterRuleDefinition<any, any>) => boolean;
     get: (identifier: string | AnyFilterRuleDefinition<any, any>) => any;
@@ -269,20 +182,104 @@ declare class FinderCore<FItem = any, FContext = any> {
   toJSON(): Omit<FinderConstructorOptions<FItem, any>, "rules">;
 }
 //#endregion
-//#region src/core/types/effect-types.d.ts
+//#region src/core/types/rule-types.d.ts
+/**
+ * Select a property from the item to sort by.
+ */
+type FinderPropertySelector<FItem, FContext = any> = (item: FItem, context: FContext) => string | number;
+interface Rule {
+  id: string;
+  debounceMilliseconds?: number;
+  label?: string;
+  hidden?: boolean;
+}
+type RuleDefinition<FItem = any, FContext = any> = SearchRuleDefinition<FItem, FContext> | FilterRuleDefinition<FItem, FContext> | SortByRuleDefinition<FItem, FContext> | GroupByRuleDefinition<FItem, FContext>;
+interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
+  id?: string;
+  searchFn?: (item: FItem, context: FContext) => string | string[];
+  suggestFiltersFrom?: string | AnyFilterRuleDefinition | (string | AnyFilterRuleDefinition)[];
+}
+/**
+ * Describes the display of a filter or sort option.
+ */
+interface FilterOption<FValue = any> {
+  label?: string;
+  value: FValue;
+  disabled?: boolean;
+}
+interface FilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends Rule {
+  filterFn: (item: FItem, value: FValue, context: FContext) => boolean;
+  required?: boolean;
+  strictOptions?: boolean;
+  multiple?: boolean;
+  boolean?: boolean;
+  options?: FilterOption<FValue>[] | ((options: {
+    items: FItem[];
+    context: FContext;
+  }) => FilterOption<FValue>[]);
+  defaultValue?: any;
+}
+type AnyFilterRuleDefinition<FItem = any, FValue = any> = Omit<FilterRuleDefinition<FItem, FValue>, "options">;
+interface FilterRuleWithBooleanValue<FItem = any, FValue = boolean, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+  multiple?: false;
+  boolean: true;
+  defaultValue?: boolean;
+  options?: never;
+}
+interface FilterRuleWithSingleValue<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+  multiple?: false;
+  boolean?: false;
+  defaultValue?: FValue;
+}
+interface FilterRuleWithMultipleValues<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+  multiple: true;
+  boolean?: false;
+  defaultValue?: FValue[];
+}
+/**
+ * A hydrated filter has rendered any option generator functions, and narrowed ambiguous properties from FilterRule.
+ */
+interface HydratedFilterRuleDefinition<FItem = any, FValue = any, FContext = any> extends FilterRuleDefinition<FItem, FValue, FContext> {
+  options?: FilterOption<FValue>[];
+  multiple: boolean;
+  boolean: boolean;
+  _isHydrated: true;
+}
+interface SortByRuleDefinition<FItem = any, FContext = any> extends Rule {
+  sortFn: FinderPropertySelector<FItem, FContext> | FinderPropertySelector<FItem, FContext>[];
+  defaultSortDirection?: SortDirection;
+}
+interface GroupByRuleDefinition<FItem = any, FContext = any> extends Rule {
+  groupFn: (item: FItem, context: FContext) => string | number | (string | number)[];
+  sortGroupFn?: FinderPropertySelector<FinderResultGroup<FItem>, FContext>;
+  defaultGroupSortDirection?: SortDirection;
+  sticky?: {
+    header?: string | string[];
+    footer?: string | string[];
+  } | ((groups: FinderResultGroup<FItem>[], context: FContext) => {
+    header?: string | string[];
+    footer?: string | string[];
+  });
+}
+interface FilterTestOptions {
+  rules: HydratedFilterRuleDefinition[];
+  values?: Record<string, any>;
+  isAdditive?: boolean;
+}
+interface FilterTestRuleOptions {
+  rule: string | AnyFilterRuleDefinition;
+  value: any;
+  isAdditive?: boolean;
+}
 interface RuleEffect<FItem = any, FContext = any> {
   rules: string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]);
   onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
-}
-interface SearchEffect<FItem = any, FContext = any> {
-  haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]);
-  onChange: (instance: FinderCore<FItem, FContext>, searchTerm: string) => void;
 }
 //#endregion
 //#region src/core/types/core-types.d.ts
 interface FinderConstructorOptions<FItem, FContext = any> {
   rules: RuleDefinition<FItem>[];
-  effects?: (RuleEffect | SearchEffect)[];
+  effects?: RuleEffect[];
   context?: FContext;
   isLoading?: boolean;
   disabled?: boolean;
@@ -353,8 +350,8 @@ interface PaginationMixinInterface {
   setNumItemsPerPage: (value: number) => void;
 }
 interface SearchRuleSuggestion {
-  rule: RuleDefinition;
-  optionMatches?: FilterOption$1[];
+  rule: HydratedFilterRuleDefinition;
+  optionMatches?: FilterOption[];
 }
 //#endregion
 //#region src/core/types/string-match-types.d.ts
@@ -403,7 +400,7 @@ interface StringMatchSegmentProps {
 }
 type FinderSearchTermProp = keyof HTMLElementTagNameMap | ElementType | ElementType<StringMatchSegmentProps>;
 //#endregion
-//#region src/core/utils/rule-type-enforcers.d.ts
+//#region src/core/utils/rule-type-guards.d.ts
 /**
  * Enforce structure for an array of rule of mixed types.
  */
@@ -415,7 +412,6 @@ declare function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleW
 declare function sortByRule<FItem, FContext = any>(rule: SortByRuleDefinition<FItem, FContext>): SortByRuleDefinition<FItem, FContext>;
 declare function groupByRule<FItem, FContext = any>(rule: GroupByRuleDefinition<FItem, FContext>): GroupByRuleDefinition<FItem, FContext>;
 declare function ruleEffect<FItem, FContext = any>(rules: string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]), onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void): RuleEffect<FItem, FContext>;
-declare function searchEffect<FItem, FContext = any>(haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]), onChange: (instance: FinderCore<FItem, FContext>, searchTerm: string) => void): SearchEffect<FItem, FContext>;
 declare function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
 declare function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithBooleanValue<FItem, boolean, FContext>;
 declare function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
@@ -423,66 +419,15 @@ declare function transformFilterToMultiple<FItem, FValue, FContext = any>(filter
 //#region src/react/hooks/use-finder.d.ts
 declare function useFinder<FItem = any, FContext = undefined>(): FinderCore<FItem, FContext>;
 //#endregion
-//#region src/react/components/finder-content-loading.d.ts
-interface FinderContentLoadingProps<FItem, FContext> {
-  children: ElementType<FinderContentProps<FItem, FContext>["loading"]> | ReactElement<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
-}
-declare function FinderContentLoading<FItem, FContext>({
-  children: Component
-}: FinderContentLoadingProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
-//#endregion
-//#region src/react/components/finder-content-empty.d.ts
-interface FinderContentEmptyProps<FItem, FContext> {
-  children: ElementType<FinderContentProps<FItem, FContext>["empty"]> | ReactElement<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
-}
-declare function FinderContentEmpty<FItem = any, FContext = any>({
-  children: Component
-}: FinderContentEmptyProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
-//#endregion
-//#region src/react/components/finder-content-no-matches.d.ts
-interface FinderContentNoMatchesProps<FItem, FContext> {
-  children: ElementType<FinderContentProps<FItem, FContext>["noMatches"]> | ReactElement<FinderContentProps<FItem, FContext>["noMatches"]> | Iterable<ReactNode>;
-}
-declare function FinderContentNoMatches<FItem = any, FContext = any>({
-  children: Component
-}: FinderContentNoMatchesProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
-//#endregion
-//#region src/react/components/finder-content-items.d.ts
-interface FinderContentItemsProps<FItem, FContext> {
-  children: ElementType<FinderContentProps<FItem, FContext>["items"]> | ReactElement<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
-}
-declare function FinderContentItems<FItem = any, FContext = any>({
-  children: Component
-}: FinderContentItemsProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
-//#endregion
-//#region src/react/components/finder-content-groups.d.ts
-interface FinderContentGroupsProps<FItem, FContext> {
-  children: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
-}
-declare function FinderContentGroups<FItem = any, FContext = any>({
-  children: Component
-}: FinderContentGroupsProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
-//#endregion
 //#region src/react/components/finder-content.d.ts
 interface FinderContentContainerProps<FItem, FContext> {
-  children: {
-    loading?: ElementType<FinderContentProps<FItem, FContext>["loading"]> | ReactElement<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
-    empty?: ElementType<FinderContentProps<FItem, FContext>["empty"]> | ReactElement<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
-    noMatches?: ElementType<FinderContentProps<FItem, FContext>["noMatches"]> | ReactElement<FinderContentProps<FItem, FContext>["noMatches"]> | Iterable<ReactNode>;
-    items?: ElementType<FinderContentProps<FItem, FContext>["items"]> | ReactElement<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
-    groups?: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
-  };
+  loading?: ElementType<FinderContentProps<FItem, FContext>["loading"]> | ReactElement<FinderContentProps<FItem, FContext>["loading"]> | Iterable<ReactNode>;
+  empty?: ElementType<FinderContentProps<FItem, FContext>["empty"]> | ReactElement<FinderContentProps<FItem, FContext>["empty"]> | Iterable<ReactNode>;
+  noMatches?: ElementType<FinderContentProps<FItem, FContext>["noMatches"]> | ReactElement<FinderContentProps<FItem, FContext>["noMatches"]> | Iterable<ReactNode>;
+  items?: ElementType<FinderContentProps<FItem, FContext>["items"]> | ReactElement<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
+  groups?: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
 }
-declare function FinderContent<FItem = any, FContext = any>({
-  children: renderProps
-}: FinderContentContainerProps<FItem, FContext>): (import("react/jsx-runtime").JSX.Element | undefined)[];
-declare namespace FinderContent {
-  var Loading: typeof FinderContentLoading;
-  var Empty: typeof FinderContentEmpty;
-  var NoMatches: typeof FinderContentNoMatches;
-  var Items: typeof FinderContentItems;
-  var Groups: typeof FinderContentGroups;
-}
+declare function FinderContent<FItem = any, FContext = any>(props: FinderContentContainerProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-search-term-haystack.d.ts
 interface FinderSearchTermHaystackProps {
@@ -546,4 +491,4 @@ declare function StringMatch({
   Miss
 }: StringMatchProps): string | (string | import("react/jsx-runtime").JSX.Element)[];
 //#endregion
-export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };
+export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };

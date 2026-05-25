@@ -1,7 +1,7 @@
 import { orderBy } from "lodash";
 import { SortByRuleDefinition } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "./types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { isSortByRuleDefinition } from "./utils/rule-utils";
 
@@ -22,7 +22,12 @@ class SortByMixin<FItem> {
     constructor({ initialSortBy, initialSortDirection }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         if (initialSortBy) {
-            this.#sortBy = this.getRule(initialSortBy);
+            const isValidRule = this.#deps.getRuleBook().hasRule(initialSortBy);
+            if (isValidRule) {
+                this.#sortBy = this.getRule(initialSortBy);
+            } else {
+                console.warn(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialSortBy });
+            }
         }
         this.#sortDirection = initialSortDirection;
     }

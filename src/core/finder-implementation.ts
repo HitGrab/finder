@@ -150,7 +150,7 @@ export class FinderImplementation<FItem, FContext = any> {
      */
     #touch(touchEvent: FinderTouchEvent) {
         // if we're processing effects, don't trigger an endless touch loop.
-        if (this.#eventEmitter.isSilent()) {
+        if (this.#eventEmitter.isSilenced) {
             return;
         }
 
@@ -284,7 +284,7 @@ export class FinderImplementation<FItem, FContext = any> {
             on: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
             off: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
             silently: (callback: EventCallback) => this.#eventEmitter.silently(callback),
-            isSilent: () => this.#eventEmitter.isSilent(),
+            isSilent: () => this.#eventEmitter.isSilenced,
         };
     }
 

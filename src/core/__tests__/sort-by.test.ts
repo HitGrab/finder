@@ -1,5 +1,6 @@
+import { WARNINGS } from "../core-constants";
 import { FinderCore } from "../finder-core";
-import { sortByRule } from "../utils/rule-type-guards";
+import { finderRuleset, sortByRule } from "../utils/rule-type-guards";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
@@ -76,5 +77,16 @@ describe("SortBy", () => {
 
         const finder = new FinderCore(objectItems, { rules });
         expect(finder.matches.items).toEqual([orange, banana, apple]);
+    });
+
+    test("Ignores invalid initialSortBy", () => {
+        const rules = finderRuleset([]);
+
+        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+        new FinderCore(objectItems, { rules, initialSortBy: "sort_by_price" });
+
+        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialSortBy: "sort_by_price" });
+        consoleMock.mockReset();
     });
 });

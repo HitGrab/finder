@@ -1,5 +1,6 @@
+import { WARNINGS } from "../core-constants";
 import { FinderCore } from "../finder-core";
-import { groupByRule } from "../utils/rule-type-guards";
+import { finderRuleset, groupByRule } from "../utils/rule-type-guards";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
@@ -146,5 +147,16 @@ describe("GroupBy", () => {
             { id: "orange", items: [orange] },
             { id: "apple", items: [apple] },
         ]);
+    });
+
+    test("Ignores invalid initialGroupBy", () => {
+        const rules = finderRuleset([]);
+
+        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+        new FinderCore(objectItems, { rules, initialGroupBy: "group_by_price" });
+
+        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialGroupBy: "group_by_price" });
+        consoleMock.mockReset();
     });
 });

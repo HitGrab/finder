@@ -32,8 +32,12 @@ export const EVENT_SOURCE = {
     PAGINATION: "pagination",
 } as const satisfies EventSourceList;
 
+export const WARNINGS = {
+    INITIAL_RULE_NOT_FOUND: "Finder ignored an initial rule that could not be found.",
+};
+
 export const ERRORS = {
-    RULE_NOT_FOUND: "Finder could not locate requested rule",
+    RULE_NOT_FOUND: "Finder could not find requested rule",
     WRONG_RULE_TYPE_FOR_MIXIN: "The requested rule is not valid for this mixin.",
     NO_SEARCH_RULE_SET: "Unable to set search term; no SearchRule was found.",
     INVALID_SEARCH_TERM_TYPE: "Search terms must be strings.",

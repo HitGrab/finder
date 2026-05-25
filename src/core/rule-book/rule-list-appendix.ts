@@ -30,6 +30,15 @@ export class RuleListAppendix {
         });
     }
 
+    hasRule(identifier: string | RuleDefinition) {
+        return this.rules.some((rule) => {
+            if (typeof identifier === "object") {
+                return rule.id === identifier.id;
+            }
+            return rule.id === identifier;
+        });
+    }
+
     getRule(identifier: string | RuleDefinition) {
         const rule = this.rules.find((rule) => {
             if (typeof identifier === "object") {

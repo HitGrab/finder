@@ -1,6 +1,6 @@
 import { AnyFilterRuleDefinition, FilterOption, FilterTestOptions, FilterTestRuleOptions } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedFiltersMixin } from "./types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { uniqBy } from "lodash";
 import { isFilterRuleDefinitionWithHydratedOptions } from "./utils/rule-utils";
@@ -12,13 +12,26 @@ interface InitialValues {
 
 type FilterRuleIdentifier<FValue = any> = string | AnyFilterRuleDefinition<any, FValue>;
 class FiltersMixin {
-    #rawValues;
+    #rawValues = new Map<string, any>();
+
+    #initialValues = new Map<string, any>();
 
     #deps;
 
     constructor({ initialFilters }: InitialValues, deps: MixinInjectedDependencies) {
-        this.#rawValues = initialFilters ?? {};
         this.#deps = deps;
+
+        if (initialFilters) {
+            Object.entries(initialFilters).forEach(([ruleId, value]) => {
+                const isValidRule = this.#deps.getRuleBook().hasRule(ruleId);
+                if (isValidRule) {
+                    this.#rawValues.set(ruleId, value);
+                    this.#initialValues.set(ruleId, value);
+                } else {
+                    console.warn(WARNINGS.INITIAL_RULE_NOT_FOUND, { rule: ruleId });
+                }
+            });
+        }
     }
 
     set<FValue>(identifier: FilterRuleIdentifier<FValue>, value?: FValue | FValue[]): void {
@@ -41,12 +54,19 @@ class FiltersMixin {
         }
 
         // early exit if nothing changed
-        if (this.#rawValues[rule.id] !== undefined && this.#rawValues[rule.id] === transformedFilterValue) {
+        if (this.#rawValues.has(rule.id) && this.#rawValues.get(rule.id) === transformedFilterValue) {
             return;
         }
 
         this.#deps.debouncer(rule, () => {
-            this.#rawValues = { ...this.#rawValues, [rule.id]: transformedFilterValue };
+            const isResetToInitialValue = transformedFilterValue === this.#initialValues.has(rule.id);
+            const isResetToDefaultValue = transformedFilterValue === rule.defaultValue;
+
+            if (isResetToInitialValue || isResetToDefaultValue) {
+                this.#rawValues.delete(rule.id);
+            } else {
+                this.#rawValues.set(rule.id, transformedFilterValue);
+            }
             this.#deps.touch({
                 source: EVENT_SOURCE.FILTERS,
                 event: EVENTS.SET_FILTER,
@@ -62,18 +82,24 @@ class FiltersMixin {
     }
 
     get activeRules() {
-        return this.rules.filter((rule) => makeFilterHandler(rule).isActive(this.#rawValues[rule.id]));
+        return this.rules.filter((rule) => makeFilterHandler(rule).isActive(this.#rawValues.get(rule.id)));
+    }
+
+    get touchedRules() {
+        return this.rules.filter((rule) => {
+            return this.#rawValues.has(rule.id);
+        });
     }
 
     get(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         return makeFilterHandler(rule).parse(value);
     }
 
     has(identifier: FilterRuleIdentifier, optionValue?: any): boolean {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         return makeFilterHandler(rule).has(value, optionValue);
     }
 
@@ -87,19 +113,19 @@ class FiltersMixin {
 
     add<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         this.set(rule, makeFilterHandler(rule).add(value, optionValue));
     }
 
     delete<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         this.set(rule, makeFilterHandler(rule).delete(value, optionValue));
     }
 
     toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         if (rule.boolean && optionValue !== undefined) {
             throw new FinderError(ERRORS.TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE, { rule, value });
         }
@@ -109,7 +135,7 @@ class FiltersMixin {
 
     reset() {
         const previousValues = this.values;
-        this.#rawValues = {};
+        this.#rawValues.clear();
         this.#deps.touch({
             source: EVENT_SOURCE.FILTERS,
             event: EVENTS.RESET_FILTERS,
@@ -120,7 +146,7 @@ class FiltersMixin {
 
     isRuleActive(identifier: FilterRuleIdentifier) {
         const rule = this.getRule(identifier);
-        const value = this.#rawValues[rule.id];
+        const value = this.#rawValues.get(rule.id);
         return makeFilterHandler(rule).isActive(value);
     }
 
@@ -192,7 +218,7 @@ class FiltersMixin {
     }
 
     get raw() {
-        return this.#rawValues;
+        return Object.fromEntries(this.#rawValues.entries());
     }
 
     serialize(): SerializedFiltersMixin {
@@ -207,6 +233,7 @@ class FiltersMixin {
             values: this.values,
             raw: this.raw,
             activeRules: this.activeRules,
+            touchedRules: this.touchedRules,
             rules: this.rules,
             isActive: this.isRuleActive.bind(this),
             get: this.get.bind(this),

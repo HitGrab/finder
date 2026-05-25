@@ -46,7 +46,7 @@ export class EventEmitter<EventNames extends string> {
         this.#disabled = false;
     }
 
-    isSilent() {
+    get isSilenced() {
         return this.#disabled;
     }
 }

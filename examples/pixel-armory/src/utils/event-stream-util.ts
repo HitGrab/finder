@@ -27,7 +27,7 @@ export function appendEventString(event: FinderEvent) {
                 if (typeof value === "boolean") {
                     transformedValue = value ? "true" : "false";
                 }
-                if (transformedValue === "") {
+                if (transformedValue === "" && key !== "instance") {
                     transformedValue = JSON.stringify(value);
                 }
                 acc += `

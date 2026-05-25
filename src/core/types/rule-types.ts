@@ -40,6 +40,7 @@ export interface FilterRuleDefinition<FItem = any, FValue = any, FContext = any>
     multiple?: boolean;
     boolean?: boolean;
     options?: FilterOption<FValue>[] | ((options: { items: FItem[]; context: FContext }) => FilterOption<FValue>[]);
+    defaultValue?: any;
 }
 
 export type AnyFilterRuleDefinition<FItem = any, FValue = any> = Omit<FilterRuleDefinition<FItem, FValue>, "options">;

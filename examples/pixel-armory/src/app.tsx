@@ -59,15 +59,15 @@ function App() {
                     <GroupByDropdown />
                 </div>
                 <div className="equipmentList">
-                    <Finder.Content>
-                        {{
-                            loading: range(0, 12).map((index) => <EquipmentCardSkeleton key={index} />),
-                            empty: "No items in list",
-                            noMatches: "No matches found.",
-                            items: Items,
-                            groups: Groups,
-                        }}
-                    </Finder.Content>
+                    <Finder.Content
+                        loading={range(0, 12).map((index) => (
+                            <EquipmentCardSkeleton key={index} />
+                        ))}
+                        empty="No items in list"
+                        noMatches="No matches found."
+                        items={Items}
+                        groups={Groups}
+                    />
                 </div>
             </div>
             Assets from https://emblemadept.itch.io/pixel-armor-pack-3-greece-rome
@@ -76,18 +76,16 @@ function App() {
 }
 
 function Items({ items, context }: FinderContentProps<Equipment, FinderContext>["items"]) {
-    return items.map((item) => {
-        return <EquipmentCard item={item} isSelected={context.isSelected(item)} onSelect={() => context.toggle(item)} key={item.key} />;
-    });
+    return items.map((item) => <EquipmentCard item={item} isSelected={context.isSelected(item)} onSelect={() => context.toggle(item)} key={item.key} />);
 }
 function Groups({ groups, context }: FinderContentProps<Equipment, FinderContext>["groups"]) {
     return groups.map((group) => {
         return (
             <div className="group" key={group.id}>
                 <div className="title">{capitalize(group.id)}</div>
-                {group.items.map((item: Equipment) => {
-                    return <EquipmentCard item={item} isSelected={context.isSelected(item)} onSelect={() => context.toggle(item)} key={item.key} />;
-                })}
+                {group.items.map((item: Equipment) => (
+                    <EquipmentCard item={item} isSelected={context.isSelected(item)} onSelect={() => context.toggle(item)} key={item.key} />
+                ))}
             </div>
         );
     });
