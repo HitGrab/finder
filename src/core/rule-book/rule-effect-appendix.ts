@@ -1,14 +1,15 @@
 import { FinderCore } from "../finder-core";
-import { HydratedRuleEffect, RuleEffect } from "../types/effect-types";
-import { RuleDefinition } from "../types/rule-types";
+import { HydratedRuleEffect, RuleDefinition, RuleEffect } from "../types/rule-types";
 
 export class RuleEffectAppendix<FItem, FContext> {
-    #definitions;
+    #definitions: RuleEffect[] = [];
 
     effects: HydratedRuleEffect[] = [];
 
-    constructor(definitions: RuleEffect[]) {
-        this.#definitions = definitions;
+    constructor(definitions?: RuleEffect[]) {
+        if (definitions) {
+            this.#definitions = definitions;
+        }
     }
 
     hydrateDefinitions(items: FItem[], context: FContext) {

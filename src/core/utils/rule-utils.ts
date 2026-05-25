@@ -1,4 +1,3 @@
-import { RuleEffect, SearchEffect } from "../types/effect-types";
 import {
     FilterRuleWithBooleanValue,
     FilterRuleWithMultipleValues,
@@ -29,14 +28,6 @@ export function isFilterRuleDefinitionWithHydratedOptions(rule: unknown): rule i
 
 export function isGroupByRuleDefinition<FItem>(rule: unknown): rule is GroupByRuleDefinition<FItem> {
     return typeof rule === "object" && rule !== null && "groupFn" in rule;
-}
-
-export function isRuleEffectDefinition<FItem>(data: unknown): data is RuleEffect<FItem> {
-    return typeof data === "object" && data !== null && ("rules" in data || "callback" in data);
-}
-
-export function isSearchEffectDefinition<FItem>(data: unknown): data is SearchEffect<FItem> {
-    return typeof data === "object" && data !== null && ("haystack" in data || "callback" in data);
 }
 
 export function isBooleanFilterRuleDefinition<FItem>(rule: unknown): rule is FilterRuleWithBooleanValue<FItem> {

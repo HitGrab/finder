@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { FinderCore } from "../finder-core";
-import { RuleEffect, SearchEffect } from "../types/effect-types";
 import {
     FilterRuleWithBooleanValue,
     FilterRuleWithMultipleValues,
@@ -10,6 +9,7 @@ import {
     SearchRuleDefinition,
     SortByRuleDefinition,
     AnyFilterRuleDefinition,
+    RuleEffect,
 } from "../types/rule-types";
 
 /**
@@ -61,13 +61,6 @@ export function ruleEffect<FItem, FContext = any>(
     onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void,
 ): RuleEffect<FItem, FContext> {
     return { rules, onChange };
-}
-
-export function searchEffect<FItem, FContext = any>(
-    haystack: string | string[] | ((items: FItem[], context: FContext) => string | string[]),
-    onChange: (instance: FinderCore<FItem, FContext>, searchTerm: string) => void,
-): SearchEffect<FItem, FContext> {
-    return { haystack, onChange };
 }
 
 export function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {

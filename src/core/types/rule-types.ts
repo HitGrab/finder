@@ -1,3 +1,4 @@
+import { FinderCore } from "../finder-core";
 import { FinderResultGroup, SortDirection } from "./core-types";
 
 /**
@@ -110,4 +111,18 @@ export interface FilterTestRuleOptions {
     rule: string | AnyFilterRuleDefinition;
     value: any;
     isAdditive?: boolean;
+}
+
+export interface RuleEffect<FItem = any, FContext = any> {
+    rules:
+        | string
+        | RuleDefinition<FItem>
+        | (string | RuleDefinition<FItem>)[]
+        | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]);
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
+}
+
+export interface HydratedRuleEffect<FItem = any, FContext = any> {
+    rules: (string | RuleDefinition<FItem>)[];
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
 }

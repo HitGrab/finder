@@ -1,6 +1,6 @@
 import { FinderCore } from "../finder-core";
 import { FinderConstructorOptions } from "../types/core-types";
-import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "../utils/rule-type-guards";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 

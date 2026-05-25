@@ -6,7 +6,6 @@ import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerialized
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
 import { RuleDefinition } from "./types/rule-types";
 import { RuleBook } from "./rule-book/rule-book";
-import { isRuleEffectDefinition, isSearchEffectDefinition } from "./utils/rule-utils";
 import { isEqual } from "lodash";
 import { EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FiltersMixin } from "./filters-mixin";
@@ -85,9 +84,7 @@ export class FinderImplementation<FItem, FContext = any> {
         this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
         this.resetPaginationOn = resetPaginationOn;
 
-        const ruleEffects = effects?.filter(isRuleEffectDefinition) ?? [];
-        const searchEffects = effects?.filter(isSearchEffectDefinition) ?? [];
-        this.#ruleBook = new RuleBook({ rules, ruleEffects, searchEffects });
+        this.#ruleBook = new RuleBook({ rules, effects });
         this.#ruleBook.hydrateDefinitions(items ?? [], context as FContext);
 
         const debouncerFn = DebounceCallbackRegistry();

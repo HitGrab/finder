@@ -39,7 +39,6 @@ class SearchMixin<FItem> {
         const activeRule = this.rule;
         if (this.hasSearchTerm && activeRule?.suggestFiltersFrom) {
             const allFilterRules = this.#deps.getRuleBook().rules.filter(isFilterRuleDefinitionWithHydratedOptions);
-
             const ruleSourceAsArray = Array.isArray(activeRule.suggestFiltersFrom) ? activeRule.suggestFiltersFrom : [activeRule.suggestFiltersFrom];
             const ruleHaystack = ruleSourceAsArray.map((identifier) => {
                 const rule = allFilterRules.find((row) => {
@@ -53,8 +52,8 @@ class SearchMixin<FItem> {
                 }
                 return rule;
             });
-            const [rulesWithOptions, rulesWithoutOptions] = partition(ruleHaystack, (rule) => rule.options !== undefined && rule.options.length > 0);
 
+            const [rulesWithOptions, rulesWithoutOptions] = partition(ruleHaystack, (rule) => rule.options !== undefined && rule.options.length > 0);
             rulesWithOptions.forEach((rule) => {
                 if (rule.options && rule.options.length > 0) {
                     const optionMatches = defaultSearchAndSortAlgorithm(

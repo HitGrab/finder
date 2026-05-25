@@ -1,5 +1,5 @@
 import { range } from "lodash";
-import { filterRule, finderRuleset, transformFilterToMultiple } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, transformFilterToMultiple } from "../utils/rule-type-guards";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { FinderCore } from "../finder-core";

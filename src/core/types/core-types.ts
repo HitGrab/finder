@@ -1,13 +1,19 @@
-import { FilterOption } from "@hitgrab/finder";
 import { DebounceCallbackRegistry } from "../debounce-callback-registry";
 import { RuleListAppendix } from "../rule-book/rule-list-appendix";
-import { RuleEffect, SearchEffect } from "./effect-types";
 import { FinderOnChangeCallback, FinderOnFirstUserInteractCallback, FinderOnInitCallback, FinderOnReadyCallback, FinderTouchCallback } from "./event-types";
-import { RuleDefinition, GroupByRuleDefinition, SearchRuleDefinition, SortByRuleDefinition, HydratedFilterRuleDefinition } from "./rule-types";
+import {
+    RuleDefinition,
+    GroupByRuleDefinition,
+    SearchRuleDefinition,
+    SortByRuleDefinition,
+    HydratedFilterRuleDefinition,
+    RuleEffect,
+    FilterOption,
+} from "./rule-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
     rules: RuleDefinition<FItem>[];
-    effects?: (RuleEffect | SearchEffect)[];
+    effects?: RuleEffect[];
     context?: FContext;
     isLoading?: boolean;
     disabled?: boolean;

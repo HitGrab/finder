@@ -1,6 +1,6 @@
 import { FinderCore } from "../finder-core";
 import { FinderOnChangeCallback } from "../types/event-types";
-import { searchRule, filterRule } from "../utils/rule-type-enforcers";
+import { searchRule, filterRule } from "../utils/rule-type-guards";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
