@@ -20,7 +20,7 @@ export type RuleDefinition<FItem = any, FContext = any> =
 export interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
     id?: string;
     searchFn?: (item: FItem, context: FContext) => string | string[];
-    suggestFilters?: boolean;
+    suggestFiltersFrom?: string | AnyFilterRuleDefinition | (string | AnyFilterRuleDefinition)[];
 }
 
 /**

@@ -1,0 +1,23 @@
+{
+  "id": "guides/search-suggestions",
+  "title": "Search that suggests relevant filters",
+  "description": "",
+  "source": "@site/docs/guides/search-suggestions.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/search-suggestions",
+  "permalink": "/finder/guides/search-suggestions",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Making Finder React components aware of external context",
+    "permalink": "/finder/guides/context/injecting-context"
+  },
+  "next": {
+    "title": "Rules",
+    "permalink": "/finder/reference/rules/"
+  }
+}

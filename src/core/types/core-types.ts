@@ -121,6 +121,6 @@ export interface PaginationMixinInterface {
 }
 
 export interface SearchRuleSuggestion {
-    rule: RuleDefinition;
+    rule: HydratedFilterRuleDefinition;
     optionMatches?: FilterOption[];
 }

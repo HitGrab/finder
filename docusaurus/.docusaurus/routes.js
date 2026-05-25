@@ -3,21 +3,56 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
+    path: '/finder/__docusaurus/debug',
+    component: ComponentCreator('/finder/__docusaurus/debug', '801'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/config',
+    component: ComponentCreator('/finder/__docusaurus/debug/config', 'b66'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/content',
+    component: ComponentCreator('/finder/__docusaurus/debug/content', '8b3'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/globalData',
+    component: ComponentCreator('/finder/__docusaurus/debug/globalData', '3bb'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/metadata',
+    component: ComponentCreator('/finder/__docusaurus/debug/metadata', '18d'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/registry',
+    component: ComponentCreator('/finder/__docusaurus/debug/registry', '007'),
+    exact: true
+  },
+  {
+    path: '/finder/__docusaurus/debug/routes',
+    component: ComponentCreator('/finder/__docusaurus/debug/routes', '4d0'),
+    exact: true
+  },
+  {
     path: '/finder/markdown-page',
     component: ComponentCreator('/finder/markdown-page', 'c0b'),
     exact: true
   },
   {
     path: '/finder/',
-    component: ComponentCreator('/finder/', '559'),
+    component: ComponentCreator('/finder/', '8a7'),
     routes: [
       {
         path: '/finder/',
-        component: ComponentCreator('/finder/', 'd72'),
+        component: ComponentCreator('/finder/', '3e7'),
         routes: [
           {
             path: '/finder/',
-            component: ComponentCreator('/finder/', '010'),
+            component: ComponentCreator('/finder/', 'eee'),
             routes: [
               {
                 path: '/finder/Core Concepts',
@@ -52,6 +87,12 @@ export default [
               {
                 path: '/finder/guides/context/injecting-context',
                 component: ComponentCreator('/finder/guides/context/injecting-context', '473'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/guides/search-suggestions',
+                component: ComponentCreator('/finder/guides/search-suggestions', '503'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

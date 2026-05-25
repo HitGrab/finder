@@ -1,4 +1,4 @@
-import { capitalize, range } from "lodash";
+import { range } from "lodash";
 import { FinderCore } from "../finder-core";
 import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule-type-enforcers";
 import { objectItems, apple } from "./test-constants";
@@ -176,5 +176,44 @@ describe("Search", () => {
 
         // with failed subquery
         expect(finder.search.test('ipsum "ame c"')).toEqual([]);
+    });
+
+    test("Suggests Filter rules", () => {
+        const storeFilter = filterRule<MockObjectItem>({
+            id: "filter_by_store",
+            filterFn: () => true,
+            options: [
+                {
+                    label: "Anna's Applesauce",
+                    value: "applesauce",
+                },
+                { label: "Berndatte's Bakery", value: "bakery" },
+            ],
+        });
+
+        const rules = [
+            searchRule({
+                searchFn: (item: MockObjectItem) => item.name,
+                suggestFiltersFrom: [storeFilter, "filter_by_brand"],
+            }),
+            storeFilter,
+            filterRule({
+                id: "filter_by_brand",
+                label: "Apple brands",
+                filterFn: () => true,
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules });
+        finder.search.setSearchTerm("apple");
+        expect(finder.search.suggestedFilters[0]?.rule.id).toBe(storeFilter.id);
+        expect(finder.search.suggestedFilters[0]?.optionMatches).toEqual([
+            {
+                label: "Anna's Applesauce",
+                value: "applesauce",
+            },
+        ]);
+        expect(finder.search.suggestedFilters[1]?.rule.id).toBe("filter_by_brand");
+        expect(finder.search.suggestedFilters[1]?.optionMatches).toBe(undefined);
     });
 });
