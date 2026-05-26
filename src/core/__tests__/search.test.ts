@@ -4,7 +4,6 @@ import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule
 import { objectItems, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { WARNINGS } from "../core-constants";
-import { StringMatchTester } from "../search/string-match-tester";
 
 describe("Search", () => {
     test("Default behaviour if no rule is set", () => {
@@ -176,11 +175,6 @@ describe("Search", () => {
 
         // without subquery
         expect(finder.search.test("ipsum ame c")).toEqual(["Lorem ipsum dolor sit amet, consectetur adipiscing elit."]);
-
-        items.forEach((item) => {
-            const bob = new StringMatchTester(item, 'ipsum "ame c"');
-            console.log(item, bob.hasMatch);
-        });
 
         // with failed subquery
         expect(finder.search.test('ipsum "ame c"')).toEqual([]);

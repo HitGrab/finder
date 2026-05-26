@@ -1,7 +1,7 @@
 import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
+import { sequentialCharacterSearchAlgorithm } from "./search/sequential-character-search-algorithm";
 import { MixinInjectedDependencies, SearchRuleSuggestion, SerializedSearchMixin } from "./types/core-types";
-import { defaultSearchAndSortAlgorithm } from "./search/default-search-and-sort-algorithm";
 import { isFilterRuleDefinitionWithHydratedOptions, isSearchRuleDefinition } from "./utils/rule-utils";
 import { partition } from "lodash";
 
@@ -56,7 +56,7 @@ class SearchMixin<FItem> {
             const [rulesWithOptions, rulesWithoutOptions] = partition(ruleHaystack, (rule) => rule.options !== undefined && rule.options.length > 0);
             rulesWithOptions.forEach((rule) => {
                 if (rule.options && rule.options.length > 0) {
-                    const optionMatches = defaultSearchAndSortAlgorithm(
+                    const optionMatches = sequentialCharacterSearchAlgorithm(
                         {
                             searchTerm: this.searchTerm,
                             rule: {
@@ -75,7 +75,7 @@ class SearchMixin<FItem> {
             });
 
             if (rulesWithoutOptions.length > 0) {
-                defaultSearchAndSortAlgorithm(
+                sequentialCharacterSearchAlgorithm(
                     {
                         searchTerm: this.searchTerm,
                         rule: {
@@ -171,7 +171,7 @@ class SearchMixin<FItem> {
             return items;
         }
 
-        return defaultSearchAndSortAlgorithm(options, items, context);
+        return sequentialCharacterSearchAlgorithm(options, items, context);
     }
 }
 

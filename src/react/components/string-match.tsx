@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { FinderSearchTermProp } from "../types/react-types";
-import { calculateStringMatchSegments } from "../../core/search/calculate-string-match-segments";
+import { StringMatchTester } from "../../core/search/string-match-tester";
 
 interface StringMatchProps {
     needle: string;
@@ -13,13 +13,13 @@ interface StringMatchProps {
  * Split a string into result segment components .
  */
 function StringMatch({ needle, haystack, Match = "mark", Miss }: StringMatchProps) {
-    const segments = useMemo(() => calculateStringMatchSegments(haystack, needle), [haystack, needle]);
+    const tester = useMemo(() => new StringMatchTester(haystack, needle), [haystack, needle]);
 
-    if (segments === undefined) {
+    if (tester.hasMatch === false || tester.segments === undefined) {
         return haystack;
     }
 
-    return segments.map((segment, index) => {
+    return tester.segments.map((segment, index) => {
         const key = [segment.value, index].join();
         if (segment.is_match) {
             if (typeof Match === "string") {

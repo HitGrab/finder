@@ -1,18 +1,16 @@
 import { range } from "lodash";
+import { StringMatchHaystack } from "./string-match-haystack";
 
-import { SearchToken } from "../types/string-match-types";
-import { StringMatchTester } from "./string-match-tester";
-
-export function calculateCharacterMatchIndexes(haystack: SearchToken, needle: SearchToken) {
+export function calculateCharacterMatchIndexes(haystack: StringMatchHaystack, needle: string, transformFn: (value: string) => string) {
     const subqueryRegex = new RegExp(/"(.*?)"/g);
-    let needleWithoutSubqueries = needle.raw;
+    let needleWithoutSubqueries = needle;
     let characterIndexes: number[] = [];
 
     // Match any quoted strings inside the needle that need to be exactly matched, like 'apple "Bob" mustard'.
     let subquery;
     let hasFailedSubquery = false;
-    while ((subquery = subqueryRegex.exec(needle.raw)) !== null && hasFailedSubquery === false) {
-        const subqueryNeedle = StringMatchTester.transformStringForComparison(String(subquery[1]));
+    while ((subquery = subqueryRegex.exec(needle)) !== null && hasFailedSubquery === false) {
+        const subqueryNeedle = transformFn(String(subquery[1]));
         const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack.transformed, subqueryNeedle);
 
         // early exit if a subquery fails
@@ -30,7 +28,7 @@ export function calculateCharacterMatchIndexes(haystack: SearchToken, needle: Se
         return undefined;
     }
 
-    const transformedNeedle = StringMatchTester.transformStringForComparison(needleWithoutSubqueries);
+    const transformedNeedle = transformFn(needleWithoutSubqueries);
     const sequentialCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
     if (sequentialCharacterIndexes === undefined) {
         return undefined;

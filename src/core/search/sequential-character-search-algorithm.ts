@@ -1,18 +1,14 @@
 import { orderBy } from "lodash";
 import { SerializedSearchMixin } from "../types/core-types";
 import { StringMatchTester } from "./string-match-tester";
+import { SearchScore } from "../types/string-match-types";
 
 interface SearchScoreItem<FItem> {
     item: FItem;
     score: SearchScore;
 }
 
-interface SearchScore {
-    percentOfHaystackMatched: number;
-    longestSequentialSequence: number;
-}
-
-export function defaultSearchAndSortAlgorithm<FItem>(options: SerializedSearchMixin, items: FItem[], context?: unknown) {
+export function sequentialCharacterSearchAlgorithm<FItem>(options: SerializedSearchMixin, items: FItem[], context?: unknown) {
     const matches = items.reduce<SearchScoreItem<FItem>[]>((acc, item) => {
         if (options.rule?.searchFn === undefined) {
             return acc;

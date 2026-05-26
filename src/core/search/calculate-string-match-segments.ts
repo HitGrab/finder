@@ -1,37 +1,25 @@
-import { SearchToken, StringMatchSegment } from "../types/string-match-types";
+import { StringMatchSegment } from "../types/string-match-types";
 import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
 import { StringMatchHaystack } from "./string-match-haystack";
 
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */
-export function calculateStringMatchSegments(haystack: SearchToken | SearchToken[], needle: SearchToken) {
-    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
+export function calculateStringMatchSegments(haystack: StringMatchHaystack, needle: string, transformFn: (value: string) => string) {
+    const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack, needle, transformFn);
 
-    // StringMatchHaystack will build a map between the source and transformed strings.
-    const haystacks = haystackAsArray.map((hay) => new StringMatchHaystack(hay.raw));
+    // if no matching character indexes were found, this particular needle did not succeed.
+    if (matchedCharacterIndexes === undefined) {
+        return undefined;
+    }
 
-    return haystacks.reduce<StringMatchSegment[] | undefined>((match, haystack) => {
-        // stop looking once a match is found
-        if (match !== undefined) {
-            return match;
-        }
+    // build segments based on the transformed haystack
+    const transformedHaystackMatches = prepareResultSegments(matchedCharacterIndexes, haystack.transformed);
 
-        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack, needle);
+    // map the segments back to the source haystack
+    const firstPassSegments = processResultSegments(haystack, transformedHaystackMatches);
 
-        // if no matching character indexes were found, this particular needle did not succeed.
-        if (matchedCharacterIndexes === undefined) {
-            return match;
-        }
-
-        // build segments based on the transformed haystack
-        const transformedHaystackMatches = prepareResultSegments(matchedCharacterIndexes, haystack.transformed);
-
-        // map the segments back to the source haystack
-        const firstPassSegments = processResultSegments(haystack, transformedHaystackMatches);
-
-        return prettifyResultSegments(firstPassSegments);
-    }, undefined);
+    return prettifyResultSegments(firstPassSegments);
 }
 
 /**

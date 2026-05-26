@@ -12,6 +12,8 @@ export type {
 export type { FinderEvent, FinderInitEvent, FinderReadyEvent, FinderFirstUserInteractionEvent, FinderChangeEvent } from "./core/types/event-types";
 export type { FinderProps, FinderContentProps, StringMatchSegmentProps } from "./react/types/react-types";
 
+export { StringMatchTester } from "./core/search/string-match-tester";
+
 export {
     finderRuleset,
     searchRule,
