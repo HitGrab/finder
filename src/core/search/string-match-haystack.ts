@@ -1,12 +1,12 @@
 export class StringMatchHaystack {
-    source;
+    raw;
 
     #transformedSegments;
 
     transformed;
 
     constructor(haystack: string) {
-        this.source = haystack;
+        this.raw = haystack;
         const segments = StringMatchHaystack.composeTransformedHaystackSegments(haystack);
         this.#transformedSegments = segments;
 

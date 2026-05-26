@@ -17,7 +17,7 @@ export function calculateStringMatchSegments(haystack: SearchToken | SearchToken
             return match;
         }
 
-        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, needle.raw);
+        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack, needle);
 
         // if no matching character indexes were found, this particular needle did not succeed.
         if (matchedCharacterIndexes === undefined) {
@@ -88,7 +88,7 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
          * If our first postive match does not begin at index zero, we prefix a negative result segment ending where the first positive match begins.
          */
         if (x === 0 && match.index !== 0) {
-            const value = haystack.source.substring(0, haystack.getSourceCharacterIndex(match.index));
+            const value = haystack.raw.substring(0, haystack.getSourceCharacterIndex(match.index));
             acc.push({
                 index: 0,
                 value,
@@ -99,7 +99,7 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
 
         const currentSegmentStart = haystack.getSourceCharacterIndex(match.index);
         const currentSegmentEnd = haystack.getSourceCharacterIndex(match.index + match.length);
-        const currentSegmentValue = haystack.source.substring(currentSegmentStart, currentSegmentEnd);
+        const currentSegmentValue = haystack.raw.substring(currentSegmentStart, currentSegmentEnd);
         acc.push({
             index: currentSegmentStart,
             value: currentSegmentValue,
@@ -112,16 +112,16 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
         if (nextMatch) {
             const negativeSegmentStart = haystack.getSourceCharacterIndex(match.index + match.length);
             const negativeSegmentEnd = haystack.getSourceCharacterIndex(nextMatch.index);
-            const negativeSegmentValue = haystack.source.substring(negativeSegmentStart, negativeSegmentEnd);
+            const negativeSegmentValue = haystack.raw.substring(negativeSegmentStart, negativeSegmentEnd);
             acc.push({
                 index: negativeSegmentStart,
                 value: negativeSegmentValue,
                 is_match: false,
                 length: negativeSegmentValue.length,
             });
-        } else if (currentSegmentStart + currentSegmentValue.length !== haystack.source.length) {
+        } else if (currentSegmentStart + currentSegmentValue.length !== haystack.raw.length) {
             const finalSegmentStart = currentSegmentStart + currentSegmentValue.length;
-            const finalSegmentValue = haystack.source.substring(finalSegmentStart);
+            const finalSegmentValue = haystack.raw.substring(finalSegmentStart);
             acc.push({
                 index: finalSegmentStart,
                 value: finalSegmentValue,

@@ -1,17 +1,19 @@
 import { range } from "lodash";
-import { transformStringForComparison } from "./search-string-transform";
 
-export function calculateCharacterMatchIndexes(haystack: string, needle: string) {
+import { SearchToken } from "../types/string-match-types";
+import { StringMatchTester } from "./string-match-tester";
+
+export function calculateCharacterMatchIndexes(haystack: SearchToken, needle: SearchToken) {
     const subqueryRegex = new RegExp(/"(.*?)"/g);
-    let needleWithoutSubqueries = needle;
+    let needleWithoutSubqueries = needle.raw;
     let characterIndexes: number[] = [];
 
     // Match any quoted strings inside the needle that need to be exactly matched, like 'apple "Bob" mustard'.
     let subquery;
     let hasFailedSubquery = false;
-    while ((subquery = subqueryRegex.exec(needle)) !== null && hasFailedSubquery === false) {
-        const subqueryNeedle = transformStringForComparison(String(subquery[1]));
-        const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack, subqueryNeedle);
+    while ((subquery = subqueryRegex.exec(needle.raw)) !== null && hasFailedSubquery === false) {
+        const subqueryNeedle = StringMatchTester.transformStringForComparison(String(subquery[1]));
+        const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack.transformed, subqueryNeedle);
 
         // early exit if a subquery fails
         if (subqueryCharacterIndexes === undefined) {
@@ -28,8 +30,8 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
         return undefined;
     }
 
-    const transformedNeedle = transformStringForComparison(needleWithoutSubqueries);
-    const sequentialCharacterIndexes = calculateSequentialCharacterIndexes(haystack, transformedNeedle);
+    const transformedNeedle = StringMatchTester.transformStringForComparison(needleWithoutSubqueries);
+    const sequentialCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
     if (sequentialCharacterIndexes === undefined) {
         return undefined;
     }
