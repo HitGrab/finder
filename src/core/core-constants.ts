@@ -39,10 +39,13 @@ export const WARNINGS = {
 };
 
 export const ERRORS = {
+    INVALID_RULE_WITHOUT_ID: "Init failed: Missing rule id.",
+    INVALID_RULE_SHAPE: "Init failed: Malformed rule definition",
+    INVALID_RULE_DUPLICATE: "Init failed: Duplicate rule id.",
     RULE_NOT_FOUND: "Finder could not find requested rule",
     WRONG_RULE_TYPE_FOR_MIXIN: "The requested rule is not valid for this mixin.",
     NO_SEARCH_RULE_SET: "Unable to set search term; no SearchRule was found.",
-    INVALID_SEARCH_TERM_TYPE: "Search terms must be strings.",
+    INVALID_SEARCH_TERM_TYPE: "Search term must be a string.",
     NO_MATCHING_OPTION_FOUND_WITH_STRICT_OPTIONS:
         "Finder could not find a matching option with the passed value could be found. If this is intended, set 'strictOptions:false' in the rule definition.",
     SETTING_MULTIPLE_FILTER_WITHOUT_ARRAY: "Finder could not set this filter value, as the rule requires an array.",
@@ -55,7 +58,4 @@ export const ERRORS = {
     TOGGLING_OPTION_WITHOUT_PASSING_OPTION: "Finder could not toggle this filter rule option, as the option was not found.",
     TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE: "Finder could not toggle this filter rule option, as boolean filters do not have options.",
     TESTING_OPTIONS_ON_RULE_WITH_NO_OPTIONS: "Finder was unable to test the options for this filter rule. It must be a boolean or have defined options.",
-    INVALID_RULE_WITHOUT_ID: "Init failed: Missing rule id.",
-    INVALID_RULE_SHAPE: "Init failed: Malformed rule definition",
-    INVALID_RULE_DUPLICATE: "Init failed: Duplicate rule id.",
 };

@@ -1,16 +1,15 @@
-import { StringMatchSegment } from "../types/string-match-types";
+import { SearchToken, StringMatchSegment } from "../types/string-match-types";
 import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
-import { transformStringForComparison } from "./search-string-transform";
 import { StringMatchHaystack } from "./string-match-haystack";
 
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */
-export function calculateStringMatchSegments(haystack: string | string[], needle: string) {
+export function calculateStringMatchSegments(haystack: SearchToken | SearchToken[], needle: SearchToken) {
     const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
 
     // StringMatchHaystack will build a map between the source and transformed strings.
-    const haystacks = haystackAsArray.map((hay) => new StringMatchHaystack(hay));
+    const haystacks = haystackAsArray.map((hay) => new StringMatchHaystack(hay.raw));
 
     return haystacks.reduce<StringMatchSegment[] | undefined>((match, haystack) => {
         // stop looking once a match is found
@@ -18,7 +17,7 @@ export function calculateStringMatchSegments(haystack: string | string[], needle
             return match;
         }
 
-        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, needle);
+        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, needle.raw);
 
         // if no matching character indexes were found, this particular needle did not succeed.
         if (matchedCharacterIndexes === undefined) {
@@ -158,15 +157,4 @@ function prettifyResultSegments(segments: StringMatchSegment[]) {
     });
 
     return prettySegments;
-}
-
-/**
- * Determine if a characterIndexFn would return a result for a haystack.
- */
-export function hasCharacterIndexMatches(haystack: string | string[], needle: string) {
-    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
-    return haystackAsArray.some((hay) => {
-        const transformedHaystack = transformStringForComparison(hay);
-        return calculateCharacterMatchIndexes(transformedHaystack, needle) !== undefined;
-    });
 }

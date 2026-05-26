@@ -186,13 +186,6 @@ class GroupByMixin<FItem> {
             orderSortDirection.push(options.groupBySortDirection ?? "asc");
         }
 
-        console.log(
-            "testing",
-            options.rule?.id,
-            options.rule?.sortGroupFn === undefined,
-            options.groupBySortDirection !== undefined,
-            options.groupBySortDirection,
-        );
         if (options.rule?.sortGroupFn === undefined && options.groupBySortDirection !== undefined) {
             console.warn(WARNINGS.GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN, { rule: options.rule });
         }

@@ -1,8 +1,6 @@
 import { orderBy } from "lodash";
 import { SerializedSearchMixin } from "../types/core-types";
-import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
-import { calculateSearchScore } from "./search-score";
-import { transformStringForComparison } from "./search-string-transform";
+import { StringMatchTester } from "./string-match-tester";
 
 interface SearchScoreItem<FItem> {
     item: FItem;
@@ -22,18 +20,13 @@ export function defaultSearchAndSortAlgorithm<FItem>(options: SerializedSearchMi
 
         // Retrieve this item's array of haystack strings to compare the search needle against
         const itemHaystackStringOrStrings = options.rule.searchFn(item, context);
-        const itemHaystacks = Array.isArray(itemHaystackStringOrStrings)
-            ? itemHaystackStringOrStrings.map(transformStringForComparison)
-            : [transformStringForComparison(itemHaystackStringOrStrings)];
+        const itemHaystacks = Array.isArray(itemHaystackStringOrStrings) ? itemHaystackStringOrStrings : [itemHaystackStringOrStrings];
 
         // an item may have multiple matches if it has multiple haystack strings.
-        const itemHaystackScores = itemHaystacks.reduce<ReturnType<typeof calculateSearchScore>[]>((scores, haystack) => {
-            const indexes = calculateCharacterMatchIndexes(haystack, options.searchTerm);
-            if (indexes !== undefined) {
-                scores.push(calculateSearchScore(indexes, haystack));
-            }
-            return scores;
-        }, []);
+        const itemHaystackScores = itemHaystacks
+            .map((haystack) => new StringMatchTester(haystack, options.searchTerm))
+            .filter((test) => test.hasMatch)
+            .map((test) => test.score);
 
         // determine which ( if any ) of the aliases have the best score.
         if (itemHaystackScores.length > 0) {

@@ -1,5 +1,7 @@
-export function calculateSearchScore(indexes: number[], haystack: string) {
-    const percentOfHaystackMatched = indexes.length / haystack.length;
+import { SearchToken } from "../types/string-match-types";
+
+export function calculateSearchScore(indexes: number[], haystack: SearchToken) {
+    const percentOfHaystackMatched = indexes.length / haystack.raw.length;
 
     let longestSequentialSequence = 1;
     let numSequentialIndexes = 1;
