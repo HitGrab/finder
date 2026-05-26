@@ -339,14 +339,18 @@ export class FinderImplementation<FItem, FContext = any> {
         }
     }
 
-    setRules(definitions: RuleDefinition<FItem, FContext>[]) {
-        if (isEqual(definitions, this.#ruleBook.list.definitions) === false) {
+    setRules(definitions?: RuleDefinition<FItem, FContext>[]) {
+        if (definitions !== undefined && isEqual(definitions, this.#ruleBook.list.definitions) === false) {
             this.#ruleBook.list.setRules(definitions);
             this.#ruleBook.list.hydrateDefinitions(this.items, this.context);
         }
     }
 
-    setContext(context: FContext) {
+    setContext(context?: FContext) {
+        // no value, or identical reference was passed
+        if (context === undefined || Object.is(context, this.context)) {
+            return;
+        }
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;

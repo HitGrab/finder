@@ -1,5 +1,6 @@
 import { WARNINGS } from "../core-constants";
 import { FinderCore } from "../finder-core";
+import { GroupByMixin } from "../group-by-mixin";
 import { finderRuleset, groupByRule } from "../utils/rule-type-guards";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -157,6 +158,21 @@ describe("GroupBy", () => {
         new FinderCore(objectItems, { rules, initialGroupBy: "group_by_price" });
 
         expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialGroupBy: "group_by_price" });
+        consoleMock.mockReset();
+    });
+
+    test("Warns when no groupSortFn is defined", () => {
+        const rule = groupByRule({
+            id: "expiry_date",
+            groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
+            defaultGroupSortDirection: "desc",
+        });
+
+        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+        GroupByMixin.process({ rule, groupBySortDirection: rule.defaultGroupSortDirection }, objectItems, undefined);
+
+        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN, { rule });
         consoleMock.mockReset();
     });
 });

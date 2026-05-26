@@ -34,6 +34,8 @@ export const EVENT_SOURCE = {
 
 export const WARNINGS = {
     INITIAL_RULE_NOT_FOUND: "Finder ignored an initial rule that could not be found.",
+    INITIAL_SEARCH_RULE_NOT_FOUND: "Finder ignored an initialSearchTerm, as no SearchRule was found.",
+    GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN: "The active groupBy rule has a defined sort direction, but no corresponding sortGroupFn.",
 };
 
 export const ERRORS = {

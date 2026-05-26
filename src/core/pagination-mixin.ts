@@ -20,8 +20,8 @@ class PaginationMixin<FItem> {
         this.#deps = handlers;
     }
 
-    setPage(value: number) {
-        if (value !== this.#page) {
+    setPage(value?: number) {
+        if (value !== undefined && value !== this.#page) {
             const previousPage = this.#page;
             this.#page = value;
             this.#deps.touch({

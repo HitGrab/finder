@@ -4,7 +4,7 @@ import { RuleEffectAppendix } from "./rule-effect-appendix";
 import { RuleListAppendix } from "./rule-list-appendix";
 
 interface RuleBookOptions {
-    rules: RuleDefinition[];
+    rules?: RuleDefinition[];
     effects?: RuleEffect[];
 }
 /**

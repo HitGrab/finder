@@ -1,4 +1,4 @@
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { MixinInjectedDependencies, SearchRuleSuggestion, SerializedSearchMixin } from "./types/core-types";
 import { defaultSearchAndSortAlgorithm } from "./search/default-search-and-sort-algorithm";
@@ -16,7 +16,7 @@ class SearchMixin<FItem> {
 
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         if (initialSearchTerm && deps.getRuleBook().rules.find(isSearchRuleDefinition) === undefined) {
-            throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
+            console.warn(WARNINGS.INITIAL_SEARCH_RULE_NOT_FOUND, { initialSearchTerm });
         }
         this.searchTerm = initialSearchTerm ?? "";
         this.#deps = deps;

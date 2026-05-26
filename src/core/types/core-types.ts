@@ -12,7 +12,7 @@ import {
 } from "./rule-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
-    rules: RuleDefinition<FItem>[];
+    rules?: RuleDefinition<FItem>[];
     effects?: RuleEffect[];
     context?: FContext;
     isLoading?: boolean;

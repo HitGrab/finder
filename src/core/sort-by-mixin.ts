@@ -5,6 +5,7 @@ import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { isSortByRuleDefinition } from "./utils/rule-utils";
 
+const DEFAULT_SORT_ORDER = "asc";
 const SORT_CYCLE_ORDER: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;
 
 interface InitialValues {
@@ -50,7 +51,7 @@ class SortByMixin<FItem> {
     }
 
     get sortDirection() {
-        return this.#sortDirection ?? this.activeRule?.defaultSortDirection ?? "asc";
+        return this.#sortDirection ?? this.activeRule?.defaultSortDirection ?? DEFAULT_SORT_ORDER;
     }
 
     get userHasSetSortDirection() {
@@ -81,7 +82,7 @@ class SortByMixin<FItem> {
     }
 
     toggleSortDirection() {
-        const initialDirection = this.#sortDirection ?? this.activeRule?.defaultSortDirection;
+        const initialDirection = this.sortDirection;
         if (initialDirection === "desc") {
             this.setSortDirection("asc");
             return;

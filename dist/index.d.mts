@@ -163,7 +163,7 @@ declare class FinderCore<FItem = any, FContext = any> {
     numTotalItems: number;
     lastPage: number | undefined;
     isPaginated: boolean;
-    setPage: (value: number) => void;
+    setPage: (value?: number) => void;
     setNumItemsPerPage: (value?: number) => void;
   };
   /**
@@ -172,8 +172,8 @@ declare class FinderCore<FItem = any, FContext = any> {
   setItems(items: FItem[] | null | undefined): void;
   setIsLoading(value?: boolean): void;
   setIsDisabled(value?: boolean): void;
-  setRules(definitions: RuleDefinition<FItem>[]): void;
-  setContext(context: FContext): void;
+  setRules(definitions?: RuleDefinition<FItem>[]): void;
+  setContext(context?: FContext): void;
   /**
    * Utils
    */
@@ -278,7 +278,7 @@ interface RuleEffect<FItem = any, FContext = any> {
 //#endregion
 //#region src/core/types/core-types.d.ts
 interface FinderConstructorOptions<FItem, FContext = any> {
-  rules: RuleDefinition<FItem>[];
+  rules?: RuleDefinition<FItem>[];
   effects?: RuleEffect[];
   context?: FContext;
   isLoading?: boolean;
