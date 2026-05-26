@@ -63,16 +63,9 @@ function Finder<FItem = any, FContext = any>({
     instance.setIsLoading(isLoading);
     instance.setIsDisabled(disabled);
     instance.setRules(rules);
-    if (context !== undefined) {
-        instance.setContext(context);
-    }
-
-    if (page !== undefined) {
-        instance.pagination.setPage(page);
-    }
-    if (numItemsPerPage !== undefined) {
-        instance.pagination.setNumItemsPerPage(numItemsPerPage);
-    }
+    instance.setContext(context);
+    instance.pagination.setPage(page);
+    instance.pagination.setNumItemsPerPage(numItemsPerPage);
 
     useImperativeHandle(controllerRef, () => instance, [instance]);
 

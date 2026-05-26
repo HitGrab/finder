@@ -1,7 +1,7 @@
 import { orderBy } from "lodash";
 import { GroupByRuleDefinition } from "./types/rule-types";
 import { FinderResultGroup, MixinInjectedDependencies, SerializedGroupByMixin, SortDirection } from "./types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { isGroupByRuleDefinition } from "./utils/rule-utils";
 
@@ -25,7 +25,12 @@ class GroupByMixin<FItem> {
     constructor({ initialGroupBy, initialGroupBySortDirection, requireGroup }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         if (initialGroupBy) {
-            this.#groupBy = this.getRule(initialGroupBy);
+            const isValidRule = this.#deps.getRuleBook().hasRule(initialGroupBy);
+            if (isValidRule) {
+                this.#groupBy = this.getRule(initialGroupBy);
+            } else {
+                console.warn(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialGroupBy });
+            }
         }
         this.#groupBySortDirection = initialGroupBySortDirection;
         this.requireGroup = requireGroup;
@@ -163,7 +168,6 @@ class GroupByMixin<FItem> {
         const orderByCallbacks = [];
         const orderSortDirection = [];
         if (hasStickyGroups && options.rule) {
-            // don't love this phrasing
             const hydratedSticky = typeof options.rule.sticky === "function" ? options.rule.sticky(groups, context) : options.rule.sticky;
             if (hydratedSticky) {
                 orderByCallbacks.push(composeStickyGroupOrderCallback(hydratedSticky));
@@ -180,6 +184,10 @@ class GroupByMixin<FItem> {
                 return options.rule.sortGroupFn(group, context);
             });
             orderSortDirection.push(options.groupBySortDirection ?? "asc");
+        }
+
+        if (options.rule?.sortGroupFn === undefined && options.groupBySortDirection !== undefined) {
+            console.warn(WARNINGS.GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN, { rule: options.rule });
         }
 
         if (orderByCallbacks.length > 0) {

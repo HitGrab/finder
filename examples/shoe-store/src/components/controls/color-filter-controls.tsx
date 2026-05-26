@@ -11,7 +11,7 @@ export function ColorFilterControls() {
             {rule.options?.map((option) => {
                 return (
                     <button type="button" onClick={() => finder.filters.set(rule, option.value)} key={option.value}>
-                        <input type="radio" name={option.value} checked={finder.filters.has(rule, option)} readOnly={true} />
+                        <input type="radio" name={option.value} checked={finder.filters.has(rule, option.value)} readOnly={true} />
                         <div>
                             <div className="color" style={{ background: option.value }} />
                             {option.label}

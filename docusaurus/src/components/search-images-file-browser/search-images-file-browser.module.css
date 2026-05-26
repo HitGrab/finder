@@ -1,17 +1,131 @@
 .container {
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tableContainer {
+    height: 380px;
+    padding: 20px;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    background: linear-gradient(#00009b, #141152);
+    color: #fff;
+    line-height: normal;
+    -webkit-font-smoothing: none;
+    border-radius: 10px;
+    box-shadow: 0 0 14px 6px #48bfbf inset;
+}
+.table {
     display: grid;
-    grid-template-columns: 1fr min-content;
+    grid-template-columns: min-content 1fr repeat(5, min-content);
+    align-items: start;
+
+    .row,
+    .body {
+        display: grid;
+        grid-template-columns: subgrid;
+        grid-column: 1/-1;
+    }
+
+    .headerCell {
+        text-transform: uppercase;
+        color: cyan;
+    }
+
+    .row > div {
+        padding: 0 10px;
+        white-space: nowrap;
+        text-align: right;
+
+        &:nth-child(2) {
+            text-align: left;
+        }
+    }
+
+    .body {
+        max-height: 300px;
+        overflow: auto;
+    }
+
+    .empty {
+        grid-column: 2/7;
+    }
+
+    button {
+        all: unset;
+
+        &:hover {
+            color: yellow;
+        }
+    }
 }
 
 .searchContainer {
     position: relative;
     max-width: 200px;
 
-    input {
-        width: 100%;
+    .searchInput {
+        position: relative;
+
+        input {
+            width: 100%;
+            padding: 10px 20px;
+        }
+        .resetButton {
+            all: unset;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            translate: 0 -50%;
+            width: 20px;
+            text-align: center;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #eee;
+            }
+        }
+    }
+
+    .searchSuggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #333;
+
+        &:empty {
+            display: none;
+        }
+
+        .suggestion {
+            display: grid;
+            grid-template-columns: 1fr min-content;
+
+            .optionList {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    }
+}
+
+.dropdownContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    select {
+        padding: 10px 20px;
     }
 }

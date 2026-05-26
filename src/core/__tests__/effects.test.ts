@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { filterRule, finderRuleset, ruleEffect, searchEffect, searchRule, sortByRule } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, ruleEffect, searchRule, sortByRule } from "../utils/rule-type-guards";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 
@@ -34,7 +34,7 @@ describe("Effects", () => {
             expect(ruleEffectFn).toHaveBeenCalledTimes(0);
             finder.filters.set("orange", true);
             expect(ruleEffectFn).toHaveBeenCalledTimes(1);
-            expect(finder.filters.raw).toEqual({ orange: true, apple: false });
+            expect(finder.filters.raw).toEqual({ orange: true });
         });
 
         test("Toggles sort", () => {
@@ -79,30 +79,6 @@ describe("Effects", () => {
             finder.filters.set("orange", true);
             expect(ruleEffectFn).toHaveBeenCalledTimes(1);
             expect(finder.sortBy.activeRule?.id).toBe("sort_name");
-        });
-    });
-
-    describe("Search Effects", () => {
-        test("Catches search terms", () => {
-            const searchEffectFn = vitest.fn();
-
-            const rules = finderRuleset<MockObjectItem>([
-                searchRule({
-                    searchFn: (item) => item.name,
-                }),
-            ]);
-            const effects = [
-                searchEffect(["orange", "apple"], () => {
-                    searchEffectFn();
-                }),
-            ];
-            const finder = new FinderCore(objectItems, { rules, effects });
-            expect(searchEffectFn).toHaveBeenCalledTimes(0);
-            finder.search.setSearchTerm("orange");
-            expect(searchEffectFn).toHaveBeenCalledTimes(1);
-
-            finder.search.setSearchTerm("strawberry");
-            expect(searchEffectFn).toHaveBeenCalledTimes(1);
         });
     });
 });

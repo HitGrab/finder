@@ -39,14 +39,13 @@ export class EventEmitter<EventNames extends string> {
         });
     }
 
-    silently(callback: CallableFunction) {
+    silently(callback: () => void) {
         this.#disabled = true;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         callback();
         this.#disabled = false;
     }
 
-    isSilent() {
+    get isSilenced() {
         return this.#disabled;
     }
 }

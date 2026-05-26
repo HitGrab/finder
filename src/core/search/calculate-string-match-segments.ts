@@ -1,38 +1,25 @@
 import { StringMatchSegment } from "../types/string-match-types";
 import { calculateCharacterMatchIndexes } from "./calculate-character-match-indexes";
-import { transformStringForComparison } from "./search-string-transform";
 import { StringMatchHaystack } from "./string-match-haystack";
 
 /**
  * Helper function to determine which specfic characters are matched inside a string.
  */
-export function calculateStringMatchSegments(haystack: string | string[], needle: string) {
-    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
+export function calculateStringMatchSegments(haystack: StringMatchHaystack, needle: string, transformFn: (value: string) => string) {
+    const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack, needle, transformFn);
 
-    // StringMatchHaystack will build a map between the source and transformed strings.
-    const haystacks = haystackAsArray.map((hay) => new StringMatchHaystack(hay));
+    // if no matching character indexes were found, this particular needle did not succeed.
+    if (matchedCharacterIndexes === undefined) {
+        return undefined;
+    }
 
-    return haystacks.reduce<StringMatchSegment[] | undefined>((match, haystack) => {
-        // stop looking once a match is found
-        if (match !== undefined) {
-            return match;
-        }
+    // build segments based on the transformed haystack
+    const transformedHaystackMatches = prepareResultSegments(matchedCharacterIndexes, haystack.transformed);
 
-        const matchedCharacterIndexes = calculateCharacterMatchIndexes(haystack.transformed, needle);
+    // map the segments back to the source haystack
+    const firstPassSegments = processResultSegments(haystack, transformedHaystackMatches);
 
-        // if no matching character indexes were found, this particular needle did not succeed.
-        if (matchedCharacterIndexes === undefined) {
-            return match;
-        }
-
-        // build segments based on the transformed haystack
-        const transformedHaystackMatches = prepareResultSegments(matchedCharacterIndexes, haystack.transformed);
-
-        // map the segments back to the source haystack
-        const firstPassSegments = processResultSegments(haystack, transformedHaystackMatches);
-
-        return prettifyResultSegments(firstPassSegments);
-    }, undefined);
+    return prettifyResultSegments(firstPassSegments);
 }
 
 /**
@@ -89,7 +76,7 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
          * If our first postive match does not begin at index zero, we prefix a negative result segment ending where the first positive match begins.
          */
         if (x === 0 && match.index !== 0) {
-            const value = haystack.source.substring(0, haystack.getSourceCharacterIndex(match.index));
+            const value = haystack.raw.substring(0, haystack.getSourceCharacterIndex(match.index));
             acc.push({
                 index: 0,
                 value,
@@ -100,7 +87,7 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
 
         const currentSegmentStart = haystack.getSourceCharacterIndex(match.index);
         const currentSegmentEnd = haystack.getSourceCharacterIndex(match.index + match.length);
-        const currentSegmentValue = haystack.source.substring(currentSegmentStart, currentSegmentEnd);
+        const currentSegmentValue = haystack.raw.substring(currentSegmentStart, currentSegmentEnd);
         acc.push({
             index: currentSegmentStart,
             value: currentSegmentValue,
@@ -113,16 +100,16 @@ function processResultSegments(haystack: StringMatchHaystack, matches: StringMat
         if (nextMatch) {
             const negativeSegmentStart = haystack.getSourceCharacterIndex(match.index + match.length);
             const negativeSegmentEnd = haystack.getSourceCharacterIndex(nextMatch.index);
-            const negativeSegmentValue = haystack.source.substring(negativeSegmentStart, negativeSegmentEnd);
+            const negativeSegmentValue = haystack.raw.substring(negativeSegmentStart, negativeSegmentEnd);
             acc.push({
                 index: negativeSegmentStart,
                 value: negativeSegmentValue,
                 is_match: false,
                 length: negativeSegmentValue.length,
             });
-        } else if (currentSegmentStart + currentSegmentValue.length !== haystack.source.length) {
+        } else if (currentSegmentStart + currentSegmentValue.length !== haystack.raw.length) {
             const finalSegmentStart = currentSegmentStart + currentSegmentValue.length;
-            const finalSegmentValue = haystack.source.substring(finalSegmentStart);
+            const finalSegmentValue = haystack.raw.substring(finalSegmentStart);
             acc.push({
                 index: finalSegmentStart,
                 value: finalSegmentValue,
@@ -158,15 +145,4 @@ function prettifyResultSegments(segments: StringMatchSegment[]) {
     });
 
     return prettySegments;
-}
-
-/**
- * Determine if a characterIndexFn would return a result for a haystack.
- */
-export function hasCharacterIndexMatches(haystack: string | string[], needle: string) {
-    const haystackAsArray = Array.isArray(haystack) ? haystack : [haystack];
-    return haystackAsArray.some((hay) => {
-        const transformedHaystack = transformStringForComparison(hay);
-        return calculateCharacterMatchIndexes(transformedHaystack, needle) !== undefined;
-    });
 }

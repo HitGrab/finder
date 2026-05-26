@@ -16,8 +16,8 @@
   },
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Making Finder React components aware of external context",
-    "permalink": "/finder/guides/context/injecting-context"
+    "title": "Search that suggests relevant filters",
+    "permalink": "/finder/guides/search-suggestions"
   },
   "next": {
     "title": "SearchRule",

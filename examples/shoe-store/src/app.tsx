@@ -71,14 +71,14 @@ function App() {
                         </div>
                     </header>
                     <section className="shoeList">
-                        <Finder.Content>
-                            {{
-                                loading: range(0, 12).map((index) => <ShoeCardSkeleton key={index} />),
-                                empty: "No items in list",
-                                noMatches: "No matches found.",
-                                items: Items,
-                            }}
-                        </Finder.Content>
+                        <Finder.Content
+                            loading={range(0, 12).map((index) => (
+                                <ShoeCardSkeleton key={index} />
+                            ))}
+                            empty="No items in list"
+                            noMatches="No matches found."
+                            items={Items}
+                        />
                     </section>
                     <hr />
                     Assets from https://free-game-assets.itch.io/free-rpg-boot-icons

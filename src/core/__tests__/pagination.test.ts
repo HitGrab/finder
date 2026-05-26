@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { sortByRule } from "../utils/rule-type-enforcers";
+import { sortByRule } from "../utils/rule-type-guards";
 import { objectItems, banana, orange, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 

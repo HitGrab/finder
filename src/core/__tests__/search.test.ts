@@ -1,8 +1,9 @@
-import { capitalize, range } from "lodash";
+import { range } from "lodash";
 import { FinderCore } from "../finder-core";
-import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule-type-enforcers";
+import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule-type-guards";
 import { objectItems, apple } from "./test-constants";
 import { MockObjectItem } from "./test-types";
+import { WARNINGS } from "../core-constants";
 
 describe("Search", () => {
     test("Default behaviour if no rule is set", () => {
@@ -10,11 +11,6 @@ describe("Search", () => {
         expect(finder.search.hasSearchRule).toBe(false);
         expect(finder.search.rule).toBe(undefined);
         expect(finder.search.hasSearchTerm).toBe(false);
-
-        // Finder will complain when a searchTerm is set and no search rule was provided
-        expect(() => {
-            finder.search.setSearchTerm("doomed");
-        }).toThrow();
     });
 
     test("Rule accessors", () => {
@@ -67,11 +63,17 @@ describe("Search", () => {
         });
         const finder = new FinderCore(objectItems, { rules: [rule], initialSearchTerm: "apple" });
         expect(finder.matches.items).toEqual([apple]);
+    });
 
-        // An initialSearchTerm cannot be set if no search rule is provided
-        expect(() => {
-            new FinderCore(objectItems, { rules: [], initialSearchTerm: "doomed" });
-        }).toThrow();
+    test("Ignores invalid initialSearchTerm", () => {
+        const rules = finderRuleset([]);
+
+        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+        new FinderCore(objectItems, { rules, initialSearchTerm: "not_a_real_term" });
+
+        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.INITIAL_SEARCH_RULE_NOT_FOUND, { initialSearchTerm: "not_a_real_term" });
+        consoleMock.mockReset();
     });
 
     test("Search must be string", () => {
@@ -176,5 +178,44 @@ describe("Search", () => {
 
         // with failed subquery
         expect(finder.search.test('ipsum "ame c"')).toEqual([]);
+    });
+
+    test("Suggests Filter rules", () => {
+        const storeFilter = filterRule<MockObjectItem>({
+            id: "filter_by_store",
+            filterFn: () => true,
+            options: [
+                {
+                    label: "Anna's Applesauce",
+                    value: "applesauce",
+                },
+                { label: "Berndatte's Bakery", value: "bakery" },
+            ],
+        });
+
+        const rules = [
+            searchRule({
+                searchFn: (item: MockObjectItem) => item.name,
+                suggestFiltersFrom: [storeFilter, "filter_by_brand"],
+            }),
+            storeFilter,
+            filterRule({
+                id: "filter_by_brand",
+                label: "Apple brands",
+                filterFn: () => true,
+            }),
+        ];
+
+        const finder = new FinderCore(objectItems, { rules });
+        finder.search.setSearchTerm("apple");
+        expect(finder.search.suggestedFilters[0]?.rule.id).toBe(storeFilter.id);
+        expect(finder.search.suggestedFilters[0]?.optionMatches).toEqual([
+            {
+                label: "Anna's Applesauce",
+                value: "applesauce",
+            },
+        ]);
+        expect(finder.search.suggestedFilters[1]?.rule.id).toBe("filter_by_brand");
+        expect(finder.search.suggestedFilters[1]?.optionMatches).toBe(undefined);
     });
 });

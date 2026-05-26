@@ -1,3 +1,4 @@
+import { FinderCore } from "../finder-core";
 import { FinderResultGroup, SortDirection } from "./core-types";
 
 /**
@@ -20,7 +21,7 @@ export type RuleDefinition<FItem = any, FContext = any> =
 export interface SearchRuleDefinition<FItem = any, FContext = any> extends Omit<Rule, "id"> {
     id?: string;
     searchFn?: (item: FItem, context: FContext) => string | string[];
-    suggestFilters?: boolean;
+    suggestFiltersFrom?: string | AnyFilterRuleDefinition | (string | AnyFilterRuleDefinition)[];
 }
 
 /**
@@ -39,6 +40,7 @@ export interface FilterRuleDefinition<FItem = any, FValue = any, FContext = any>
     multiple?: boolean;
     boolean?: boolean;
     options?: FilterOption<FValue>[] | ((options: { items: FItem[]; context: FContext }) => FilterOption<FValue>[]);
+    defaultValue?: any;
 }
 
 export type AnyFilterRuleDefinition<FItem = any, FValue = any> = Omit<FilterRuleDefinition<FItem, FValue>, "options">;
@@ -110,4 +112,18 @@ export interface FilterTestRuleOptions {
     rule: string | AnyFilterRuleDefinition;
     value: any;
     isAdditive?: boolean;
+}
+
+export interface RuleEffect<FItem = any, FContext = any> {
+    rules:
+        | string
+        | RuleDefinition<FItem>
+        | (string | RuleDefinition<FItem>)[]
+        | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]);
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
+}
+
+export interface HydratedRuleEffect<FItem = any, FContext = any> {
+    rules: (string | RuleDefinition<FItem>)[];
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition<FItem>) => void;
 }

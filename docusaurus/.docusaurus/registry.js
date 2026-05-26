@@ -36,6 +36,7 @@ export default {
   "a94703ab": [() => import(/* webpackChunkName: "a94703ab" */ "@theme/DocRoot"), "@theme/DocRoot", require.resolveWeak("@theme/DocRoot")],
   "a94b83c7": [() => import(/* webpackChunkName: "a94b83c7" */ "@site/docs/tutorial/06-react.md"), "@site/docs/tutorial/06-react.md", require.resolveWeak("@site/docs/tutorial/06-react.md")],
   "aba21aa0": [() => import(/* webpackChunkName: "aba21aa0" */ "@generated/docusaurus-plugin-content-docs/default/__plugin.json"), "@generated/docusaurus-plugin-content-docs/default/__plugin.json", require.resolveWeak("@generated/docusaurus-plugin-content-docs/default/__plugin.json")],
+  "b1a35d88": [() => import(/* webpackChunkName: "b1a35d88" */ "@site/docs/guides/search-suggestions.md"), "@site/docs/guides/search-suggestions.md", require.resolveWeak("@site/docs/guides/search-suggestions.md")],
   "b4331e38": [() => import(/* webpackChunkName: "b4331e38" */ "@site/docs/examples/Pixel Armory.md"), "@site/docs/examples/Pixel Armory.md", require.resolveWeak("@site/docs/examples/Pixel Armory.md")],
   "b716a89d": [() => import(/* webpackChunkName: "b716a89d" */ "@site/docs/reference/01-rules/effects/index.md"), "@site/docs/reference/01-rules/effects/index.md", require.resolveWeak("@site/docs/reference/01-rules/effects/index.md")],
   "bde6ede5": [() => import(/* webpackChunkName: "bde6ede5" */ "@site/docs/reference/02-react-components/use-finder.md"), "@site/docs/reference/02-react-components/use-finder.md", require.resolveWeak("@site/docs/reference/02-react-components/use-finder.md")],

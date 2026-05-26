@@ -1,7 +1,7 @@
 import { brands } from "@/hooks/shoe-constants";
 import { Shoe } from "@/types";
 import { finderRuleset, filterRule, sortByRule, searchRule } from "@hitgrab/finder";
-import { intersection, sortBy, capitalize } from "lodash";
+import { sortBy, capitalize } from "lodash";
 
 /**
  * An array of static rules that can be activated by Finder.
@@ -12,21 +12,14 @@ export const rules = finderRuleset<Shoe>([
         id: "brand",
         label: "Brand",
         multiple: true,
-        filterFn: (item, value) => value.includes(item.brand),
+        filterFn: (item, value) => value === item.brand,
         options: () => brands.map((brand) => ({ label: brand, value: brand })),
     }),
     filterRule<Shoe, [min: number, max: number]>({
         id: "price_between",
         label: "Price",
         multiple: true,
-        filterFn: (item, value) => {
-            const allValues = value.reduce<number[]>((acc, [min, max]) => {
-                acc.push(min);
-                acc.push(max);
-                return acc;
-            }, []);
-            return item.price >= Math.min(...allValues) && item.price <= Math.max(...allValues);
-        },
+        filterFn: (item, [min, max]) => item.price >= min && item.price <= max,
         options: [
             {
                 label: "$50-99",
@@ -50,7 +43,7 @@ export const rules = finderRuleset<Shoe>([
         id: "size",
         label: "Size",
         multiple: true,
-        filterFn: (item, value) => intersection(item.sizes, value).length > 0,
+        filterFn: (item, value: number) => item.sizes.includes(value),
         options: ({ items }) => {
             const sizeSet = new Set<number>();
             items.forEach((item) => {

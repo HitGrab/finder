@@ -41,6 +41,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "guides/search-suggestions",
+              "path": "/finder/guides/search-suggestions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "index",
               "path": "/finder/",
               "sidebar": "tutorialSidebar"

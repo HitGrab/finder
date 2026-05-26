@@ -1,8 +1,9 @@
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
+import { sequentialCharacterSearchAlgorithm } from "./search/sequential-character-search-algorithm";
 import { MixinInjectedDependencies, SearchRuleSuggestion, SerializedSearchMixin } from "./types/core-types";
-import { defaultSearchAndSortAlgorithm } from "./search/default-search-and-sort-algorithm";
 import { isFilterRuleDefinitionWithHydratedOptions, isSearchRuleDefinition } from "./utils/rule-utils";
+import { partition } from "lodash";
 
 interface InitialValues {
     initialSearchTerm: string | undefined;
@@ -15,7 +16,7 @@ class SearchMixin<FItem> {
 
     constructor({ initialSearchTerm }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         if (initialSearchTerm && deps.getRuleBook().rules.find(isSearchRuleDefinition) === undefined) {
-            throw new FinderError(ERRORS.NO_SEARCH_RULE_SET);
+            console.warn(WARNINGS.INITIAL_SEARCH_RULE_NOT_FOUND, { initialSearchTerm });
         }
         this.searchTerm = initialSearchTerm ?? "";
         this.#deps = deps;
@@ -35,13 +36,27 @@ class SearchMixin<FItem> {
 
     get suggestedFilters() {
         const suggestions: SearchRuleSuggestion[] = [];
-        if (this.hasSearchTerm && this.rule?.suggestFilters) {
-            const filterRules = this.#deps.getRuleBook().rules.filter(isFilterRuleDefinitionWithHydratedOptions);
-            const rulesWithOptions = filterRules.filter((rule) => rule.options && rule.options.length > 0);
+        const activeRule = this.rule;
+        if (this.hasSearchTerm && activeRule?.suggestFiltersFrom) {
+            const allFilterRules = this.#deps.getRuleBook().rules.filter(isFilterRuleDefinitionWithHydratedOptions);
+            const ruleSourceAsArray = Array.isArray(activeRule.suggestFiltersFrom) ? activeRule.suggestFiltersFrom : [activeRule.suggestFiltersFrom];
+            const ruleHaystack = ruleSourceAsArray.map((identifier) => {
+                const rule = allFilterRules.find((row) => {
+                    if (typeof identifier === "string") {
+                        return row.id === identifier;
+                    }
+                    return identifier.id === row.id;
+                });
+                if (rule === undefined) {
+                    throw new FinderError(ERRORS.RULE_NOT_FOUND, { rule });
+                }
+                return rule;
+            });
 
-            if (rulesWithOptions.length > 0) {
-                rulesWithOptions.forEach((rule) => {
-                    const optionMatches = defaultSearchAndSortAlgorithm(
+            const [rulesWithOptions, rulesWithoutOptions] = partition(ruleHaystack, (rule) => rule.options !== undefined && rule.options.length > 0);
+            rulesWithOptions.forEach((rule) => {
+                if (rule.options && rule.options.length > 0) {
+                    const optionMatches = sequentialCharacterSearchAlgorithm(
                         {
                             searchTerm: this.searchTerm,
                             rule: {
@@ -56,23 +71,18 @@ class SearchMixin<FItem> {
                             optionMatches,
                         });
                     }
-                });
-            }
+                }
+            });
 
-            const rulesWithLabels = filterRules
-                .filter((rule) => rule.label !== undefined)
-                // remove any rules that have already been matched
-                .filter((rule) => suggestions.some((suggestion) => suggestion.rule === rule) === false);
-
-            if (rulesWithLabels.length > 0) {
-                defaultSearchAndSortAlgorithm(
+            if (rulesWithoutOptions.length > 0) {
+                sequentialCharacterSearchAlgorithm(
                     {
                         searchTerm: this.searchTerm,
                         rule: {
                             searchFn: (rule) => rule.label,
                         },
                     },
-                    rulesWithLabels,
+                    rulesWithoutOptions,
                 ).forEach((rule) => {
                     suggestions.push({ rule });
                 });
@@ -161,7 +171,7 @@ class SearchMixin<FItem> {
             return items;
         }
 
-        return defaultSearchAndSortAlgorithm(options, items, context);
+        return sequentialCharacterSearchAlgorithm(options, items, context);
     }
 }
 

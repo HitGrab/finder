@@ -1,0 +1,83 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
+import { FinderCore } from "../finder-core";
+import {
+    FilterRuleWithBooleanValue,
+    FilterRuleWithMultipleValues,
+    FilterRuleWithSingleValue,
+    RuleDefinition,
+    GroupByRuleDefinition,
+    SearchRuleDefinition,
+    SortByRuleDefinition,
+    AnyFilterRuleDefinition,
+    RuleEffect,
+} from "../types/rule-types";
+
+/**
+ * Enforce structure for an array of rule of mixed types.
+ */
+export function finderRuleset<FItem, FContext = any>(rules: RuleDefinition<FItem, FContext>[]) {
+    return rules;
+}
+
+export function searchRule<FItem, FContext = any>(rule: SearchRuleDefinition<FItem, FContext>) {
+    return rule;
+}
+
+export function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithMultipleValues<FItem, FValue, FContext>>(
+    rule: T,
+): FilterRuleWithMultipleValues<FItem, FValue>;
+export function filterRule<FItem, FValue = boolean, FContext = any, T = FilterRuleWithBooleanValue<FItem, FValue, FContext>>(
+    rule: T,
+): FilterRuleWithBooleanValue<FItem, FValue>;
+export function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithSingleValue<FItem, FValue, FContext>>(
+    rule: T,
+): FilterRuleWithSingleValue<FItem, FValue>;
+export function filterRule<
+    FItem,
+    FValue = any,
+    FContext = any,
+    T =
+        | FilterRuleWithSingleValue<FItem, FValue, FContext>
+        | FilterRuleWithMultipleValues<FItem, FValue, FContext>
+        | FilterRuleWithBooleanValue<FItem, FValue, FContext>,
+>(rule: T) {
+    return rule;
+}
+
+export function sortByRule<FItem, FContext = any>(rule: SortByRuleDefinition<FItem, FContext>) {
+    return rule;
+}
+
+export function groupByRule<FItem, FContext = any>(rule: GroupByRuleDefinition<FItem, FContext>) {
+    return rule;
+}
+
+export function ruleEffect<FItem, FContext = any>(
+    rules:
+        | string
+        | RuleDefinition<FItem>
+        | (string | RuleDefinition<FItem>)[]
+        | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]),
+    onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void,
+): RuleEffect<FItem, FContext> {
+    return { rules, onChange };
+}
+
+export function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
+    const composedFilter = { ...filter };
+    delete composedFilter.boolean;
+    delete composedFilter.multiple;
+    return composedFilter as FilterRuleWithMultipleValues<FItem, FValue, FContext>;
+}
+
+export function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
+    const composedFilter = { ...filter };
+    delete composedFilter.multiple;
+    return { ...composedFilter, boolean: true } as FilterRuleWithBooleanValue<FItem, boolean, FContext>;
+}
+
+export function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>) {
+    const composedFilter = { ...filter };
+    delete composedFilter.boolean;
+    return { ...composedFilter, multiple: true } as FilterRuleWithMultipleValues<FItem, FValue, FContext>;
+}

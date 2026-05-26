@@ -96,11 +96,11 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.setIsDisabled(value);
     }
 
-    setRules(definitions: RuleDefinition<FItem>[]) {
+    setRules(definitions?: RuleDefinition<FItem>[]) {
         return this.#finder.setRules(definitions);
     }
 
-    setContext(context: FContext) {
+    setContext(context?: FContext) {
         return this.#finder.setContext(context);
     }
 

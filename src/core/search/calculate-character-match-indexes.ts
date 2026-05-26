@@ -1,7 +1,7 @@
 import { range } from "lodash";
-import { transformStringForComparison } from "./search-string-transform";
+import { StringMatchHaystack } from "./string-match-haystack";
 
-export function calculateCharacterMatchIndexes(haystack: string, needle: string) {
+export function calculateCharacterMatchIndexes(haystack: StringMatchHaystack, needle: string, transformFn: (value: string) => string) {
     const subqueryRegex = new RegExp(/"(.*?)"/g);
     let needleWithoutSubqueries = needle;
     let characterIndexes: number[] = [];
@@ -10,8 +10,8 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
     let subquery;
     let hasFailedSubquery = false;
     while ((subquery = subqueryRegex.exec(needle)) !== null && hasFailedSubquery === false) {
-        const subqueryNeedle = transformStringForComparison(String(subquery[1]));
-        const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack, subqueryNeedle);
+        const subqueryNeedle = transformFn(String(subquery[1]));
+        const subqueryCharacterIndexes = calculateExactStringCharacterIndexes(haystack.transformed, subqueryNeedle);
 
         // early exit if a subquery fails
         if (subqueryCharacterIndexes === undefined) {
@@ -28,8 +28,8 @@ export function calculateCharacterMatchIndexes(haystack: string, needle: string)
         return undefined;
     }
 
-    const transformedNeedle = transformStringForComparison(needleWithoutSubqueries);
-    const sequentialCharacterIndexes = calculateSequentialCharacterIndexes(haystack, transformedNeedle);
+    const transformedNeedle = transformFn(needleWithoutSubqueries);
+    const sequentialCharacterIndexes = calculateSequentialCharacterIndexes(haystack.transformed, transformedNeedle);
     if (sequentialCharacterIndexes === undefined) {
         return undefined;
     }

@@ -6,7 +6,6 @@ import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerialized
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
 import { RuleDefinition } from "./types/rule-types";
 import { RuleBook } from "./rule-book/rule-book";
-import { isRuleEffectDefinition, isSearchEffectDefinition } from "./utils/rule-utils";
 import { isEqual } from "lodash";
 import { EVENT_SOURCE, EVENTS } from "./core-constants";
 import { FiltersMixin } from "./filters-mixin";
@@ -85,9 +84,7 @@ export class FinderImplementation<FItem, FContext = any> {
         this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
         this.resetPaginationOn = resetPaginationOn;
 
-        const ruleEffects = effects?.filter(isRuleEffectDefinition) ?? [];
-        const searchEffects = effects?.filter(isSearchEffectDefinition) ?? [];
-        this.#ruleBook = new RuleBook({ rules, ruleEffects, searchEffects });
+        this.#ruleBook = new RuleBook({ rules, effects });
         this.#ruleBook.hydrateDefinitions(items ?? [], context as FContext);
 
         const debouncerFn = DebounceCallbackRegistry();
@@ -153,7 +150,7 @@ export class FinderImplementation<FItem, FContext = any> {
      */
     #touch(touchEvent: FinderTouchEvent) {
         // if we're processing effects, don't trigger an endless touch loop.
-        if (this.#eventEmitter.isSilent()) {
+        if (this.#eventEmitter.isSilenced) {
             return;
         }
 
@@ -287,7 +284,7 @@ export class FinderImplementation<FItem, FContext = any> {
             on: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.on(event, callback),
             off: (event: FinderEventName, callback: EventCallback) => this.#eventEmitter.off(event, callback),
             silently: (callback: EventCallback) => this.#eventEmitter.silently(callback),
-            isSilent: () => this.#eventEmitter.isSilent(),
+            isSilent: () => this.#eventEmitter.isSilenced,
         };
     }
 
@@ -342,14 +339,18 @@ export class FinderImplementation<FItem, FContext = any> {
         }
     }
 
-    setRules(definitions: RuleDefinition<FItem, FContext>[]) {
-        if (isEqual(definitions, this.#ruleBook.list.definitions) === false) {
+    setRules(definitions?: RuleDefinition<FItem, FContext>[]) {
+        if (definitions !== undefined && isEqual(definitions, this.#ruleBook.list.definitions) === false) {
             this.#ruleBook.list.setRules(definitions);
             this.#ruleBook.list.hydrateDefinitions(this.items, this.context);
         }
     }
 
-    setContext(context: FContext) {
+    setContext(context?: FContext) {
+        // no value, or identical reference was passed
+        if (context === undefined || Object.is(context, this.context)) {
+            return;
+        }
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;

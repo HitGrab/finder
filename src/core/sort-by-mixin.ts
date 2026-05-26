@@ -1,10 +1,11 @@
 import { orderBy } from "lodash";
 import { SortByRuleDefinition } from "./types/rule-types";
 import { MixinInjectedDependencies, SerializedSortByMixin, SortDirection } from "./types/core-types";
-import { ERRORS, EVENT_SOURCE, EVENTS } from "./core-constants";
+import { ERRORS, EVENT_SOURCE, EVENTS, WARNINGS } from "./core-constants";
 import { FinderError } from "./finder-error";
 import { isSortByRuleDefinition } from "./utils/rule-utils";
 
+const DEFAULT_SORT_ORDER = "asc";
 const SORT_CYCLE_ORDER: (SortDirection | undefined)[] = [undefined, "desc", "asc"] as const;
 
 interface InitialValues {
@@ -22,7 +23,12 @@ class SortByMixin<FItem> {
     constructor({ initialSortBy, initialSortDirection }: InitialValues, deps: MixinInjectedDependencies<FItem>) {
         this.#deps = deps;
         if (initialSortBy) {
-            this.#sortBy = this.getRule(initialSortBy);
+            const isValidRule = this.#deps.getRuleBook().hasRule(initialSortBy);
+            if (isValidRule) {
+                this.#sortBy = this.getRule(initialSortBy);
+            } else {
+                console.warn(WARNINGS.INITIAL_RULE_NOT_FOUND, { initialSortBy });
+            }
         }
         this.#sortDirection = initialSortDirection;
     }
@@ -45,7 +51,7 @@ class SortByMixin<FItem> {
     }
 
     get sortDirection() {
-        return this.#sortDirection ?? this.activeRule?.defaultSortDirection ?? "asc";
+        return this.#sortDirection ?? this.activeRule?.defaultSortDirection ?? DEFAULT_SORT_ORDER;
     }
 
     get userHasSetSortDirection() {
@@ -76,7 +82,7 @@ class SortByMixin<FItem> {
     }
 
     toggleSortDirection() {
-        const initialDirection = this.#sortDirection ?? this.activeRule?.defaultSortDirection;
+        const initialDirection = this.sortDirection;
         if (initialDirection === "desc") {
             this.setSortDirection("asc");
             return;

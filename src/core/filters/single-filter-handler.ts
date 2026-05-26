@@ -28,8 +28,20 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
             return value;
         },
 
-        has(value: unknown) {
-            return value !== undefined;
+        has(value: unknown, optionValue?: any): boolean {
+            if (optionValue === undefined) {
+                // test if any value is set
+                return value !== undefined;
+            }
+
+            // test a single option
+            const optionToTest = definition.options?.find((option) => {
+                if (typeof optionValue === "object" && "value" in optionValue) {
+                    return option.value === optionValue.value;
+                }
+                return option.value === optionValue;
+            });
+            return optionToTest !== undefined && value === optionToTest.value;
         },
 
         // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Necessary for consistency with other handlers

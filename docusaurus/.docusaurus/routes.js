@@ -9,15 +9,15 @@ export default [
   },
   {
     path: '/finder/',
-    component: ComponentCreator('/finder/', '559'),
+    component: ComponentCreator('/finder/', '8a7'),
     routes: [
       {
         path: '/finder/',
-        component: ComponentCreator('/finder/', 'd72'),
+        component: ComponentCreator('/finder/', '3e7'),
         routes: [
           {
             path: '/finder/',
-            component: ComponentCreator('/finder/', '010'),
+            component: ComponentCreator('/finder/', 'eee'),
             routes: [
               {
                 path: '/finder/Core Concepts',
@@ -52,6 +52,12 @@ export default [
               {
                 path: '/finder/guides/context/injecting-context',
                 component: ComponentCreator('/finder/guides/context/injecting-context', '473'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/finder/guides/search-suggestions',
+                component: ComponentCreator('/finder/guides/search-suggestions', '503'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

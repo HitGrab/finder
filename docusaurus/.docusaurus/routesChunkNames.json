@@ -6,17 +6,17 @@
     },
     "content": "393be207"
   },
-  "/finder/-559": {
+  "/finder/-8a7": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/finder/-d72": {
+  "/finder/-3e7": {
     "__comp": "a7bd4aaa",
     "__props": "1994f6cc"
   },
-  "/finder/-010": {
+  "/finder/-eee": {
     "__comp": "a94703ab"
   },
   "/finder/Core Concepts-325": {
@@ -42,6 +42,10 @@
   "/finder/guides/context/injecting-context-473": {
     "__comp": "17896441",
     "content": "2ad6fd36"
+  },
+  "/finder/guides/search-suggestions-503": {
+    "__comp": "17896441",
+    "content": "b1a35d88"
   },
   "/finder/reference/api/-e1e": {
     "__comp": "17896441",

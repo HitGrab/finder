@@ -9,3 +9,8 @@ export interface StringMatchSegment {
 }
 
 export type SearchCharacterIndexFn = (haystack: string, needle: string) => number[] | undefined;
+
+export interface SearchScore {
+    percentOfHaystackMatched: number;
+    longestSequentialSequence: number;
+}

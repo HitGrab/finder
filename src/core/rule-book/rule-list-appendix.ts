@@ -5,13 +5,15 @@ import { RuleDefinition } from "../types/rule-types";
 import { isFilterRuleDefinition, isGroupByRuleDefinition, isSearchRuleDefinition, isSortByRuleDefinition } from "../utils/rule-utils";
 
 export class RuleListAppendix {
-    definitions: RuleDefinition[];
+    definitions: RuleDefinition[] = [];
 
     rules: RuleDefinition[] = [];
 
-    constructor(definitions: RuleDefinition[]) {
-        RuleListAppendix.validateDefinitions(definitions);
-        this.definitions = definitions;
+    constructor(definitions?: RuleDefinition[]) {
+        if (definitions) {
+            RuleListAppendix.validateDefinitions(definitions);
+            this.definitions = definitions;
+        }
     }
 
     hydrateDefinitions<FItem, FContext>(items: FItem[], context: FContext) {
@@ -30,6 +32,15 @@ export class RuleListAppendix {
         });
     }
 
+    hasRule(identifier: string | RuleDefinition) {
+        return this.rules.some((rule) => {
+            if (typeof identifier === "object") {
+                return rule.id === identifier.id;
+            }
+            return rule.id === identifier;
+        });
+    }
+
     getRule(identifier: string | RuleDefinition) {
         const rule = this.rules.find((rule) => {
             if (typeof identifier === "object") {
@@ -38,7 +49,7 @@ export class RuleListAppendix {
             return rule.id === identifier;
         });
         if (rule === undefined) {
-            throw new FinderError(ERRORS.RULE_NOT_FOUND, identifier);
+            throw new FinderError(ERRORS.RULE_NOT_FOUND, { identifier });
         }
         return rule;
     }
@@ -57,7 +68,7 @@ export class RuleListAppendix {
 
         const filterIds = new Set();
         definitions.forEach((rule) => {
-            if (rule.id === undefined && !isSearchRuleDefinition(rule)) {
+            if (rule.id === undefined && isSearchRuleDefinition(rule) === false) {
                 throw new FinderError(ERRORS.INVALID_RULE_WITHOUT_ID, rule);
             }
             if (validators.some((validator) => validator(rule)) === false) {
