@@ -28,11 +28,7 @@ function MyComponent() {
 
     return (
         <Finder items={items} rules={rules} context={context}>
-            <Finder.Content>
-                {{
-                    items: MyItemsComponent
-                }}
-            </Finder.Content>
+            <Finder.Content items={MyItemsComponent} />
         </Finder>
     );
 }

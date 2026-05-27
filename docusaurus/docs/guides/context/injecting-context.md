@@ -47,7 +47,7 @@ function IssueTracker() {
 
     return (
         <Finder items={items} rules={rules} context={context}>
-            <Finder.Content>{{ items: IssueTrackerItems }}</Finder.Content>
+            <Finder.Content items={IssueTrackerItems} />
         </Finder>
     );
 }

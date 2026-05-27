@@ -48,7 +48,7 @@ function SortByExample() {
                 </div>
                 <div className="card__image scrollable">
                     <div className="scrollable__content">
-                        <Finder.Content>{{ items: FilterItems, noMatches: "No matches found" }}</Finder.Content>
+                        <Finder.Content items={FilterItems} noMatches="No matches found" />
                     </div>
                 </div>
                 <div className="card__footer">

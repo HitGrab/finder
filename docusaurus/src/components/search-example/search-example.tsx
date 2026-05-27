@@ -20,7 +20,7 @@ export function SearchExample() {
                 <SearchExampleInput />
                 <div className="scrollable">
                     <div className="scrollable__content">
-                        <Finder.Content>{{ items: SearchExampleItems, noMatches: "No matches found" }}</Finder.Content>
+                        <Finder.Content items={SearchExampleItems} noMatches="No matches found" />
                     </div>
                 </div>
             </div>

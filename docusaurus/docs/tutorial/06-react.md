@@ -19,29 +19,27 @@ function ApartmentFinder() {
             isLoading={isPending}
         >
             // Only a single state will be active at any one time.
-            <Finder.Content>
-                {{
+            <Finder.Content
 
-                    // Displayed while Finder's isLoading property is true.
-                    loading: 'Loading...',
+                // Displayed while Finder's isLoading property is true.
+                loading='Loading...',
 
-                    // Finder received an empty items array.
-                    empty: 'No listings found.'
+                // Finder received an empty items array.
+                empty='No listings found.'
 
-                    // No items were found that matched the current rules.
-                    noMatches: 'No results found.',
+                // No items were found that matched the current rules.
+                noMatches='No results found.',
 
-                    // The items parameter will receive the matches that have been searched, filtered, and sorted.
-                    items: ({items}) => {
-                        return items.map((listing) => (
-                            <Listing
-                                listing={listing}
-                                key={listing.id}
-                            />
-                        ))
-                    },
-                }}
-            </Finder.Content>
+                // The items parameter will receive the matches that have been searched, filtered, and sorted.
+                items={({items}) => {
+                    return items.map((listing) => (
+                        <Listing
+                            listing={listing}
+                            key={listing.id}
+                        />
+                    ))
+                }},
+            />
         </Finder>
     );
 }

@@ -1,7 +1,7 @@
 {
   "id": "guides/search-suggestions",
   "title": "Search that suggests relevant filters",
-  "description": "",
+  "description": "SearchRules can accept an array of filters to suggest options from. In this example, the SearchRule will search for string matches against the options defined for the fileextension and modifieddate filters.",
   "source": "@site/docs/guides/search-suggestions.md",
   "sourceDirName": "guides",
   "slug": "/guides/search-suggestions",

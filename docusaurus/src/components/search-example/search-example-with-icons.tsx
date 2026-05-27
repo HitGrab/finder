@@ -26,7 +26,7 @@ export function SearchExampleWithIcons() {
                 </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
-                        <Finder.Content>{{ items: SearchExampleItemsWithIcons, noMatches: "No matches found" }}</Finder.Content>
+                        <Finder.Content items={SearchExampleItemsWithIcons} noMatches="No matches found" />
                     </div>
                 </div>
                 <div className="card__footer">

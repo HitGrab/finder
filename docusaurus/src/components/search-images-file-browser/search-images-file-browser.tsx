@@ -3,6 +3,7 @@ import { filterRule, FilterRuleDefinition, Finder, FinderContentProps, finderRul
 import styles from "./search-images-file-browser.module.css";
 import { useState, useCallback } from "react";
 import clsx from "clsx";
+import { sortBy } from "lodash";
 
 const DAY_IN_MILLISECONDS = 60 * 1000 * 60 * 24;
 interface FauxFile {
@@ -27,7 +28,7 @@ const items = faker.helpers.multiple(createFile, { count: 100 });
 const rules = finderRuleset<FauxFile>([
     {
         searchFn: (file) => file.name,
-        suggestFilters: true,
+        suggestFiltersFrom: ["extension", "date"],
     },
     {
         id: "extension",
@@ -38,7 +39,8 @@ const rules = finderRuleset<FauxFile>([
             items.forEach((item) => {
                 extSet.add(item.ext);
             });
-            return Array.from(extSet).map((extension) => {
+            const sortedExtensions = sortBy(Array.from(extSet));
+            return sortedExtensions.map((extension) => {
                 return {
                     label: extension,
                     value: extension,
@@ -50,7 +52,6 @@ const rules = finderRuleset<FauxFile>([
         id: "date",
         label: "Modified",
         filterFn: (file, value: Date) => {
-            console.log("testing", file.modified.toLocaleString(), value.toLocaleString());
             return file.modified >= value;
         },
         options: [
@@ -76,8 +77,8 @@ function SearchImagesFileBrowser() {
             <div className={styles.container}>
                 <div className={styles.controls}>
                     <FancySearch />
-                    {/* <DropdownFilter ruleId="date" />
-                    <DropdownFilter ruleId="extension" /> */}
+                    <DropdownFilter ruleId="extension" />
+                    <DropdownFilter ruleId="date" />
                 </div>
                 <div className={styles.tableContainer}>
                     <div className={styles.table}>
@@ -96,7 +97,7 @@ function SearchImagesFileBrowser() {
                             <div>|</div>
                         </div>
                         <div className={styles.body}>
-                            <Finder.Content>{{ items: SearchImagesFileBrowserItems, noMatches: SearchImagesFileBrowserNoMatches }}</Finder.Content>
+                            <Finder.Content items={SearchImagesFileBrowserItems} noMatches={SearchImagesFileBrowserNoMatches} />
                         </div>
                     </div>
                 </div>
@@ -196,11 +197,14 @@ export function FancySearch() {
                         <div className={styles.suggestion} key={suggestion.rule.id}>
                             {suggestion.rule.label}
                             <div className={styles.optionList}>
-                                {suggestion.optionMatches?.map((option) => {
+                                {suggestion.optionMatches?.slice(0, 3).map((option) => {
                                     return (
                                         <button
                                             type="button"
-                                            onClick={() => finder.filters.toggle(suggestion.rule as FilterRuleDefinition, option.value)}
+                                            onClick={() => {
+                                                finder.filters.toggle(suggestion.rule as FilterRuleDefinition, option.value);
+                                                setQuery("");
+                                            }}
                                             key={option.value}
                                         >
                                             {option.label}
@@ -219,6 +223,7 @@ export function FancySearch() {
 interface DropdownFilterProps {
     ruleId: string;
 }
+
 function DropdownFilter({ ruleId }: DropdownFilterProps) {
     const finder = useFinder();
     const rule = finder.filters.getRule(ruleId);
@@ -229,7 +234,7 @@ function DropdownFilter({ ruleId }: DropdownFilterProps) {
     const optionMatches = finder.filters.testRuleOptions(rule);
 
     return (
-        <div className={styles.dropdownContainer}>
+        <div className={clsx(styles.dropdownContainer, finder.filters.has(rule) && styles.active)}>
             {rule.label}
             <select
                 value={selectedOptionIndex}
