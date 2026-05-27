@@ -33,21 +33,16 @@ export function ApartmentListingExample() {
                     </div>
                     <div className="col col--9">
                         <div className="listingContainer">
-                            <Finder.Content>
-                                {{
-                                    // Displayed while Finder's isLoading property is true.
-                                    loading: "Loading...",
-
-                                    // Finder received an empty items array.
-                                    empty: "No listings found.",
-
-                                    // No items were found that matched the current rules.
-                                    noMatches: "No results found.",
-
-                                    // The items parameter will receive the matches that have been searched, filtered, and sorted.
-                                    items: ItemListing,
-                                }}
-                            </Finder.Content>
+                            <Finder.Content
+                                // Displayed while Finder's isLoading property is true.
+                                loading={"Loading..."}
+                                // Finder received an empty items array.
+                                empty="No listings found."
+                                // No items were found that matched the current rules.
+                                noMatches="No results found."
+                                // The items parameter will receive the matches that have been searched, filtered, and sorted.
+                                items={ItemListing}
+                            />
                         </div>
                     </div>
                 </div>

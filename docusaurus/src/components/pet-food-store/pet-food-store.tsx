@@ -54,11 +54,7 @@ function PetFoodStore() {
                     $20
                 </div>
                 <div className={styles.list}>
-                    <Finder.Content>
-                        {{
-                            groups: PetFoodStoreGroups,
-                        }}
-                    </Finder.Content>
+                    <Finder.Content groups={PetFoodStoreGroups} />
                 </div>
                 <div className="listContainer__credits">Assets from https://mohammed-23446.itch.io/32-16x16-food-sprites</div>
             </Finder>

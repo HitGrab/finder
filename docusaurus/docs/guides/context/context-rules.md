@@ -59,12 +59,7 @@ function PetFoodStore() {
     // highlight-end
     return (
         <Finder items={items} rules={rules} context={context} requireGroup={true}>
-                <Finder.Content>
-                    {{
-                        groups: PetFoodStoreGroups,
-                    }}
-                </Finder.Content>
-            </div>
+            <Finder.Content groups={PetFoodStoreGroups} />
         </Finder>
     );
 }

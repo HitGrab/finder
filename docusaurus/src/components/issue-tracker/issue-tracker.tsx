@@ -58,19 +58,17 @@ export function IssueTracker() {
             <b>Welcome to CypressPine systems, Max.</b>
             <Finder items={filteredItems} rules={rules} context={context}>
                 <div className={styles.list}>
-                    <Finder.Content>
-                        {{
-                            items: IssueTrackerItems,
-                            empty: () => (
-                                <>
-                                    No issues found.{" "}
-                                    <button type="button" onClick={() => setDeletedItemIds([])}>
-                                        [ Reset ]
-                                    </button>
-                                </>
-                            ),
-                        }}
-                    </Finder.Content>
+                    <Finder.Content
+                        items={IssueTrackerItems}
+                        empty={() => (
+                            <>
+                                No issues found.{" "}
+                                <button type="button" onClick={() => setDeletedItemIds([])}>
+                                    [ Reset ]
+                                </button>
+                            </>
+                        )}
+                    />
                 </div>
             </Finder>
             <div className={styles.controls}>

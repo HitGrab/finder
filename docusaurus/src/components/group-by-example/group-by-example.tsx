@@ -72,7 +72,7 @@ function GroupByExample() {
                 </div>
                 <div className="scrollable">
                     <div className="scrollable__content">
-                        <Finder.Content>{{ groups: GroupedItems }}</Finder.Content>
+                        <Finder.Content groups={GroupedItems} />
                     </div>
                 </div>
                 <div className="card__footer">
