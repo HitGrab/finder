@@ -400,6 +400,38 @@ interface StringMatchSegmentProps {
 }
 type FinderSearchTermProp = keyof HTMLElementTagNameMap | ElementType | ElementType<StringMatchSegmentProps>;
 //#endregion
+//#region src/core/search/string-match-haystack.d.ts
+declare class StringMatchHaystack {
+  #private;
+  raw: string;
+  transformed: string;
+  constructor(haystack: string);
+  getSourceCharacterIndex(transformedCharacterIndex: number): number;
+  /**
+   * We need to preserve the relationship between the source and the transformed results.
+   */
+  static composeTransformedHaystackSegments(haystack: string): {
+    value: string;
+    index: number;
+    length: number;
+  }[];
+}
+//#endregion
+//#region src/core/search/string-match-tester.d.ts
+declare class StringMatchTester {
+  #private;
+  needle: string;
+  haystack: StringMatchHaystack;
+  constructor(haystack: string, needle: string);
+  get characterIndexes(): number[] | undefined;
+  get hasMatch(): boolean;
+  get score(): {
+    percentOfHaystackMatched: number;
+    longestSequentialSequence: number;
+  } | undefined;
+  get segments(): StringMatchSegment[] | undefined;
+}
+//#endregion
 //#region src/core/utils/rule-type-guards.d.ts
 /**
  * Enforce structure for an array of rule of mixed types.
@@ -491,4 +523,4 @@ declare function StringMatch({
   Miss
 }: StringMatchProps): string | (string | import("react/jsx-runtime").JSX.Element)[];
 //#endregion
-export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, filterRule, finderRuleset, groupByRule, ruleEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };
+export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, StringMatchTester, filterRule, finderRuleset, groupByRule, ruleEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };
