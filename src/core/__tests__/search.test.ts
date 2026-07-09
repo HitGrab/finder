@@ -1,7 +1,7 @@
 import { range } from "lodash";
 import { FinderCore } from "../finder-core";
-import { filterRule, finderRuleset, searchRule, sortByRule } from "../utils/rule-type-guards";
-import { objectItems, apple } from "./test-constants";
+import { filterRule, finderRuleset, groupByRule, searchRule, sortByRule } from "../utils/rule-type-guards";
+import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
 import { WARNINGS } from "../core-constants";
 
@@ -120,6 +120,31 @@ describe("Search", () => {
         const finder = new FinderCore(items, { rules, ignoreSortByRulesWhileSearchRuleIsActive: true });
         finder.search.setSearchTerm("apple");
         expect(finder.matches.items).toEqual(["apple", "many apples", "barrel of apples"]);
+    });
+
+    test("Search can override Group", () => {
+        const rules = finderRuleset<MockObjectItem>([
+            searchRule({
+                searchFn: (item) => item.name,
+            }),
+            groupByRule({
+                id: "group",
+                groupFn: (item) => item.daysUntilExpiryDate,
+                sortGroupFn: (group) => group.id,
+            }),
+        ]);
+
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true, ignoreGroupByRulesWhileSearchRuleIsActive: true });
+        expect(finder.matches.items).toBe(undefined);
+        expect(finder.matches.groups).toEqual([
+            { id: "five", items: [orange, banana] },
+            { id: "three", items: [apple] },
+        ]);
+
+        finder.search.setSearchTerm("apple");
+
+        expect(finder.matches.items).toEqual([apple]);
+        expect(finder.matches.groups).toBe(undefined);
     });
 
     test("Debounced searches trigger only once", async () => {

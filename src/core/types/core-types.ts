@@ -12,8 +12,8 @@ import {
 } from "./rule-types";
 
 export interface FinderConstructorOptions<FItem, FContext = any> {
-    rules?: RuleDefinition<FItem>[];
-    effects?: RuleEffect[];
+    rules?: RuleDefinition<FItem, FContext>[];
+    effects?: RuleEffect<FItem, FContext>[];
     context?: FContext;
     isLoading?: boolean;
     disabled?: boolean;
@@ -27,6 +27,7 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
 
     // maybe a little verbose
     ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
+    ignoreGroupByRulesWhileSearchRuleIsActive?: boolean;
 
     // Force items to use a group rule.
     // If no groupBy is set, the first valid group rule will be used.
@@ -71,7 +72,8 @@ export interface MixinInjectedDependencies<FItem = any> {
     getRuleBook: () => RuleListAppendix;
     touch: FinderTouchCallback;
     getItems: () => FItem[];
-    test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
+    testItems: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FItem[];
+    testGroups: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => FinderResultGroup<FItem>[];
     debouncer: ReturnType<typeof DebounceCallbackRegistry>;
 }
 

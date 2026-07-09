@@ -52,7 +52,7 @@ export function groupByRule<FItem, FContext = any>(rule: GroupByRuleDefinition<F
     return rule;
 }
 
-export function ruleEffect<FItem, FContext = any>(
+export function ruleEffect<FItem = any, FContext = any>(
     rules:
         | string
         | RuleDefinition<FItem>

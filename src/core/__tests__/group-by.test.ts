@@ -1,6 +1,5 @@
 import { WARNINGS } from "../core-constants";
 import { FinderCore } from "../finder-core";
-import { GroupByMixin } from "../group-by-mixin";
 import { finderRuleset, groupByRule } from "../utils/rule-type-guards";
 import { objectItems, apple, orange, banana } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -161,18 +160,17 @@ describe("GroupBy", () => {
         consoleMock.mockReset();
     });
 
-    test("Warns when no groupSortFn is defined", () => {
-        const rule = groupByRule({
+    test("Testable", () => {
+        const expiryDateGroup = groupByRule({
             id: "expiry_date",
             groupFn: (item: MockObjectItem) => item.daysUntilExpiryDate,
-            defaultGroupSortDirection: "desc",
         });
+        const rules = [expiryDateGroup];
 
-        const consoleMock = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
-        GroupByMixin.process({ rule, groupBySortDirection: rule.defaultGroupSortDirection }, objectItems, undefined);
-
-        expect(consoleMock).toHaveBeenLastCalledWith(WARNINGS.GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN, { rule });
-        consoleMock.mockReset();
+        const finder = new FinderCore(objectItems, { rules, requireGroup: true });
+        expect(finder.groupBy.test(expiryDateGroup)).toEqual([
+            { id: "three", items: [apple] },
+            { id: "five", items: [orange, banana] },
+        ]);
     });
 });
