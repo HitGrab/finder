@@ -29,6 +29,8 @@ export class FinderImplementation<FItem, FContext = any> {
 
     #ignoreSortByRulesWhileSearchRuleIsActive;
 
+    #ignoreGroupByRulesWhileSearchRuleIsActive;
+
     #eventEmitter = new EventEmitter<FinderEventName>();
 
     // Subclasses that extend functionality
@@ -67,6 +69,7 @@ export class FinderImplementation<FItem, FContext = any> {
             disabled,
             requireGroup,
             ignoreSortByRulesWhileSearchRuleIsActive,
+            ignoreGroupByRulesWhileSearchRuleIsActive,
             onInit,
             onReady,
             onFirstUserInteraction,
@@ -82,6 +85,7 @@ export class FinderImplementation<FItem, FContext = any> {
         this.updatedAt = Date.now();
         this.context = context as FContext;
         this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
+        this.#ignoreGroupByRulesWhileSearchRuleIsActive = ignoreGroupByRulesWhileSearchRuleIsActive;
         this.resetPaginationOn = resetPaginationOn;
 
         this.#ruleBook = new RuleBook({ rules, effects });
@@ -94,7 +98,8 @@ export class FinderImplementation<FItem, FContext = any> {
             getRuleBook: () => this.#ruleBook.list,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
-            test: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.test(serializedMixins, isAdditive),
+            testItems: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.testItems(serializedMixins, isAdditive),
+            testGroups: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.testGroups(serializedMixins, isAdditive),
             touch: (event: FinderTouchEvent) => this.#touch(event),
             debouncer: debouncerFn,
         };
@@ -239,17 +244,24 @@ export class FinderImplementation<FItem, FContext = any> {
         return this.#matches.snapshot;
     }
 
-    test(mixins: SnapshotSerializedMixins, isAdditive = false) {
+    testItems(mixins: SnapshotSerializedMixins, isAdditive = false) {
         if (isAdditive) {
             const serializedMixins = { ...this.#serializeMixins(), ...mixins };
-            return Tester.test({ mixins: serializedMixins, items: this.items, context: this.context });
+            return Tester.testItems({ mixins: serializedMixins, items: this.items, context: this.context });
         }
-        return Tester.test({ mixins, items: this.items, context: this.context });
+        return Tester.testItems({ mixins, items: this.items, context: this.context });
+    }
+
+    testGroups(mixins: SnapshotSerializedMixins, isAdditive = false) {
+        const testedItems = this.testItems(mixins, isAdditive);
+        return Tester.groupItems({ items: testedItems, mixins, context: this.context });
     }
 
     #serializeMixins() {
         const hasActiveSearch = this.search.hasSearchRule && this.search.hasSearchTerm;
         const ignoreSortByRule = hasActiveSearch && this.#ignoreSortByRulesWhileSearchRuleIsActive;
+        const ignoreGroupByRule = hasActiveSearch && this.#ignoreGroupByRulesWhileSearchRuleIsActive;
+
         const serializedMixins: SnapshotSerializedMixins = {};
         if (hasActiveSearch) {
             serializedMixins.search = this.search.serialize();
@@ -260,10 +272,10 @@ export class FinderImplementation<FItem, FContext = any> {
         if (this.pagination.numItemsPerPage) {
             serializedMixins.pagination = this.pagination.serialize();
         }
-        if (ignoreSortByRule === false) {
+        if (ignoreSortByRule === false && this.sortBy.activeRule !== undefined) {
             serializedMixins.sortBy = this.sortBy.serialize();
         }
-        if (this.groupBy.activeRule !== undefined) {
+        if (ignoreGroupByRule === false && this.groupBy.activeRule !== undefined) {
             serializedMixins.groupBy = this.groupBy.serialize();
         }
         return serializedMixins;

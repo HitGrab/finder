@@ -154,6 +154,8 @@ declare class FinderCore<FItem = any, FContext = any> {
     set: (identifier?: string | GroupByRuleDefinition<any, any>) => void;
     toggle: (identifier: string | GroupByRuleDefinition<any, any>) => void;
     setGroupSortDirection: (direction?: SortDirection) => void;
+    setRequireGroup: (value: boolean) => void;
+    test: (identifier: string | GroupByRuleDefinition<any, any>, groupBySortDirection?: SortDirection, isAdditive?: boolean) => FinderResultGroup<FItem>[];
     reset: () => void;
   };
   get pagination(): {
@@ -278,8 +280,8 @@ interface RuleEffect<FItem = any, FContext = any> {
 //#endregion
 //#region src/core/types/core-types.d.ts
 interface FinderConstructorOptions<FItem, FContext = any> {
-  rules?: RuleDefinition<FItem>[];
-  effects?: RuleEffect[];
+  rules?: RuleDefinition<FItem, FContext>[];
+  effects?: RuleEffect<FItem, FContext>[];
   context?: FContext;
   isLoading?: boolean;
   disabled?: boolean;
@@ -290,6 +292,7 @@ interface FinderConstructorOptions<FItem, FContext = any> {
   initialGroupBySortDirection?: SortDirection;
   initialFilters?: Record<string, any>;
   ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
+  ignoreGroupByRulesWhileSearchRuleIsActive?: boolean;
   requireGroup?: boolean;
   page?: number;
   numItemsPerPage?: number;
@@ -443,7 +446,7 @@ declare function filterRule<FItem, FValue = boolean, FContext = any, T = FilterR
 declare function filterRule<FItem, FValue = any, FContext = any, T = FilterRuleWithSingleValue<FItem, FValue, FContext>>(rule: T): FilterRuleWithSingleValue<FItem, FValue>;
 declare function sortByRule<FItem, FContext = any>(rule: SortByRuleDefinition<FItem, FContext>): SortByRuleDefinition<FItem, FContext>;
 declare function groupByRule<FItem, FContext = any>(rule: GroupByRuleDefinition<FItem, FContext>): GroupByRuleDefinition<FItem, FContext>;
-declare function ruleEffect<FItem, FContext = any>(rules: string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]), onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void): RuleEffect<FItem, FContext>;
+declare function ruleEffect<FItem = any, FContext = any>(rules: string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[] | ((items: FItem[], context: FContext) => string | RuleDefinition<FItem> | (string | RuleDefinition<FItem>)[]), onChange: (instance: FinderCore<FItem, FContext>, rule: RuleDefinition) => void): RuleEffect<FItem, FContext>;
 declare function transformFilterToSingleValue<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
 declare function transformFilterToBoolean<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithBooleanValue<FItem, boolean, FContext>;
 declare function transformFilterToMultiple<FItem, FValue, FContext = any>(filter: AnyFilterRuleDefinition<FItem, FValue>): FilterRuleWithMultipleValues<FItem, FValue, FContext>;
@@ -491,6 +494,7 @@ declare function Finder<FItem = any, FContext = any>({
   numItemsPerPage,
   requireGroup,
   ignoreSortByRulesWhileSearchRuleIsActive,
+  ignoreGroupByRulesWhileSearchRuleIsActive,
   onInit,
   onReady,
   onFirstUserInteraction,

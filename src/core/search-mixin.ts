@@ -147,7 +147,7 @@ class SearchMixin<FItem> {
     }
 
     test(searchTerm: string, isAdditive = false) {
-        return this.#deps.test({ search: { searchTerm, rule: this.rule } }, isAdditive);
+        return this.#deps.testItems({ search: { searchTerm, rule: this.rule } }, isAdditive);
     }
 
     get api() {

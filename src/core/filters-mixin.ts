@@ -160,9 +160,9 @@ class FiltersMixin {
         if (options.isAdditive) {
             const rules = uniqBy([...this.rules, ...options.rules], "id");
             const values = { ...this.values, ...options.values };
-            return this.#deps.test({ filters: { rules, values } }, true);
+            return this.#deps.testItems({ filters: { rules, values } }, true);
         }
-        return this.#deps.test({ filters: { rules: options.rules, values: options.values ?? {} } });
+        return this.#deps.testItems({ filters: { rules: options.rules, values: options.values ?? {} } });
     }
 
     testRule({ rule: identifier, value, ...options }: FilterTestRuleOptions) {

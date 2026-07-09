@@ -121,6 +121,10 @@ class GroupByMixin<FItem> {
         this.set(undefined);
     }
 
+    setRequireGroup(value: boolean) {
+        this.requireGroup = value;
+    }
+
     serialize(): SerializedGroupByMixin {
         return {
             rule: this.activeRule,
@@ -137,8 +141,15 @@ class GroupByMixin<FItem> {
             set: this.set.bind(this),
             toggle: this.toggle.bind(this),
             setGroupSortDirection: this.setGroupSortDirection.bind(this),
+            setRequireGroup: this.setRequireGroup.bind(this),
+            test: this.test.bind(this),
             reset: this.reset.bind(this),
         };
+    }
+
+    test(identifier: GroupByRuleIdentifier, groupBySortDirection?: SortDirection, isAdditive = false) {
+        const rule = this.getRule(identifier);
+        return this.#deps.testGroups({ groupBy: { rule, groupBySortDirection } }, isAdditive);
     }
 
     static process<FItem>(options: SerializedGroupByMixin, items: FItem[], context: unknown): FinderResultGroup<FItem>[] {
@@ -184,10 +195,6 @@ class GroupByMixin<FItem> {
                 return options.rule.sortGroupFn(group, context);
             });
             orderSortDirection.push(options.groupBySortDirection ?? "asc");
-        }
-
-        if (options.rule?.sortGroupFn === undefined && options.groupBySortDirection !== undefined) {
-            console.warn(WARNINGS.GROUP_SORT_DIRECTION_SET_WITHOUT_SORT_FN, { rule: options.rule });
         }
 
         if (orderByCallbacks.length > 0) {
