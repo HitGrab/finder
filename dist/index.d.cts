@@ -1,5 +1,4 @@
 import { ElementType, PropsWithChildren, ReactElement, ReactNode, RefObject } from "react";
-
 //#region src/core/core-constants.d.ts
 declare const EVENTS: {
   readonly INIT: "init";
@@ -126,11 +125,7 @@ declare class FinderCore<FItem = any, FContext = any> {
     delete: <FValue>(identifier: string | AnyFilterRuleDefinition<any, FValue>, optionValue?: FValue | FilterOption<FValue>) => void;
     reset: () => void;
     test: (options: FilterTestOptions) => any[];
-    testRule: ({
-      rule: identifier,
-      value,
-      ...options
-    }: FilterTestRuleOptions) => any[];
+    testRule: ({ rule: identifier, value, ...options }: FilterTestRuleOptions) => any[];
     testRuleOptions: (identifier: string | AnyFilterRuleDefinition<any, any>, isAdditive?: boolean) => Map<any, any>;
   };
   get sortBy(): {
@@ -462,7 +457,7 @@ interface FinderContentContainerProps<FItem, FContext> {
   items?: ElementType<FinderContentProps<FItem, FContext>["items"]> | ReactElement<FinderContentProps<FItem, FContext>["items"]> | Iterable<ReactNode>;
   groups?: ElementType<FinderContentProps<FItem, FContext>["groups"]> | ReactElement<FinderContentProps<FItem, FContext>["groups"]> | Iterable<ReactNode>;
 }
-declare function FinderContent<FItem = any, FContext = any>(props: FinderContentContainerProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element | Iterable<ReactNode> | null;
+declare function FinderContent<FItem = any, FContext = any>(props: FinderContentContainerProps<FItem, FContext>): import("react").JSX.Element | Iterable<ReactNode> | null;
 //#endregion
 //#region src/react/components/finder-search-term-haystack.d.ts
 interface FinderSearchTermHaystackProps {
@@ -470,38 +465,10 @@ interface FinderSearchTermHaystackProps {
   Match?: FinderSearchTermProp;
   Miss?: FinderSearchTermProp;
 }
-declare function FinderSearchTermHaystack({
-  Match,
-  Miss,
-  children: haystack
-}: FinderSearchTermHaystackProps): string | import("react/jsx-runtime").JSX.Element;
+declare function FinderSearchTermHaystack({ Match, Miss, children: haystack }: FinderSearchTermHaystackProps): string | import("react").JSX.Element;
 //#endregion
 //#region src/react/components/finder.d.ts
-declare function Finder<FItem = any, FContext = any>({
-  items,
-  rules,
-  effects,
-  initialSearchTerm,
-  initialSortBy,
-  initialSortDirection,
-  initialGroupBy,
-  initialGroupBySortDirection,
-  initialFilters,
-  context,
-  isLoading,
-  disabled,
-  page,
-  numItemsPerPage,
-  requireGroup,
-  ignoreSortByRulesWhileSearchRuleIsActive,
-  ignoreGroupByRulesWhileSearchRuleIsActive,
-  onInit,
-  onReady,
-  onFirstUserInteraction,
-  onChange,
-  controllerRef,
-  children
-}: FinderProps<FItem, FContext>): import("react/jsx-runtime").JSX.Element;
+declare function Finder<FItem = any, FContext = any>({ items, rules, effects, initialSearchTerm, initialSortBy, initialSortDirection, initialGroupBy, initialGroupBySortDirection, initialFilters, context, isLoading, disabled, page, numItemsPerPage, requireGroup, ignoreSortByRulesWhileSearchRuleIsActive, ignoreGroupByRulesWhileSearchRuleIsActive, onInit, onReady, onFirstUserInteraction, onChange, controllerRef, children }: FinderProps<FItem, FContext>): import("react").JSX.Element;
 declare namespace Finder {
   var Content: typeof FinderContent;
   var SearchTermHaystack: typeof FinderSearchTermHaystack;
@@ -520,11 +487,6 @@ interface StringMatchProps {
 /**
  * Split a string into result segment components .
  */
-declare function StringMatch({
-  needle,
-  haystack,
-  Match,
-  Miss
-}: StringMatchProps): string | (string | import("react/jsx-runtime").JSX.Element)[];
+declare function StringMatch({ needle, haystack, Match, Miss }: StringMatchProps): string | (string | import("react").JSX.Element)[];
 //#endregion
 export { type AnyFilterRuleDefinition, type FilterOption, type FilterRuleDefinition, Finder, type FinderChangeEvent, type FinderConstructorOptions, type FinderContentProps, type FinderEvent, type FinderFirstUserInteractionEvent, type FinderInitEvent, type FinderProps, type FinderReadyEvent, type FinderResultGroup, type GroupByRuleDefinition, type RuleDefinition, type RuleEffect, type SearchRuleDefinition, type SortByRuleDefinition, type SortDirection, StringMatch, type StringMatchSegmentProps, StringMatchTester, filterRule, finderRuleset, groupByRule, ruleEffect, searchRule, sortByRule, transformFilterToBoolean, transformFilterToMultiple, transformFilterToSingleValue, useFinder, useFinderRef };
