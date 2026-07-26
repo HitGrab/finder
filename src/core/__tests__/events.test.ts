@@ -1,5 +1,5 @@
 import { FinderCore } from "../finder-core";
-import { FinderOnChangeCallback } from "../types/event-types";
+import { FinderEvent, FinderOnChangeCallback } from "../types/event-types";
 import { searchRule, filterRule } from "../utils/rule-type-guards";
 import { objectItems } from "./test-constants";
 import { MockObjectItem } from "./test-types";
@@ -60,5 +60,32 @@ describe("Events", () => {
         finder.filters.set("price_is_below", 5);
 
         expect(imperativeOnChange).toHaveBeenCalledTimes(1);
+    });
+
+    test("Receives interface", () => {
+        const rules = [
+            filterRule({
+                id: "price_is_below",
+                filterFn: (item: MockObjectItem, value: number) => {
+                    return item.price <= value;
+                },
+            }),
+        ];
+
+        const payloadInstanceIsFinderInterfaceFn = (event: FinderEvent) => {
+            expect(event.instance).toBeInstanceOf(FinderCore);
+        };
+
+        const finder = new FinderCore(objectItems, {
+            rules,
+            onInit: payloadInstanceIsFinderInterfaceFn,
+            onChange: payloadInstanceIsFinderInterfaceFn,
+            onFirstUserInteraction: payloadInstanceIsFinderInterfaceFn,
+            onReady: payloadInstanceIsFinderInterfaceFn,
+        });
+
+        // broadest to narrowest event
+        finder.events.on("change", payloadInstanceIsFinderInterfaceFn);
+        finder.filters.set("price_is_below", 5);
     });
 });

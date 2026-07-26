@@ -27,6 +27,7 @@ export interface FinderConstructorOptions<FItem, FContext = any> {
 
     // maybe a little verbose
     ignoreSortByRulesWhileSearchRuleIsActive?: boolean;
+    ignoreGroupByRulesWhileSearchRuleIsActive?: boolean;
 
     // Force items to use a group rule.
     // If no groupBy is set, the first valid group rule will be used.
