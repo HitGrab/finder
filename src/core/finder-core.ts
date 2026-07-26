@@ -110,7 +110,7 @@ class FinderCore<FItem = any, FContext = any> {
      */
 
     test(mixins: SnapshotSerializedMixins, isAdditive = false) {
-        return this.#finder.test(mixins, isAdditive);
+        return this.#finder.testItems(mixins, isAdditive);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
