@@ -134,7 +134,12 @@ describe("Search", () => {
             }),
         ]);
 
-        const finder = new FinderCore(objectItems, { rules, requireGroup: true, ignoreGroupByRulesWhileSearchRuleIsActive: true });
+        const finder = new FinderCore(objectItems, {
+            rules,
+            requireGroup: true,
+            ignoreGroupByRulesWhileSearchRuleIsActive: true,
+        });
+        expect(finder.state).toBe("groups");
         expect(finder.matches.items).toBe(undefined);
         expect(finder.matches.groups).toEqual([
             { id: "five", items: [orange, banana] },
@@ -142,6 +147,7 @@ describe("Search", () => {
         ]);
 
         finder.search.setSearchTerm("apple");
+        expect(finder.state).toBe("items");
 
         expect(finder.matches.items).toEqual([apple]);
         expect(finder.matches.groups).toBe(undefined);

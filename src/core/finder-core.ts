@@ -9,8 +9,9 @@ class FinderCore<FItem = any, FContext = any> {
     #finder: FinderImplementation<FItem, FContext>;
 
     constructor(items: FItem[] | null | undefined, options: FinderConstructorOptions<FItem, FContext>) {
-        const getInstance = () => this;
-        this.#finder = new FinderImplementation(items, options, getInstance);
+        const getInterfaceInstanceFn = () => this;
+        this.#finder = new FinderImplementation(items, options, getInterfaceInstanceFn);
+        this.#finder.initEvents();
     }
 
     get items() {

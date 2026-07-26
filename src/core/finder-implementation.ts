@@ -3,7 +3,7 @@ import { DebounceCallbackRegistry } from "./debounce-callback-registry";
 import { EventEmitter } from "./event-emitter";
 import { Tester } from "./tester";
 import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
-import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent } from "./types/event-types";
+import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent, FinderReadyEvent } from "./types/event-types";
 import { RuleDefinition } from "./types/rule-types";
 import { RuleBook } from "./rule-book/rule-book";
 import { isEqual } from "lodash";
@@ -84,8 +84,8 @@ export class FinderImplementation<FItem, FContext = any> {
         this.getPublicInterfaceFn = getInstanceInterfaceFn;
         this.updatedAt = Date.now();
         this.context = context as FContext;
-        this.#ignoreSortByRulesWhileSearchRuleIsActive = ignoreSortByRulesWhileSearchRuleIsActive;
-        this.#ignoreGroupByRulesWhileSearchRuleIsActive = ignoreGroupByRulesWhileSearchRuleIsActive;
+        this.#ignoreSortByRulesWhileSearchRuleIsActive = !!ignoreSortByRulesWhileSearchRuleIsActive;
+        this.#ignoreGroupByRulesWhileSearchRuleIsActive = !!ignoreGroupByRulesWhileSearchRuleIsActive;
         this.resetPaginationOn = resetPaginationOn;
 
         this.#ruleBook = new RuleBook({ rules, effects });
@@ -111,20 +111,9 @@ export class FinderImplementation<FItem, FContext = any> {
         this.groupBy = new GroupByMixin({ initialGroupBy, initialGroupBySortDirection, requireGroup: !!requireGroup }, mixinDeps);
         this.pagination = new PaginationMixin({ page, numItemsPerPage }, mixinDeps);
 
-        // Don't trigger any events while onInit methods trigger
-        this.#eventEmitter.silently(() => {
-            const initPayload: FinderInitEvent = {
-                source: EVENT_SOURCE.CORE,
-                event: EVENTS.INIT,
-                timestamp: Date.now(),
-                instance: this.getPublicInterfaceFn(),
-            };
-
-            // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onInit event.
-            if (onInit) {
-                onInit(initPayload);
-            }
-        });
+        if (onInit) {
+            this.#eventEmitter.on(EVENTS.INIT, onInit);
+        }
 
         if (onChange) {
             this.#eventEmitter.on(EVENTS.CHANGE, onChange);
@@ -135,17 +124,27 @@ export class FinderImplementation<FItem, FContext = any> {
         }
 
         if (onReady) {
-            if (this.isReady) {
-                // As the event emitter is freshly-created and cannot have had events tied to it yet, we directly trigger the onReady event.
-                onReady({
-                    source: EVENT_SOURCE.CORE,
-                    event: EVENTS.READY,
-                    timestamp: Date.now(),
-                    instance: this.getPublicInterfaceFn(),
-                });
-            } else {
-                this.#eventEmitter.on(EVENTS.READY, onReady);
-            }
+            this.#eventEmitter.on(EVENTS.READY, onReady);
+        }
+    }
+
+    initEvents() {
+        const initPayload: FinderInitEvent = {
+            source: EVENT_SOURCE.CORE,
+            event: EVENTS.INIT,
+            timestamp: Date.now(),
+            instance: this.getPublicInterfaceFn(),
+        };
+        this.#eventEmitter.emit(EVENTS.INIT, initPayload);
+
+        if (this.isReady) {
+            const payload: FinderReadyEvent = {
+                source: EVENT_SOURCE.CORE,
+                event: EVENTS.READY,
+                timestamp: Date.now(),
+                instance: this.getPublicInterfaceFn(),
+            };
+            this.#eventEmitter.emit(EVENTS.READY, payload);
         }
     }
 
@@ -311,7 +310,10 @@ export class FinderImplementation<FItem, FContext = any> {
         if (this.isEmpty) {
             return "empty";
         }
-        const hasGroupByRule = this.groupBy.activeRule !== undefined;
+
+        const ignoreGroupByRule = this.#ignoreGroupByRulesWhileSearchRuleIsActive && this.search.hasSearchRule && this.search.hasSearchTerm;
+        const hasGroupByRule = this.groupBy.activeRule !== undefined && ignoreGroupByRule === false;
+
         if (hasGroupByRule && Array.isArray(this.matches.groups) && this.matches.groups.length > 0) {
             return "groups";
         }
@@ -381,6 +383,7 @@ export class FinderImplementation<FItem, FContext = any> {
             initialSortBy: this.sortBy.activeRule?.id,
             initialSortDirection: this.sortBy.sortDirection,
             ignoreSortByRulesWhileSearchRuleIsActive: this.#ignoreSortByRulesWhileSearchRuleIsActive,
+            ignoreGroupByRulesWhileSearchRuleIsActive: this.#ignoreGroupByRulesWhileSearchRuleIsActive,
             initialGroupBy: this.groupBy.activeRule?.id,
             initialGroupBySortDirection: this.groupBy.groupBySortDirection,
             requireGroup: this.groupBy.requireGroup,
