@@ -129,7 +129,6 @@ export class FinderImplementation<FItem, FContext = any> {
     }
 
     initEvents() {
-        // transform the internal touch event to a public change event
         const initPayload: FinderInitEvent = {
             source: EVENT_SOURCE.CORE,
             event: EVENTS.INIT,
