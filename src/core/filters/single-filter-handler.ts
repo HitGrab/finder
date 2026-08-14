@@ -17,11 +17,12 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
         },
 
         parse(value: unknown) {
-            if (value === undefined && definition.required) {
+            if (value === undefined) {
                 if (definition.defaultValue) {
                     return definition.defaultValue;
                 }
-                if (Array.isArray(definition.options) && definition.options.length > 0) {
+
+                if (definition.required && Array.isArray(definition.options) && definition.options.length > 0) {
                     return definition.options.at(0)?.value;
                 }
             }
@@ -29,9 +30,11 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
         },
 
         has(value: unknown, optionValue?: any): boolean {
+            let composedValue = this.parse(value);
+
             if (optionValue === undefined) {
                 // test if any value is set
-                return value !== undefined;
+                return composedValue !== undefined;
             }
 
             // test a single option
@@ -41,7 +44,7 @@ export function SingleFilterHandler(definition: HydratedFilterRuleDefinition & F
                 }
                 return option.value === optionValue;
             });
-            return optionToTest !== undefined && value === optionToTest.value;
+            return optionToTest !== undefined && composedValue === optionToTest.value;
         },
 
         // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Necessary for consistency with other handlers

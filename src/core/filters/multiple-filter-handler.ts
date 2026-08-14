@@ -21,6 +21,10 @@ export function MultipleFilterHandler(definition: HydratedFilterRuleDefinition &
 
         parse(value: unknown) {
             if (value === undefined) {
+                if (Array.isArray(definition.defaultValue)) {
+                    return definition.defaultValue;
+                }
+
                 if (definition.required && Array.isArray(definition.options) && definition.options.length > 0) {
                     return [definition.options.at(0)?.value];
                 }
@@ -33,9 +37,11 @@ export function MultipleFilterHandler(definition: HydratedFilterRuleDefinition &
         },
 
         has(value: unknown, optionValue?: any): boolean {
+            let composedValue = this.parse(value);
+
             if (optionValue === undefined) {
                 // test if any value is set
-                return Array.isArray(value) && value.length > 0;
+                return Array.isArray(composedValue) && composedValue.length > 0;
             } else if (Array.isArray(optionValue)) {
                 // if an array was passed, recursively ensure every requirement is met
                 return optionValue.every((optionIdentifier) => this.has(definition, optionIdentifier));
@@ -48,7 +54,7 @@ export function MultipleFilterHandler(definition: HydratedFilterRuleDefinition &
                 }
                 return option.value === optionValue;
             });
-            return Array.isArray(value) && optionToTest !== undefined && value.includes(optionToTest.value);
+            return Array.isArray(composedValue) && optionToTest !== undefined && composedValue.includes(optionToTest.value);
         },
 
         toggle(value: unknown, optionValue?: any) {

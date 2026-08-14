@@ -1,6 +1,6 @@
 import { FinderImplementation } from "./finder-implementation";
 import { FinderConstructorOptions, SnapshotSerializedMixins } from "./types/core-types";
-import { RuleDefinition } from "./types/rule-types";
+import { RuleDefinition, RuleEffect } from "./types/rule-types";
 
 /**
  * This thin wrapper around FinderCoreImplementation defines the mixin interfaces and hides private methods.
@@ -81,6 +81,10 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.pagination.api;
     }
 
+    get ruleBook() {
+        return this.#finder.ruleBook.api;
+    }
+
     /**
      * Mutators
      */
@@ -101,6 +105,10 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.setRules(definitions);
     }
 
+    setEffects(effects?: RuleEffect<FItem>[]) {
+        return this.#finder.setEffects(effects);
+    }
+
     setContext(context?: FContext) {
         return this.#finder.setContext(context);
     }
@@ -113,7 +121,7 @@ class FinderCore<FItem = any, FContext = any> {
         return this.#finder.testItems(mixins, isAdditive);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+    // @deprecated use finder.rulebook instead.
     getRule<T extends RuleDefinition<FItem>>(identifier: string | RuleDefinition<FItem>) {
         return this.#finder.getRule(identifier) as T | undefined;
     }
