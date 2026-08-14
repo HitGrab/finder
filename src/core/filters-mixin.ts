@@ -59,7 +59,9 @@ class FiltersMixin {
         }
 
         this.#deps.debouncer(rule, () => {
-            const isResetToInitialValue = transformedFilterValue === this.#initialValues.has(rule.id);
+            const initialValue = makeFilterHandler(rule).parse(this.#initialValues.get(rule.id));
+            const isResetToInitialValue =
+                initialValue !== undefined && transformedFilterValue === makeFilterHandler(rule).parse(this.#initialValues.get(rule.id));
             const isResetToDefaultValue = transformedFilterValue === rule.defaultValue;
 
             if (isResetToInitialValue || isResetToDefaultValue) {
@@ -126,11 +128,7 @@ class FiltersMixin {
     toggle<FValue>(identifier: FilterRuleIdentifier<FValue>, optionValue?: FValue | FilterOption<FValue>): void {
         const rule = this.getRule(identifier);
         const value = this.#rawValues.get(rule.id);
-        if (rule.boolean && optionValue !== undefined) {
-            throw new FinderError(ERRORS.TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE, { rule, value });
-        }
-        const toggledValue = makeFilterHandler(rule).toggle(value, optionValue, !!rule.required);
-        this.set(rule, toggledValue);
+        this.set(rule, makeFilterHandler(rule).toggle(value, optionValue, !!rule.required));
     }
 
     reset() {

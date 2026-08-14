@@ -11,20 +11,28 @@ interface RuleBookOptions {
  * Stores rule definitions and hydrated rules class objects
  */
 export class RuleBook<FItem, FContext> {
-    list: RuleListAppendix;
+    rules: RuleListAppendix;
     effects: RuleEffectAppendix<FItem, FContext>;
 
     constructor({ rules, effects }: RuleBookOptions) {
-        this.list = new RuleListAppendix(rules);
+        this.rules = new RuleListAppendix(rules);
         this.effects = new RuleEffectAppendix(effects);
     }
 
     hydrateDefinitions(items: FItem[], context: FContext) {
-        this.list.hydrateDefinitions(items, context);
+        this.rules.hydrateDefinitions(items, context);
         this.effects.hydrateDefinitions(items, context);
     }
 
     onChange(rule: RuleDefinition, instanceInterface: FinderCore) {
         this.effects.onChange(rule, instanceInterface);
+    }
+
+    get api() {
+        return {
+            list: this.rules.list,
+            get: (identifier: string | RuleDefinition) => this.rules.getRule(identifier, false),
+            has: this.rules.hasRule.bind(this.rules),
+        };
     }
 }

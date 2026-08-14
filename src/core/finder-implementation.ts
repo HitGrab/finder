@@ -4,7 +4,7 @@ import { EventEmitter } from "./event-emitter";
 import { Tester } from "./tester";
 import { FinderConstructorOptions, MixinInjectedDependencies, SnapshotSerializedMixins, EventCallback } from "./types/core-types";
 import { FinderEventName, FinderTouchEvent, FinderInitEvent, FinderChangeEvent, FinderFirstUserInteractionEvent, FinderReadyEvent } from "./types/event-types";
-import { RuleDefinition } from "./types/rule-types";
+import { RuleDefinition, RuleEffect } from "./types/rule-types";
 import { RuleBook } from "./rule-book/rule-book";
 import { isEqual } from "lodash";
 import { EVENT_SOURCE, EVENTS } from "./core-constants";
@@ -43,7 +43,7 @@ export class FinderImplementation<FItem, FContext = any> {
 
     context: FContext;
 
-    #ruleBook: RuleBook<FItem, FContext>;
+    ruleBook: RuleBook<FItem, FContext>;
 
     // return the public API for this Finder instance
     getPublicInterfaceFn;
@@ -88,14 +88,14 @@ export class FinderImplementation<FItem, FContext = any> {
         this.#ignoreGroupByRulesWhileSearchRuleIsActive = !!ignoreGroupByRulesWhileSearchRuleIsActive;
         this.resetPaginationOn = resetPaginationOn;
 
-        this.#ruleBook = new RuleBook({ rules, effects });
-        this.#ruleBook.hydrateDefinitions(items ?? [], context as FContext);
+        this.ruleBook = new RuleBook({ rules, effects });
+        this.ruleBook.hydrateDefinitions(items ?? [], context as FContext);
 
         const debouncerFn = DebounceCallbackRegistry();
         // to maintain a single source of truth, the parent class jealously guards it's state and doles it out to the various mixins.
         const mixinDeps: MixinInjectedDependencies<FItem> = {
             getItems: () => this.items,
-            getRuleBook: () => this.#ruleBook.list,
+            getRuleBook: () => this.ruleBook.rules,
             isLoading: () => this.isLoading,
             isDisabled: () => this.disabled,
             testItems: (serializedMixins: SnapshotSerializedMixins, isAdditive?: boolean) => this.testItems(serializedMixins, isAdditive),
@@ -177,7 +177,7 @@ export class FinderImplementation<FItem, FContext = any> {
         // trigger any effects that may be affected by the change to this rule
         this.#eventEmitter.silently(() => {
             if (touchEvent.rule) {
-                this.#ruleBook.onChange(touchEvent.rule, this.getPublicInterfaceFn());
+                this.ruleBook.onChange(touchEvent.rule, this.getPublicInterfaceFn());
             }
         });
     }
@@ -300,7 +300,7 @@ export class FinderImplementation<FItem, FContext = any> {
     }
 
     getRule(identifier: string | RuleDefinition<FItem>) {
-        return this.#ruleBook.list.getRule(identifier);
+        return this.ruleBook.rules.getRule(identifier);
     }
 
     get state() {
@@ -329,7 +329,7 @@ export class FinderImplementation<FItem, FContext = any> {
         if (isEqual(items, this.#items) === false) {
             const previousValue = this.#items;
             this.#items = items;
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
+            this.ruleBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_ITEMS, current: items, initial: previousValue });
         }
     }
@@ -354,9 +354,16 @@ export class FinderImplementation<FItem, FContext = any> {
     }
 
     setRules(definitions?: RuleDefinition<FItem, FContext>[]) {
-        if (definitions !== undefined && isEqual(definitions, this.#ruleBook.list.definitions) === false) {
-            this.#ruleBook.list.setRules(definitions);
-            this.#ruleBook.list.hydrateDefinitions(this.items, this.context);
+        if (definitions !== undefined && isEqual(definitions, this.ruleBook.rules.definitions) === false) {
+            this.ruleBook.rules.setRules(definitions);
+            this.ruleBook.rules.hydrateDefinitions(this.items, this.context);
+        }
+    }
+
+    setEffects(effects?: RuleEffect<FItem, FContext>[]) {
+        if (effects !== undefined && isEqual(effects, this.ruleBook.effects.effects) === false) {
+            this.ruleBook.effects.setEffects(effects);
+            this.ruleBook.effects.hydrateDefinitions(this.items, this.context);
         }
     }
 
@@ -368,7 +375,7 @@ export class FinderImplementation<FItem, FContext = any> {
         const previousValue = this.context;
         if (isEqual(context, previousValue) === false) {
             this.context = context;
-            this.#ruleBook.hydrateDefinitions(this.items, this.context);
+            this.ruleBook.hydrateDefinitions(this.items, this.context);
             this.#systemTouch({ source: EVENT_SOURCE.CORE, event: EVENTS.SET_CONTEXT, current: context, initial: previousValue });
         }
     }

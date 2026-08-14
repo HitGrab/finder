@@ -34,7 +34,7 @@ describe("Effects", () => {
             expect(ruleEffectFn).toHaveBeenCalledTimes(0);
             finder.filters.set("orange", true);
             expect(ruleEffectFn).toHaveBeenCalledTimes(1);
-            expect(finder.filters.raw).toEqual({ orange: true });
+            expect(finder.filters.raw).toEqual({ orange: true, apple: false });
         });
 
         test("Toggles sort", () => {

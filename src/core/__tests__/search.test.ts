@@ -15,6 +15,7 @@ describe("Search", () => {
 
     test("Rule accessors", () => {
         const rule = searchRule({
+            id: "search",
             searchFn: (item: MockObjectItem) => item.type,
         });
         const finder = new FinderCore(objectItems, { rules: [rule] });

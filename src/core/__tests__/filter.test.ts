@@ -479,6 +479,51 @@ describe("Filters", () => {
             expect(finder.matches.items).toEqual([]);
         });
 
+        test("Default values", () => {
+            const singleValueFilter = filterRule<MockObjectItem, number>({
+                id: "price_is_below",
+                filterFn: (item, value) => item.price <= value,
+                defaultValue: 3,
+            });
+            const multipleFilter = filterRule<MockObjectItem, number>({
+                id: "price_is_above",
+                filterFn: (item, value) => item.price > value,
+                multiple: true,
+                options: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }, { value: 5 }],
+                defaultValue: [1, 2],
+            });
+            const booleanFilter = filterRule<MockObjectItem>({
+                id: "expires_in_five_days",
+                filterFn: (item) => item.daysUntilExpiryDate === "five",
+                boolean: true,
+                defaultValue: true,
+            });
+
+            const rules = finderRuleset<MockObjectItem>([singleValueFilter, multipleFilter, booleanFilter]);
+
+            const finder = new FinderCore(objectItems, { rules });
+            expect(finder.filters.get(singleValueFilter)).toBe(3);
+            expect(finder.filters.has(singleValueFilter)).toBe(true);
+            finder.filters.set(singleValueFilter, 5);
+            expect(finder.filters.get(singleValueFilter)).toBe(5);
+            finder.filters.delete(singleValueFilter);
+            expect(finder.filters.get(singleValueFilter)).toBe(3);
+
+            expect(finder.filters.get(multipleFilter)).toEqual([1, 2]);
+            expect(finder.filters.has(multipleFilter)).toBe(true);
+            finder.filters.set(multipleFilter, [5]);
+            expect(finder.filters.get(multipleFilter)).toEqual([5]);
+            finder.filters.delete(multipleFilter);
+            expect(finder.filters.get(multipleFilter)).toEqual([1, 2]);
+
+            expect(finder.filters.get(booleanFilter)).toBe(true);
+            expect(finder.filters.has(booleanFilter)).toBe(true);
+            finder.filters.toggle(booleanFilter);
+            expect(finder.filters.get(booleanFilter)).toBe(false);
+            finder.filters.delete(booleanFilter);
+            expect(finder.filters.get(booleanFilter)).toEqual(true);
+        });
+
         describe("Required", () => {
             test("Required filters are active by default", () => {
                 const rule = filterRule<MockObjectItem>({

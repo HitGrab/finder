@@ -12,17 +12,18 @@ export function BooleanFilterHandler(definition: HydratedFilterRuleDefinition & 
         },
 
         parse(value: unknown) {
-            // reject invalid shapes
-            if (typeof value !== "boolean" && value !== undefined) {
-                return false;
-            }
             if (value === undefined) {
                 if (definition.required) {
                     return true;
                 }
-                if (definition.defaultValue !== undefined) {
+                if (typeof definition.defaultValue === "boolean") {
                     return definition.defaultValue;
                 }
+                return false;
+            }
+
+            // reject invalid shapes
+            if (typeof value !== "boolean") {
                 return false;
             }
             return value;
@@ -33,10 +34,10 @@ export function BooleanFilterHandler(definition: HydratedFilterRuleDefinition & 
         },
 
         toggle(value: unknown, optionValue?: any) {
-            const parsedValue = this.parse(value);
-            if (typeof parsedValue !== "boolean") {
-                throw new FinderError(ERRORS.SETTING_BOOLEAN_FILTER_WITHOUT_BOOLEAN_VALUE, { rule: definition, value: parsedValue, optionValue });
+            if (optionValue !== undefined) {
+                throw new FinderError(ERRORS.TOGGLING_BOOLEAN_FILTER_WITH_UNUSED_VALUE, { rule: definition, value });
             }
+            const parsedValue = this.parse(value);
             return !parsedValue;
         },
 
@@ -52,11 +53,7 @@ export function BooleanFilterHandler(definition: HydratedFilterRuleDefinition & 
         },
 
         isActive(value: unknown) {
-            if (definition.required) {
-                return true;
-            }
-            const parsedValue = this.parse(value);
-            return parsedValue === true;
+            return this.parse(value);
         },
 
         isMatch(item: unknown, value: unknown, context: unknown) {

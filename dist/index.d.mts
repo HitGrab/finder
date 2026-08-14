@@ -163,6 +163,16 @@ declare class FinderCore<FItem = any, FContext = any> {
     setPage: (value?: number) => void;
     setNumItemsPerPage: (value?: number) => void;
   };
+  get ruleBook(): {
+    list: {
+      search: SearchRuleDefinition<unknown, any> | undefined;
+      filters: (FilterRuleWithSingleValue<unknown, any, any> | FilterRuleWithMultipleValues<unknown, any, any> | FilterRuleWithBooleanValue<unknown, boolean, any>)[];
+      sortBy: SortByRuleDefinition<unknown, any>[];
+      groupBy: GroupByRuleDefinition<unknown, any>[];
+    };
+    get: (identifier: string | RuleDefinition) => RuleDefinition | undefined;
+    has: (identifier: string | RuleDefinition) => boolean;
+  };
   /**
    * Mutators
    */
@@ -170,6 +180,7 @@ declare class FinderCore<FItem = any, FContext = any> {
   setIsLoading(value?: boolean): void;
   setIsDisabled(value?: boolean): void;
   setRules(definitions?: RuleDefinition<FItem>[]): void;
+  setEffects(effects?: RuleEffect<FItem>[]): void;
   setContext(context?: FContext): void;
   /**
    * Utils

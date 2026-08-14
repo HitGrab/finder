@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-type-parameters */
 import { ERRORS } from "../core-constants";
 import { FinderError } from "../finder-error";
 import { RuleDefinition } from "../types/rule-types";
@@ -41,14 +40,14 @@ export class RuleListAppendix {
         });
     }
 
-    getRule(identifier: string | RuleDefinition) {
+    getRule(identifier: string | RuleDefinition, throwOnError = true) {
         const rule = this.rules.find((rule) => {
             if (typeof identifier === "object") {
                 return rule.id === identifier.id;
             }
             return rule.id === identifier;
         });
-        if (rule === undefined) {
+        if (rule === undefined && throwOnError) {
             throw new FinderError(ERRORS.RULE_NOT_FOUND, { identifier });
         }
         return rule;
@@ -83,5 +82,14 @@ export class RuleListAppendix {
         });
 
         return true;
+    }
+
+    get list() {
+        return {
+            search: this.definitions.find(isSearchRuleDefinition),
+            filters: this.definitions.filter(isFilterRuleDefinition),
+            sortBy: this.definitions.filter(isSortByRuleDefinition),
+            groupBy: this.definitions.filter(isGroupByRuleDefinition),
+        };
     }
 }
