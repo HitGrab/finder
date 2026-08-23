@@ -26,7 +26,7 @@ export class Tester<FItem, FContext> {
         return {
             items: hasGroupByRule === false ? paginatedItems : undefined,
             groups: hasGroupByRule ? Tester.groupItems({ mixins, items: paginatedItems, context }) : undefined,
-            numMatchedItems: paginatedItems.length,
+            numMatchedItems: matchingItems.length,
             numTotalItems: rawItems.length,
             hasGroupByRule,
         };
